@@ -319,20 +319,8 @@ int RingApplication::newInstance()
       // Create the old qtwidgets main window so all classes expecting one still
       // behave as they should //FIXME fix KF5::KXMLGui
       auto mw2 = new KXmlGuiWindow();
-      auto col = new KActionCollection(this);
 
-      // Use a QTimer since it can enter in a recursion if there is a shortcut
-      // collision creating a warning popup parented on the main window.
-      #ifdef Q_OS_MAC
-         QDir dir(QApplication::applicationDirPath());
-         dir.cdUp();
-         dir.cd("Resources/");
-         QTimer::singleShot(0, [mw2,dir]() {mw2->createGUI(dir.path()+"/ring-kdeui.rc");});
-      #else
-         QTimer::singleShot(0, [mw2]() {mw2->createGUI();});
-      #endif
-
-      ActionCollection::instance()->setupAction(mw2, col);
+      ActionCollection::instance()->setupAction();
 
       if (m_StartPhone) {
          mw = RingApplication::phoneWindow();
@@ -523,15 +511,12 @@ QQuickWindow* RingApplication::desktopWindow() const
       if ( component.isReady() ) {
          if (auto obj = qobject_cast<QQuickItem*>(component.create())) {
             dw =  qobject_cast<QQuickWindow*>(obj);
-            qDebug() << "\n\nHERE" << obj <<dw << obj->metaObject()->className() << obj->property("id");
          }
          else
             qWarning() << "FAILED TO LOAD:" << component.errorString();
       }
       else
          qWarning() << component.errorString();
-
-      qDebug() << "\n\nDW!" << dw;
    }
 
    return dw;

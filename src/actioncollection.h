@@ -40,7 +40,7 @@ public:
    explicit ActionCollection(QObject* parent = nullptr);
    virtual ~ActionCollection();
    static ActionCollection* instance();
-   void setupAction(KXmlGuiWindow* mw, KActionCollection* col);
+   void setupAction();
    void setupPhoneAction(PhoneWindow* mw);
 
    Q_PROPERTY(QAction* holdAction                  READ holdAction                  CONSTANT)
@@ -78,9 +78,12 @@ public:
    Q_PROPERTY(QAction* videoFlipVerticalAction   READ videoFlipVerticalAction   CONSTANT)
    Q_PROPERTY(QAction* videoMuteAction           READ videoMuteAction           CONSTANT)
    Q_PROPERTY(QAction* videoPreviewAction        READ videoPreviewAction        CONSTANT)
-   Q_PROPERTY(QAction* videoScaleAction          READ videoScaleAction          CONSTANT)
+   Q_PROPERTY(QAction* vimw2deoScaleAction          READ videoScaleAction          CONSTANT)
    Q_PROPERTY(QAction* videoFullscreenAction     READ videoFullscreenAction     CONSTANT)
    #endif
+
+   Q_PROPERTY(QObject* fakeMainWindow READ fakeMainWindow CONSTANT)
+   Q_PROPERTY(QObject* kactionCollection READ kactionCollection CONSTANT)
 
    //Actions
    QAction* holdAction                  ();
@@ -189,6 +192,9 @@ private:
    QAction * action_show_wizard            {nullptr};
    QAction * action_show_directory         {nullptr};
    QAction * action_show_menu              {nullptr};
+
+   QObject* fakeMainWindow() const;
+   QObject* kactionCollection() const;
 
 public Q_SLOTS:
    void slotConfigureRing         ();

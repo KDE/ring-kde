@@ -69,6 +69,11 @@ Kirigami.ApplicationWindow {
         drawerOpen: false
     }
 
+    QActionBinder {
+        id: binder
+        actionCollection: ActionCollection.kactionCollection
+    }
+
     RowLayout {
         anchors.fill: parent
         DockBar {

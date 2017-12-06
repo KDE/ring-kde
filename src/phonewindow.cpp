@@ -88,7 +88,7 @@ PhoneWindow::PhoneWindow(QWidget*)
    setWindowTitle( i18n("Ring"                                  ) );
 
    m_pView = new View(this);
-   ActionCollection::instance()->setupAction(this, actionCollection());
+   ActionCollection::instance()->setupAction();
    ActionCollection::instance()->setupPhoneAction(this);
    m_pView->updateVolumeControls();
 

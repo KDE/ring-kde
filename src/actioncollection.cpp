@@ -124,8 +124,38 @@ ActionCollection::ActionCollection(QObject* parent) : QObject(parent)
 ActionCollection::~ActionCollection()
 {}
 
-void ActionCollection::setupAction(KXmlGuiWindow* mw, KActionCollection* col)
+QObject* ActionCollection::fakeMainWindow() const
 {
+   static auto mw = new KXmlGuiWindow();
+
+   static bool init = false;
+   if (!init) {
+      // Use a QTimer since it can enter in a recursion if there is a shortcut
+      // collision creating a warning popup parented on the main window.
+      #ifdef Q_OS_MAC
+         QDir dir(QApplication::applicationDirPath());
+         dir.cdUp();
+         dir.cd("Resources/");
+         QTimer::singleShot(0, [dir]() {mw->createGUI(dir.path()+"/ring-kdeui.rc");});
+      #else
+         QTimer::singleShot(0, []() {mw->createGUI();});
+      #endif
+      init = true;
+   }
+
+   return mw;
+}
+
+QObject* ActionCollection::kactionCollection() const
+{
+   return qobject_cast<KXmlGuiWindow*>(fakeMainWindow())->actionCollection();
+}
+
+void ActionCollection::setupAction()
+{
+   auto mw  = qobject_cast<KXmlGuiWindow*>(fakeMainWindow());
+   auto col = mw->actionCollection();
+
    // Import standard actions
    action_close_phone   = new QAction();//KStandardAction::close      ( RingApplication::instance()->phoneWindow(), SLOT(close())        , RingApplication::instance()->mainWindow());
    action_close_timeline= new QAction();//KStandardAction::close      ( RingApplication::instance()->timelineWindow(), SLOT(close())        , RingApplication::instance()->mainWindow());
@@ -346,7 +376,11 @@ void ActionCollection::slotConfigureRing()
 ///Display the shortcuts dialog
 void ActionCollection::showShortCutEditor()
 {
-   KShortcutsDialog::configure( nullptr );
+   KShortcutsDialog::configure(
+      qobject_cast<KXmlGuiWindow*>(
+         ActionCollection::instance()->fakeMainWindow()
+      )->actionCollection()
+   );
 }
 
 ///Display the shortcuts dialog

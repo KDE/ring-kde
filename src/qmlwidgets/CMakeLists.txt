@@ -67,6 +67,7 @@ SET( libqmlwidgets_LIB_SRCS
     snapshotadapter.cpp
     timelinedots.cpp
     qmlaction.cpp
+    qactionbinder.cpp
 )
 
 ADD_LIBRARY( libqmlwidgets  STATIC ${libqmlwidgets_LIB_SRCS} )
@@ -84,6 +85,7 @@ target_link_libraries( libqmlwidgets
     KF5::ConfigCore
     KF5::ConfigGui
     KF5::ConfigWidgets
+    KF5::XmlGui
 )
 
 SET( libqmlwidgets_LIB_HDRS
