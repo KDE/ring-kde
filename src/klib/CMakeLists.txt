@@ -29,7 +29,7 @@ INCLUDE(KDEInstallDirs)
 INCLUDE(KDECMakeSettings)
 INCLUDE(KDECompilerSettings)
 
-FIND_PACKAGE ( LibRingClient QUIET )
+FIND_PACKAGE ( LibRingQt QUIET )
 
 FIND_PACKAGE(Qt5 CONFIG REQUIRED Core Widgets Gui)
 
@@ -52,7 +52,7 @@ IF ( KF5_AKONADI_FOUND AND  KF5_AKONADICONTACT_FOUND AND  KF5_CONTACTS_FOUND)
    SET(AKONADI_FOUND 1)
 ENDIF()
 
-INCLUDE_DIRECTORIES(SYSTEM ${Qt5Widgets_INCLUDES} ${Qt5Core_INCLUDES} ${ringclient_INCLUDE_DIR})
+INCLUDE_DIRECTORIES(SYSTEM ${Qt5Widgets_INCLUDES} ${Qt5Core_INCLUDES} ${ringqt_INCLUDE_DIR})
 
 ADD_DEFINITIONS(${Qt5Core_DEFINITIONS})
 
@@ -78,7 +78,7 @@ KCONFIG_ADD_KCFG_FILES (libkring_LIB_SRCS kcfg_settings.kcfgc)
 ADD_LIBRARY( libkring  STATIC ${libkring_LIB_SRCS} )
 
 target_link_libraries( libkring
-  ringclient
+  ringqt
 
   Qt5::Widgets
   Qt5::Core

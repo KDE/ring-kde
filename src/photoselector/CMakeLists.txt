@@ -17,7 +17,7 @@ SET(CMAKE_AUTOMOC ON)
 SET(CMAKE_AUTORCC ON)
 SET(CMAKE_AUTOUIC ON)
 
-FIND_PACKAGE ( LibRingClient QUIET )
+FIND_PACKAGE ( LibRingQt QUIET )
 
 FIND_PACKAGE(Qt5 CONFIG REQUIRED
     Core
@@ -34,7 +34,7 @@ FIND_PACKAGE(KF5 REQUIRED COMPONENTS
     ConfigWidgets
 )
 
-INCLUDE_DIRECTORIES(SYSTEM ${Qt5Widgets_INCLUDES} ${Qt5Core_INCLUDES} ${ringclient_INCLUDE_DIR})
+INCLUDE_DIRECTORIES(SYSTEM ${Qt5Widgets_INCLUDES} ${Qt5Core_INCLUDES} ${ringqt_INCLUDE_DIR})
 
 ADD_DEFINITIONS(${Qt5Core_DEFINITIONS})
 
@@ -53,7 +53,7 @@ QT5_ADD_RESOURCES(libphotoselector_LIB_SRCS
 ADD_LIBRARY( libphotoselector  STATIC ${libphotoselector_LIB_SRCS} )
 
 target_link_libraries( libphotoselector
-    ringclient
+    ringqt
 
     # KF5
     KF5::I18n

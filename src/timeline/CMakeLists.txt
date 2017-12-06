@@ -33,7 +33,7 @@ SET(CMAKE_AUTOMOC ON)
 SET(CMAKE_AUTORCC ON)
 SET(CMAKE_AUTOUIC ON)
 
-FIND_PACKAGE ( LibRingClient QUIET )
+FIND_PACKAGE ( LibRingQt QUIET )
 
 FIND_PACKAGE(Qt5 CONFIG REQUIRED
     Core
@@ -46,7 +46,7 @@ FIND_PACKAGE(KF5 REQUIRED COMPONENTS
   I18n
 )
 
-INCLUDE_DIRECTORIES(SYSTEM ${Qt5Widgets_INCLUDES} ${Qt5Core_INCLUDES} ${ringclient_INCLUDE_DIR})
+INCLUDE_DIRECTORIES(SYSTEM ${Qt5Widgets_INCLUDES} ${Qt5Core_INCLUDES} ${ringqt_INCLUDE_DIR})
 
 ADD_DEFINITIONS(${Qt5Core_DEFINITIONS})
 
@@ -64,7 +64,7 @@ QT5_ADD_RESOURCES(libtimeline_LIB_SRCS
 ADD_LIBRARY( libtimeline  STATIC ${libtimeline_LIB_SRCS} )
 
 target_link_libraries( libtimeline
-   ringclient
+   ringqt
    sharedassets
 
    Qt5::Widgets

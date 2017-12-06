@@ -30,7 +30,7 @@
 //Ring-KDE
 #include "klib/kcfg_settings.h"
 
-//LibRingClient
+//LibRingQt
 #include "numbercategorymodel.h"
 #include "delegates/autocompletiondelegate.h"
 #include "delegates/categorizeddelegate.h"

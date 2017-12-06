@@ -62,7 +62,7 @@ h2. Current design
 =========================QML plasmoid====== <- Abstact frontend using the dataengine model
 =====KDE frontend=========Dateengine======= <- Library frontend
 ==============KDE library================== <- Common GUI code and contact implementation
-=============libringclient================= <- Dbus to C++ object + state machine + frontend model, -GUI LESS-
+=============libringqt================= <- Dbus to C++ object + state machine + frontend model, -GUI LESS-
 ==================DBUS=====================
 ==================DRing====================
 ==================PJSIP====================

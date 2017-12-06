@@ -33,7 +33,7 @@
 //Typedef
 typedef QHash<QString,QHash<QString,QVariant> > PersonHash;
 
-///HelperFunctions: little visitor not belonging to libringclient
+///HelperFunctions: little visitor not belonging to libringqt
 ///Ramdom mix of dynamic property and transtypping
 class LIB_EXPORT HelperFunctions {
 public:

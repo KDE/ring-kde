@@ -31,33 +31,33 @@ LIST(APPEND CMAKE_MODULE_PATH "${LOCAL_CMAKE_MODULE_PATH}")
 FIND_PACKAGE(ECM 1.1.0 REQUIRED NO_MODULE)
 LIST(APPEND CMAKE_MODULE_PATH "${ECM_MODULE_PATH}")
 
-# Ring-LRC isn't a "stable" library. Clients often only work with a very specific
+# libringqt isn't a "stable" library. Clients often only work with a very specific
 # commit and nothing else. To prevent using the wrong version, it is possible to
-# add a `ring-lrc` directory in the source. If present, that version will be used.
-IF(IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/ring-lrc/")
-   SET(LibRingClient_SRC "${CMAKE_CURRENT_SOURCE_DIR}/ring-lrc/")
-   SET(ringclient_FOUND true)
+# add a `libringqt` directory in the source. If present, that version will be used.
+IF(IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/libringqt/")
+   SET(LibRingQt_SRC "${CMAKE_CURRENT_SOURCE_DIR}/libringqt/")
+   SET(ringqt_FOUND true)
 ELSE()
-   FIND_PACKAGE ( LibRingClient QUIET CONFIG)
+   FIND_PACKAGE ( LibRingQt QUIET CONFIG)
 ENDIF()
 
-# Download Ring-LRC if it wasn't found to simplify the build process
-IF(NOT ringclient_FOUND)
-   INCLUDE(cmake/FetchRing-LRC.cmake)
+# Download libringqt if it wasn't found to simplify the build process
+IF(NOT ringqt_FOUND)
+   INCLUDE(cmake/FetchRingQt.cmake)
 
-   SET(LibRingClient_SRC ${CMAKE_CURRENT_BINARY_DIR}/ring-lrc/)
+   SET(LibRingQt_SRC ${CMAKE_CURRENT_BINARY_DIR}/libringqt/)
 ENDIF()
 
 # Use the build-in copy if it has been found
-IF(LibRingClient_SRC)
+IF(LibRingQt_SRC)
    # Use the .a, not the .so;
    SET(ENABLE_STATIC true)
 
-   LIST(APPEND CMAKE_MODULE_PATH "${LibRingClient_SRC}/cmake/")
+   LIST(APPEND CMAKE_MODULE_PATH "${LibRingQt_SRC}/cmake/")
 
-   ADD_SUBDIRECTORY(${LibRingClient_SRC})
+   ADD_SUBDIRECTORY(${LibRingQt_SRC})
 
-   INCLUDE_DIRECTORIES(${LibRingClient_SRC}/src)
+   INCLUDE_DIRECTORIES(${LibRingQt_SRC}/src)
 ENDIF()
 
 INCLUDE(ECMInstallIcons)

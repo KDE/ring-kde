@@ -143,7 +143,7 @@ INCLUDE_DIRECTORIES(SYSTEM
    ${Qt5PrintSupport_INCLUDES}
    ${Qt5Core_INCLUDES}
    ${CMAKE_BINARY_DIR}
-   ${ringclient_INCLUDE_DIR}
+   ${ringqt_INCLUDE_DIR}
    ${LIB_TIP_INCLUDE}
    ${LIB_CONFIG_INCLUDE}
    ${LIB_CONFIG_WIDGETS}
@@ -379,7 +379,7 @@ IF(NOT ${ENABLE_STATIC} MATCHES false)
   LINK_DIRECTORIES(${Qt5DBus_LIBRARY_DIRS} )
   ADD_DEFINITIONS(${Qt5DBus_CFLAGS})
   TARGET_LINK_LIBRARIES(ring-kde
-    ${ringclient_LIBRARY_STATIC}
+    ${ringqt_LIBRARY_STATIC}
     -lpthread
   )
 
@@ -390,7 +390,7 @@ IF(NOT ${ENABLE_STATIC} MATCHES false)
   ENDIF()
 
 ELSE()
-   TARGET_LINK_LIBRARIES(ring-kde ${ringclient_LIBRARY_DYNAMIC})
+   TARGET_LINK_LIBRARIES(ring-kde ${ringqt_LIBRARY_DYNAMIC})
 ENDIF()
 
 QT5_ADD_DBUS_ADAPTOR(ring_kde_SRCS ../data/org.kde.kuiserver.xml cmd.h Cmd )

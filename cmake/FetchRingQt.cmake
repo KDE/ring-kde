@@ -1,4 +1,4 @@
-# In case dring and Ring-LRC are not found, fetch them from git and curl to
+# In case dring and LibRingQt are not found, fetch them from git and curl to
 # setup a minimal environment capable of building Ring-KDE. It also enable
 # static libraries to isolate Ring-KDE from any potential LRC API break.
 #
@@ -55,19 +55,19 @@ if ((NOT ${ENABLE_LIBWRAP}) AND (NOT EXISTS ${XML_PATH}/cx.ring.Ring.CallManager
         ${CMAKE_CURRENT_BINARY_DIR}/dring/presence_const.h INACTIVITY_TIMEOUT 30)
 endif()
 
-message(STATUS "Fetching Ring-LRC from GitHub")
+message(STATUS "Fetching LibRingQt from GitHub")
 
-if (NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/ring-lrc)
+if (NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/libringqt)
     execute_process(COMMAND
-        git clone https://github.com/Elv13/ring-lrc.git --branch master ${CMAKE_CURRENT_BINARY_DIR}/ring-lrc
+        git clone https://github.com/Elv13/libringqt.git --branch master ${CMAKE_CURRENT_BINARY_DIR}/libringqt
     )
 else()
     execute_process(COMMAND
-        /bin/sh -c "cd ${CMAKE_CURRENT_BINARY_DIR}/ring-lrc && git fetch origin && git reset --hard origin/master"
+        /bin/sh -c "cd ${CMAKE_CURRENT_BINARY_DIR}/libringqt && git fetch origin && git reset --hard origin/master"
     )
 endif()
 
-# Build Ring-LRC
+# Build LibRingQt
 SET(RING_XML_INTERFACES_DIR ${XML_PATH})
 
 SET(ring_INCLUDE_DIRS ${CMAKE_CURRENT_BINARY_DIR}/dring/)

@@ -30,7 +30,7 @@ set( dbus_SRCS dbus_test.cpp )
 #    ${QT_QTTEST_LIBRARY}
 #    ${KDE4_KDEUI_LIBS}
 #    kring
-#    ringclient
+#    ringqt
 # )
 
 #ACCOUNT tests
@@ -46,7 +46,7 @@ set( account_SRCS account_test.cpp )
 #    ${QT_QTTEST_LIBRARY}
 #    ${KDE4_KDEUI_LIBS}
 #    kring
-#    ringclient
+#    ringqt
 # )
 
 #Auto completion test
@@ -62,7 +62,7 @@ target_link_libraries( autocompletion
    ${QT_QTTEST_LIBRARY}
    ${KDE4_KDEUI_LIBS}
    kring
-   ringclient
+   ringqt
 )
 
 #CALL tests
@@ -80,5 +80,5 @@ target_link_libraries( autocompletion
 #    ${QT_QTTEST_LIBRARY}
 #    ${KDE4_KDEUI_LIBS}
 #    kring
-#    ringclient
+#    ringqt
 # )

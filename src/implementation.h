@@ -34,7 +34,7 @@
 
 class Macro;
 
-//Implement all client dependant libringclient abstract interfaces
+//Implement all client dependant libringqt abstract interfaces
 
 class ColorDelegate final : public Interfaces::AccountListColorizerI
 {
