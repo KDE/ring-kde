@@ -20,10 +20,12 @@
 #include <QQmlExtensionPlugin>
 
 //![plugin]
-class PhotoSelectorPlugin : public QObject//QQmlExtensionPlugin
+class Q_DECL_EXPORT PhotoSelectorPlugin : public QObject//QQmlExtensionPlugin
 {
     Q_OBJECT
 //     Q_PLUGIN_METADATA(IID "PhotoSelectorPlugin")
+public:
+    explicit PhotoSelectorPlugin(QObject* parent = nullptr);
 
 public:
     void registerTypes(const char *uri);// override;

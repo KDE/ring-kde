@@ -25,7 +25,6 @@
 #include "contactmethod.h"
 #include "numbercategory.h"
 #include "phonedirectorymodel.h"
-#include <phonewindow.h>
 #include <person.h>
 
 
@@ -45,7 +44,7 @@ ContactMethod* KPhoneNumberSelector::number(const Person* contact)
             map[number->category()->name()+" ("+number->uri()+')'] = number->uri();
             list << number->category()->name()+" ("+number->uri()+')';
          }
-         const QString result = QInputDialog::getItem (PhoneWindow::app(),i18n("Select phone number"), i18n("This contact has many phone numbers, please select the one you wish to call"), list, 0, false, &ok);
+         const QString result = QInputDialog::getItem (nullptr,i18n("Select phone number"), i18n("This contact has many phone numbers, please select the one you wish to call"), list, 0, false, &ok);
          return PhoneDirectoryModel::instance().getNumber(result);//new ContactMethod(result,"");
       }
       else if (contact->phoneNumbers().size() == 1)

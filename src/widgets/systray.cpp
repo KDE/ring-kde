@@ -28,9 +28,6 @@
 //KDE
 #include <QtWidgets/QAction>
 
-//Ring
-#include "phonewindow.h"
-
 ///Constructor
 SysTray::SysTray(const QIcon &icon, QWidget *parent)
       : KStatusNotifierItem(parent),
@@ -78,9 +75,10 @@ void SysTray::slotActivated(bool active, const QPoint& pos)
    Q_UNUSED(active)
    Q_UNUSED(pos)
 
-   PhoneWindow::app()->show          ();
-   PhoneWindow::app()->activateWindow();
-   PhoneWindow::app()->raise         ();
+//FIXME DROP QTWIDGET
+//    PhoneWindow::app()->show          ();
+//    PhoneWindow::app()->activateWindow();
+//    PhoneWindow::app()->raise         ();
 }
 
 // kate: space-indent on; indent-width 3; replace-tabs on;

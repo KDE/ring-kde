@@ -25,11 +25,15 @@
 #include "pixmapwrapper.h"
 #include "modelscrolladapter.h"
 #include "treehelper.h"
-#include "treeview.h"
+#include "hierarchyview.h"
+#include "quicklistview.h"
+#include "quicktreeview.h"
 #include "multicall.h"
 #include "bindedcombobox.h"
 #include "snapshotadapter.h"
 #include "timelinedots.h"
+#include "qmlaction.h"
+#include "qactionbinder.h"
 
 void RingQmlWidgets::registerTypes(const char *uri)
 {
@@ -37,7 +41,9 @@ void RingQmlWidgets::registerTypes(const char *uri)
 
     qmlRegisterType<Bubble>(uri, 1, 0, "Bubble");
     qmlRegisterType<MultiCall>(uri, 1, 0, "MultiCall");
-    qmlRegisterType<TreeView>(uri, 1, 0, "TreeView");
+    qmlRegisterType<HierarchyView>(uri, 1, 0, "HierarchyView");
+    qmlRegisterType<QuickTreeView>(uri, 1, 0, "QuickTreeView");
+    qmlRegisterType<QuickListView>(uri, 1, 0, "QuickListView");
     qmlRegisterType<MessageBuilder>(uri, 1, 0, "MessageBuilder");
     qmlRegisterType<ContactBuilder>(uri, 1, 0, "ContactBuilder");
     qmlRegisterType<TreeHelper>(uri, 1, 0, "TreeHelper");
@@ -46,4 +52,11 @@ void RingQmlWidgets::registerTypes(const char *uri)
     qmlRegisterType<BindedComboBox>(uri, 1, 0, "BindedComboBox");
     qmlRegisterType<SnapshotAdapter>(uri, 1, 0, "SnapshotAdapter");
     qmlRegisterType<TimelineDots>(uri, 1, 0, "TimelineDots");
+    qmlRegisterType<QmlAction>(uri, 1, 0, "QmlAction");
+    qmlRegisterType<QActionBinder>(uri, 1, 0, "QActionBinder");
+
+    qmlRegisterUncreatableType<QuickListViewSections>("Ring", 1,0,
+        "QuickListViewSections", "QuickListViewSections cannot be instanciated"
+    );
+//     qmlRegisterType<QuickListViewSections>(uri, 1, 0, "QuickListViewSections");
 }

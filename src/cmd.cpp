@@ -31,7 +31,6 @@
 #include <call.h>
 #include <callmodel.h>
 #include <media/text.h>
-#include <phonewindow.h>
 #include "ringapplication.h"
 #include "klib/kcfg_settings.h"
 
@@ -226,9 +225,10 @@ void Cmd::slotActivateRequested (const QStringList& args, const QString& cwd)
    }
 
    if (ConfigurationSkeleton::displayOnStart()) {
-      PhoneWindow::app()->show();
-      PhoneWindow::app()->activateWindow();
-      PhoneWindow::app()->raise();
+//FIXME DROP QTWIDGET
+//       PhoneWindow::app()->show();
+//       PhoneWindow::app()->activateWindow();
+//       PhoneWindow::app()->raise();
    }
 }
 

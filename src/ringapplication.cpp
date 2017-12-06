@@ -25,12 +25,16 @@
 #include <QtCore/QCommandLineParser>
 #include <QtCore/QDebug>
 #include <QtCore/QStandardPaths>
+#include <QtWidgets/QAction>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
+#include <QQuickItem>
+#include <QQuickWindow>
+#include <QQmlComponent>
 
 //KDE
 #include <KIconLoader>
-#include <KMainWindow>
+#include <KActionCollection>
 #include <kmessagebox.h>
 #include <KDeclarative/KDeclarative>
 
@@ -61,14 +65,13 @@
 //Ring
 #include "klib/kcfg_settings.h"
 #include "cmd.h"
-#include "phonewindow.h"
-#include "timelinewindow.h"
 #include "errormessage.h"
 #include "callmodel.h"
 #include "implementation.h"
 #include "wizard/welcome.h"
 #include "callview/videowidget.h"
 #include "notification.h"
+#include "actioncollection.h"
 
 //Models
 #include <profilemodel.h>
@@ -109,6 +112,10 @@
 #include "photoselector/photoplugin.h"
 #include "canvasindicators/canvasindicator.h"
 #include "canvasindicators/ringingimageprovider.h"
+#include "desktopview/desktopviewplugin.h"
+#include "contactview/contactviewplugin.h"
+#include "dialview/dialviewplugin.h"
+#include "timeline/timelineplugin.h"
 
 //Other
 #include <unistd.h>
@@ -116,8 +123,61 @@
 KDeclarative::KDeclarative* RingApplication::m_pDeclarative {nullptr};
 RingQmlWidgets* RingApplication::m_pQmlWidget {nullptr};
 PhotoSelectorPlugin* RingApplication::m_pPhotoSelector {nullptr};
+DesktopView* RingApplication::m_pDesktopView {nullptr};
+ContactView* RingApplication::m_pContactView {nullptr};
+DialView* RingApplication::m_pDialView {nullptr};
+TimelinePlugin* RingApplication::m_pTimeline {nullptr};
 CanvasIndicator* RingApplication::m_pCanvasIndicator {nullptr};
 RingApplication* RingApplication::m_spInstance {nullptr};
+
+//This code detect if the window is active, innactive or minimzed
+class PhoneWindowEvent final : public QObject {
+   Q_OBJECT
+public:
+   PhoneWindowEvent(RingApplication* ev) : QObject(ev),m_pParent(ev) {
+      QTimer::singleShot(0, [this]() {
+         m_pParent->desktopWindow()->installEventFilter(this);
+      });
+   }
+protected:
+   virtual bool eventFilter(QObject *obj, QEvent *event)  override {
+      Q_UNUSED(obj)
+      if (event->type() == QEvent::WindowStateChange) {
+//FIXME DROP QTWIDGET
+//          QWindowStateChangeEvent* e = static_cast<QWindowStateChangeEvent*>(event);
+//          switch (PhoneWindow::app()->windowState()) {
+//             case Qt::WindowMinimized:
+//                emit minimized(true);
+//                break;
+//             case Qt::WindowActive:
+//                qDebug() << "The window is now active";
+//                [[clang::fallthrough]];
+//             case Qt::WindowNoState:
+//             default:
+//                if (e->oldState() == Qt::WindowMinimized)
+//                   emit minimized(false);
+//                break;
+//          };
+      }
+      else if (event->type() == QEvent::KeyPress) {
+//FIXME DROP QTWIDGET
+//          m_pParent->viewKeyEvent(static_cast<QKeyEvent*>(event));
+      }
+      else if (event->type() == QEvent::WindowDeactivate) {
+         m_pParent->m_HasFocus = false;
+      }
+      else if (event->type() == QEvent::WindowActivate) {
+         m_pParent->m_HasFocus = true;
+      }
+      return false;
+   }
+
+private:
+   RingApplication* m_pParent;
+
+Q_SIGNALS:
+   void minimized(bool);
+};
 
 /**
  * The application constructor
@@ -130,6 +190,8 @@ RingApplication::RingApplication(int & argc, char ** argv) : QApplication(argc,a
    setAttribute(Qt::AA_X11InitThreads,true);
 #endif
    setAttribute(Qt::AA_EnableHighDpiScaling);
+
+   m_pEventFilter = new PhoneWindowEvent(this);
 
    m_spInstance = this;
 }
@@ -152,20 +214,6 @@ void RingApplication::init()
  */
 RingApplication::~RingApplication()
 {
-   // Delete the GUI before the models to prevent their destructors from
-   // accessing the singletons
-   if (m_pPhone) {
-      m_pPhone->setActive(false);
-      delete m_pPhone;
-      m_pTimeline = nullptr;
-   }
-
-   if (m_pTimeline) {
-      m_pTimeline->setActive(false);
-      delete m_pTimeline;
-      m_pTimeline = nullptr;
-   }
-
    delete m_pDeclarative;
    delete engine();
    delete m_pCanvasIndicator;
@@ -308,17 +356,19 @@ int RingApplication::newInstance()
    if (init) {
       init = false;
 
-      FancyMainWindow* mw = nullptr;
+      ActionCollection::instance()->setupAction();
 
-      if (m_StartPhone)
-         mw = RingApplication::phoneWindow();
-      else
-         mw = RingApplication::timelineWindow();
-
-      if (displayOnStart)
-         mw->show();
-      else
-         mw->hide();
+//FIXME DROP QTWIDGET
+//       if (m_StartPhone) {
+//          mw = RingApplication::phoneWindow();
+//
+//          if (displayOnStart)
+//             mw->show();
+//          else
+//             mw->hide();
+//       }
+//       else
+         desktopWindow();
    }
 
    return 0;
@@ -347,6 +397,7 @@ void RingApplication::setStartPhone(bool value)
 #define QML_TYPE(name) qmlRegisterUncreatableType<name>(AppName, 1,0, #name, #name "cannot be instanciated");
 #define QML_CRTYPE(name) qmlRegisterType<name>(AppName, 1,0, #name);
 #define QML_SINGLETON(name) RingApplication::engine()->rootContext()->setContextProperty(QStringLiteral(#name), &name::instance());
+#define QML_SINGLETON2(name) RingApplication::engine()->rootContext()->setContextProperty(QStringLiteral(#name), name::instance());
 #define QML_ADD_OBJECT(name, obj) RingApplication::engine()->rootContext()->setContextProperty(QStringLiteral(#name), obj);
 
 constexpr static const char AppName[]= "Ring";
@@ -365,8 +416,24 @@ QQmlApplicationEngine* RingApplication::engine()
       m_pPhotoSelector = new PhotoSelectorPlugin;
       m_pPhotoSelector->registerTypes("PhotoSelectorPlugin");
 
+      m_pDesktopView = new DesktopView;
+      m_pDesktopView->registerTypes("DesktopView");
+
+      m_pContactView = new ContactView;
+      m_pContactView->registerTypes("ContactView");
+
+      m_pDialView = new DialView;
+      m_pDialView->registerTypes("DialView");
+
+      m_pTimeline = new TimelinePlugin;
+      m_pTimeline->registerTypes("TimeLine");
+
       m_pCanvasIndicator = new CanvasIndicator;
       m_pCanvasIndicator->registerTypes("CanvasIndicator");
+
+#ifdef Q_OS_ANDROID
+      KirigamiPlugin::getInstance().registerTypes();
+#endif
 
       QML_TYPE( Account           )
       QML_TYPE( const Account     )
@@ -376,6 +443,8 @@ QQmlApplicationEngine* RingApplication::engine()
       QML_TYPE( UserActionModel   )
       QML_TYPE( PeerTimelineModel )
       QML_TYPE( RingDeviceModel   )
+
+      QML_TYPE( QAction)
 
       QML_CRTYPE( PeersTimelineSelectionModel )
       QML_CRTYPE( NumberCompletionModel       )
@@ -399,6 +468,8 @@ QQmlApplicationEngine* RingApplication::engine()
          QML_SINGLETON( PhoneDirectoryModel      );
          QML_SINGLETON( RecentFileModel          );
 
+         QML_SINGLETON2( ActionCollection         );
+
          QML_ADD_OBJECT(VideoRateSelectionModel      , &Video::ConfigurationProxy::rateSelectionModel      ());
          QML_ADD_OBJECT(VideoResolutionSelectionModel, &Video::ConfigurationProxy::resolutionSelectionModel());
          QML_ADD_OBJECT(VideoChannelSelectionModel   , &Video::ConfigurationProxy::channelSelectionModel   ());
@@ -418,6 +489,19 @@ QQmlApplicationEngine* RingApplication::engine()
          qmlRegisterUncreatableType<::Media::Media>(
             AppName, 1,0, "Media", QStringLiteral("cannot be instanciated")
          );
+
+         RingApplication::engine()->rootContext()->setContextProperty(
+            QStringLiteral("SortedContactModel"),
+            CategorizedContactModel::SortedProxy::instance().model()
+         );
+
+         auto completionModel = new NumberCompletionModel();
+
+         RingApplication::engine()->rootContext()->setContextProperty(
+            QStringLiteral("CompletionModel"), completionModel
+         );
+
+
 
          auto im = new RingingImageProvider();
          e->addImageProvider( QStringLiteral("RingingImageProvider"), im );
@@ -443,48 +527,38 @@ QQmlApplicationEngine* RingApplication::engine()
 #undef QML_ADD_OBJECT
 #undef QML_CRTYPE
 
-PhoneWindow* RingApplication::phoneWindow() const
+QQuickWindow* RingApplication::desktopWindow() const
 {
-   if (!m_pPhone) {
-      m_pPhone = new PhoneWindow(nullptr);
-      connect(m_pPhone, &FancyMainWindow::unregisterWindow, this, [this]() {
-         m_pPhone = nullptr;
-      });
+   static QQuickWindow* dw = nullptr;
+   if (!dw) {
+      QQmlComponent component(engine());
+      component.loadUrl(QUrl(QStringLiteral("qrc:/DesktopWindow.qml")));
+      if ( component.isReady() ) {
+         qDebug() << "Previous error" << component.errorString();
+
+         auto obj2 = component.create();
+
+         // I have *no* clue why this is needed... A race somewhere
+         while (component.errorString().isEmpty() && !obj2)
+            obj2 = component.create();
+
+         if (!(dw = qobject_cast<QQuickWindow*>(obj2)))
+            qWarning() << "Failed to load:" << component.errorString();
+      }
+      else
+         qWarning() << component.errorString();
    }
 
-   return m_pPhone;
-}
+   Q_ASSERT(dw);
 
-TimelineWindow* RingApplication::timelineWindow() const
-{
-   if (!m_pTimeline) {
-      m_pTimeline = new TimelineWindow();
-      connect(m_pTimeline, &FancyMainWindow::unregisterWindow, this, [this]() {
-         m_pTimeline = nullptr;
-      });
-   }
-
-   return m_pTimeline;
-}
-
-bool RingApplication::isPhoneVisible() const
-{
-   return m_pPhone && m_pPhone->isVisible();
-}
-
-FancyMainWindow* RingApplication::mainWindow() const
-{
-   if (m_pPhone && !m_pTimeline)
-      return m_pPhone;
-
-   return RingApplication::timelineWindow();
+   return dw;
 }
 
 ///The daemon is not found
 void RingApplication::daemonTimeout()
 {
    if ((!CallModel::instance().isConnected()) || (!CallModel::instance().isValid())) {
-      KMessageBox::error(mainWindow(), ErrorMessage::NO_DAEMON_ERROR);
+      KMessageBox::error(nullptr, ErrorMessage::NO_DAEMON_ERROR);
       exit(1);
    }
 }
@@ -497,14 +571,15 @@ void RingApplication::callAdded(Call* c)
     c->state() == Call::State::CONNECTED ||
     c->state() == Call::State::RINGING   ||
     c->state() == Call::State::INITIALIZATION)) {
-      if (isPhoneVisible()) {
-         RingApplication::instance()->phoneWindow()->show ();
-         RingApplication::instance()->phoneWindow()->raise();
-      }
-      else {
-         timelineWindow()->viewContact(c->peerContactMethod());
-         timelineWindow()->setCurrentPage(ViewContactDock::Pages::MEDIA);
-      }
+//       if (isPhoneVisible()) {
+//FIXME DROP QTWIDGET
+//          RingApplication::instance()->phoneWindow()->show ();
+//          RingApplication::instance()->phoneWindow()->raise();
+//       }
+//       else {
+         //timelineWindow()->viewContact(c->peerContactMethod());
+         //timelineWindow()->setCurrentPage(ViewContactDock::Pages::MEDIA);
+//       }
    }
 }
 
@@ -533,15 +608,29 @@ bool RingApplication::notify (QObject* receiver, QEvent* e)
       QTimer::singleShot(2500, this, &RingApplication::daemonTimeout);
    }
    catch (const QString& errorMessage) {
-      KMessageBox::error(mainWindow(),errorMessage);
+      KMessageBox::error(nullptr,errorMessage);
       QTimer::singleShot(2500, this, &RingApplication::daemonTimeout);
    }
+   catch (const std::exception& e) {
+      qDebug() << ErrorMessage::GENERIC_ERROR << e.what();
+      KMessageBox::error(nullptr,ErrorMessage::GENERIC_ERROR);
+      QTimer::singleShot(2500, this, &RingApplication::daemonTimeout);
+
+   }
    catch (...) {
+      Q_ASSERT(false);
       qDebug() << ErrorMessage::GENERIC_ERROR;
-      KMessageBox::error(mainWindow(),ErrorMessage::GENERIC_ERROR);
+      KMessageBox::error(nullptr, ErrorMessage::GENERIC_ERROR);
       QTimer::singleShot(2500, this, &RingApplication::daemonTimeout);
    }
    return false;
 }
+
+bool RingApplication::mayHaveFocus()
+{
+   return m_HasFocus;
+}
+
+#include <ringapplication.moc>
 
 // kate: space-indent on; indent-width 3; replace-tabs on;

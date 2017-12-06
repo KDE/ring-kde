@@ -44,7 +44,6 @@ FIND_PACKAGE(Qt5 CONFIG REQUIRED
 
 FIND_PACKAGE(KF5 REQUIRED COMPONENTS
   I18n
-  Init
 )
 
 INCLUDE_DIRECTORIES(SYSTEM ${Qt5Widgets_INCLUDES} ${Qt5Core_INCLUDES} ${ringclient_INCLUDE_DIR})
@@ -55,8 +54,7 @@ SET(GENERIC_LIB_VERSION "1.0.0")
 
 #File to compile
 SET( libtimeline_LIB_SRCS
-   recentdock.cpp
-   viewcontactdock.cpp
+    timelineplugin.cpp
 )
 
 QT5_ADD_RESOURCES(libtimeline_LIB_SRCS
@@ -80,6 +78,7 @@ target_link_libraries( libtimeline
    KF5::WidgetsAddons
    KF5::ConfigCore
    KF5::ConfigGui
+   KF5::Kirigami2
 )
 
 SET( libtimeline_LIB_HDRS

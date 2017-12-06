@@ -52,10 +52,6 @@
 #include "conf/accountpages/dlgprofiles.h"
 #include <collectioninterface.h>
 #include "icons/icons.h"
-#include <widgets/personselector.h>
-#include <widgets/contactmethodselector.h>
-#include <phonewindow.h>
-#include <view.h>
 #include <ringapplication.h>
 
 ColorDelegate::ColorDelegate(const QPalette& pal) : m_Pal(pal) {
@@ -294,11 +290,12 @@ Person* KDEActionExtender::selectPerson(FlagPack<SelectPersonHint> hints, const 
    if (hintVar.canConvert<ContactMethod*>())
       cm = qvariant_cast<ContactMethod*>(hintVar);
 
-   auto selector = new PersonSelector(PhoneWindow::app(), cm);
+//FIXME DROP QTWIDGET
+//    auto selector = new PersonSelector(PhoneWindow::app(), cm);
 
-   selector->exec();
+//    selector->exec();
 
-   selector->deleteLater();
+//    selector->deleteLater();
 
    return nullptr;
 }
@@ -308,11 +305,12 @@ ContactMethod* KDEActionExtender::selectContactMethod(FlagPack<ActionExtenderI::
    Q_UNUSED(hints)
    Q_UNUSED(hintVar)
 
-   auto selector = new ContactMethodSelector(PhoneWindow::app());
+//FIXME DROP QTWIDGET
+//    auto selector = new ContactMethodSelector(PhoneWindow::app());
 
-   selector->exec();
+//    selector->exec();
 
-   selector->deleteLater();
+//    selector->deleteLater();
 
    return nullptr;
 }

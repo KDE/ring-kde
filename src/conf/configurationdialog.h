@@ -23,7 +23,6 @@
 #include <kconfigdialog.h>
 
 #include "klib/kcfg_settings.h"
-#include "view.h"
 
 //KDE
 class KConfigDialogManager;

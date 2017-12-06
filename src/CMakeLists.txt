@@ -147,7 +147,6 @@ INCLUDE_DIRECTORIES(SYSTEM
    ${LIB_TIP_INCLUDE}
    ${LIB_CONFIG_INCLUDE}
    ${LIB_CONFIG_WIDGETS}
-   ${CMAKE_CURRENT_SOURCE_DIR}/../lib/
 )
 
 # Shared C++ QML components
@@ -165,6 +164,9 @@ ADD_SUBDIRECTORY( wizard )
 # Build the QML based interactive video canvas
 ADD_SUBDIRECTORY( callview )
 
+# Build the advanced phone dialer
+ADD_SUBDIRECTORY( dialview )
+
 # Build the views and widgets related to the social timeline feature
 ADD_SUBDIRECTORY( timeline )
 
@@ -173,6 +175,12 @@ ADD_SUBDIRECTORY( photoselector )
 
 # Build the elements used to notify the users of events
 ADD_SUBDIRECTORY( canvasindicators )
+
+# Build the contact manager subsystem
+ADD_SUBDIRECTORY( contactview )
+
+# Build the main desktop component
+ADD_SUBDIRECTORY( desktopview )
 
 IF(${CMAKE_BUILD_TYPE} MATCHES Release)
    MESSAGE("NO DEBUG OUTPUT")
@@ -186,12 +194,12 @@ ENDIF(${CMAKE_BUILD_TYPE} MATCHES Release)
 # Delegates
 SET(
    ring_kde_DELEGATES
-   delegates/conferencedelegate.cpp
-   delegates/contactdelegate.cpp
-   delegates/historydelegate.cpp
-   delegates/phonenumberdelegate.cpp
-   delegates/delegatedropoverlay.cpp
-   delegates/dialpaddelegate.cpp
+#    delegates/conferencedelegate.cpp
+#    delegates/contactdelegate.cpp
+#    delegates/historydelegate.cpp
+#    delegates/phonenumberdelegate.cpp
+#    delegates/delegatedropoverlay.cpp
+#    delegates/dialpaddelegate.cpp
    delegates/autocompletiondelegate.cpp
    delegates/autocompletiondelegate2.cpp
    delegates/toolbardelegate.cpp
@@ -246,36 +254,13 @@ SET(
 # Widgets
 SET(
    ring_kde_WIDGETS
-   widgets/personselector.cpp
-   widgets/contactmethodselector.cpp
    widgets/systray.cpp
-   widgets/dialpad.cpp
-   widgets/dockbase.cpp
    widgets/categorizedtreeview.cpp
    widgets/fileselector.cpp
-   widgets/callviewoverlay.cpp
-   widgets/overlaytoolbar.cpp
-   widgets/callviewtoolbar.cpp
-   widgets/tips/conftip.cpp
-   widgets/tips/dialpadtip.cpp
-   widgets/tips/ringingtip.cpp
-   widgets/tips/connectionlosttip.cpp
-   widgets/tips/searchingtip.cpp
-   widgets/tips/tipcollection.cpp
-   widgets/tips/resizabletip.cpp
-   widgets/tips/removeconferencetip.cpp
-   widgets/player.cpp
-   widgets/playeroverlay.cpp
    widgets/filterlineedit.cpp
    widgets/kphonenumberselector.cpp
-   widgets/contactview.cpp
-   widgets/presence.cpp
    widgets/directoryview.cpp
-   widgets/autocompletion.cpp
    widgets/menumodelview.cpp
-   widgets/toolbuttonmodelview.cpp
-   widgets/personselector.cpp
-   widgets/contactmethodselector.cpp
    widgets/accountstatusviewer.cpp
    widgets/autocombobox.cpp
    widgets/categorizedtree.cpp
@@ -289,7 +274,6 @@ SET(
 IF(NOT (${ENABLE_VIDEO} MATCHES false))
    SET(
       ring_kde_VIDEO
-      widgets/videosettings.cpp
       conf/dlgvideo.cpp
    )
 ENDIF(NOT (${ENABLE_VIDEO} MATCHES false))
@@ -297,18 +281,12 @@ ENDIF(NOT (${ENABLE_VIDEO} MATCHES false))
 SET(
    ring_kde_SRCS
    main.cpp
-   view.cpp
-   phonewindow.cpp
-   timelinewindow.cpp
-   fancymainwindow.cpp
    cmd.cpp
-   dock.cpp
-   notification.cpp
    notification.cpp
    ringapplication.cpp
    errormessage.cpp
-   canvasobjectmanager.cpp
-   eventmanager.cpp
+#    canvasobjectmanager.cpp
+#    eventmanager.cpp
    actioncollection.cpp
    implementation.cpp
    model/extendedprotocolmodel.cpp
@@ -358,18 +336,7 @@ SET(
    conf/accountpages/ringtone.ui
    conf/accountpages/security.ui
    conf/accountpages/tabs.ui
-   widgets/ui/personselector.ui
-   widgets/ui/contactmethodselector.ui
-   widgets/ui/player.ui
-   widgets/ui/playeroverlay.ui
-   widgets/ui/contactdock.ui
    widgets/ui/directoryview.ui
-   widgets/ui/transfer.ui
-   widgets/ui/presence.ui
-   widgets/ui/videodevicesetting.ui
-   widgets/ui/screensharingwidget.ui
-   widgets/ui/welcome.ui
-   widgets/ui/share.ui
    widgets/ui/accountcreator.ui
    widgets/ui/fileselect.ui
    configurator/peerprofile.ui
@@ -395,7 +362,6 @@ IF(${DISABLE_UNIQUE_APPLICATION} MATCHES true)
    ADD_DEFINITIONS( -DDISABLE_UNIQUE_APPLICATION=true )
 ENDIF(${DISABLE_UNIQUE_APPLICATION} MATCHES true)
 
-ki18n_wrap_ui(ring_kde_SRCS ui/View_base.ui  ${config_ui_files}  )
 ki18n_wrap_ui(ring_kde_SRCS ${config_ui_files} )
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
@@ -433,10 +399,12 @@ TARGET_LINK_LIBRARIES(ring-kde
   libkring
   libwizard
   libcallview
+  dialview
   libtimeline
   libphotoselector
   libcanvasindicator
-  tip
+  desktopview
+  contactview
   libqmlwidgets
 
   # Qt5
@@ -459,6 +427,7 @@ TARGET_LINK_LIBRARIES(ring-kde
   KF5::NotifyConfig
   KF5::GlobalAccel
   KF5::Declarative
+  KF5::Kirigami2
 )
 
 IF (Qt5TextToSpeech_FOUND)

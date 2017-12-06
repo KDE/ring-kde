@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/">
+        <file alias="DialView.qml">qml/dialview.qml</file>
+        <file alias="DialPad.qml">qml/dialpad.qml</file>
+        <file alias="CallList.qml">qml/calllist.qml</file>
+        <file alias="CallDelegate.qml">qml/calldelegate.qml</file>
+        <file alias="CallDelegateItem.qml">qml/calldelegateitem.qml</file>
+        <file alias="AddCall.qml">qml/addcall.qml</file>
+        <file alias="MergeCall.qml">qml/mergecall.qml</file>
+    </qresource>
+</RCC>

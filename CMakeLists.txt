@@ -113,7 +113,6 @@ FIND_PACKAGE(KF5 "${KF5_DEP_VERSION}" REQUIRED COMPONENTS
   GuiAddons
   DBusAddons
   I18n
-  Init
   WindowSystem
   XmlGui
   Notifications
@@ -122,6 +121,7 @@ FIND_PACKAGE(KF5 "${KF5_DEP_VERSION}" REQUIRED COMPONENTS
   NotifyConfig
   GlobalAccel
   Declarative
+  Kirigami2
 )
 
 FIND_PACKAGE(KF5 "${AKO_DEP_VERSION}" QUIET COMPONENTS
@@ -137,7 +137,6 @@ ENDIF()
 
 INCLUDE( ${CMAKE_ROOT}/Modules/CheckIncludeFiles.cmake  )
 # INCLUDE( ${QT_USE_FILE}   )
-ADD_SUBDIRECTORY( lib  )
 ADD_SUBDIRECTORY( data )
 ADD_SUBDIRECTORY( src  )
 ADD_SUBDIRECTORY( man  )

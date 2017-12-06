@@ -16,11 +16,11 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
 import QtQuick 2.7
-import QtQuick.Controls 1.4
-import QtQuick.Controls 2.0 as Controls2
+import QtQuick.Controls 2.0
 import Ring 1.0
 import QtQuick.Layouts 1.0
 import QtGraphicalEffects 1.0
+import org.kde.kirigami 2.2 as Kirigami
 
 import RingQmlWidgets 1.0
 
@@ -49,10 +49,12 @@ Rectangle {
 
     Component {
         id: contactDelegate
-        ContactMethodDelegate {
-            height: 4*fontMetrics.height
-            pixmapHeight: 4*fontMetrics.height - 4
-        }
+        ContactMethodDelegate {}
+    }
+
+    Component {
+        id: sectionDelegate
+        PeersTimelineCategories {}
     }
 
     // To allow multiple places to set the contact method without knowing
@@ -83,14 +85,16 @@ Rectangle {
     ColumnLayout {
         anchors.fill: parent
 
-        Controls2.TextField {
+        TextField {
             id: search
             Layout.fillWidth: true
             placeholderText: i18n("Find someone")
+            text: CallModel.hasDialingCall ?
+                CallModel.dialingCall().dialNumber : ""
+
             onTextChanged: {
                 var call = CallModel.dialingCall()
                 call.dialNumber = search.text
-                CompletionModel.call = call
             }
             Keys.onDownPressed: {
                 searchView.currentIndex = (searchView.currentIndex == searchView.count - 1) ?
@@ -141,14 +145,30 @@ Rectangle {
                 }
             }
 
-            ListView {
+            QuickListView {
                 id: recentView
                 clip: true
                 anchors.fill: parent
-                highlightMoveVelocity: Infinity //HACK
+//                 highlightMoveVelocity: Infinity //HACK
                 delegate: contactDelegate
-                highlight: Rectangle {
-                    color: activePalette.highlight
+                section.delegate: sectionDelegate
+                section.property: "formattedLastUsed" // indexedLastUsed
+                section.model: PeersTimelineModel.timelineSummaryModel
+                highlight: Item {
+
+                    anchors.topMargin: 5
+                    anchors.bottomMargin: 5
+                    anchors.leftMargin: 30
+                    anchors.rightMargin: 40
+                    Rectangle {
+                        anchors.fill: parent
+                        anchors.topMargin: 5
+                        anchors.bottomMargin: 5
+                        anchors.leftMargin: 30
+                        anchors.rightMargin: 40
+                        radius: 10
+                        color: activePalette.highlight
+                    }
                 }
                 model: PeersTimelineModel.deduplicatedTimelineModel
 
@@ -225,7 +245,7 @@ Rectangle {
 
                 Rectangle {
                     anchors.fill: parent
-                    color: "black"
+                    color: inactivePalette.highlight
                     opacity: 0.75
                 }
             }
@@ -234,6 +254,7 @@ Rectangle {
                 id: searchView
                 visible: false
                 anchors.fill: parent
+                z: 99999999
             }
         }
     }
@@ -267,6 +288,14 @@ Rectangle {
 
     onHeightChanged: {
         scrollBar.handleHeight = recentDock.height * (recentDock.height/(recentView.count*50))
+    }
+
+    Connections {
+        target: CallModel
+        onDialNumberChanged: {
+                search.text = CallModel.hasDialingCall ?
+                    CallModel.dialingCall().dialNumber : ""
+        }
     }
 
     // Timeline scrollbar

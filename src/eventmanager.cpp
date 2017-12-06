@@ -48,54 +48,6 @@
 #include "widgets/callviewoverlay.h"
 #include "widgets/autocompletion.h"
 
-bool EventManager::m_HasFocus = false;
-
-//This code detect if the window is active, innactive or minimzed
-class PhoneWindowEvent final : public QObject {
-   Q_OBJECT
-public:
-   PhoneWindowEvent(EventManager* ev) : QObject(ev),m_pParent(ev) {
-      QTimer::singleShot(0, [this]() {
-         PhoneWindow::app()->installEventFilter(this);
-      });
-   }
-protected:
-   virtual bool eventFilter(QObject *obj, QEvent *event)  override {
-      Q_UNUSED(obj)
-      if (event->type() == QEvent::WindowStateChange) {
-         QWindowStateChangeEvent* e = static_cast<QWindowStateChangeEvent*>(event);
-         switch (PhoneWindow::app()->windowState()) {
-            case Qt::WindowMinimized:
-               emit minimized(true);
-               break;
-            case Qt::WindowActive:
-               qDebug() << "The window is now active";
-               [[clang::fallthrough]];
-            case Qt::WindowNoState:
-            default:
-               if (e->oldState() == Qt::WindowMinimized)
-                  emit minimized(false);
-               break;
-         };
-      }
-      else if (event->type() == QEvent::KeyPress) {
-         m_pParent->viewKeyEvent(static_cast<QKeyEvent*>(event));
-      }
-      else if (event->type() == QEvent::WindowDeactivate) {
-         m_pParent->m_HasFocus = false;
-      }
-      else if (event->type() == QEvent::WindowActivate) {
-         m_pParent->m_HasFocus = true;
-      }
-      return false;
-   }
-
-private:
-   EventManager* m_pParent;
-
-Q_SIGNALS:
-   void minimized(bool);
-};
 
 ///Constructor
 EventManager::EventManager(View* parent): QObject(parent),m_pParent(parent),m_pPhoneWindowEv(new PhoneWindowEvent(this))
@@ -184,9 +136,9 @@ bool EventManager::viewDropEvent(QDropEvent* e)
       //1) Get the right action
       const QPoint position = e->pos();
       const QRect targetRect = m_pParent->m_pView->visualRect(idxAt);
-      Call::DropAction act = (position.x() < targetRect.x()+targetRect.width()/2)?Call::DropAction::Conference:Call::DropAction::Transfer;
+      RingMimes::Actions act = (position.x() < targetRect.x()+targetRect.width()/2)? RingMimes::Actions::JOIN: RingMimes::Actions::TRANSFER;
       QMimeData* data = (QMimeData*)e->mimeData(); //Drop the const
-      data->setProperty("dropAction",act);
+      data->setProperty("dropAction", RingMimes::toActionName(act));
 
       //2) Send to the model for processing
       m_pParent->m_pView->model()->dropMimeData(data,Qt::MoveAction,idxAt.row(),idxAt.column(),idxAt.parent());
@@ -257,8 +209,8 @@ bool EventManager::viewDragMoveEvent(const QDragMoveEvent* e)
    Call* source = nullptr;
    if (isCall)
       source = CallModel::instance().fromMime(e->mimeData()->data(RingMimes::CALLID));
-   Call::DropAction act = (position.x() < targetRect.x()+targetRect.width()/2)?Call::DropAction::Conference:Call::DropAction::Transfer;
-   CallModel::instance().setData(idxAt,act,static_cast<int>(Call::Role::DropPosition));
+   RingMimes::Actions act = (position.x() < targetRect.x()+targetRect.width()/2)? RingMimes::Actions::JOIN : RingMimes::Actions::TRANSFER;
+   CallModel::instance().setData(idxAt, RingMimes::toActionName(act),static_cast<int>(Call::Role::DropPosition));
    if ((!isCall) || CallModel::instance().getIndex(source) != idxAt)
       m_pParent->m_pView->setHoverState(idxAt);
    else

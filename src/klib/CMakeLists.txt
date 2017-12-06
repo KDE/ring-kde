@@ -37,7 +37,6 @@ FIND_PACKAGE(KF5 REQUIRED COMPONENTS
   Config
   GuiAddons
   I18n
-  Init
   WindowSystem
   WidgetsAddons
   XmlGui

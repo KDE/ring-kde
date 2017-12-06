@@ -1,7 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>qtquickcontrols2.conf</file>
-
         <file alias="CallView.qml">qml/callview.qml</file>
         <file alias="PersistentCallControls.qml">qml/persistentcallcontrols.qml</file>
         <file alias="VideoWidget.qml">qml/videowidget.qml</file>

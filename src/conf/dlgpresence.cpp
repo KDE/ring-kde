@@ -25,8 +25,6 @@
 
 //Ring
 #include <presencestatusmodel.h>
-#include "tip/tipmanager.h"
-#include "tip/tip.h"
 
 DlgPresence::DlgPresence(QWidget *parent) : QWidget(parent),m_Changed(false)
 {
@@ -46,20 +44,10 @@ DlgPresence::DlgPresence(QWidget *parent) : QWidget(parent),m_Changed(false)
       }*/
    }
 
-   //Add an info tip in the account list
-   m_pTipManager = new TipManager(m_pView);
-   m_pTip = new Tip(i18n("In this table, it is possible to manage different presence states. "
-   "The \"Message\" and \"Present\" values will be exported to the server for every accounts that support it. "
-   "The other fields are designed to make presence status management easier. Please note that some SIP registrar "
-   "have incomplete presence status (publishing) support."),this);
-   m_pTip->setMaximumWidth(510);
-   m_pTipManager->setCurrentTip(m_pTip);
 }
 
 DlgPresence::~DlgPresence()
 {
-   delete m_pTipManager;
-   delete m_pTip;
 }
 
 void DlgPresence::updateWidgets()

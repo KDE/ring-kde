@@ -30,6 +30,7 @@
       <Menu name="Settings" >
          <text>Settings</text>
          <Action name="action_show_wizard" />
+         <Action name="action_show_menu" />
          <Separator />
          <Action name="action_configureShortcut" />
          <Action name="action_configureNotifications" />
@@ -37,7 +38,4 @@
          <Action name="action_configureRing" />
       </Menu>
    </MenuBar>
-   <ToolBar name="mainToolBar" iconText="textbesideicon" position="Top" noMerge="1" fullWidth="false" newline="true" >
-      <Action name="action_new_contact" />
-   </ToolBar>
 </gui>

@@ -23,11 +23,22 @@ import RingQmlWidgets 1.0
 
 Item {
     id: componentItem
+
+    property bool showAccount: AccountModel.hasAmbiguousAccounts
+    property bool showPhoto: true
+    property bool showControls: true
+    property bool showSeparator: true
+    property var  textColor: ListView.isCurrentItem ?
+                        activePalette.highlightedText : activePalette.text
+    property var  altTextColor: ListView.isCurrentItem ?
+                        activePalette.highlightedText : inactivePalette.text
+
     width: parent.width
     height: getHeight()
 
     function getHeight() {
-        return 4*labelHeight + 16 + (temporary ? buttonHeight : 0)
+        var rowCount = 2 + (showAccount ? 2 : 0)
+        return rowCount*labelHeight + 16 + ((showControls && temporary) ? buttonHeight : 0)
     }
 
     property QtObject contactMethod: object
@@ -42,25 +53,11 @@ Item {
     RowLayout {
         anchors.margins: 3
         anchors.fill: parent
-        Item {
-            anchors.top: parent.top
-            anchors.left: parent.left
-            anchors.topMargin: 2
-            anchors.leftMargin: 2
-            height: Math.min(46, 4*componentItem.labelHeight + 12)
+        PixmapWrapper {
+            visible: componentItem.showPhoto
+            height:  Math.min(46, 4*componentItem.labelHeight + 12)
             width:  Math.min(46, 4*componentItem.labelHeight + 12)
-
-            Rectangle {
-                radius: 5
-                color: "white"
-                opacity: 0.05
-                anchors.fill: parent
-            }
-
-            PixmapWrapper {
-                anchors.fill: parent
-                pixmap: decoration
-            }
+            pixmap: decoration
         }
 
         ColumnLayout {
@@ -71,12 +68,13 @@ Item {
                     Layout.fillWidth: true
                     text: display
                     font.bold: true
-                    color: "white"
+                    color: textColor
                 }
                 Text {
+                    visible: componentItem.showPhoto
                     anchors.rightMargin: 5
                     text: formattedLastUsed
-                    color: "gray"
+                    color: altTextColor
                 }
                 Item {
                     width: 2
@@ -91,12 +89,12 @@ Item {
                 }
                 Text {
                     text: categoryName+"  "
-                    color: "gray"
+                    color: altTextColor
                 }
                 Text {
                     Layout.fillWidth: true
                     text: uri
-                    color: "white"
+                    color: textColor
                 }
             }
             RowLayout {
@@ -116,7 +114,7 @@ Item {
                     color: activePalette.highlight
                     radius: 99
                     height: componentItem.labelHeight + 4
-                    visible: accountAlias != ""
+                    visible: componentItem.showAccount && accountAlias != ""
                     width: accTextMetrics.width + 32
                     Text {
                         id: accountAliasText
@@ -128,60 +126,65 @@ Item {
                     }
                 }
             }
-            RowLayout {
-                visible: temporary
-                height: componentItem.buttonHeight
+            Loader {
+                active:  componentItem.showControls && temporary
+                visible: componentItem.showControls && temporary
+                height:  componentItem.buttonHeight
                 Layout.preferredHeight: componentItem.buttonHeight
                 Layout.fillWidth: true
-                Rectangle {
-                    id: contactRequestButton
-                    anchors.margins: 3
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    color: "transparent"
-                    radius: 5
-                    border.width: 1
-                    border.color: "white"
-                    opacity: 0.8
-                    Behavior on color {
-                        ColorAnimation {duration:100}
-                    }
-                    Text {
-                        anchors.centerIn: parent
-                        text: "Send request"
-                        color: "white"
-                    }
-                    MouseArea {
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        onContainsMouseChanged: {
-                            contactRequestButton.color = containsMouse ? "#55ffffff" : "transparent"
+
+                sourceComponent: RowLayout {
+                    anchors.fill: parent
+                    Rectangle {
+                        id: contactRequestButton
+                        anchors.margins: 3
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        color: "transparent"
+                        radius: 5
+                        border.width: 1
+                        border.color: textColor
+                        opacity: 0.8
+                        Behavior on color {
+                            ColorAnimation {duration:100}
+                        }
+                        Text {
+                            anchors.centerIn: parent
+                            text: "Send request"
+                            color: textColor
+                        }
+                        MouseArea {
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            onContainsMouseChanged: {
+                                contactRequestButton.color = containsMouse ? "#55ffffff" : "transparent"
+                            }
                         }
                     }
-                }
-                Rectangle {
-                    id: callButton
-                    anchors.margins: 3
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    color: "transparent"
-                    radius: 5
-                    border.width: 1
-                    border.color: "white"
-                    opacity: 0.8
-                    Behavior on color {
-                        ColorAnimation {duration:100}
-                    }
-                    Text {
-                        anchors.centerIn: parent
-                        text: "Call"
-                        color: "white"
-                    }
-                    MouseArea {
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        onContainsMouseChanged: {
-                            callButton.color = containsMouse ? "#55ffffff" : "transparent"
+                    Rectangle {
+                        id: callButton
+                        anchors.margins: 3
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        color: "transparent"
+                        radius: 5
+                        border.width: 1
+                        border.color: textColor
+                        opacity: 0.8
+                        Behavior on color {
+                            ColorAnimation {duration:100}
+                        }
+                        Text {
+                            anchors.centerIn: parent
+                            text: "Call"
+                            color: textColor
+                        }
+                        MouseArea {
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            onContainsMouseChanged: {
+                                callButton.color = containsMouse ? "#55ffffff" : "transparent"
+                            }
                         }
                     }
                 }
@@ -194,11 +197,13 @@ Item {
 
 
     Rectangle {
+        visible: componentItem.showSeparator
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 3
         width: parent.width
         height: 1
-        color: "gray"
+        color: ListView.isCurrentItem ?
+                        activePalette.highlightedText : inactivePalette.text
         opacity: 0.7
     }
 

@@ -44,7 +44,7 @@ void WelcomeDialog::show()
       QStringLiteral("WelcomeDialog"), this
    );
 
-   RingApplication::engine()->load(QUrl(QStringLiteral("qrc:/main.qml")));
+   RingApplication::engine()->load(QUrl(QStringLiteral("qrc:/Wizard.qml")));
 
 }
 

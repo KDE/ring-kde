@@ -20,8 +20,7 @@
 #include <QtCore/QObject>
 #include <QtCore/QModelIndex>
 
-class ContactMethod;
-
+class QItemSelectionModel;
 class TreeHelperPrivate;
 
 class TreeHelper : public QObject
@@ -29,12 +28,32 @@ class TreeHelper : public QObject
     Q_OBJECT
 
 public:
+    Q_PROPERTY(QAbstractItemModel* model READ model WRITE setModel)
+    Q_PROPERTY(QItemSelectionModel* selectionModel READ selectionModel WRITE setSelectionModel)
+    Q_PROPERTY(int currentIndex READ currentListIndex NOTIFY selectListIndex)
+
     Q_INVOKABLE explicit TreeHelper(QObject* parent = nullptr);
     virtual ~TreeHelper();
 
     Q_INVOKABLE QModelIndex getIndex(int row, const QModelIndex& parent);
     Q_INVOKABLE bool setData(const QModelIndex& index, const QVariant& data, const QString& roleName);
 
+    Q_INVOKABLE QVariant mimeData(const QModelIndex& parent, int row) const;
+    Q_INVOKABLE bool dropMimeData(const QVariant& dragEvent, const QModelIndex& parent, int row);
+    Q_INVOKABLE bool dropMimeData2(const QVariant& dragEvent, const QModelIndex& parent, int row);
+
+    QAbstractItemModel* model() const;
+    void setModel(QAbstractItemModel* model);
+
+    QItemSelectionModel* selectionModel() const;
+    void setSelectionModel(QItemSelectionModel* sm);
+
+    Q_INVOKABLE bool selectNext();
+    Q_INVOKABLE bool selectPrevious();
+    int currentListIndex() const;
+
+Q_SIGNALS:
+    void selectListIndex(int index);
 private:
     TreeHelperPrivate* d_ptr;
     Q_DECLARE_PRIVATE(TreeHelper)

@@ -27,8 +27,9 @@ class QActionGroup;
 class QAction;
 
 // Ring
-class FancyMainWindow;
+class KXmlGuiWindow;
 class PhoneWindow;
+class KActionCollection;
 
 ///Group action declaration under the same umbrella
 class ActionCollection : public QObject {
@@ -36,11 +37,53 @@ class ActionCollection : public QObject {
 public:
 
    //Constructor
-   explicit ActionCollection(FancyMainWindow* parent = nullptr);
+   explicit ActionCollection(QObject* parent = nullptr);
    virtual ~ActionCollection();
    static ActionCollection* instance();
-   void setupAction(FancyMainWindow* mw);
+   void setupAction();
    void setupPhoneAction(PhoneWindow* mw);
+
+   Q_PROPERTY(QAction* holdAction                  READ holdAction                  CONSTANT)
+   Q_PROPERTY(QAction* recordAction                READ recordAction                CONSTANT)
+   Q_PROPERTY(QAction* muteCaptureAction           READ muteCaptureAction           CONSTANT)
+   Q_PROPERTY(QAction* mutePlaybackAction          READ mutePlaybackAction          CONSTANT)
+   Q_PROPERTY(QAction* hangupAction                READ hangupAction                CONSTANT)
+   Q_PROPERTY(QAction* transferAction              READ transferAction              CONSTANT)
+   Q_PROPERTY(QAction* acceptAction                READ acceptAction                CONSTANT)
+   Q_PROPERTY(QAction* newCallAction               READ newCallAction               CONSTANT)
+   Q_PROPERTY(QAction* displayVolumeControlsAction READ displayVolumeControlsAction CONSTANT)
+   Q_PROPERTY(QAction* displayDialpadAction        READ displayDialpadAction        CONSTANT)
+   Q_PROPERTY(QAction* displayAccountCbbAction     READ displayAccountCbbAction     CONSTANT)
+   Q_PROPERTY(QAction* showContactDockAction       READ showContactDockAction       CONSTANT)
+   Q_PROPERTY(QAction* showHistoryDockAction       READ showHistoryDockAction       CONSTANT)
+   Q_PROPERTY(QAction* showTimelineDockAction      READ showTimelineDockAction      CONSTANT)
+   Q_PROPERTY(QAction* showDialDockAction          READ showDialDockAction          CONSTANT)
+   Q_PROPERTY(QAction* showBookmarkDockAction      READ showBookmarkDockAction      CONSTANT)
+   Q_PROPERTY(QAction* quitAction                  READ quitAction                  CONSTANT)
+   Q_PROPERTY(QAction* addPerson                   READ addPerson                   CONSTANT)
+   Q_PROPERTY(QAction* focusHistory                READ focusHistory                CONSTANT)
+   Q_PROPERTY(QAction* focusContact                READ focusContact                CONSTANT)
+   Q_PROPERTY(QAction* focusCall                   READ focusCall                   CONSTANT)
+   Q_PROPERTY(QAction* focusBookmark               READ focusBookmark               CONSTANT)
+   Q_PROPERTY(QAction* showWizard                  READ showWizard                  CONSTANT)
+   Q_PROPERTY(QAction* showMenu                    READ showMenu                    CONSTANT)
+   Q_PROPERTY(QAction* newContact                  READ newContact                  CONSTANT)
+   Q_PROPERTY(QAction* configureRing               READ configureRing               CONSTANT)
+   Q_PROPERTY(QAction* configureShortcut           READ configureShortcut           CONSTANT)
+   Q_PROPERTY(QAction* configureNotification       READ configureNotification       CONSTANT)
+   #ifdef ENABLE_VIDEO
+   Q_PROPERTY(QAction* videoRotateLeftAction     READ videoRotateLeftAction     CONSTANT)
+   Q_PROPERTY(QAction* videoRotateRightAction    READ videoRotateRightAction    CONSTANT)
+   Q_PROPERTY(QAction* videoFlipHorizontalAction READ videoFlipHorizontalAction CONSTANT)
+   Q_PROPERTY(QAction* videoFlipVerticalAction   READ videoFlipVerticalAction   CONSTANT)
+   Q_PROPERTY(QAction* videoMuteAction           READ videoMuteAction           CONSTANT)
+   Q_PROPERTY(QAction* videoPreviewAction        READ videoPreviewAction        CONSTANT)
+   Q_PROPERTY(QAction* vimw2deoScaleAction          READ videoScaleAction          CONSTANT)
+   Q_PROPERTY(QAction* videoFullscreenAction     READ videoFullscreenAction     CONSTANT)
+   #endif
+
+   Q_PROPERTY(QObject* fakeMainWindow READ fakeMainWindow CONSTANT)
+   Q_PROPERTY(QObject* kactionCollection READ kactionCollection CONSTANT)
 
    //Actions
    QAction* holdAction                  ();
@@ -57,6 +100,8 @@ public:
    QAction* showContactDockAction       ();
    QAction* showHistoryDockAction       ();
    QAction* showBookmarkDockAction      ();
+   QAction* showTimelineDockAction      ();
+   QAction* showDialDockAction          ();
    QAction* quitAction                  ();
    QAction* addPerson                   ();
    QAction* focusHistory                ();
@@ -64,7 +109,11 @@ public:
    QAction* focusCall                   ();
    QAction* focusBookmark               ();
    QAction* showWizard                  ();
+   QAction* showMenu                    ();
    QAction* newContact                  ();
+   QAction* configureRing               ();
+   QAction* configureShortcut           ();
+   QAction* configureNotification       ();
 
    //Video actions
    #ifdef ENABLE_VIDEO
@@ -131,6 +180,8 @@ private:
    QAction * action_showContactDock        {nullptr};
    QAction * action_showHistoryDock        {nullptr};
    QAction * action_showBookmarkDock       {nullptr};
+   QAction * action_showTimelineDock       {nullptr};
+   QAction * action_showDialDock           {nullptr};
    QAction * action_editToolBar            {nullptr};
    QAction * action_addPerson              {nullptr};
    QAction * action_raise_client           {nullptr};
@@ -140,10 +191,14 @@ private:
    QAction * action_focus_bookmark         {nullptr};
    QAction * action_show_wizard            {nullptr};
    QAction * action_show_directory         {nullptr};
+   QAction * action_show_menu              {nullptr};
+
+   QObject* fakeMainWindow() const;
+   QObject* kactionCollection() const;
 
 public Q_SLOTS:
-   void configureRing         ();
-   void raiseClient           ( bool focus = false );
+   void slotConfigureRing         ();
+   void slotRaiseClient           ( bool focus = false );
 
 private Q_SLOTS:
    void showShortCutEditor    ();
@@ -154,6 +209,7 @@ private Q_SLOTS:
    void updateRecordButton    ();
    void updateVolumeButton    ();
    void slotNewContact        ();
+   void slotShowMenubar       (bool s);
 
 Q_SIGNALS:
    void windowStateChanged();

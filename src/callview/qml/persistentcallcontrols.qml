@@ -62,7 +62,7 @@ Item {
                 }
                 Text {
                     font.bold: true
-                    text: lenght
+                    text: length
                     color: activePalette.text
                 }
                 Text {

@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file alias="PendingRequest.qml">qml/pendingrequest.qml</file>
+        <file alias="ContactList.qml">qml/contactlist.qml</file>
+    </qresource>
+</RCC>

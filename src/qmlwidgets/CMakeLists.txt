@@ -34,7 +34,6 @@ FIND_PACKAGE(Qt5 CONFIG REQUIRED
 
 FIND_PACKAGE(KF5 REQUIRED COMPONENTS
     I18n
-    Init
     Config
     ConfigWidgets
 )
@@ -55,14 +54,20 @@ SET( libqmlwidgets_LIB_SRCS
     personiconengine.cpp
     pixmapwrapper.cpp
     treehelper.cpp
-    treeview.cpp
     simpleflickable.cpp
+    hierarchyview.cpp
+    treeview2.cpp
+    quicktreeview.cpp
+    quicklistview.cpp
+    flickableview.cpp
     modelscrolladapter.cpp
     multicall.cpp
     bindedcombobox.cpp
     recentfilemodel.cpp
     snapshotadapter.cpp
     timelinedots.cpp
+    qmlaction.cpp
+    qactionbinder.cpp
 )
 
 ADD_LIBRARY( libqmlwidgets  STATIC ${libqmlwidgets_LIB_SRCS} )
@@ -80,6 +85,7 @@ target_link_libraries( libqmlwidgets
     KF5::ConfigCore
     KF5::ConfigGui
     KF5::ConfigWidgets
+    KF5::XmlGui
 )
 
 SET( libqmlwidgets_LIB_HDRS

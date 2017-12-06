@@ -18,13 +18,14 @@
  **************************************************************************/
 import QtQuick 2.0
 import Ring 1.0
+import QtQuick.Layouts 1.0
 
 import RingQmlWidgets 1.0
 
 Rectangle {
     id: toolbar
     color: "#55000000"
-    height: 60
+    height: actionGrid.contentHeight
     width:parent.width
     y:parent.height-toolbar.height -10
     z: 100
@@ -75,9 +76,11 @@ Rectangle {
 
 
         Item {
+            id: mainArea
             width:  actionGrid.cellWidth
             height: actionGrid.cellHeight
             Rectangle {
+                id: background
                 color:  mouseArea.containsMouse ? "#CC333333" : selectColor(action)
                 radius: 99 // circle
                 anchors.leftMargin: 5
@@ -86,14 +89,28 @@ Rectangle {
                 border.width:  mouseArea.containsMouse ? 3 : 0
                 border.color: "#dd5555"
 
-                Column {
-                    width: parent.width
-                    anchors.verticalCenter: parent.verticalCenter
+                RowLayout {
+                    anchors.margins: 15
+                    anchors.fill: parent
                     PixmapWrapper {
-                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.verticalCenter: parent.verticalCenter
                         pixmap: decoration
-                        height: 30
                         width:  30
+                        height:  30
+                    }
+                    Text {
+                        id: label
+                        text: display
+                        visible: false
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                        color: activePalette.text
+                        font.bold: true
+
+                        anchors.leftMargin: 10
+                        Layout.fillHeight: true
+                        Layout.fillWidth: true
+                        anchors.verticalCenter: parent.verticalCenter
                     }
                 }
 
@@ -120,6 +137,60 @@ Rectangle {
                 Behavior on border.width {
                     NumberAnimation {duration: 200}
                 }
+
+                StateGroup {
+                    id: stateGroup
+                    states: [
+                        State {
+                            name: ""
+                            when: actionGrid.count > 2 || actionGrid.count == 0
+                            PropertyChanges {
+                                target: background
+                                radius: 99
+                            }
+                            PropertyChanges {
+                                target: mainArea
+                                width: 70
+                            }
+                            PropertyChanges {
+                                target: label
+                                visible: false
+                            }
+                        },
+                        State {
+                            name: "single"
+                            when: actionGrid.count == 1
+                            PropertyChanges {
+                                target: background
+                                radius: 5
+                            }
+                            PropertyChanges {
+                                target: mainArea
+                                width: (toolbar.width/1)
+                            }
+                            PropertyChanges {
+                                target: label
+                                visible: true
+                            }
+                        },
+                        State {
+                            name: "two"
+                            when: actionGrid.count == 2
+                            PropertyChanges {
+                                target: background
+                                radius: 5
+                            }
+                            PropertyChanges {
+                                target: mainArea
+                                width: (toolbar.width/2)
+                            }
+                            PropertyChanges {
+                                target: label
+                                visible: true
+                            }
+                        }
+                    ]
+                }
             }
         }
     }
@@ -130,6 +201,36 @@ Rectangle {
         model: CallModel.userActionModel.activeActionModel
         delegate: actionDelegate
         cellWidth: 70; cellHeight: 60
+
+        StateGroup {
+            id: stateGroup
+            states: [
+                State {
+                    name: ""
+                    when: actionGrid.count > 2 || actionGrid.count == 0
+                    PropertyChanges {
+                        target: actionGrid
+                        cellWidth: 70
+                    }
+                },
+                State {
+                    name: "single2"
+                    when: actionGrid.count == 1
+                    PropertyChanges {
+                        target: actionGrid
+                        cellWidth: (toolbar.width/1)
+                    }
+                },
+                State {
+                    name: "two2"
+                    when: actionGrid.count == 2
+                    PropertyChanges {
+                        target: actionGrid
+                        cellWidth: (toolbar.width/2)
+                    }
+                }
+            ]
+        }
     }
 
     // Hide the label when the mouse is out

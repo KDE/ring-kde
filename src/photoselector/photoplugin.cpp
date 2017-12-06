@@ -24,6 +24,10 @@
 
 #include <qrc_photoselector.cpp>
 
+PhotoSelectorPlugin::PhotoSelectorPlugin(QObject* parent) : QObject(parent)
+{
+}
+
 void PhotoSelectorPlugin::registerTypes(const char *uri)
 {
     Q_ASSERT(uri == QLatin1String("PhotoSelectorPlugin"));
