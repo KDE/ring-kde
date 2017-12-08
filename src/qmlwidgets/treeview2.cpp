@@ -19,6 +19,8 @@
 
 #include <QtCore/QTimer>
 
+#include <functional>
+
 /*
  * Design:
  *
