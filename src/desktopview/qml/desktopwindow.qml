@@ -111,6 +111,9 @@ Kirigami.ApplicationWindow {
                 anchors.fill: parent
                 sourceComponent: ContactList {
                     anchors.fill: parent
+                    onContactMethodSelected: {
+                        mainPage.setContactMethod(cm)
+                    }
                 }
             }
         }

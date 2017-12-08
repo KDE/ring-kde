@@ -14,6 +14,7 @@ SET(GENERIC_LIB_VERSION "1.0.0")
 SET( contactview_LIB_SRCS
    contactviewplugin.cpp
    mainpage.cpp
+   contactphoto.cpp
 )
 
 QT5_ADD_RESOURCES(contactview_LIB_SRCS
@@ -27,4 +28,5 @@ target_link_libraries( contactview
     Qt5::Gui
     Qt5::Quick
     Qt5::QuickControls2
+    KF5::ConfigWidgets
 )

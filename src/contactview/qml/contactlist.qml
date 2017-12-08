@@ -17,12 +17,14 @@
  **************************************************************************/
 import QtQuick 2.7
 import QtQuick.Layouts 1.0
+import QtQuick.Controls 2.0
 import QtQml.Models 2.2
 import RingQmlWidgets 1.0
 import Ring 1.0
 
 Item {
     id: contactList
+    signal contactMethodSelected(var cm)
 
     SystemPalette {
         id: inactivePalette
@@ -34,22 +36,80 @@ Item {
         colorGroup: SystemPalette.Active
     }
 
+    FontMetrics {
+        id: fontMetrics
+    }
+
     Rectangle {
         color: activePalette.base
         anchors.fill: parent
+
+        TextField {
+            id: search
+            Layout.fillWidth: true
+            placeholderText: i18n("Find someone")
+            width: parent.width
+        }
+
+        ListView {
+            id: sorting
+            height: 32
+            width: parent.width
+            model: ContactCategoryModel
+            anchors.top: search.bottom
+            orientation: ListView.Horizontal
+            delegate: MouseArea {
+                height: 32
+                width: content.implicitWidth + 10
+                Text {
+                    id: content
+                    text: display
+                    color:activePalette.text
+                    font.bold: true
+                    anchors.centerIn: parent
+                }
+                onClicked: {
+                    sorting.currentIndex = index
+                }
+            }
+
+            highlightFollowsCurrentItem: true
+
+            highlight: Item {
+                height: 32
+                width: 15
+                Rectangle {
+                    height: 4
+                    color:activePalette.highlight
+                    width:15
+                    y: parent.height/2 + fontMetrics.height/2 + 3
+                    anchors.horizontalCenter: parent.horizontalCenter
+                }
+            }
+        }
+
         QuickTreeView {
             id: treeView
+            anchors.top: sorting.bottom
+            anchors.bottom: parent.bottom
+            width: parent.width
 
             function selectItem(index) {
                 treeView.currentIndex = index
             }
 
-            anchors.fill: parent
             rawModel: SortedContactModel
             delegate: masterComponent
 
-            highlight: Rectangle {
-                color: activePalette.highlight
+            highlight: Item {
+                Rectangle {
+                    anchors.fill: parent
+                    anchors.margins: 5
+                    anchors.leftMargin: 10
+                    anchors.rightMargin: 10
+                    radius: 5
+                    color: activePalette.highlight
+                }
             }
 
             Component {
@@ -78,51 +138,8 @@ Item {
 
                     Component {
                         id: contactComponent
-                        Item {
-                            width: contactList.width
-                            height: 56 + rowCount*(displayNameLabel.implicitHeight+4)
-                            RowLayout {
-                                anchors.topMargin: 5
-                                anchors.bottomMargin: 5
-                                anchors.fill: parent
-                                Item {
-                                    width:  56
-                                    height: 56
-                                    anchors.verticalCenter: parent.verticalCenter
-                                    PixmapWrapper {
-                                        anchors.fill: parent
-                                        anchors.margins: 5
-                                        pixmap: decoration
-                                    }
-                                }
-                                ColumnLayout {
-                                    Layout.fillHeight: true
-                                    Layout.fillWidth: true
-                                    Text {
-                                        Layout.fillWidth: true
-                                        id: displayNameLabel
-                                        text: display
-                                        color: activePalette.text
-                                        font.bold: true
-                                    }
-                                    Text {
-                                        Layout.fillWidth: true
-                                        visible: rowCount == 0
-                                        color: inactivePalette.text
-                                        text: "TODO"
-                                    }
-                                    Item {
-                                        Layout.fillHeight: true
-                                    }
-                                }
-                            }
+                        ContactCard {
 
-                            MouseArea {
-                                anchors.fill: parent
-                                onClicked: {
-                                    treeView.selectItem(modelIndex)
-                                }
-                            }
                         }
                     }
 

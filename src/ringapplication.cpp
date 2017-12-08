@@ -495,6 +495,11 @@ QQmlApplicationEngine* RingApplication::engine()
             CategorizedContactModel::SortedProxy::instance().model()
          );
 
+         RingApplication::engine()->rootContext()->setContextProperty(
+            QStringLiteral("ContactCategoryModel"),
+            CategorizedContactModel::SortedProxy::instance().categoryModel()
+         );
+
          auto completionModel = new NumberCompletionModel();
 
          RingApplication::engine()->rootContext()->setContextProperty(

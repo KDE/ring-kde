@@ -15,17 +15,39 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#include "contactviewplugin.h"
+#pragma once
 
-#include <QtCore/QDebug>
+#include <QQuickPaintedItem>
 
-#include "mainpage.h"
-#include "contactphoto.h"
+class ContactMethod;
+class Person;
 
-#include <qrc_contactview.cpp>
+class ContactPhotoPrivate;
 
-void ContactView::registerTypes(const char * uri)
+/**
+ * This widget paints the contact with various built-in attributes:
+ *
+ *  * The photo (if any)
+ *  * The presence status
+ */
+class ContactPhoto : public QQuickPaintedItem
 {
-    qmlRegisterType<MainPage>(uri, 1, 0, "MainPage");
-    qmlRegisterType<ContactPhoto>(uri, 1, 0, "ContactPhoto");
-}
+    Q_OBJECT
+public:
+    Q_PROPERTY(ContactMethod* contactMethod READ contactMethod WRITE setContactMethod)
+    Q_PROPERTY(Person* person READ person WRITE setPerson)
+
+    explicit ContactPhoto(QQuickItem* parent = nullptr);
+    virtual ~ContactPhoto();
+
+    virtual void paint(QPainter *painter) override;
+
+    ContactMethod* contactMethod() const;
+    void setContactMethod(ContactMethod* cm);
+
+    Person* person() const;
+    void setPerson(Person* p);
+
+private:
+    ContactPhotoPrivate* d_ptr;
+};
