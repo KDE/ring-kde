@@ -154,7 +154,7 @@ Rectangle {
                     property bool selected: ListView.isCurrentItem
                     height: searchDelegate.height
                     width: callDelegateItem.width - 20
-                    color: selected ? activePalette.text : "transparent"
+                    color: selected ? activePalette.highlight : "transparent"
                     border.width: 1
                     border.color: activePalette.text
                     radius: 5

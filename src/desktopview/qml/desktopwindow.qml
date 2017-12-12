@@ -26,6 +26,9 @@ import ContactView 1.0
 Kirigami.ApplicationWindow {
     id: root
 
+    width: 1024
+    height: 768
+
     globalDrawer: Kirigami.GlobalDrawer {
         title: "Ring KDE client"
         titleIcon: "ring-kde"

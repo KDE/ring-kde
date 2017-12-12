@@ -333,24 +333,6 @@ int RingApplication::newInstance()
    static bool displayWizard  = ConfigurationSkeleton::enableWizard() || ConfigurationSkeleton::showSplash();
    const  bool displayOnStart = ConfigurationSkeleton::displayOnStart() && !startIconified();
 
-   // The first run wizard
-   if (displayOnStart && displayWizard) {
-      // Also add this object
-      engine()->rootContext()->setContextProperty(
-         QStringLiteral("RingApplication"), this
-      );
-
-      engine()->rootContext()->setContextProperty(
-         QStringLiteral("wizardWelcomeOnly"), QVariant(!ConfigurationSkeleton::enableWizard())
-      );
-
-      auto wiz = new WelcomeDialog();
-      wiz->show();
-      ConfigurationSkeleton::setEnableWizard(false);
-      displayWizard = false;
-      return 0;
-   }
-
    static bool init = true;
    //Only call on the first instance
    if (init) {
@@ -369,6 +351,24 @@ int RingApplication::newInstance()
 //       }
 //       else
          desktopWindow();
+   }
+
+   // The first run wizard
+   if (displayOnStart && displayWizard) {
+      // Also add this object
+      engine()->rootContext()->setContextProperty(
+         QStringLiteral("RingApplication"), this
+      );
+
+      engine()->rootContext()->setContextProperty(
+         QStringLiteral("wizardWelcomeOnly"), QVariant(!ConfigurationSkeleton::enableWizard())
+      );
+
+      auto wiz = new WelcomeDialog();
+      wiz->show();
+      ConfigurationSkeleton::setEnableWizard(false);
+      displayWizard = false;
+      return 0;
    }
 
    return 0;
