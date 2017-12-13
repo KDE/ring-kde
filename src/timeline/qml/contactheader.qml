@@ -32,6 +32,7 @@ Rectangle {
     property var cachedPhoto: undefined
 
     signal selectChat()
+    signal selectVideo()
 
     onCurrentContactMethodChanged: {
         primaryName.text = currentContactMethod.primaryName
@@ -153,6 +154,12 @@ Rectangle {
                     text: i18n("Call")
                     onClicked: {
                         if (currentContactMethod == null) return
+
+                        if (currentContactMethod.hasInitCall) {
+                            contactHeader.selectVideo()
+                            return
+                        }
+
                         CallModel.dialingCall(currentContactMethod)
                             .performAction(Call.ACCEPT)
                     }
@@ -163,6 +170,12 @@ Rectangle {
                     text: i18n("Video")
                     onClicked: {
                         if (currentContactMethod == null) return
+
+                        if (currentContactMethod.hasInitCall) {
+                            contactHeader.selectVideo()
+                            return
+                        }
+
                         CallModel.dialingCall(currentContactMethod)
                             .performAction(Call.ACCEPT)
                     }
@@ -172,6 +185,12 @@ Rectangle {
                     text: i18n("Screen sharing")
                     onClicked: {
                         if (currentContactMethod == null) return
+
+                        if (currentContactMethod.hasInitCall) {
+                            contactHeader.selectVideo()
+                            return
+                        }
+
                         CallModel.dialingCall(currentContactMethod)
                             .performAction(Call.ACCEPT)
                     }

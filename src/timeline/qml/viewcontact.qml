@@ -145,6 +145,10 @@ Rectangle {
             onSelectChat: {
                 tabBar.currentIndex = 2
             }
+
+            onSelectVideo: {
+                tabBar.currentIndex = 1
+            }
         }
 
         TabBar {
@@ -201,14 +205,29 @@ Rectangle {
                     mode: "CONVERSATION"
                     anchors.fill: parent
                     onCallWithAudio: {
+                        if (currentContactMethod.hasInitCall) {
+                            contactHeader.selectVideo()
+                            return
+                        }
+
                         CallModel.dialingCall(currentContactMethod)
                             .performAction(Call.ACCEPT)
                     }
                     onCallWithVideo: {
+                        if (currentContactMethod.hasInitCall) {
+                            contactHeader.selectVideo()
+                            return
+                        }
+
                         CallModel.dialingCall(currentContactMethod)
                             .performAction(Call.ACCEPT)
                     }
                     onCallWithScreen: {
+                        if (currentContactMethod.hasInitCall) {
+                            contactHeader.selectVideo()
+                            return
+                        }
+
                         CallModel.dialingCall(currentContactMethod)
                             .performAction(Call.ACCEPT)
                     }
