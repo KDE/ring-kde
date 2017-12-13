@@ -130,6 +130,9 @@ Kirigami.ApplicationWindow {
                 anchors.fill: parent
                 sourceComponent: DialView {
                     anchors.fill: parent
+                    onSelectCall: {
+                        mainPage.showVideo(call)
+                    }
                 }
             }
             Loader {

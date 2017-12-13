@@ -80,6 +80,7 @@ MainPage::MainPage(QQuickItem* parent) :
     RingApplication::engine()->rootContext()->setContextProperty(QStringLiteral("ActiveCallProxyModel"), cp);
 
     connect(this, &QQuickItem::windowChanged, d_ptr, &MainPagePrivate::slotWindowChanged);
+    connect(&CallModel::instance(), &CallModel::callAttentionRequest, this, &MainPage::showVideo);
 
     installEventFilter(this);
 
@@ -206,6 +207,12 @@ void MainPagePrivate::slotWindowChanged()
 
     auto anchors = qvariant_cast<QObject*>(m_pItem->property("anchors"));
     anchors->setProperty("fill", QVariant::fromValue(q_ptr));
+}
+
+void MainPage::showVideo(Call* c)
+{
+    setContactMethod(c->peerContactMethod());
+    QMetaObject::invokeMethod(d_ptr->m_pItem, "showVideo");
 }
 
 #include <mainpage.moc>

@@ -22,6 +22,7 @@
 class MainPagePrivate;
 class ContactMethod;
 class Person;
+class Call;
 
 class MainPage : public QQuickItem
 {
@@ -49,6 +50,7 @@ protected:
 public Q_SLOTS:
     void setContactMethod(ContactMethod* cm);
     void setPerson(Person* p);
+    void showVideo(Call* c);
 
 private:
     MainPagePrivate* d_ptr;

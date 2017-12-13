@@ -26,6 +26,10 @@ Rectangle {
     property var currentPerson: null
     property string currentPage: ""
 
+    function showVideo() {
+        tabBar.currentIndex = 1
+    }
+
     clip: true
 
     SystemPalette {
@@ -136,6 +140,10 @@ Rectangle {
             textColor: activePalette.text
             onCachedPhotoChanged: {
                 contactInfo.cachedPhoto = contactHeader.cachedPhoto
+            }
+
+            onSelectChat: {
+                tabBar.currentIndex = 2
             }
         }
 

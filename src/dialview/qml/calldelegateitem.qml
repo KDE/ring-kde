@@ -122,6 +122,7 @@ Rectangle {
         onClicked: {
             mouse.accepted = true
             CallModel.selectedCall = object
+            dialView.selectCall(object)
         }
         drag.target: callDelegateItem
     }

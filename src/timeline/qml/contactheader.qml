@@ -31,6 +31,8 @@ Rectangle {
     property var textColor: undefined
     property var cachedPhoto: undefined
 
+    signal selectChat()
+
     onCurrentContactMethodChanged: {
         primaryName.text = currentContactMethod.primaryName
 
@@ -172,6 +174,15 @@ Rectangle {
                         if (currentContactMethod == null) return
                         CallModel.dialingCall(currentContactMethod)
                             .performAction(Call.ACCEPT)
+                    }
+                }
+
+                Button {
+                    text: i18n("Chat")
+                    onClicked: {
+                        if (currentContactMethod == null) return
+
+                        contactHeader.selectChat()
                     }
                 }
             }

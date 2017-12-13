@@ -27,6 +27,8 @@ FocusScope {
     focus: true
     anchors.fill: parent
 
+    signal selectCall(Call call)
+
     SystemPalette {
         id: inactivePalette
         colorGroup: SystemPalette.Disabled
@@ -101,6 +103,8 @@ FocusScope {
             return
 
         CallModel.selectedCall = nextCall
+
+        dialView.selectCall(nextCall)
     }
 
     function selectNext(call) {
@@ -120,6 +124,8 @@ FocusScope {
             return
 
         CallModel.selectedCall = nextCall
+
+        dialView.selectCall(nextCall)
     }
 
     Keys.onPressed: {
