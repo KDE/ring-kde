@@ -37,13 +37,15 @@ Item {
     height: getHeight()
 
     function getHeight() {
-        var rowCount = 2 + (showAccount ? 2 : 0)
-        return rowCount*labelHeight + 16 + ((showControls && temporary) ? buttonHeight : 0)
+        var rowCount = 2 + (showAccount ? 2 : 1) + (supportsRegistry ? 1 : 0)
+        var controlHeight = (showControls && temporary) ? buttonHeight : 0
+
+        return rowCount*(fontMetrics.height+2) + 16 + controlHeight
     }
 
     property QtObject contactMethod: object
     property double buttonHeight: 30
-    property double labelHeight: 30
+    property double labelHeight: fontMetrics.height*2
 
     TextMetrics {
         id: accTextMetrics
@@ -64,6 +66,7 @@ Item {
             Layout.fillWidth: true
             Layout.fillHeight: true
             RowLayout {
+                spacing: 2
                 Text {
                     Layout.fillWidth: true
                     text: display
