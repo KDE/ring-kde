@@ -23,6 +23,7 @@
 #include <QQmlContext>
 #include <QQmlApplicationEngine>
 #include <QtGui/QGuiApplication>
+#include <QQuickWindow>
 
 #include <../ringapplication.h>
 
@@ -44,8 +45,10 @@ void WelcomeDialog::show()
       QStringLiteral("WelcomeDialog"), this
    );
 
-   RingApplication::engine()->load(QUrl(QStringLiteral("qrc:/Wizard.qml")));
+//    RingApplication::engine()->load(QUrl(QStringLiteral("qrc:/Wizard.qml")));
 
+
+   QMetaObject::invokeMethod(RingApplication::instance()->desktopWindow(), "showWizard");
 }
 
 QString WelcomeDialog::defaultUserName() const

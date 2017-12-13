@@ -19,14 +19,10 @@ import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
 
-ApplicationWindow {
+Rectangle {
     id: applicationWindow
     visible: true
-    title: i18n("Ring-KDE wizard")
     color: "#004d61"
-    flags: Qt.Dialog
-    height: 720
-    width: 1024
 
     property string previousState: ""
 
@@ -48,8 +44,7 @@ ApplicationWindow {
         }
 
         onQuit: {
-            applicationWindow.close()
-            RingApplication.newInstance()
+            applicationWindow.visible = false
         }
     }
 
@@ -94,8 +89,7 @@ ApplicationWindow {
     Connections {
         target: footer.skipButton
         onClicked: {
-            applicationWindow.close()
-            RingApplication.newInstance()
+            applicationWindow.visible = false
         }
     }
 
@@ -139,8 +133,7 @@ ApplicationWindow {
                 break;
             case 'showProfile':
                 frontPage.profilePage.save()
-                applicationWindow.close()
-                RingApplication.newInstance()
+                applicationWindow.visible = false
                 break;
             }
         }
@@ -183,8 +176,7 @@ ApplicationWindow {
         repeat: false
         running: wizardWelcomeOnly
         onTriggered: {
-            applicationWindow.close()
-            RingApplication.newInstance()
+            applicationWindow.visible = false
         }
     }
 

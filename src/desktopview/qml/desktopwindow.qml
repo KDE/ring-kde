@@ -29,6 +29,12 @@ Kirigami.ApplicationWindow {
     width: 1024
     height: 768
 
+    function showWizard() {
+        globalDrawer.drawerOpen = false
+        wizardLoader.visible    = true
+        wizardLoader.active     = true
+    }
+
     globalDrawer: Kirigami.GlobalDrawer {
         title: "Ring KDE client"
         titleIcon: "ring-kde"
@@ -70,6 +76,24 @@ Kirigami.ApplicationWindow {
 
         handleVisible: true
         drawerOpen: false
+    }
+
+    Loader {
+        id: wizardLoader
+        active: false
+        anchors.fill: parent
+        z: 999999
+        visible: false
+        sourceComponent: Wizard {
+            anchors.fill: parent
+            z: 999999
+            onVisibleChanged: {
+                if (!visible) {
+                    wizardLoader.visible = false
+                    wizardLoader.active = false
+                }
+            }
+        }
     }
 
     QActionBinder {

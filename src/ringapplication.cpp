@@ -364,8 +364,7 @@ int RingApplication::newInstance()
          QStringLiteral("wizardWelcomeOnly"), QVariant(!ConfigurationSkeleton::enableWizard())
       );
 
-      auto wiz = new WelcomeDialog();
-      wiz->show();
+      showWizard();
       ConfigurationSkeleton::setEnableWizard(false);
       displayWizard = false;
       return 0;
