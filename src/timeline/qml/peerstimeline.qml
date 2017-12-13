@@ -93,8 +93,11 @@ Rectangle {
                 CallModel.dialingCall().dialNumber : ""
 
             onTextChanged: {
+                // Cache the text to avoid a binding loop when the dialing call
+                // is created for the first time
+                var text = search.text
                 var call = CallModel.dialingCall()
-                call.dialNumber = search.text
+                call.dialNumber = text
             }
             Keys.onDownPressed: {
                 searchView.currentIndex = (searchView.currentIndex == searchView.count - 1) ?
@@ -293,8 +296,8 @@ Rectangle {
     Connections {
         target: CallModel
         onDialNumberChanged: {
-                search.text = CallModel.hasDialingCall ?
-                    CallModel.dialingCall().dialNumber : ""
+            search.text = CallModel.hasDialingCall ?
+                CallModel.dialingCall().dialNumber : ""
         }
     }
 

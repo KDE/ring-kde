@@ -97,6 +97,9 @@ FocusScope {
 
         var nextCall = CallModel.getCall(directPrev)
 
+        if (!nextCall)
+            return
+
         CallModel.selectedCall = nextCall
     }
 
@@ -112,6 +115,10 @@ FocusScope {
         var directPrev = CallModel.index(idx.row+1, 0, idx.parent)
 
         var nextCall = CallModel.getCall(directPrev)
+
+        if (!nextCall)
+            return
+
         CallModel.selectedCall = nextCall
     }
 

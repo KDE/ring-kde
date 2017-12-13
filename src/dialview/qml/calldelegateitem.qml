@@ -154,9 +154,9 @@ Rectangle {
                     property bool selected: ListView.isCurrentItem
                     height: searchDelegate.height
                     width: callDelegateItem.width - 20
-                    color: selected ? activePalette.highlight : "transparent"
+                    color: selected ? activePalette.highlightedText : "transparent"
                     border.width: 1
-                    border.color: activePalette.text
+                    border.color: activePalette.highlightedText
                     radius: 5
                     clip: true
                     SearchDelegate {
@@ -174,13 +174,7 @@ Rectangle {
                 }
 
                 onCountChanged: {
-                    height = Math.min(4, count)*(3*fontMetrics.height+10)
-                    callDelegateItem.height = content.implicitHeight +
-                        Math.min(4, count)*(3*fontMetrics.height+10) + 10
-                }
-
-                Component.onCompleted: {
-                    height = Math.min(4, count)*(3*fontMetrics.height+10)
+                    completionLoader.height = Math.min(4, count)*(3*fontMetrics.height+10)
                     callDelegateItem.height = content.implicitHeight +
                         Math.min(4, count)*(3*fontMetrics.height+10) + 10
                 }
@@ -196,13 +190,14 @@ Rectangle {
                 when: selected && object.state == Call.DIALING
                 PropertyChanges {
                     target: callDelegateItem
-                    height: content.implicitHeight + 240
+                    height: content.implicitHeight +
+                        Math.min(4, count)*(3*fontMetrics.height+10) + 10
                 }
                 PropertyChanges {
                     target: completionLoader
                     active: true
                     opacity: 1
-                    height: 200
+                    height: Math.min(4, count)*(3*fontMetrics.height+10) + 10
                 }
             }
         ]

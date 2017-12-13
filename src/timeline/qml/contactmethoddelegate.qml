@@ -23,7 +23,7 @@ import RingQmlWidgets 1.0
 
 Item {
     id: componentItem
-    width: parent.width
+    width: parent != undefined ? parent.width : undefined
     height: computeHeight()
 
     property bool hasMessage: hasActiveCall || unreadTextMessageCount > 0 || isRecording || hasActiveVideo

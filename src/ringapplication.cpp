@@ -448,6 +448,7 @@ QQmlApplicationEngine* RingApplication::engine()
 
       QML_CRTYPE( PeersTimelineSelectionModel )
       QML_CRTYPE( NumberCompletionModel       )
+      QML_CRTYPE( QItemSelectionModel         )
 
       e = new QQmlApplicationEngine(QGuiApplication::instance());
 

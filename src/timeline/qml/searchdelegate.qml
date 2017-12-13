@@ -104,7 +104,7 @@ Item {
                         "green"  : (nameStatus == NumberCompletionModel.IN_PROGRESS ?
                         "yellow" :
                         "red")
-                    visible: temporary
+                    visible: supportsRegistry
                     text: nameStatusString
                 }
                 Item {

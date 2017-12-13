@@ -31,6 +31,7 @@
 
 #include <../ringapplication.h>
 #include "peerstimelinemodel.h"
+#include "phonedirectorymodel.h"
 #include <contactmethod.h>
 #include <person.h>
 #include <call.h>
@@ -119,6 +120,11 @@ void MainPage::setContactMethod(ContactMethod* cm)
 {
     if ((!cm) || (!d_ptr->m_pItem))
         return;
+
+    if (cm->type() == ContactMethod::Type::TEMPORARY)
+        cm = PhoneDirectoryModel::instance().fromTemporary(
+            static_cast<TemporaryContactMethod*>(cm)
+        );
 
     // Keep a reference for 5 minutes to avoid double free from QML
     for (auto ptr : {d_ptr->m_PersomCMModel, d_ptr->m_CallsModel, d_ptr->m_TimelineModel})

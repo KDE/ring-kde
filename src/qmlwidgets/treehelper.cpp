@@ -31,6 +31,7 @@ public:
     static QHash<const QAbstractItemModel*, QHash<QString, int>> m_shRoleNameMapper;
     QAbstractItemModel* m_pModel {nullptr};
     QItemSelectionModel* m_pSelectionModel {nullptr};
+    bool m_KeepSelected {false};
 
     TreeHelper* q_ptr;
 
@@ -191,8 +192,13 @@ bool TreeHelper::selectNext()
 
     auto cur = d_ptr->m_pSelectionModel->currentIndex();
 
+    auto newIdx = d_ptr->m_pSelectionModel->model()->index(cur.row()+1, 0);
+
+    if (d_ptr->m_KeepSelected && !newIdx.isValid())
+        return false;
+
     d_ptr->m_pSelectionModel->setCurrentIndex(
-        d_ptr->m_pSelectionModel->model()->index(cur.row()+1, 0),
+        newIdx,
         QItemSelectionModel::ClearAndSelect
     );
 
@@ -206,8 +212,13 @@ bool TreeHelper::selectPrevious()
 
     auto cur = d_ptr->m_pSelectionModel->currentIndex();
 
+    auto newIdx = d_ptr->m_pSelectionModel->model()->index(cur.row()-1, 0);
+
+    if (d_ptr->m_KeepSelected && !newIdx.isValid())
+        return false;
+
     d_ptr->m_pSelectionModel->setCurrentIndex(
-        d_ptr->m_pSelectionModel->model()->index(cur.row()-1, 0),
+        newIdx,
         QItemSelectionModel::ClearAndSelect
     );
 
@@ -224,5 +235,7 @@ void TreeHelperPrivate::slotCurrentSelectionChanged()
 {
     Q_EMIT q_ptr->selectListIndex(m_pSelectionModel->currentIndex().row());
 }
+
+Q_DECLARE_METATYPE(QItemSelectionModel*)
 
 #include <treehelper.moc>
