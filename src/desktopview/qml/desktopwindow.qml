@@ -128,4 +128,8 @@ Kirigami.ApplicationWindow {
         }
 
     }
+
+    onClosing: {
+        ActionCollection.quitAction.trigger()
+    }
 }
