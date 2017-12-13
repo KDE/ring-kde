@@ -97,16 +97,11 @@ Item {
             }
         }
 
-        Rectangle {
+        PixmapWrapper {
             width: 50
             height: 50
-            color: "gray"
-            radius: 5
             visible: direction == 0
-            PixmapWrapper {
-                anchors.fill: parent
-                pixmap: decoration
-            }
+            pixmap: decoration
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 20
         }
