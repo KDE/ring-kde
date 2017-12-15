@@ -65,7 +65,7 @@ public:
     virtual bool refresh() override;
     virtual bool move   () override;
     virtual bool flush  () override;
-    virtual bool detach () override;
+    virtual bool remove () override;
 
     QQuickItem*           m_pItem    {nullptr};
     QQmlContext*          m_pContent {nullptr};
@@ -400,7 +400,7 @@ bool QuickListViewItem::flush()
     return true;
 }
 
-bool QuickListViewItem::detach()
+bool QuickListViewItem::remove()
 {
     if (m_pSection && --m_pSection->m_RefCount <= 0) {
         if (m_pSection->m_pPrevious) {

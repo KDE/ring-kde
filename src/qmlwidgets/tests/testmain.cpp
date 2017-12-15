@@ -83,6 +83,7 @@ int main(int argc, char **argv)
 
     // Remove
     DO(removeRoot);
+    DO(resetModel);
 
     int count = 0;
 

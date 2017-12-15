@@ -352,3 +352,10 @@ void ModelViewTester::removeRoot()
 
     endRemoveRows();
 }
+
+void ModelViewTester::resetModel()
+{
+    beginResetModel();
+    m_pRoot->m_lChildren.clear();
+    endResetModel();
+}

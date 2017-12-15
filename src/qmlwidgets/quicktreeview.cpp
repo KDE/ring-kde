@@ -40,7 +40,7 @@ public:
     virtual bool refresh() override;
     virtual bool move   () override;
     virtual bool flush  () override;
-    virtual bool detach () override;
+    virtual bool remove () override;
 
     virtual void setSelected(bool s) final override;
     virtual QRectF geometry() const final override;
@@ -197,7 +197,7 @@ bool QuickTreeViewItem::flush()
     return true;
 }
 
-bool QuickTreeViewItem::detach()
+bool QuickTreeViewItem::remove()
 {
     m_pItem->setParent(nullptr);
     m_pItem->setParentItem(nullptr);
@@ -207,9 +207,16 @@ bool QuickTreeViewItem::detach()
     auto prevElem = static_cast<QuickTreeViewItem*>(previous());
 
     if (nextElem) {
-        Q_ASSERT(prevElem && !m_IsHead); //TODO
-        auto anchors = qvariant_cast<QObject*>(nextElem->m_pItem->property("anchors"));
-        anchors->setProperty("top", prevElem->m_pItem->property("bottom"));
+        if (m_IsHead) {
+            auto anchors = qvariant_cast<QObject*>(nextElem->m_pItem->property("anchors"));
+            anchors->setProperty("top", {});
+            m_pItem->setY(0);
+            nextElem->m_IsHead = true;
+        }
+        else { //TODO maybe eventually use a state machine for this
+            auto anchors = qvariant_cast<QObject*>(nextElem->m_pItem->property("anchors"));
+            anchors->setProperty("top", prevElem->m_pItem->property("bottom"));
+        }
     }
 
     return true;

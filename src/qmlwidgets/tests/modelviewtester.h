@@ -63,6 +63,7 @@ public Q_SLOTS:
     void insertChild();
 
     void removeRoot();
+    void resetModel();
 
 private:
     ModelViewTesterItem* m_pRoot;

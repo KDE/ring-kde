@@ -48,6 +48,7 @@ public:
     virtual ~VisualTreeItem() {}
 
     enum class State {
+        POOLING , /*!< Being currently removed from view                      */
         POOLED  , /*!< Not currently in use, either new or waiting for re-use */
         BUFFER  , /*!< Not currently on screen, pre-loaded for performance    */
         ACTIVE  , /*!< Visible                                                */
@@ -74,7 +75,9 @@ public:
     virtual bool refresh() = 0;
     virtual bool move   () = 0;
     virtual bool flush  () = 0;
-    virtual bool detach () = 0;
+    virtual bool remove () = 0;
+
+    bool detach();
 
 private:
     enum class Action { //TODO make this private to TreeView2Private
@@ -92,8 +95,8 @@ private:
     TreeTraversalItems* m_pParent {nullptr};
     mutable QSharedPointer<VisualTreeItem> m_pSelf;
 
-    static const State  m_fStateMap    [6][7];
-    static const StateF m_fStateMachine[6][7];
+    static const State  m_fStateMap    [7][7];
+    static const StateF m_fStateMachine[7][7];
 
     bool performAction(Action);
 

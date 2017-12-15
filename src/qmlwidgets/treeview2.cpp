@@ -60,20 +60,22 @@ public:
  * go back into FAILED once the self-healing itself failed.
  */
 #define S VisualTreeItem::State::
-const VisualTreeItem::State VisualTreeItem::m_fStateMap[6][7] = {
+const VisualTreeItem::State VisualTreeItem::m_fStateMap[7][7] = {
 /*              ATTACH ENTER_BUFFER ENTER_VIEW UPDATE    MOVE   LEAVE_BUFFER  DETACH  */
-/*POOLED  */ { S POOLED, S BUFFER, S ERROR , S ERROR , S ERROR , S ERROR , S DANGLING },
-/*BUFFER  */ { S ERROR , S ERROR , S ACTIVE, S BUFFER, S ERROR , S POOLED, S DANGLING },
-/*ACTIVE  */ { S ERROR , S BUFFER, S ERROR , S ACTIVE, S ACTIVE, S POOLED, S DANGLING },
-/*FAILED  */ { S ERROR , S BUFFER, S ACTIVE, S ACTIVE, S ACTIVE, S POOLED, S DANGLING },
-/*DANGLING*/ { S ERROR , S ERROR , S ERROR , S ERROR , S ERROR , S ERROR , S DANGLING },
-/*ERROR   */ { S ERROR , S ERROR , S ERROR , S ERROR , S ERROR , S ERROR , S DANGLING },
+/*POOLING */ { S POOLING, S BUFFER, S ERROR , S ERROR , S ERROR , S ERROR  , S DANGLING },
+/*POOLED  */ { S POOLED , S BUFFER, S ERROR , S ERROR , S ERROR , S ERROR  , S DANGLING },
+/*BUFFER  */ { S ERROR  , S ERROR , S ACTIVE, S BUFFER, S ERROR , S POOLING, S DANGLING },
+/*ACTIVE  */ { S ERROR  , S BUFFER, S ERROR , S ACTIVE, S ACTIVE, S POOLING, S POOLING  },
+/*FAILED  */ { S ERROR  , S BUFFER, S ACTIVE, S ACTIVE, S ACTIVE, S POOLING, S DANGLING },
+/*DANGLING*/ { S ERROR  , S ERROR , S ERROR , S ERROR , S ERROR , S ERROR  , S DANGLING },
+/*ERROR   */ { S ERROR  , S ERROR , S ERROR , S ERROR , S ERROR , S ERROR  , S DANGLING },
 };
 #undef S
 
 #define A &VisualTreeItem::
-const VisualTreeItem::StateF VisualTreeItem::m_fStateMachine[6][7] = {
+const VisualTreeItem::StateF VisualTreeItem::m_fStateMachine[7][7] = {
 /*             ATTACH  ENTER_BUFFER  ENTER_VIEW   UPDATE     MOVE   LEAVE_BUFFER  DETACH  */
+/*POOLING */ { A error  , A error  , A error  , A error  , A error  , A error  , A error   },
 /*POOLED  */ { A nothing, A attach , A error  , A error  , A error  , A error  , A destroy },
 /*BUFFER  */ { A error  , A error  , A move   , A refresh, A error  , A detach , A destroy },
 /*ACTIVE  */ { A error  , A nothing, A error  , A refresh, A move   , A detach , A detach  },
@@ -223,7 +225,6 @@ public:
     bool isActive(const QModelIndex& parent, int first, int last);
     void initTree(const QModelIndex& parent);
     TreeTraversalItems* addChildren(TreeTraversalItems* parent, const QModelIndex& index);
-    void cleanup();
     void bridgeGap(TreeTraversalItems* first, TreeTraversalItems* second, bool insert = false);
     void bridgeGap(VisualTreeItem* first, VisualTreeItem* second, bool insert = false);
     void createGap(VisualTreeItem* first, VisualTreeItem* last  );
@@ -242,6 +243,7 @@ private:
     bool error       () __attribute__ ((noreturn));
 
 public Q_SLOTS:
+    void cleanup();
     void slotRowsInserted  (const QModelIndex& parent, int first, int last);
     void slotRowsRemoved   (const QModelIndex& parent, int first, int last);
     void slotLayoutChanged (                                              );
@@ -296,8 +298,12 @@ void TreeView2::setModel(QSharedPointer<QAbstractItemModel> m)
             &TreeView2Private::slotRowsInserted);
         disconnect(model().data(), &QAbstractItemModel::rowsRemoved, d_ptr,
             &TreeView2Private::slotRowsRemoved);
+        disconnect(model().data(), &QAbstractItemModel::layoutAboutToBeChanged, d_ptr,
+            &TreeView2Private::cleanup);
         disconnect(model().data(), &QAbstractItemModel::layoutChanged, d_ptr,
             &TreeView2Private::slotLayoutChanged);
+        disconnect(model().data(), &QAbstractItemModel::modelAboutToBeReset, d_ptr,
+            &TreeView2Private::cleanup);
         disconnect(model().data(), &QAbstractItemModel::modelReset, d_ptr,
             &TreeView2Private::slotLayoutChanged);
         disconnect(model().data(), &QAbstractItemModel::rowsAboutToBeMoved, d_ptr,
@@ -317,10 +323,14 @@ void TreeView2::setModel(QSharedPointer<QAbstractItemModel> m)
         &TreeView2Private::slotRowsInserted );
     connect(model().data(), &QAbstractItemModel::rowsRemoved, d_ptr,
         &TreeView2Private::slotRowsRemoved  );
+    connect(model().data(), &QAbstractItemModel::layoutAboutToBeChanged, d_ptr,
+        &TreeView2Private::cleanup);
     connect(model().data(), &QAbstractItemModel::layoutChanged, d_ptr,
-        &TreeView2Private::slotLayoutChanged  );
+        &TreeView2Private::slotLayoutChanged);
+    connect(model().data(), &QAbstractItemModel::modelAboutToBeReset, d_ptr,
+        &TreeView2Private::cleanup);
     connect(model().data(), &QAbstractItemModel::modelReset, d_ptr,
-        &TreeView2Private::slotLayoutChanged  );
+        &TreeView2Private::slotLayoutChanged);
     connect(model().data(), &QAbstractItemModel::rowsAboutToBeMoved, d_ptr,
         &TreeView2Private::slotRowsMoved);
     connect(model().data(), &QAbstractItemModel::rowsMoved, d_ptr,
@@ -474,26 +484,11 @@ void TreeView2Private::initTree(const QModelIndex& parent)
 
 void TreeView2Private::cleanup()
 {
-    //TODO remove the leaks, use the state machine
-
-    std::function<void(TreeTraversalItems*)>* deleter;
-    std::function<void(TreeTraversalItems*)> del = [this, &deleter](TreeTraversalItems* item) {
-        for (auto i = item->m_hLookup.constBegin(); i != item->m_hLookup.constEnd(); i++) {
-            TreeTraversalItems* child = i.value();
-            Q_ASSERT(child); // Check is null were inserted in the cache
-            (*deleter)(child);
-            child->m_pTreeItem->performAction(VisualTreeItem::Action::LEAVE_BUFFER);
-            child->performAction(TreeTraversalItems::Action::DETACH);
-        }
-        item->m_hLookup.clear();
-    };
-    deleter = &del;
-
-    (*deleter)(m_pRoot);
+    m_pRoot->performAction(TreeTraversalItems::Action::DETACH);
 
     m_hMapper.clear();
-    m_pRoot->m_pFirstChild = nullptr;
-    m_pRoot->m_pLastChild  = nullptr;
+    m_pRoot = new TreeTraversalItems(nullptr, this);
+    m_FailedCount = 0;
 }
 
 FlickableView::ModelIndexItem* TreeView2::itemForIndex(const QModelIndex& idx) const
@@ -774,19 +769,11 @@ void TreeView2Private::slotRowsRemoved(const QModelIndex& parent, int first, int
         Q_ASSERT(elem);
 
         elem->performAction(TreeTraversalItems::Action::DETACH);
-
-        pitem->m_hLookup.remove(idx);
     }
-
-    if (prev || next)
-        bridgeGap(prev, next);
-    else
-        Q_ASSERT(false); //TODO
 }
 
 void TreeView2Private::slotLayoutChanged()
 {
-    cleanup();
 
     if (auto rc = q_ptr->model()->rowCount())
         slotRowsInserted({}, 0, rc - 1);
@@ -1018,7 +1005,11 @@ void TreeView2Private::slotRowsMoved(const QModelIndex &parent, int start, int e
     if (oldParentTTI != newParentTTI) {
         for (auto i = startVI; i; i = i->m_pParent->m_pNext ? i->m_pParent->m_pNext->m_pTreeItem : nullptr) {
             auto idx = i->index();
+
+            const int size = oldParentTTI->m_hLookup.size();
             oldParentTTI->m_hLookup.remove(idx);
+            Q_ASSERT(oldParentTTI->m_hLookup.size() == size-1);
+
             newParentTTI->m_hLookup[idx] = i->m_pParent;
             i->m_pParent->m_pParent = newParentTTI;
             if (i == endVI)
@@ -1161,6 +1152,14 @@ QModelIndex VisualTreeItem::index() const
  */
 VisualTreeItem* VisualTreeItem::previous() const
 {
+    Q_ASSERT(m_State == State::ACTIVE
+        || m_State == State::BUFFER
+        || m_State == State::FAILED
+        || m_State == State::POOLING
+        || m_State == State::DANGLING //FIXME add a new state for
+        // "deletion in progress" or swap the f call and set state
+    );
+
     TreeTraversalItems* ret = nullptr;
 
     // Another simple case, there is no parent
@@ -1178,7 +1177,7 @@ VisualTreeItem* VisualTreeItem::previous() const
 
         // This is the root, there is no previous element
         if (!m_pParent->m_pParent->m_pTreeItem) {
-            Q_ASSERT(!index().parent().isValid());
+            //Q_ASSERT(!index().parent().isValid()); //Happens when reseting models
             return nullptr;
         }
 
@@ -1195,14 +1194,16 @@ VisualTreeItem* VisualTreeItem::previous() const
 
 sanitize:
 
+    Q_ASSERT((!ret) || ret->m_pTreeItem);
+
     // Recursively look for a valid element. Doing this here allows the views
     // that implement this (abstract) class to work without having to always
     // check if some of their item failed to load. This is non-fatal in the
     // other Qt views, so it isn't fatal here either.
-    if (ret->m_pTreeItem->m_State == VisualTreeItem::State::FAILED)
+    if (ret && ret->m_pTreeItem->m_State == VisualTreeItem::State::FAILED)
         return ret->m_pTreeItem->previous();
 
-    return ret->m_pTreeItem;
+    return ret ? ret->m_pTreeItem : nullptr;
 }
 
 /**
@@ -1212,6 +1213,14 @@ sanitize:
  */
 VisualTreeItem* VisualTreeItem::next() const
 {
+    Q_ASSERT(m_State == State::ACTIVE
+        || m_State == State::BUFFER
+        || m_State == State::FAILED
+        || m_State == State::POOLING
+        || m_State == State::DANGLING //FIXME add a new state for
+        // "deletion in progress" or swap the f call and set state
+    );
+
     VisualTreeItem* ret = nullptr;
     auto i = m_pParent;
 
@@ -1323,18 +1332,58 @@ bool TreeTraversalItems::attach()
     return performAction(Action::SHOW); //FIXME don't
 }
 
+// This methodwrap the removal of the element from the view
+bool VisualTreeItem::detach()
+{
+    remove();
+    m_State = VisualTreeItem::State::POOLED;
+
+    return true;
+}
+
 bool TreeTraversalItems::detach()
 {
+    // First, detach any remaining children
+    auto i = m_hLookup.begin();
+    while ((i = m_hLookup.begin()) != m_hLookup.end())
+        i.value()->performAction(TreeTraversalItems::Action::DETACH);
+    Q_ASSERT(m_hLookup.isEmpty());
 
     if (m_pTreeItem) {
 
         // If the item was active (due, for example, of a full reset), then
         // it has to be removed from view then deleted.
-        if (m_pTreeItem->m_State == VisualTreeItem::State::ACTIVE)
+        if (m_pTreeItem->m_State == VisualTreeItem::State::ACTIVE) {
             m_pTreeItem->performAction(VisualTreeItem::Action::DETACH);
+
+            // It should still exists, it may crash otherwise, so make sure early
+            Q_ASSERT(m_pTreeItem->m_State == VisualTreeItem::State::POOLED);
+
+            m_pTreeItem->m_State = VisualTreeItem::State::POOLED;
+            //FIXME ^^ add a new action for finish pooling or call
+            // VisualTreeItem::detach from a new action method (instead of directly)
+        }
 
         m_pTreeItem->performAction(VisualTreeItem::Action::DETACH);
         m_pTreeItem = nullptr;
+    }
+
+    if (m_pParent) {
+        const int size = m_pParent->m_hLookup.size();
+        m_pParent->m_hLookup.remove(m_Index);
+        Q_ASSERT(size == m_pParent->m_hLookup.size()+1);
+    }
+
+    if (m_pPrevious || m_pNext) {
+        if (m_pPrevious)
+            m_pPrevious->m_pNext = m_pNext;
+        if (m_pNext)
+            m_pNext->m_pPrevious = m_pPrevious;
+    }
+    else if (m_pParent) {
+        Q_ASSERT(m_pParent->m_hLookup.isEmpty());
+        m_pParent->m_pFirstChild = nullptr;
+        m_pParent->m_pLastChild = nullptr;
     }
 
     return true;
@@ -1345,8 +1394,10 @@ bool TreeTraversalItems::refresh()
     //
 //     qDebug() << "REFRESH";
 
-    for (auto i = m_hLookup.constBegin(); i != m_hLookup.constEnd(); i++)
+    for (auto i = m_hLookup.constBegin(); i != m_hLookup.constEnd(); i++) {
+        Q_ASSERT(i.value() != this);
         i.value()->performAction(TreeTraversalItems::Action::UPDATE);
+    }
 
     return true;
 }
@@ -1356,8 +1407,10 @@ bool TreeTraversalItems::index()
     //TODO remove this implementation and use the one below
 
     // Propagate
-    for (auto i = m_hLookup.constBegin(); i != m_hLookup.constEnd(); i++)
+    for (auto i = m_hLookup.constBegin(); i != m_hLookup.constEnd(); i++) {
+        Q_ASSERT(i.value() != this);
         i.value()->performAction(TreeTraversalItems::Action::MOVE);
+    }
 
     if (m_pTreeItem)
         m_pTreeItem->performAction(VisualTreeItem::Action::MOVE); //FIXME don't
@@ -1380,8 +1433,11 @@ bool TreeTraversalItems::index()
 
 bool TreeTraversalItems::destroy()
 {
-    m_pTreeItem->performAction(VisualTreeItem::Action::DETACH); //FIXME keep in buffer
+    detach();
+
     m_pTreeItem = nullptr;
+
+    Q_ASSERT(m_hLookup.isEmpty());
 
     delete this;
     //noreturn
