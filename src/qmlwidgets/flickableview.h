@@ -75,6 +75,7 @@ public:
     Q_PROPERTY(Qt::Corner gravity READ gravity WRITE setGravity)
     Q_PROPERTY(QQmlComponent* highlight READ highlight WRITE setHighlight)
     Q_PROPERTY(QSharedPointer<QItemSelectionModel> selectionModel READ selectionModel WRITE setSelectionModel NOTIFY selectionModelChanged)
+    Q_PROPERTY(bool sortingEnabled READ isSortingEnabled WRITE setSortingEnabled)
 
     // QML support for selectionModels is rather bad since many Q_INVOKABLE are missing
     Q_PROPERTY(QModelIndex currentIndex READ currentIndex WRITE setCurrentIndex)
@@ -104,6 +105,9 @@ public:
     Q_INVOKABLE void setCurrentIndex(const QModelIndex& index,
         QItemSelectionModel::SelectionFlags f = QItemSelectionModel::ClearAndSelect
     );
+
+    bool isSortingEnabled() const;
+    void setSortingEnabled(bool val);
 
 protected:
     virtual void refresh();

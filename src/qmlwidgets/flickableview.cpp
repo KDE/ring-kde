@@ -32,6 +32,7 @@ public:
     QQmlComponent*                      m_pComponent      {nullptr};
     QQmlComponent*                      m_pHighlight      {nullptr};
     mutable QQmlContext*                m_pRootContext    {nullptr};
+    bool                                m_IsSortingEnabled{nullptr};
 
     // Selection
     QQuickItem* m_pSelectedItem   {nullptr};
@@ -69,6 +70,10 @@ void FlickableView::setModel(QSharedPointer<QAbstractItemModel> model)
 
     if (d_ptr->m_pSelectionModel && d_ptr->m_pSelectionModel->model() != model)
         d_ptr->m_pSelectionModel = nullptr;
+
+    if (d_ptr->m_IsSortingEnabled && model) {
+        model->sort(0);
+    }
 
     d_ptr->m_pModel = model;
     d_ptr->m_hRoleNames.clear();
@@ -153,6 +158,20 @@ void FlickableView::setSelectionModel(QSharedPointer<QItemSelectionModel> m)
     d_ptr->m_pSelectionModel = m;
     d_ptr->slotSelectionModelChanged();
     Q_EMIT selectionModelChanged();
+}
+
+bool FlickableView::isSortingEnabled() const
+{
+    return d_ptr->m_IsSortingEnabled;
+}
+
+void FlickableView::setSortingEnabled(bool val)
+{
+    d_ptr->m_IsSortingEnabled = val;
+
+    if (d_ptr->m_IsSortingEnabled && d_ptr->m_pModel) {
+        d_ptr->m_pModel->sort(0);
+    }
 }
 
 QModelIndex FlickableView::currentIndex() const
