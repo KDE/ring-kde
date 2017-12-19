@@ -134,11 +134,13 @@ Dialog {
                 onReleased: {
                     track = false
                     overlay.border.color = "transparent"
+                    overlay.border.width = 0
                     overlay.grabToImage(function(result) {
                         selector.image = result.image;
                         newPhoto(result.image)
+                        overlay.border.color = "red"
+                        overlay.border.width = 3
                     });
-                    overlay.border.color = "red"
                 }
             }
 

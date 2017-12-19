@@ -19,6 +19,7 @@ import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
 import Ring 1.0
+import ContactView 1.0
 
 import RingQmlWidgets 1.0
 import PhotoSelectorPlugin 1.0
@@ -37,8 +38,7 @@ Rectangle {
     onCurrentContactMethodChanged: {
         primaryName.text = currentContactMethod.primaryName
 
-        photo.pixmap = currentContactMethod.person ?
-             currentContactMethod.person.photo : undefined
+        photo.contactMethod = currentContactMethod
 
         bookmarkSwitch.source = (currentContactMethod && currentContactMethod.bookmarked) ?
             "icons/bookmarked.svg" : "icons/not_bookmarked.svg"
@@ -56,15 +56,15 @@ Rectangle {
         target: currentContactMethod
         onChanged: {
             primaryName.text = currentContactMethod.primaryName
-            photo.pixmap     = currentContactMethod.person ?
-                currentContactMethod.person.photo : undefined
+            photo.contactMethod = currentContactMethod
+
             bookmarkSwitch.source = (currentContactMethod && currentContactMethod.bookmarked) ?
                 "icons/bookmarked.svg" : "icons/not_bookmarked.svg"
         }
     }
 
     color: "gray"
-    height: 100
+    height: 70
     Layout.fillWidth: true
 
     PersistentCallControls {
@@ -76,134 +76,268 @@ Rectangle {
         anchors.fill: parent
         anchors.margins: 8
 
-        Rectangle {
-            id: photoRect
-            clip: true
-            radius: 5
-            height: 90
-            width: 90
-            color: "white"
-            PixmapWrapper {
-                id: photo
-                anchors.fill: parent
-            }
-
-            function onNewPhoto(p) {
-                contactHeader.cachedPhoto = p
-                photo.pixmap = p
-            }
-
+        ContactPhoto {
+            id: photo
+            height: contactHeader.height-10
+            width: contactHeader.height-10
+            displayEmpty: false
             MouseArea {
+                id: mouseArea
                 anchors.fill: parent
                 z: 100
+                hoverEnabled: true
                 onClicked: {
                     var component = Qt.createComponent("PhotoEditor.qml")
                     if (component.status == Component.Ready) {
                         var window    = component.createObject(contactHeader)
                         window.person = currentContactMethod ? currentContactMethod.person :
                             null
-                        window.newPhoto.connect(photoRect.onNewPhoto)
                     }
                     else
                         console.log("ERROR", component.status, component.errorString())
                 }
             }
-        }
 
-        ColumnLayout {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
+            Rectangle {
+                anchors.fill: parent
+                border.width: 1
+                border.color: activePalette.text
+                radius: 5
+                color: "transparent"
+                visible: mouseArea.containsMouse || (!photo.hasPhoto)
 
-            RowLayout {
                 Text {
-                    id: primaryName
+                    text: i18n("Add\nPhoto")
                     font.bold: true
-                    font.pointSize: 16
-                    text: "My name"
-                    color: textColor
-                }
-                Image {
-                    id: bookmarkSwitch
-                    anchors.rightMargin: 1
-                    anchors.topMargin: 3
-                    height: 16
-                    width: 16
-                    source: (currentContactMethod && currentContactMethod.bookmarked) ?
-                        "icons/bookmarked.svg" : "icons/not_bookmarked.svg"
-                    z: 100
-                    MouseArea {
-                        anchors.fill: parent
-                        onClicked: {
-                            mouse.accepted = true
-                            currentContactMethod.bookmarked = !currentContactMethod.bookmarked
-                            bookmarkSwitch.source = currentContactMethod.bookmarked ?
-                                "icons/bookmarked.svg" : "icons/not_bookmarked.svg"
-                        }
-                    }
-                }
-                Item {
-                    Layout.fillWidth: true
+                    color: activePalette.text
+                    anchors.centerIn: parent
+                    horizontalAlignment: Text.AlignHCenter
                 }
             }
+        }
 
-            RowLayout {
-                id: buttonBox
+        Text {
+            id: primaryName
+            font.bold: true
+//             font.pointSize: 14
+            text: "My name"
+            color: textColor
+        }
+        Image {
+            id: bookmarkSwitch
+            anchors.rightMargin: 1
+            anchors.topMargin: 3
+            height: 16
+            width: 16
+            source: (currentContactMethod && currentContactMethod.bookmarked) ?
+                "icons/bookmarked.svg" : "icons/not_bookmarked.svg"
+            z: 100
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    mouse.accepted = true
+                    currentContactMethod.bookmarked = !currentContactMethod.bookmarked
+                    bookmarkSwitch.source = currentContactMethod.bookmarked ?
+                        "icons/bookmarked.svg" : "icons/not_bookmarked.svg"
+                }
+            }
+        }
 
-                Button {
-                    id: button
-                    text: i18n("Call")
-                    onClicked: {
-                        if (currentContactMethod == null) return
+        Item {
+            id: separator
+            Layout.fillHeight: true
+            width: 2
+            Rectangle {
+                height: parent.height -10
+                y: 5
+                width: 1
+                color: inactivePalette.text
+                opacity: 0.2
+            }
+        }
 
-                        if (currentContactMethod.hasInitCall) {
-                            contactHeader.selectVideo()
-                            return
-                        }
+        //TODO Qt5.10 deps: use native icons
+        Button {
+            id: button
+            implicitWidth: label.implicitWidth + 20
+            visible: currentContactMethod &&
+                ((!currentContactMethod) ||
+                    currentContactMethod.canCall == ContactMethod.AVAILABLE)
 
-                        CallModel.dialingCall(currentContactMethod)
-                            .performAction(Call.ACCEPT)
-                    }
+            checkable: currentContactMethod && currentContactMethod.hasActiveCall
+            checked: currentContactMethod && currentContactMethod.firstOutgoingCall
+
+            onClicked: {
+                if (currentContactMethod == null) return
+
+                if (currentContactMethod.hasInitCall) {
+                    contactHeader.selectVideo()
+                    return
                 }
 
-                Button {
-                    id: button2
-                    text: i18n("Video")
-                    onClicked: {
-                        if (currentContactMethod == null) return
+                CallModel.dialingCall(currentContactMethod)
+                    .performAction(Call.ACCEPT)
+            }
 
-                        if (currentContactMethod.hasInitCall) {
-                            contactHeader.selectVideo()
-                            return
-                        }
-
-                        CallModel.dialingCall(currentContactMethod)
-                            .performAction(Call.ACCEPT)
-                    }
+            Row {
+                id: label
+                anchors.centerIn: parent
+                height: parent.height
+                Image {
+                    height: 22
+                    width: 22
+                    sourceSize.width: 22
+                    sourceSize.height: 22
+                    anchors.verticalCenter: parent.verticalCenter
+                    source: "image://SymbolicColorizer/:/sharedassets/outline/call.svg"
                 }
 
-                Button {
-                    text: i18n("Screen sharing")
-                    onClicked: {
-                        if (currentContactMethod == null) return
+                Text {
+                    anchors.margins: 5
+                    height: parent.height
+                    verticalAlignment: Text.AlignVCenter
+                    color: activePalette.text
+                    text: "   " + i18n("Call")
+                }
+            }
+        }
 
-                        if (currentContactMethod.hasInitCall) {
-                            contactHeader.selectVideo()
-                            return
-                        }
+        Button {
+            id: button2
+            implicitWidth: label2.implicitWidth + 20
 
-                        CallModel.dialingCall(currentContactMethod)
-                            .performAction(Call.ACCEPT)
-                    }
+            visible: currentContactMethod &&
+                ((!currentContactMethod) ||
+                    currentContactMethod.canVideoCall == ContactMethod.AVAILABLE)
+
+            checkable: currentContactMethod && currentContactMethod.hasActiveCall
+            checked: currentContactMethod && currentContactMethod.firstOutgoingCall
+                && currentContactMethod.firstOutgoingCall.videoRenderer
+
+            onClicked: {
+                if (currentContactMethod == null) return
+
+                if (currentContactMethod.hasInitCall) {
+                    contactHeader.selectVideo()
+                    return
                 }
 
-                Button {
-                    text: i18n("Chat")
-                    onClicked: {
-                        if (currentContactMethod == null) return
+                CallModel.dialingCall(currentContactMethod)
+                    .performAction(Call.ACCEPT)
+            }
 
-                        contactHeader.selectChat()
-                    }
+            Row {
+                id: label2
+                anchors.centerIn: parent
+                height: parent.height
+                Image {
+                    height: 22
+                    width: 22
+                    sourceSize.width: 22
+                    sourceSize.height: 22
+                    anchors.verticalCenter: parent.verticalCenter
+                    source: "image://SymbolicColorizer/:/sharedassets/outline/camera.svg"
                 }
+
+                Text {
+                    anchors.margins: 5
+                    height: parent.height
+                    verticalAlignment: Text.AlignVCenter
+                    color: activePalette.text
+                    text: "   " + i18n("Video")
+                }
+            }
+        }
+
+        Button {
+            id: button3
+            implicitWidth: label3.implicitWidth + 20
+            checkable: currentContactMethod && currentContactMethod.hasActiveCall
+            checked: currentContactMethod && currentContactMethod.firstOutgoingCall
+                && currentContactMethod.firstOutgoingCall.videoRenderer
+
+            visible: currentContactMethod &&
+                ((!currentContactMethod) ||
+                    currentContactMethod.canVideoCall == ContactMethod.AVAILABLE)
+
+            onClicked: {
+                if (currentContactMethod == null) return
+
+                if (currentContactMethod.hasInitCall) {
+                    contactHeader.selectVideo()
+                    return
+                }
+
+                CallModel.dialingCall(currentContactMethod)
+                    .performAction(Call.ACCEPT)
+            }
+
+            Row {
+                id: label3
+                anchors.centerIn: parent
+                height: parent.height
+                Image {
+                    height: 22
+                    width: 22
+                    sourceSize.width: 22
+                    sourceSize.height: 22
+                    anchors.verticalCenter: parent.verticalCenter
+                    source: "image://SymbolicColorizer/:/sharedassets/outline/screen.svg"
+                }
+
+                Text {
+                    anchors.margins: 5
+                    color: activePalette.text
+                    height: parent.height
+                    verticalAlignment: Text.AlignVCenter
+                    text: "   " + i18n("Screen sharing")
+                }
+            }
+        }
+
+        Button {
+            id: button4
+            implicitWidth: label4.implicitWidth + 20
+
+            visible: currentContactMethod &&
+                currentContactMethod.canSendTexts == ContactMethod.AVAILABLE
+
+            onClicked: {
+                if (currentContactMethod == null) return
+
+                contactHeader.selectChat()
+            }
+
+            Row {
+                id: label4
+                anchors.centerIn: parent
+                height: parent.height
+                Image {
+                    height: 22
+                    width: 22
+                    sourceSize.width: 22
+                    sourceSize.height: 22
+                    anchors.verticalCenter: parent.verticalCenter
+                    source: "image://SymbolicColorizer/:/sharedassets/outline/chat.svg"
+                }
+
+                Text {
+                    anchors.margins: 5
+                    height: parent.height
+                    verticalAlignment: Text.AlignVCenter
+                    color: activePalette.text
+                    text: "   " + i18n("Chat")
+                }
+            }
+        }
+
+        Item {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            // Display reasons why the media buttons are not present
+            MediaAvailability {
+                currentContactMethod: contactHeader.currentContactMethod
+                anchors.verticalCenter: parent.verticalCenter
             }
         }
     }
@@ -217,15 +351,25 @@ Rectangle {
                 Layout.maximumHeight: 40
             }
             PropertyChanges {
-                target: buttonBox
+                target: button
+                visible: false
+            }
+            PropertyChanges {
+                target: button2
+                visible: false
+            }
+            PropertyChanges {
+                target: button3
+                visible: false
+            }
+            PropertyChanges {
+                target: button4
                 visible: false
             }
             PropertyChanges {
                 target: photoRect
                 height: 30
                 width: 30
-                Layout.maximumHeight: 30
-                Layout.maximumWidth: 30
             }
         }
     ]

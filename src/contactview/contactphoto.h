@@ -36,6 +36,9 @@ class ContactPhoto : public QQuickPaintedItem
 public:
     Q_PROPERTY(ContactMethod* contactMethod READ contactMethod WRITE setContactMethod)
     Q_PROPERTY(Person* person READ person WRITE setPerson)
+    Q_PROPERTY(bool hasPhoto READ hasPhoto NOTIFY hasPhotoChanged)
+    Q_PROPERTY(bool displayEmpty READ displayEmpty WRITE setDisplayEmpty)
+    Q_PROPERTY(bool drawEmptyOutline READ drawEmptyOutline WRITE setDrawEmptyOutline)
 
     explicit ContactPhoto(QQuickItem* parent = nullptr);
     virtual ~ContactPhoto();
@@ -47,6 +50,17 @@ public:
 
     Person* person() const;
     void setPerson(Person* p);
+
+    bool hasPhoto() const;
+
+    bool displayEmpty() const;
+    void setDisplayEmpty(bool val);
+
+    bool drawEmptyOutline() const;
+    void setDrawEmptyOutline(bool val);
+
+Q_SIGNALS:
+    void hasPhotoChanged();
 
 private:
     ContactPhotoPrivate* d_ptr;

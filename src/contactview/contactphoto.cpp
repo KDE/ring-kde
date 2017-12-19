@@ -28,16 +28,27 @@
 // KDE
 #include <KColorScheme>
 
-class ContactPhotoPrivate
+class ContactPhotoPrivate : public QObject
 {
+    Q_OBJECT
 public:
     ContactMethod* m_pContactMethod {nullptr};
     Person* m_pPerson {nullptr};
+    Person* m_pCurrentPerson {nullptr};
+    bool m_DisplayEmpty {true};
+    bool m_DrawEmptyOutline {true};
+
+    ContactPhoto* q_ptr;
+public Q_SLOTS:
+    void slotPhotoChanged();
+    void slotContactChanged();
 };
 
 ContactPhoto::ContactPhoto(QQuickItem* parent) : QQuickPaintedItem(parent),
     d_ptr(new ContactPhotoPrivate)
-{}
+{
+    d_ptr->q_ptr = this;
+}
 
 ContactPhoto::~ContactPhoto()
 {
@@ -50,7 +61,7 @@ void ContactPhoto::paint(QPainter *painter)
     const qreal h = height();
     const qreal s = std::min(w, h);
 
-    static QPainterPath imageClip, cornerPath;
+    QPainterPath imageClip, cornerPath;
     static QColor presentBrush = KStatefulBrush( KColorScheme::Window, KColorScheme::PositiveText )
         .brush(QPalette::Normal).color();
     static QColor awayBrush    = KStatefulBrush( KColorScheme::Window, KColorScheme::NegativeText )
@@ -67,16 +78,16 @@ void ContactPhoto::paint(QPainter *painter)
     const bool isPresent = p ? p->isPresent() :
         d_ptr->m_pContactMethod ? d_ptr->m_pContactMethod->isPresent() : false;
 
-    static std::atomic_flag init_flag {ATOMIC_FLAG_INIT};
-    if (!init_flag.test_and_set()) {
-        imageClip.addEllipse(3, 3, s-6, s-6);
+// for tests
+//     const bool isTracked(true), isPresent(rand()%2);
 
-        cornerPath.moveTo(s/2, s);
-        cornerPath.arcTo(0, 0, s, s, 270, 90);
-        cornerPath.lineTo(s,s-6);
-        cornerPath.arcTo(s-12, s-12, 12, 12, 0, -90);
-        cornerPath.lineTo(s/2, s);
-    }
+    imageClip.addEllipse(3, 3, s-6, s-6);
+
+    cornerPath.moveTo(s/2, s);
+    cornerPath.arcTo(0, 0, s, s, 270, 90);
+    cornerPath.lineTo(s,s-6);
+    cornerPath.arcTo(s-12, s-12, 12, 12, 0, -90);
+    cornerPath.lineTo(s/2, s);
 
     painter->setRenderHint(QPainter::Antialiasing);
 
@@ -86,11 +97,21 @@ void ContactPhoto::paint(QPainter *painter)
 
     painter->setPen(pen);
 
-    painter->drawEllipse(1.5, 1.5, s-3, s-3);
 
-    if (p && p->photo().isValid()) {
+    if (p && hasPhoto()) {
+        painter->drawEllipse(1.5, 1.5, s-1.5, s-1.5);
+
+        painter->setClipPath(imageClip);
+
+        const QPixmap original(qvariant_cast<QPixmap>(p->photo()));
+
+        painter->drawPixmap(3,3,s-6,s-6, original);
+
+        painter->setClipping(false);
+
         if (isTracked) {
-            painter->setPen({});
+            pen.setWidthF(1);
+            painter->setPen(pen);
             painter->setBrush(pen.color());
             painter->drawPath(cornerPath);
 
@@ -98,14 +119,11 @@ void ContactPhoto::paint(QPainter *painter)
 
             painter->drawEllipse(s-12, s-12, 12, 12);
         }
-
-        painter->setClipPath(imageClip);
-
-        QPixmap original(qvariant_cast<QPixmap>(p->photo()));
-
-        painter->drawPixmap(5,5,s-10,s-10, original);
     }
-    else {
+    else if (d_ptr->m_DisplayEmpty) {
+        if (d_ptr->m_DrawEmptyOutline)
+            painter->drawEllipse(1.5, 1.5, s-1.5, s-1.5);
+
         painter->setClipPath(imageClip);
 
         if (isTracked)
@@ -129,7 +147,23 @@ ContactMethod* ContactPhoto::contactMethod() const
 
 void ContactPhoto::setContactMethod(ContactMethod* cm)
 {
+    if (d_ptr->m_pPerson) {
+        disconnect(d_ptr->m_pPerson, &Person::photoChanged,
+            d_ptr, &ContactPhotoPrivate::slotPhotoChanged);
+        d_ptr->m_pPerson = nullptr;
+    }
+
+    if (d_ptr->m_pContactMethod) {
+        disconnect(d_ptr->m_pContactMethod, &ContactMethod::contactChanged,
+            d_ptr, &ContactPhotoPrivate::slotContactChanged);
+    }
+
     d_ptr->m_pContactMethod = cm;
+
+    d_ptr->slotContactChanged();
+
+    emit hasPhotoChanged();
+
     update();
 }
 
@@ -140,6 +174,79 @@ Person* ContactPhoto::person() const
 
 void ContactPhoto::setPerson(Person* p)
 {
+    if (d_ptr->m_pPerson) {
+        disconnect(d_ptr->m_pPerson, &Person::photoChanged,
+            d_ptr, &ContactPhotoPrivate::slotPhotoChanged);
+    }
+
+    if (d_ptr->m_pCurrentPerson) {
+        disconnect(d_ptr->m_pCurrentPerson, &Person::photoChanged,
+            d_ptr, &ContactPhotoPrivate::slotPhotoChanged);
+        d_ptr->m_pCurrentPerson = nullptr;
+    }
+
     d_ptr->m_pPerson = p;
+
+    connect(d_ptr->m_pPerson, &Person::photoChanged,
+        d_ptr, &ContactPhotoPrivate::slotPhotoChanged);
+
+    update();
+
+    emit hasPhotoChanged();
+}
+
+void ContactPhotoPrivate::slotPhotoChanged()
+{
+    emit q_ptr->hasPhotoChanged();
+
+    q_ptr->update();
+}
+
+void ContactPhotoPrivate::slotContactChanged()
+{
+    if (m_pCurrentPerson) {
+        disconnect(m_pCurrentPerson, &Person::photoChanged,
+            this, &ContactPhotoPrivate::slotPhotoChanged);
+    }
+
+    m_pCurrentPerson = m_pContactMethod->contact();
+
+    if (m_pCurrentPerson) {
+        connect(m_pContactMethod, &ContactMethod::contactChanged,
+            this, &ContactPhotoPrivate::slotContactChanged);
+    }
+}
+
+bool ContactPhoto::hasPhoto() const
+{
+    if (d_ptr->m_pPerson)
+        return !d_ptr->m_pPerson->photo().isNull();
+
+    if (d_ptr->m_pCurrentPerson)
+        return !d_ptr->m_pCurrentPerson->photo().isNull();
+
+    return false;
+}
+
+bool ContactPhoto::displayEmpty() const
+{
+    return d_ptr->m_DisplayEmpty;
+}
+
+void ContactPhoto::setDisplayEmpty(bool val)
+{
+    d_ptr->m_DisplayEmpty = val;
     update();
 }
+
+bool ContactPhoto::drawEmptyOutline() const
+{
+    return d_ptr->m_DrawEmptyOutline;
+}
+
+void ContactPhoto::setDrawEmptyOutline(bool val)
+{
+    d_ptr->m_DrawEmptyOutline = val;
+}
+
+#include <contactphoto.moc>

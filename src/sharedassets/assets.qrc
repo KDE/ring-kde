@@ -33,5 +33,10 @@
         <file>./phone_dark/current.svg</file>
         <file>./phone_dark/mute_video.svg</file>
         <file>./phone_dark/accept_video.svg</file>
+        <file>./outline/call.svg</file>
+        <file>./outline/camera.svg</file>
+        <file>./outline/screen.svg</file>
+        <file>./outline/chat.svg</file>
+        <file>./outline/warning.svg</file>
     </qresource>
 </RCC>

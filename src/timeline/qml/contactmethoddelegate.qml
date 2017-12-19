@@ -19,6 +19,7 @@ import QtQuick 2.7
 import QtQuick.Layouts 1.0
 import Ring 1.0
 import RingQmlWidgets 1.0
+import ContactView 1.0
 // import org.kde.kirigami 2.0 as Kirigami
 
 Item {
@@ -107,9 +108,11 @@ Item {
                     height: parent.height
                     width:  parent.height
 
-                    PixmapWrapper {
+                    ContactPhoto {
+                        anchors.margins: 3
                         anchors.fill: parent
-                        pixmap: decoration
+                        contactMethod: object
+                        drawEmptyOutline: false
                     }
                 }
 

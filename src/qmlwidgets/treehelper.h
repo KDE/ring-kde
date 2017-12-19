@@ -50,6 +50,7 @@ public:
 
     Q_INVOKABLE bool selectNext();
     Q_INVOKABLE bool selectPrevious();
+    Q_INVOKABLE bool selectIndex(int index);
     int currentListIndex() const;
 
 Q_SIGNALS:

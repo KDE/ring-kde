@@ -15,6 +15,7 @@ SET(GENERIC_LIB_VERSION "1.0.0")
 SET(desktopview_LIB_SRCS
     ${desktopview_LIB_SRCS}
     desktopviewplugin.cpp
+    dockmodel.cpp
 )
 
 QT5_ADD_RESOURCES(desktopview_LIB_SRCS

@@ -78,7 +78,7 @@ struct RingingTipData final
         }
     };
 
-    QPixmap toPixmap(int count) {
+    QPixmap toPixmap(int count, const QSize& size) {
         Q_UNUSED(count)
         QPixmap pxm(135, 120);
 
@@ -126,17 +126,17 @@ struct InitTipDataPrivate final {
         delete m_Render;
     }
 
-    QPixmap toPixmap(int count) {
+    QPixmap toPixmap(int count, const QSize& size) {
         Q_UNUSED(count)
-        QPixmap pxm(128, 128);
+        QPixmap pxm(size.width(), size.width());
 
         QPainter p(&pxm);
         p.setCompositionMode(QPainter::CompositionMode_Clear);
-        p.fillRect(QRect{0, 0, 128, 128}, QBrush(Qt::white));
+        p.fillRect(QRect{0, 0, size.width(), size.width()}, QBrush(Qt::white));
         p.setCompositionMode(QPainter::CompositionMode_SourceOver);
 
-        p.fillRect(QRect{0,0,128,128},Qt::transparent);
-        m_Render->render(&p, {0,0,128,128});
+        p.fillRect(QRect{0,0,size.width(),size.width()},Qt::transparent);
+        m_Render->render(&p, {0,0,size.width(),size.width()});
 
         return pxm;
     }
@@ -169,11 +169,14 @@ RingingImageProvider::~RingingImageProvider()
 
 QPixmap RingingImageProvider::requestPixmap(const QString &id, QSize *size, const QSize &requestedSize)
 {
-    Q_UNUSED(requestedSize)
-
     auto conf = id.split('/');
 
     Q_ASSERT(conf.size() == 2);
+
+    const QSize finalSize(
+        requestedSize.width() == -1 ? 128 : requestedSize.width(),
+        requestedSize.width() == -1 ? 128 : requestedSize.width()
+    );
 
     QPixmap pxm;
     const int count = conf[1].toInt();
@@ -181,13 +184,13 @@ QPixmap RingingImageProvider::requestPixmap(const QString &id, QSize *size, cons
     if (conf[0] == QLatin1String("ringing")) {
         if (!d_ptr->m_pRing)
             d_ptr->m_pRing = new RingingTipData(d_ptr);
-        pxm = d_ptr->m_pRing->toPixmap(count);
+        pxm = d_ptr->m_pRing->toPixmap(count, finalSize);
     }
     else if (conf[0] == QLatin1String("init")) {
         if (!d_ptr->m_pInit)
             d_ptr->m_pInit = new InitTipDataPrivate(d_ptr);
 
-        pxm = d_ptr->m_pInit->toPixmap(count);
+        pxm = d_ptr->m_pInit->toPixmap(count, finalSize);
     }
 
     (*size) = pxm.size();

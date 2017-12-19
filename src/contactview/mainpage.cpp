@@ -202,6 +202,11 @@ void MainPagePrivate::slotWindowChanged()
     QQmlComponent comp(ctx->engine(), QStringLiteral("qrc:/ViewContact.qml"), q_ptr);
 
     m_pItem = qobject_cast<QQuickItem*>(comp.create(ctx));
+
+    if (!m_pItem) {
+        qDebug() << "Previous error" << comp.errorString();
+    }
+
     Q_ASSERT(m_pItem);
     m_pItem->setParentItem(q_ptr);
 

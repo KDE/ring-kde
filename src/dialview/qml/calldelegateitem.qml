@@ -26,7 +26,8 @@ Rectangle {
     anchors.margins: 2
     radius: 5
     color: selected ? activePalette.highlight: "transparent"
-    height: content.implicitHeight + 20
+
+    height: content.implicitHeight + 20 + errorMessage.height
     property bool selected: object == CallModel.selectedCall
 
     Drag.active: mouseArea.drag.active
@@ -74,6 +75,7 @@ Rectangle {
                     activePalette.highlightedText : activePalette.text
                 font.bold: true
             }
+
             Text {
                 text: model.number
                 width: parent.width
@@ -85,6 +87,7 @@ Rectangle {
     }
 
     Text {
+        id: lengthLabel
         text: length
         color: callDelegateItem.selected ?
             inactivePalette.highlightedText : inactivePalette.text
@@ -183,6 +186,50 @@ Rectangle {
         }
     }
 
+    Loader {
+        id: errorMessage
+        anchors.top: content.bottom
+        active: false
+        width: parent.width
+        height: active ? item.implicitHeight : 0
+        sourceComponent: Component {
+            CallError {
+                call: object
+                width: parent.width
+            }
+        }
+    }
+
+    Loader {
+        id: missedMessage
+        active: false
+        width: parent.width
+        height: active ? item.implicitHeight : 0
+        sourceComponent: Component {
+            MissedCall {
+                call: object
+                width: parent.width
+            }
+        }
+    }
+
+    Loader {
+        id: rigningAnimation
+        active: false
+        width: parent.width
+        height: active ? 32 : 0
+        anchors.top: content.bottom
+        sourceComponent: Component {
+            Ringing {
+                height: 32
+                width: 32
+                anchors.horizontalCenter: parent.horizontalCenter
+                running: true
+                visible: true
+            }
+        }
+    }
+
     StateGroup {
         id: stateGroup
         states: [
@@ -199,6 +246,67 @@ Rectangle {
                     active: true
                     opacity: 1
                     height: Math.min(4, count)*(3*fontMetrics.height+10) + 10
+                }
+            },
+            State {
+                name: "error"
+                when: lifeCycleState == Call.FINISHED && object.state != Call.OVER
+                    && object.state != Call.ABORTED
+
+                PropertyChanges {
+                    target: errorMessage
+                    active: true
+                }
+
+                PropertyChanges {
+                    target: lengthLabel
+                    visible: false
+                }
+
+                PropertyChanges {
+                    target: callDelegateItem
+                    color: "#33ff0000"
+                    border.width: 1
+                    border.color: "#55ff0000"
+                }
+            },
+            State {
+                name: "missed"
+                when: object.state == Call.OVER && object.missed
+
+                PropertyChanges {
+                    target: missedMessage
+                    active: true
+                }
+                PropertyChanges {
+                    target: content
+                    visible: false
+                }
+                PropertyChanges {
+                    target: lengthLabel
+                    visible: false
+                }
+
+                PropertyChanges {
+                    target: callDelegateItem
+                    height: missedMessage.height
+                    color: "#33ff0000"
+                    border.width: 1
+                    border.color: "#55ff0000"
+                }
+            },
+            State {
+                name: "incoming"
+                when: object.state == 1/*iNCOMING*/
+
+                PropertyChanges {
+                    target: callDelegateItem
+                    height: rigningAnimation.height + content.implicitHeight
+                }
+
+                PropertyChanges {
+                    target: rigningAnimation
+                    active: true
                 }
             }
         ]

@@ -42,6 +42,7 @@
 #include <callmodel.h>
 #include <accountmodel.h>
 #include <account.h>
+#include <contactmethod.h>
 #include <phonedirectorymodel.h>
 #include <categorizedhistorymodel.h>
 #include <categorizedcontactmodel.h>
@@ -109,6 +110,7 @@
 //QML
 #include "qmlwidgets/plugin.h"
 #include "qmlwidgets/recentfilemodel.h"
+#include "qmlwidgets/symboliccolorizer.h"
 #include "photoselector/photoplugin.h"
 #include "canvasindicators/canvasindicator.h"
 #include "canvasindicators/ringingimageprovider.h"
@@ -268,6 +270,8 @@ void RingApplication::initCollections()
    GlobalInstances::setInterface<KDEPixmapManipulation>();
 
    loadNumberCategories();
+
+   CallModel::instance().setAudoCleanDelay(5000);
 
    /*******************************************
       *           Set the configurator          *
@@ -500,17 +504,22 @@ QQmlApplicationEngine* RingApplication::engine()
             CategorizedContactModel::SortedProxy::instance().categoryModel()
          );
 
+         RingApplication::engine()->rootContext()->setContextProperty(
+            QStringLiteral("ContactCategorySelectionModel"),
+            CategorizedContactModel::SortedProxy::instance().categorySelectionModel()
+         );
+
          auto completionModel = new NumberCompletionModel();
 
          RingApplication::engine()->rootContext()->setContextProperty(
             QStringLiteral("CompletionModel"), completionModel
          );
-
-
-
          auto im = new RingingImageProvider();
          e->addImageProvider( QStringLiteral("RingingImageProvider"), im );
          e->addImportPath(QStringLiteral("qrc:/"));
+
+         auto im2 = new SymbolicColorizer();
+         e->addImageProvider( QStringLiteral("SymbolicColorizer"), im2 );
 
          VideoWidget3::initProvider();
       }

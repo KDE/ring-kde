@@ -21,10 +21,20 @@ import QtQuick.Controls 2.0
 import QtQml.Models 2.2
 import RingQmlWidgets 1.0
 import Ring 1.0
+import org.kde.kirigami 2.2 as Kirigami
 
-Item {
+Kirigami.Page {
     id: contactList
     signal contactMethodSelected(var cm)
+
+    leftPadding: 0
+    topPadding: 0
+    bottomPadding: 0
+    rightPadding: 0
+
+    mainAction: QmlAction {
+        action: ActionCollection.newContact
+    }
 
     SystemPalette {
         id: inactivePalette
@@ -75,6 +85,12 @@ Item {
 
             highlightFollowsCurrentItem: true
 
+            TreeHelper {
+                id: helper
+                model: ContactCategoryModel
+                selectionModel: ContactCategorySelectionModel
+            }
+
             highlight: Item {
                 height: 32
                 width: 15
@@ -85,6 +101,10 @@ Item {
                     y: parent.height/2 + fontMetrics.height/2 + 3
                     anchors.horizontalCenter: parent.horizontalCenter
                 }
+            }
+
+            onCurrentIndexChanged: {
+                helper.selectIndex(currentIndex)
             }
         }
 
@@ -100,6 +120,7 @@ Item {
 
             rawModel: SortedContactModel
             delegate: masterComponent
+            sortingEnabled: true
 
             highlight: Item {
                 Rectangle {

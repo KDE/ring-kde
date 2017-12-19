@@ -519,6 +519,10 @@ void TreeView2::reload()
 
 void TreeView2Private::_test_validateTree(TreeTraversalItems* p)
 {
+#ifdef QT_NO_DEBUG_OUTPUT
+    return;
+#endif
+
     // The asserts below only work on valid models with valid delegates.
     // If those conditions are not met, it *could* work anyway, but cannot be
     // validated.
@@ -1380,11 +1384,14 @@ bool TreeTraversalItems::detach()
         if (m_pNext)
             m_pNext->m_pPrevious = m_pPrevious;
     }
-    else if (m_pParent) {
+    else if (m_pParent) { //FIXME very wrong
         Q_ASSERT(m_pParent->m_hLookup.isEmpty());
         m_pParent->m_pFirstChild = nullptr;
         m_pParent->m_pLastChild = nullptr;
     }
+
+    //FIXME set the parent m_pFirstChild correctly and add an insert()/move() method
+    // then drop bridgeGap
 
     return true;
 }

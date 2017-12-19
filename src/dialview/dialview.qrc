@@ -7,5 +7,7 @@
         <file alias="CallDelegateItem.qml">qml/calldelegateitem.qml</file>
         <file alias="AddCall.qml">qml/addcall.qml</file>
         <file alias="MergeCall.qml">qml/mergecall.qml</file>
+        <file alias="CallError.qml">qml/callerror.qml</file>
+        <file alias="MissedCall.qml">qml/missedcall.qml</file>
     </qresource>
 </RCC>

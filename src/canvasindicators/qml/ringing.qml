@@ -29,7 +29,10 @@ Rectangle {
 
     Image {
         id: ringingImage
-        width: 128
+        width: parent.height
+        height: parent.height
+        sourceSize.width: parent.height
+        sourceSize.height: parent.height
         source: "image://RingingImageProvider/ringing/0"
     }
 

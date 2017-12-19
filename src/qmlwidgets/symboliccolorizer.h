@@ -15,16 +15,29 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#include "desktopviewplugin.h"
+#pragma once
 
-#include <QtCore/QDebug>
-#include <QQmlEngine>
+#include <QQuickImageProvider>
 
-#include "dockmodel.h"
+#include <video/renderer.h>
+// #include <video/model.h>
 
-#include <qrc_desktopview.cpp>
+class SymbolicColorizerPrivate;
 
-void DesktopView::registerTypes(const char *uri)
+/**
+ * SymbolicColorizer is a QtQuick image provider designed to paint any theme
+ * or QRC icons it receive the same color as the QPalette text color.
+ */
+class SymbolicColorizer final : public QQuickImageProvider
 {
-    qmlRegisterType<DockModel>(uri, 1, 0, "DockModel");
-}
+public:
+    explicit SymbolicColorizer();
+    virtual ~SymbolicColorizer();
+
+    virtual QPixmap requestPixmap(const QString &id, QSize *size, const QSize &requestedSize) override;
+
+private:
+    Q_DISABLE_COPY(SymbolicColorizer)
+    SymbolicColorizerPrivate* d_ptr;
+    Q_DECLARE_PRIVATE(SymbolicColorizer)
+};

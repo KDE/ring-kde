@@ -41,15 +41,36 @@ Item {
             anchors.bottomMargin: 5
             anchors.fill: parent
             Item {
-                width:  56
-                height: 56
+                width:  48
+                height: 48
                 anchors.verticalCenter: parent.verticalCenter
                 ContactPhoto {
                     anchors.fill: parent
                     anchors.margins: 5
                     person: object
-    //                 pixmap: decoration
                 }
+
+//                 // Allow to set/remove bookmarks
+//                 Image {
+//                     id: bookmarkSwitch
+//                     anchors.top: parent.top
+//                     anchors.right: parent.right
+//                     anchors.rightMargin: 1
+//                     anchors.topMargin: 3
+//                     height: 16
+//                     width: 16
+//                     source: isBookmarked ? "icons/bookmarked.svg" : "icons/not_bookmarked.svg"
+//                     z: 100
+//                     MouseArea {
+//                         anchors.fill: parent
+//                         onClicked: {
+//                             mouse.accepted = true
+//                             isBookmarked = !isBookmarked
+//                             bookmarkSwitch.source = isBookmarked ?
+//                                 "icons/bookmarked.svg" : "icons/not_bookmarked.svg"
+//                         }
+//                     }
+//                 }
             }
 
             ColumnLayout {

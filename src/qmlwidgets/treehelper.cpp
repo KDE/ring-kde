@@ -225,6 +225,24 @@ bool TreeHelper::selectPrevious()
     return currentListIndex() != -1;
 }
 
+bool TreeHelper::selectIndex(int index)
+{
+    if (!d_ptr->m_pSelectionModel)
+        return false;
+
+    auto newIdx = d_ptr->m_pSelectionModel->model()->index(index, 0);
+
+    if (!newIdx.isValid())
+        return false;
+
+    d_ptr->m_pSelectionModel->setCurrentIndex(
+        newIdx,
+        QItemSelectionModel::ClearAndSelect
+    );
+
+    return true;
+}
+
 int TreeHelper::currentListIndex() const
 {
     return d_ptr->m_pSelectionModel ?

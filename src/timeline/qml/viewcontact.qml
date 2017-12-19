@@ -152,9 +152,10 @@ Rectangle {
         }
 
         TabBar {
-            Layout.fillWidth: true
+//             Layout.fillWidth: true
             id: tabBar
             currentIndex: swipeView.currentIndex
+            width: contentWidth + 100
             TabButton {
                 text: i18n("Information")
             }

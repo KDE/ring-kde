@@ -21,6 +21,8 @@ import QtQuick.Controls 2.0 as Controls
 import org.kde.kirigami 2.2 as Kirigami
 import QtQuick.Window 2.2
 
+import DesktopView 1.0
+
 Image {
     id: dockBar
 
@@ -31,53 +33,26 @@ Image {
     width: 48
     height: parent.height
 
-    ListModel {
+    DockModel {
         id: icons
-        ListElement {
-            name: "timeline"
-            icon: "/toolbar/timeline.svg"
-            enabled2: true
-            actionName: "showTimelineDockAction"
-        }
-        ListElement {
-            name: "call"
-            icon: "/toolbar/call.svg"
-            enabled2: true
-            actionName: "showDialDockAction"
-        }
-        ListElement {
-            name: "contact"
-            icon: "/toolbar/contact.svg"
-            enabled2: true
-            actionName: "showContactDockAction"
-        }
-        ListElement {
-            name: "bookmark"
-            icon: "/toolbar/bookmark.svg"
-            enabled2: false
-            actionName: "showBookmarkDockAction"
-        }
-        ListElement {
-            name: "history"
-            icon: "/toolbar/history.svg"
-            enabled2: false
-            actionName: "showHistoryDockAction"
-        }
+    }
+
+    FontMetrics {
+        id: fontMetrics
     }
 
     Column {
         Repeater {
             model: icons
             Rectangle {
-                id: action
-                color: dockBar.selectedItem == name ? "#111111" : "transparent"
+                id: actionIcon
+                color: dockBar.selectedItem == identifier ? "#111111" : "transparent"
                 height: 58
                 width: 48
-                visible: getAction().checked
 
                 Image {
                     anchors.verticalCenter: parent.verticalCenter
-                    source: icon
+                    source: decoration
                     width: 48
                     height: 48
                     fillMode: Image.PreserveAspectFit
@@ -86,17 +61,29 @@ Image {
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
-                        dockBar.selectedItem = name
+                        dockBar.selectedItem = identifier
                     }
                 }
 
-                function getAction() {
-                    return ActionCollection[actionName]
+                Rectangle {
+                    color: "red"
+                    radius: 99
+                    x: 2
+                    y: 2
+                    width: fontMetrics.height + 4
+                    height: fontMetrics.height + 4
+                    visible: activeCount > 0
+                    Text {
+                        color: "white"
+                        anchors.centerIn: parent
+                        font.bold: true
+                        text: activeCount
+                    }
                 }
 
                 Connections {
-                    target: getAction()
-                    onToggled: action.enabled = ActionCollection[actionName].checked
+                    target: actionIcon
+                    onToggled: action.enabled = action.checked
                 }
             }
         }

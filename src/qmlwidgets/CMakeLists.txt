@@ -68,6 +68,7 @@ SET( libqmlwidgets_LIB_SRCS
     timelinedots.cpp
     qmlaction.cpp
     qactionbinder.cpp
+    symboliccolorizer.cpp
 )
 
 ADD_LIBRARY( libqmlwidgets  STATIC ${libqmlwidgets_LIB_SRCS} )

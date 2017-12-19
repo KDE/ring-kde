@@ -15,16 +15,40 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#include "desktopviewplugin.h"
+#pragma once
 
-#include <QtCore/QDebug>
-#include <QQmlEngine>
+#include <QtCore/QAbstractListModel>
 
-#include "dockmodel.h"
+class DockModelPrivate;
 
-#include <qrc_desktopview.cpp>
-
-void DesktopView::registerTypes(const char *uri)
+class DockModel : public QAbstractListModel
 {
-    qmlRegisterType<DockModel>(uri, 1, 0, "DockModel");
-}
+    Q_OBJECT
+public:
+    explicit DockModel(QObject* parent = nullptr);
+    virtual ~DockModel();
+
+    enum Roles {
+        ActiveCount = Qt::UserRole+1,
+        Identifier,
+        Action,
+        Enabled
+    };
+
+    enum class Mode {
+        TIMELINE,
+        DIALVIEW,
+        CONTACTREQUESTS,
+        ADDRESSBOOK,
+        HISTORY,
+        BOOKMARKS,
+    };
+
+    virtual QVariant data( const QModelIndex& index, int role) const override;
+    virtual int rowCount( const QModelIndex& parent) const override;
+    virtual QHash<int,QByteArray> roleNames() const override;
+
+private:
+    DockModelPrivate* d_ptr;
+    Q_DECLARE_PRIVATE(DockModel)
+};
