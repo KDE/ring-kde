@@ -62,7 +62,6 @@ SET(GENERIC_LIB_VERSION "2.0.0")
 
 #File to compile
 SET( libkring_LIB_SRCS
-   helperfunctions.cpp
    itemmodelserialization.cpp
 )
 
@@ -101,7 +100,6 @@ ENDIF()
 
 SET( libkring_LIB_HDRS
   akonadibackend.h
-  helperfunctions.h
   itemmodelserialization.h
 )
 

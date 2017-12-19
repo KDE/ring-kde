@@ -1,18 +1,8 @@
 <RCC>
   <qresource prefix="images">
     <file>../icons/conf-small.svg</file>
-    <file>../icons/history.svg</file>
     <file>../icons/icon_dialpad.svg</file>
     <file>../icons/mic.svg</file>
-  </qresource>
-  <qresource prefix="tip">
-    <file>../icons/tips/removeconference.svg</file>
-    <file>../icons/tips/ringing.svg</file>
-    <file>../icons/tips/reload.svg</file>
-    <file>../icons/tips/upArrow.svg</file>
-    <file>../icons/tips/keyboard.svg</file>
-    <file>../icons/tips/dragAndDrop.svg</file>
-    <file>../icons/tips/downArrow.svg</file>
   </qresource>
   <qresource prefix="mini">
     <file>../icons/miniicons/call.png</file>
@@ -26,7 +16,6 @@
     <file>../icons/miniicons/work.png</file>
   </qresource>
   <qresource prefix="gui">
-    <file>../icons/transferarrow.svg</file>
     <file>../icons/assets/toolbar_bg.png</file>
   </qresource>
   <qresource prefix="toolbar">

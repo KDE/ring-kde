@@ -43,7 +43,6 @@
 #include "conf/configurationdialog.h"
 #include "icons/icons.h"
 #include "klib/kcfg_settings.h"
-#include "klib/helperfunctions.h"
 #include <call.h>
 #include <account.h>
 #include <availableaccountmodel.h>
