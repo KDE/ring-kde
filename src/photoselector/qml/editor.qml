@@ -16,9 +16,8 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
 import QtQuick 2.7
-import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
-import QtQuick.Dialogs 1.2
+import QtQuick.Controls 2.2
 
 import PhotoSelectorPlugin 1.0
 
@@ -28,12 +27,14 @@ Dialog {
     property QtObject person: null
     signal newPhoto(var photo)
     signal done()
+    modal: true
 
     id: root
     visible: true
     width: 500
     height: 400
-    standardButtons: StandardButton.Save | StandardButton.Cancel
+    standardButtons: Dialog.Ok | Dialog.Cancel
+    closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
 
     PhotoSelector {
         id: selector
@@ -185,6 +186,7 @@ Dialog {
                 }
             }
         }
+
     }
 
     onAccepted: {
