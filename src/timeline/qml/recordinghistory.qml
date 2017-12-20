@@ -17,8 +17,8 @@
  **************************************************************************/
 import QtQuick 2.7
 import QtQuick.Layouts 1.0
-import QtQuick.Controls 1.4 as Controls1
 import QtQml.Models 2.2
+import org.kde.kirigami 2.2 as Kirigami
 import Ring 1.0
 
 Rectangle {
@@ -54,7 +54,7 @@ Rectangle {
             Layout.fillWidth: true
         }
 
-        Controls1.ScrollView {
+        ScrollablePage {
             id: scrollView
             Layout.fillWidth: true
             Layout.fillHeight: true
