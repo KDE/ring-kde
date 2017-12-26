@@ -524,7 +524,7 @@ QQmlApplicationEngine* RingApplication::engine()
          VideoWidget3::initProvider();
       }
       catch(char const* e) {
-         qDebug() << "Failed to connect to the daemon";
+         qDebug() << "Failed to connect to the daemon" << e;
          sync();
          ::exit(1);
       }

@@ -27,6 +27,8 @@
 
 // Ring
 #include <person.h>
+#include <contactmethod.h>
+#include <../qmlwidgets/contactbuilder.h>
 
 class PhotoSelectorPrivate final
 {
@@ -89,6 +91,24 @@ void PhotoSelector::setToPerson(Person* p)
     else {
         qWarning() << "Failed to set the photo: the contact is null";
     }
+}
+
+void PhotoSelector::setToContactMethod(ContactMethod* cm)
+{
+    if (cm->contact()) {
+        setToPerson(cm->contact());
+    }
+
+    ContactBuilder b(this);
+
+    b.from(cm);
+
+    if (cm->contact()) {
+        setToPerson(cm->contact());
+        cm->contact()->save();
+    }
+    else
+        qWarning() << "Failed to set the photo: failed to create a contact";
 }
 
 QString PhotoSelector::path() const

@@ -25,6 +25,7 @@ import Ring 1.0
 
 Dialog {
     property QtObject person: null
+    property QtObject contactMethod: null
     signal newPhoto(var photo)
     signal done()
     modal: true
@@ -190,7 +191,11 @@ Dialog {
     }
 
     onAccepted: {
-        selector.setToPerson(person)
+        if (person)
+            selector.setToPerson(person)
+        else if (contactMethod)
+            selector.setToContactMethod(contactMethod)
+
         videoWidget.started = false
         if (PreviewManager.previewing)
             PreviewManager.stopPreview()

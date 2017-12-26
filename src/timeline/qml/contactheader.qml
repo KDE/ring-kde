@@ -36,7 +36,7 @@ Rectangle {
     signal selectVideo()
 
     onCurrentContactMethodChanged: {
-        primaryName.text = currentContactMethod.primaryName
+        primaryName.text = currentContactMethod.bestName
 
         photo.contactMethod = currentContactMethod
 
@@ -55,7 +55,7 @@ Rectangle {
     Connections {
         target: currentContactMethod
         onChanged: {
-            primaryName.text = currentContactMethod.primaryName
+            primaryName.text = currentContactMethod.bestName
             photo.contactMethod = currentContactMethod
 
             bookmarkSwitch.source = (currentContactMethod && currentContactMethod.bookmarked) ?
@@ -90,8 +90,7 @@ Rectangle {
                     var component = Qt.createComponent("PhotoEditor.qml")
                     if (component.status == Component.Ready) {
                         var window    = component.createObject(contactHeader)
-                        window.person = currentContactMethod ? currentContactMethod.person :
-                            null
+                        window.contactMethod = currentContactMethod
                     }
                     else
                         console.log("ERROR", component.status, component.errorString())

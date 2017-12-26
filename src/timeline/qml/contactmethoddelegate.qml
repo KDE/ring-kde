@@ -117,7 +117,7 @@ Item {
                 }
 
                 Text {
-                    text: number.length == 40 ? "Unknown" : name
+                    text: name.length == 40 ? "Unknown" : name
                     clip: true
                     font.bold : true
                     Layout.fillWidth: true

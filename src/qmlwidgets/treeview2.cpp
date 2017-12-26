@@ -296,7 +296,7 @@ void TreeView2::setModel(QSharedPointer<QAbstractItemModel> m)
     if (model()) {
         disconnect(model().data(), &QAbstractItemModel::rowsInserted, d_ptr,
             &TreeView2Private::slotRowsInserted);
-        disconnect(model().data(), &QAbstractItemModel::rowsRemoved, d_ptr,
+        disconnect(model().data(), &QAbstractItemModel::rowsAboutToBeRemoved, d_ptr,
             &TreeView2Private::slotRowsRemoved);
         disconnect(model().data(), &QAbstractItemModel::layoutAboutToBeChanged, d_ptr,
             &TreeView2Private::cleanup);
@@ -321,7 +321,7 @@ void TreeView2::setModel(QSharedPointer<QAbstractItemModel> m)
 
     connect(model().data(), &QAbstractItemModel::rowsInserted, d_ptr,
         &TreeView2Private::slotRowsInserted );
-    connect(model().data(), &QAbstractItemModel::rowsRemoved, d_ptr,
+    connect(model().data(), &QAbstractItemModel::rowsAboutToBeRemoved, d_ptr,
         &TreeView2Private::slotRowsRemoved  );
     connect(model().data(), &QAbstractItemModel::layoutAboutToBeChanged, d_ptr,
         &TreeView2Private::cleanup);
