@@ -144,6 +144,7 @@ Rectangle {
 
             onSelectChat: {
                 tabBar.currentIndex = 2
+                timelinePage.currentInstance.focusEdit()
             }
 
             onSelectVideo: {

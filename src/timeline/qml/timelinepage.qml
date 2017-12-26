@@ -26,6 +26,10 @@ import RingQmlWidgets 1.0
 Rectangle {
     id: timelinePage
 
+    function focusEdit() {
+        chatBox.focusEdit()
+    }
+
     SystemPalette {
         id: activePalette
         colorGroup: SystemPalette.Active

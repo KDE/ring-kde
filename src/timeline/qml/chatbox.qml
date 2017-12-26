@@ -27,6 +27,10 @@ Rectangle {
     property alias backgroundColor: chatBox.color
     property var emojiColor: undefined
 
+    function focusEdit() {
+        messageTextArea.forceActiveFocus()
+    }
+
     id: chatBox
 
     signal sendMessage(string message, string richMessage)
