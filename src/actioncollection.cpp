@@ -168,7 +168,7 @@ Q_ASSERT(action_configureRing );
    action_configureRing ->setObjectName( QStringLiteral("action_configureRing") );
 
    INIT_ACTION(action_displayDialpad        , QIcon(RingIcons::DISPLAY_DIALPAD                   ), i18n("Display dialpad"         ));
-   INIT_ACTION(action_displayVolumeControls , QIcon(RingIcons::DISPLAY_VOLUME_CONSTROLS          ), i18n("Display volume controls" ));
+   INIT_ACTION(action_displayVolumeControls , {}                                                  , i18n("Display volume controls" ));
    INIT_ACTION(action_displayAccountCbb     , {}                                                  , i18n("Display account selector"));
    INIT_ACTION(action_raise_client          , {}                                                  , i18n("Raise Ring-KDE window"   ));
    INIT_ACTION(action_focus_history         , {}                                                  , i18n("Search history"          ));
@@ -438,16 +438,16 @@ void ActionCollection::updateVolumeButton()
 //    if (!RingApplication::instance()->isPhoneVisible())
 //       return;
 
-   double sndVol = Audio::Settings::instance().playbackVolume();
-   static const QIcon icons[4] = {
-      QIcon(QStringLiteral(":/images/icons/speaker.svg"   )),
-      QIcon(QStringLiteral(":/images/icons/speaker_25.svg")),
-      QIcon(QStringLiteral(":/images/icons/speaker_50.svg")),
-      QIcon(QStringLiteral(":/images/icons/speaker_75.svg"))
-   };
+//    double sndVol = Audio::Settings::instance().playbackVolume();
+//    static const QIcon icons[4] = {
+//       QIcon(QStringLiteral(":/images/icons/speaker.svg"   )),
+//       QIcon(QStringLiteral(":/images/icons/speaker_25.svg")),
+//       QIcon(QStringLiteral(":/images/icons/speaker_50.svg")),
+//       QIcon(QStringLiteral(":/images/icons/speaker_75.svg"))
+//    };
 
-   const int idx = (sndVol/26 < 0 || sndVol/26 >= 4)?0:sndVol/26;
-   ActionCollection::instance()->mutePlaybackAction()->setIcon(icons[idx]);
+//    const int idx = (sndVol/26 < 0 || sndVol/26 >= 4)?0:sndVol/26;
+//    ActionCollection::instance()->mutePlaybackAction()->setIcon(icons[idx]);
 
 //FIXME DROP QTWIDGET
 //   PhoneWindow::app()->view()->updateVolumeControls();

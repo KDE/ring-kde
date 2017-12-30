@@ -3,6 +3,9 @@
     <file>../icons/conf-small.svg</file>
     <file>../icons/icon_dialpad.svg</file>
     <file>../icons/mic.svg</file>
+    <file>../icons/mic_25.svg</file>
+    <file>../icons/mic_50.svg</file>
+    <file>../icons/mic_75.svg</file>
   </qresource>
   <qresource prefix="mini">
     <file>../icons/miniicons/call.png</file>

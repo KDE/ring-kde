@@ -34,9 +34,14 @@ Item {
     property bool showImage: false
     property bool showSave: true
 
+    property bool isChanged: false
+
     property var labelColor: undefined
 
     property var cachedPhoto: undefined
+
+
+    state: forcedState
 
     function save() {
         if ((!currentContactMethod) && (!currentPerson))
@@ -73,6 +78,11 @@ Item {
         person.save()
 
         currentPerson = person
+        isChanged = false
+    }
+
+    onChanged: {
+        isChanged = true
     }
 
     function getLastContacted() {
@@ -96,8 +106,6 @@ Item {
         colorGroup: SystemPalette.Active
     }
 
-    state: forcedState == "" ? "tablet" : forcedState
-
     onCurrentContactMethodChanged: {
         if (!currentContactMethod)
             return
@@ -108,6 +116,8 @@ Item {
         lastContactedTime.text = getLastContacted()
         totalCall.text         = getTotalCall()
         totalText.text         = getTotalText()
+
+        isChanged = false
     }
 
     onCurrentPersonChanged: {
@@ -188,6 +198,7 @@ Item {
         id: advanced
         title: i18n("Advanced")
         clip: true
+        height: 300
 
         ColumnLayout {
             id: tabbedContactInfo
@@ -199,17 +210,16 @@ Item {
             TabBar {
                 Layout.fillWidth: true
                 id: tabBar
-
-
-                // Avoid showing invisible pages by default
-                currentIndex: contactViewPage.state != "phone" && sv.currentIndex == 0 ?
-                    1 : sv.currentIndex
+//                 currentIndex: sv.currentIndex
+                onCurrentIndexChanged: {
+                    sv.currentIndex = currentIndex
+                }
 
                 TabButton {
                     id: detailsButton
                     text: i18n("Details")
-                    visible: false
-                    width: 0
+                    visible: state == "phone"
+                    width: state == "phone" ? 200 : 0
                 }
                 TabButton {
                     text: i18n("Phone numbers")
@@ -220,8 +230,8 @@ Item {
                 TabButton {
                     id: statButton
                     text: i18n("Statistics")
-                    visible: false
-                    width: 0
+                    visible: state == "phone"
+                    width: state == "phone" ? 200 : 0
                 }
             }
 
@@ -230,9 +240,9 @@ Item {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
 
-                // Avoid showing invisible pages by default
-                currentIndex: contactViewPage.state != "phone" && tabBar.currentIndex == 0 ?
-                    1 : tabBar.currentIndex
+                onCurrentIndexChanged: {
+                    tabBar.currentIndex = currentIndex
+                }
 
                 background: Rectangle {
                     color: activePalette.base
@@ -241,6 +251,7 @@ Item {
                 Page {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
+                    id: tabbedContactInfoPage1
                     GridLayout {
                         id: mainInfo
                         height: implicitHeight
@@ -304,6 +315,11 @@ Item {
                                 contactViewPage.changed()
                             }
                         }
+
+                        Item {
+                            id: filler
+                            Layout.fillHeight: true
+                        }
                     }
 
                     background: Rectangle { color: activePalette.base }
@@ -341,6 +357,7 @@ Item {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     background: Rectangle { color: activePalette.base }
+                    id: tabbedContactInfoPage4
                     ColumnLayout {
                         id: statistics
 
@@ -368,9 +385,10 @@ Item {
                         }
 
                         Rectangle {
-                            color: activePalette.text
+                            color: contactViewPage.state == "phone" ? "transparent" : activePalette.text
                             height: 1
                             Layout.fillWidth: true
+                            Layout.fillHeight: contactViewPage.state == "phone"
                         }
                     }
                 }
@@ -383,15 +401,40 @@ Item {
         id: contactBuilder
     }
 
-    Button {
-        anchors.bottom: parent.bottom
-        anchors.right: parent.right
-        anchors.margins: 5
-        text: i18n("Save")
-        visible: showSave
-        onClicked: {
-            contactViewPage.save()
+    Rectangle {
+        id: saveButton
+        z: 10
+        radius: 999
+        color: activePalette.highlight
+        visible: showSave && isChanged
+
+        anchors.margins: 10
+        width: 56
+        height: 56
+
+        Image {
+            source: "image://icon/edit-save"
+            height: 32
+            width: 32
+            anchors.centerIn: parent
         }
+
+        MouseArea {
+            anchors.fill: parent
+            hoverEnabled: true
+            onClicked: {
+                contactViewPage.save()
+            }
+        }
+    }
+
+    onStateChanged: {
+        tabBar.currentIndex = 1
+        sv.currentIndex = 1
+        detailsButton.visible = state == "phone"
+        statButton.visible = state == "phone"
+        detailsButton.width = state == "phone" ? detailsButton.implicitWidth : 0
+        statButton.width = state == "phone" ? statButton.implicitWidth : 0
     }
 
     /**
@@ -399,10 +442,12 @@ Item {
      * resolution.
      */
     states: [
-
         // In tablet mode, use 3 columns for the details
         State {
             name: "tablet"
+            when: (forcedState == "" ) && (contactViewPage.width >= 600 && contactViewPage.height <= (
+                statistics.implicitHeight + mainInfo.implicitHeight + 320) // 320 = advanced.height + 2*spacing
+            )
             ParentChange {
                 target: advanced
                 parent: contactViewPage
@@ -435,7 +480,6 @@ Item {
             PropertyChanges {
                 target: advanced
                 visible: true
-                height: undefined
                 width: contactViewPage.width / 2
             }
             PropertyChanges {
@@ -447,20 +491,48 @@ Item {
                 target: mainInfo
                 width: contactViewPage.width / 2
             }
+
+            AnchorChanges {
+                target: saveButton
+                anchors.bottom: contactViewPage.bottom
+                anchors.top: undefined
+                anchors.left: contactViewPage.left
+                anchors.right: undefined
+                anchors.horizontalCenter: undefined
+            }
+            PropertyChanges {
+                target: saveButton
+                width: 64
+                height: 64
+            }
         },
 
         // In desktop mode, put everything on top of each other and get rid
         // of the second tabbar
         State {
-            name: "desktop"
+            name: ""
             extend: "tablet"
 
             AnchorChanges {
-                target: advanced
-                anchors.right: undefined
+                target: saveButton
+                anchors.top: contactViewPage.top
+                anchors.right: parent.right
                 anchors.bottom: undefined
+                anchors.left: undefined
+                anchors.horizontalCenter: undefined
+            }
+            PropertyChanges {
+                target: saveButton
+                width: 64
+                height: 64
+            }
+
+            AnchorChanges {
+                target: advanced
+                anchors.right: contactViewPage.right
+                anchors.bottom: contactViewPage.bottom
+                anchors.top: undefined
                 anchors.left: contactViewPage.left
-                anchors.top: mainInfo.bottom
             }
             PropertyChanges {
                 target: statistics
@@ -474,8 +546,8 @@ Item {
             }
             PropertyChanges {
                 target: advanced
-                width: contactViewPage.width * 0.66
-                height: 301
+                height: contactViewPage.heght ? 300 : 299 //BUG prevent a race condition in QML
+                visible: true
                 anchors.topMargin: 10
             }
         },
@@ -484,9 +556,20 @@ Item {
         // in the tiny space
         State {
             name: "phone"
+            when: (forcedState == "" && (contactViewPage.width < 600 || contactViewPage.height < (
+                statistics.implicitHeight + mainInfo.implicitHeight + 320) // 320 = advanced.height + 2*spacing
+            ))
             ParentChange {
                 target: tabbedContactInfo
                 parent: contactViewPage
+            }
+            ParentChange {
+                target: mainInfo
+                parent: tabbedContactInfoPage1
+            }
+            ParentChange {
+                target: statistics
+                parent: tabbedContactInfoPage4
             }
             PropertyChanges {
                 target: mainInfo
@@ -497,16 +580,6 @@ Item {
                 anchors.fill: statistics.parent
             }
             PropertyChanges {
-                target: detailsButton
-                visible: true
-                width: undefined
-            }
-            PropertyChanges {
-                target: statButton
-                visible: true
-                width: undefined
-            }
-            PropertyChanges {
                 target: tabbedContactInfo
                 anchors.fill: contactViewPage
             }
@@ -514,51 +587,19 @@ Item {
                 target: advanced
                 visible: false
             }
-            PropertyChanges {
-                target: sv
-                currentIndex: 0
+            AnchorChanges {
+                target: saveButton
+                anchors.bottom: contactViewPage.bottom
+                anchors.left: undefined
+                anchors.top: undefined
+                anchors.right: undefined
+                anchors.horizontalCenter: contactViewPage.horizontalCenter
             }
             PropertyChanges {
-                target: tabBar
-                currentIndex: 0
+                target: saveButton
+                width: 64
+                height: 64
             }
         }
     ]
-
-    // For some reason, the `when` clause of the state never fire
-    onHeightChanged: {
-        if (forcedState != "")
-            return forcedState
-
-        var isPhone = contactViewPage.height <= 400 || (
-            contactViewPage.height > contactViewPage.width &&
-            contactViewPage.height < 600
-        )
-
-        var isTablet = (
-            contactViewPage.height <  300 /*advanced default*/
-                + statistics.implicitHeight + mainInfo.implicitHeight
-        ) && (
-            contactViewPage.height > 400
-        ) && advanced.implicitWidth + mainInfo.implicitWidth < contactViewPage.width
-
-        if (isPhone)
-            state = "phone"
-        else if (isTablet)
-            state = "tablet"
-        else
-            state = "desktop"
-
-        //HACK QML fails to resolve the property change graph
-        if (state == "desktop")
-            advanced.height = 300
-
-    }
-
-    //HACK Trick to force "tablet" -> "desktop". Otherwise it hits a bug in QML
-    // and the reparenting is done after the anchors changes and the elements
-    // are misplaced
-    Component.onCompleted: {
-        onHeightChanged()
-    }
 }

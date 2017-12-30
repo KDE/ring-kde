@@ -138,6 +138,9 @@ Rectangle {
             id: contactHeader
             backgroundColor: activePalette.alternateBase
             textColor: activePalette.text
+            Layout.maximumHeight: height
+            Layout.minimumHeight: height
+
             onCachedPhotoChanged: {
                 contactInfo.cachedPhoto = contactHeader.cachedPhoto
             }
@@ -153,7 +156,7 @@ Rectangle {
         }
 
         TabBar {
-//             Layout.fillWidth: true
+            Layout.fillWidth: true
             id: tabBar
             currentIndex: swipeView.currentIndex
             width: contentWidth + 100
@@ -304,7 +307,6 @@ Rectangle {
             PropertyChanges {
                 target: contactHeader
                 state: "compact"
-                height: 40
             }
         }
     ]

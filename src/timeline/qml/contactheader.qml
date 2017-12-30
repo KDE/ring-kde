@@ -27,6 +27,9 @@ import PhotoSelectorPlugin 1.0
 Rectangle {
     id: contactHeader
     property QtObject currentContactMethod: null
+    color: "gray"
+    height: 70
+    Layout.fillWidth: true
 
     property alias backgroundColor: contactHeader.color
     property var textColor: undefined
@@ -63,23 +66,23 @@ Rectangle {
         }
     }
 
-    color: "gray"
-    height: 70
-    Layout.fillWidth: true
-
     PersistentCallControls {
         anchors.top: parent.top
         anchors.horizontalCenter: parent.horizontalCenter
     }
 
     RowLayout {
-        anchors.fill: parent
-        anchors.margins: 8
+        id: layout
+//         height: contactHeader.state == "compact"?  40 : 70
+        width: parent.width
+        anchors.margins: contactHeader.state == "compact"? 2 : 8
 
         ContactPhoto {
             id: photo
-            height: contactHeader.height-10
-            width: contactHeader.height-10
+            Layout.preferredHeight: (contactHeader.state == "compact"?  40 : 70)-10
+            Layout.preferredWidth: (contactHeader.state == "compact" ?  40 : 70)-10
+            Layout.maximumHeight: (contactHeader.state == "compact" ?  40 : 70)-10
+            Layout.maximumWidth: (contactHeader.state == "compact" ?  40 : 70)-10
             displayEmpty: false
             MouseArea {
                 id: mouseArea
@@ -89,7 +92,7 @@ Rectangle {
                 onClicked: {
                     var component = Qt.createComponent("PhotoEditor.qml")
                     if (component.status == Component.Ready) {
-                        var window    = component.createObject(contactHeader)
+                        var window = component.createObject(contactHeader)
                         window.contactMethod = currentContactMethod
                     }
                     else
@@ -121,6 +124,8 @@ Rectangle {
 //             font.pointSize: 14
             text: "My name"
             color: textColor
+            Layout.fillHeight: true
+            verticalAlignment: Text.AlignVCenter
         }
         Image {
             id: bookmarkSwitch
@@ -335,19 +340,31 @@ Rectangle {
             Layout.fillHeight: true
             // Display reasons why the media buttons are not present
             MediaAvailability {
+                defaultSize: parent.height < 48 ? parent.height : 48
                 currentContactMethod: contactHeader.currentContactMethod
                 anchors.verticalCenter: parent.verticalCenter
             }
         }
     }
 
+    onStateChanged: {
+        layout.height = state == "compact" ? 40 : 70
+        console.log("the fucking state changed", state)
+    }
+
     states: [
+        State {
+            name: ""
+            PropertyChanges {
+                target: contactHeader
+                height: 70
+            }
+        },
         State {
             name: "compact"
             PropertyChanges {
                 target: contactHeader
                 height: 40
-                Layout.maximumHeight: 40
             }
             PropertyChanges {
                 target: button
@@ -366,9 +383,9 @@ Rectangle {
                 visible: false
             }
             PropertyChanges {
-                target: photoRect
-                height: 30
-                width: 30
+                target: photo
+//                 height: 30
+//                 width: 30
             }
         }
     ]

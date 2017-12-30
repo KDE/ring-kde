@@ -51,7 +51,7 @@ class QmlAction : public QObject
 {
     Q_OBJECT
     Q_CLASSINFO("DefaultProperty", "children")
-    Q_PROPERTY(QQmlListProperty<QmlAction> children READ children)
+    Q_PROPERTY(QQmlListProperty<QmlAction> children READ children NOTIFY childrenChanged)
 public:
     Q_PROPERTY(QString           name        READ name        WRITE setName       NOTIFY nameChanged        )
     Q_PROPERTY(QString           description READ description WRITE setDecription NOTIFY descriptionChanged )

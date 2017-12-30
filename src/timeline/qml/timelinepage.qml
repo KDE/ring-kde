@@ -119,7 +119,7 @@ Rectangle {
 
                     Rectangle {
                         anchors.fill: parent
-                        color: inactivePalette.highlight
+                        color: activePalette.base
                         opacity: 0.75
                     }
                 }

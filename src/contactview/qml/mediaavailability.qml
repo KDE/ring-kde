@@ -26,6 +26,7 @@ import ContactView 1.0
 Rectangle {
     id: mediaAvailability
     property QtObject currentContactMethod: null
+    property real defaultSize: 48
     property bool hasIssue: currentContactMethod && (
         // If there's a contact, take the cumulative of all ways to reach it
         (currentContactMethod.contact && (
@@ -93,8 +94,8 @@ Rectangle {
     border.color: activePalette.text
     color: "transparent"
     radius: 99
-    width: 48
-    height: 48
+    width: defaultSize
+    height: defaultSize
     visible: hasIssue
     opacity: 0.5
 
@@ -104,10 +105,10 @@ Rectangle {
     }
 
     Image {
-        height: 48
-        width: 48
-        sourceSize.width: 48
-        sourceSize.height: 48
+        height: defaultSize
+        width: defaultSize
+        sourceSize.width: defaultSize
+        sourceSize.height: defaultSize
         anchors.verticalCenter: parent.verticalCenter
         source: "image://SymbolicColorizer/:/sharedassets/outline/warning.svg"
     }
@@ -119,6 +120,7 @@ Rectangle {
         anchors.right: parent.right
         visible: false
         color: activePalette.text
+        wrapMode: Text.WordWrap
     }
 
     MouseArea {
@@ -175,7 +177,7 @@ Rectangle {
                     visible: true
                     opacity: 0.5
                     radius: 99
-                    width: 48
+                    width: defaultSize
                 }
             }
         ]

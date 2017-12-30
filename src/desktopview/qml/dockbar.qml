@@ -80,11 +80,6 @@ Image {
                         text: activeCount
                     }
                 }
-
-                Connections {
-                    target: actionIcon
-                    onToggled: action.enabled = action.checked
-                }
             }
         }
     }

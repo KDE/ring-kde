@@ -20,6 +20,7 @@ import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
 import Ring 1.0
 import RingQmlWidgets 1.0
+import org.kde.kirigami 2.2 as Kirigami
 
 Item {
     id: phoneNumbers
@@ -46,95 +47,69 @@ Item {
             Layout.fillWidth: true
             Layout.fillHeight: true
             anchors.margins: 3
-            delegate: Item {
-                height: 30
-                width: phoneNumbers.width
+            delegate: Kirigami.SwipeListItem {
+//                 height: 30
+//                 width: phoneNumbers.width
+
+                actions: [
+                    Kirigami.Action {
+                        iconName: "edit-delete"
+                        text: i18n("Delete")
+                        onTriggered: print("Action 1 clicked")
+                    },
+                    Kirigami.Action {
+                        iconSource: "image://SymbolicColorizer/:/sharedassets/outline/call.svg"
+                        text: i18n("Call")
+                        visible: canCall
+                        onTriggered: CallModel.dialingCall(object).performAction(Call.ACCEPT)
+                    },
+                    Kirigami.Action {
+                        iconSource: "image://SymbolicColorizer/:/sharedassets/outline/camera.svg"
+                        text: i18n("Video call")
+                        visible: canVideoCall
+                        onTriggered: CallModel.dialingCall(object).performAction(Call.ACCEPT)
+                    },
+                    Kirigami.Action {
+                        iconSource: "image://SymbolicColorizer/:/sharedassets/outline/screen.svg"
+                        text: i18n("Share screen")
+                        visible: canVideoCall
+                        onTriggered: CallModel.dialingCall(object).performAction(Call.ACCEPT)
+                    }
+                ]
+
                 RowLayout {
+                    anchors.leftMargin: 10
                     anchors.fill: parent
+                    spacing: 10
 
                     PixmapWrapper {
-                        Layout.preferredHeight: parent.height
-                        Layout.preferredWidth: parent.height
+                        Layout.preferredHeight: 16
+                        Layout.preferredWidth: 16
+                        anchors.verticalCenter: parent.verticalCenter
                         pixmap: decoration
                     }
-                    Text {
-                        text: display
+
+                    ColumnLayout {
                         Layout.fillWidth: true
-                        color: activePalette.text
-                    }
-                    Text {
-                        text: categoryName
-                        color: inactivePalette.text
-                    }
-                    Rectangle {
-                        id: videoButton
-                        visible: isReachable
-                        Layout.preferredWidth: parent.height
-                        Layout.preferredHeight: parent.height
-                        color: "transparent"
-                        radius: 3
-                        Image {
-                            anchors.fill: parent
-                            smooth : false
-                            source: "sharedassets/phone_dark/accept_video.svg"
-                            sourceSize.width: parent.height
-                            sourceSize.height: parent.height
+                        Row {
+                            Layout.fillWidth: true
+                            Text {
+                                text: display
+                                color: activePalette.text
+                            }
+                            Text {
+                                text: "  ("+categoryName+")"
+                                color: inactivePalette.text
+                            }
                         }
 
-                        MouseArea {
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            onEntered: videoButton.color = activePalette.highlight
-                            onExited: videoButton.color = "transparent"
-                            onClicked: CallModel.dialingCall(object).performAction(Call.ACCEPT)
+                        Text {
+                            text: lastUsed == undefined || lastUsed == "" ? i18n("Never used") :
+                                i18n("Used ")+totalCallCount+i18n(" time (Last used on: ") + formattedLastUsed + ")"
+                            color: inactivePalette.text
                         }
                     }
-                    Rectangle {
-                        id: callButton
-                        visible: isReachable
-                        Layout.preferredWidth: parent.height
-                        Layout.preferredHeight: parent.height
-                        color: "transparent"
-                        radius: 3
-                        Image {
-                            anchors.fill: parent
-                            smooth : false
-                            source: "sharedassets/phone_dark/accept.svg"
-                            sourceSize.width: parent.height
-                            sourceSize.height: parent.height
-                        }
 
-                        MouseArea {
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            onEntered: callButton.color = activePalette.highlight
-                            onExited: callButton.color = "transparent"
-                            onClicked: CallModel.dialingCall(object).performAction(Call.ACCEPT)
-                        }
-                    }
-                    Rectangle {
-                        id: remove
-                        visible: isReachable
-                        Layout.preferredWidth: parent.height
-                        Layout.preferredHeight: parent.height
-                        color: "transparent"
-                        radius: 3
-                        Image {
-                            anchors.fill: parent
-                            smooth : false
-                            source: "image://icon/list-remove"
-                            sourceSize.width: parent.height
-                            sourceSize.height: parent.height
-                        }
-
-                        MouseArea {
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            onEntered: remove.color = activePalette.highlight
-                            onExited: remove.color = "transparent"
-    //                         onClicked: CallModel.dialingCall(object).performAction(Call.ACCEPT)
-                        }
-                    }
                     Item {
                         Layout.preferredWidth: 5
                     }
