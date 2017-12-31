@@ -111,7 +111,7 @@ Kirigami.ApplicationWindow {
         }
 
         Item {
-            width: 335
+            width: Math.min(335, root.width-48)
             Layout.fillHeight: true
             Loader {
                 id: timelineView
