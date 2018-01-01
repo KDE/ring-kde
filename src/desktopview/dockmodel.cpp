@@ -82,7 +82,8 @@ QVariant DockModel::data( const QModelIndex& index, int role) const
             return QVariant::fromValue(a);
         case Roles::ActiveCount:
             if (a == ActionCollection::instance()->showDialDockAction())
-                return CallModel::instance().size();
+                return CallModel::instance().size()
+                    - (CallModel::instance().hasDialingCall() ? 1 : 0);
             return 0;
     }
 
