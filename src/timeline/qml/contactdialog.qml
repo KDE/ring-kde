@@ -23,12 +23,16 @@ Rectangle {
     property alias showImage    : contactInfo.showImage
     property alias forcedState  : contactInfo.forcedState
 
+    color: activePalette.window
+
     SystemPalette {
         id: activePalette
         colorGroup: SystemPalette.Active
     }
 
-    color: activePalette.window
+    FontMetrics {
+        id: fontMetrics
+    }
 
     ContactInfo {
         id: contactInfo

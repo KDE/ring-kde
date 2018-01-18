@@ -4,5 +4,6 @@
         <file alias="ContactList.qml">qml/contactlist.qml</file>
         <file alias="ContactCard.qml">qml/contactcard.qml</file>
         <file alias="MediaAvailability.qml">qml/mediaavailability.qml</file>
+        <file alias="VCardForm.qml">qml/vcardform.qml</file>
     </qresource>
 </RCC>

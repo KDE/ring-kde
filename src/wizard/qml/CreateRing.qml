@@ -21,8 +21,7 @@ import QtQuick.Layouts 1.0
 import Ring 1.0
 
 Item {
-    id: item1
-
+    id: createRing
     property alias registerUserName: registerUserName
 
     property bool nextAvailable: false
@@ -31,6 +30,9 @@ Item {
     property var account: null
 
     signal registrationCompleted()
+
+    width: Math.min(createForm.implicitWidth, parent.width - 20)
+    height: createForm.implicitHeight
 
     function isNextAvailable() {
         nextAvailable = (userName.text.length > 0 || !registerUserName.checked)
@@ -66,9 +68,11 @@ Item {
 
         account.performAction(Account.SAVE)
         account.performAction(Account.RELOAD)
+        console.log("Account creation in progress")
     }
 
     ColumnLayout {
+        id: createForm
         anchors.fill: parent
 
         Switch {
@@ -90,7 +94,6 @@ Item {
             text: i18n("Enter an username")
             color: "white"
             anchors.leftMargin: 8
-            anchors.left: parent.left
             Layout.fillWidth: true
 
             /*Behavior on Layout.maximumHeight {
@@ -110,13 +113,6 @@ Item {
             height: 40
             Layout.fillWidth: true
 
-            /*Behavior on Layout.maximumHeight {
-                NumberAnimation {
-                    easing.type: Easing.OutQuad
-                    duration: 500
-                }
-            }*/
-
             onTextChanged: {
                 isNextAvailable()
                 busyIndicator.visible = true
@@ -129,9 +125,6 @@ Item {
         RowLayout {
             id: rowLayout
             clip: true
-            x: 44
-            y: 127
-            height: 37
             Layout.fillHeight: false
             Layout.maximumHeight: 37
             Layout.fillWidth: true
@@ -174,21 +167,14 @@ Item {
 
         Label {
             id: label1
-            x: -1
-            y: 233
-            height: 14
             text: i18n("Enter an archive password")
             color: "white"
             Layout.fillWidth: true
             anchors.leftMargin: 8
-            anchors.left: parent.left
         }
 
         TextField {
             id: password
-            x: 8
-            y: 187
-            height: 40
             echoMode: "Password"
             Layout.fillWidth: true
             onTextChanged: isNextAvailable()
@@ -196,9 +182,6 @@ Item {
 
         Label {
             id: label
-            x: -1
-            y: 54
-            height: 14
             color: "white"
             text: i18n("Repeat the new password")
             Layout.fillWidth: true
@@ -208,9 +191,6 @@ Item {
         TextField {
             id: repeatPassword
             echoMode: "Password"
-            x: 8
-            y: 253
-            height: 40
             Layout.fillWidth: true
             onTextChanged: isNextAvailable()
         }
@@ -237,12 +217,12 @@ Item {
                 }
             ]
 
-            /*Behavior on opacity {
+            Behavior on opacity {
                 NumberAnimation {
                     easing.type: Easing.OutQuad
                     duration: 200
                 }
-            }*/
+            }
         }
 
         Item {
@@ -265,13 +245,15 @@ Item {
 
     Rectangle {
         id: registrationPopup
-        width: 200
-        height: 75
+        width: popupLayout.implicitWidth + 50
+        height: popupLayout.implicitHeight + 10
         color: "#eeeeee"
         visible: false
         z: 200
-        anchors.centerIn: item1
+        anchors.centerIn: createRing
+
         RowLayout {
+            id: popupLayout
             anchors.verticalCenter: parent.verticalCenter
 
             BusyIndicator {
@@ -379,10 +361,14 @@ Item {
                 registerFoundLabel.text = i18n("The username is available")
                 registerFoundLabel.color = "green"
             }
-            else if (name == "") {
-                registerFoundLabel.text = i18n("Please enter an username")
-                registerFoundLabel.color = ""
+            else if (status == 1 || name == "") {
+                registerFoundLabel.text = i18n("Please enter an username (3 character minimum)")
+                registerFoundLabel.color = "white"
                 nextAvailable = false
+            }
+            else if (status == 3) {
+                registerFoundLabel.text = i18n("The registered name lookup failed, ignoring")
+                nextAvailable = true
             }
             else {
                 registerFoundLabel.text = i18n("The username is not available")
@@ -410,7 +396,7 @@ Item {
                 case 0: //SUCCESS
                     registrationStatus.text = i18n("Success")
                     busy = false
-                    item1.registrationCompleted()
+                    createRing.registrationCompleted()
                     break
                 case 1: //WRONG_PASSWORD
                     registrationStatus.text = i18n("Password mismatch")
@@ -431,7 +417,9 @@ Item {
     Connections {
         target: account
         onStateChanged: {
-            if (state == Account.READY) {
+            // Assume UNREGISTERED accounts are ok, otherwise it will have
+            // false negatives
+            if (state == Account.READY || state == Account.UNREGISTERED) {
                 if (registerUserName.checked) {
                     if (account.registerName(password.text, account.displayName)) {
                         registrationStatus.text = i18n("Registration")
@@ -447,9 +435,16 @@ Item {
                     registrationTimeout.stop()
                     registrationIndicator.visible = false
                     busy = false
-                    item1.registrationCompleted()
+                    createRing.registrationCompleted()
                 }
                 account = null
+            }
+            else if (state == Account.ERROR) {
+                console.log("The account creation failed with an invalid state:",
+                    account.lastErrorMessage)
+            }
+            else {
+                console.log("The wizard account creation has state:", state)
             }
         }
     }

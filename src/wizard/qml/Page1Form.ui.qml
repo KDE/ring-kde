@@ -42,7 +42,7 @@ Page {
         id: text1
         anchors.horizontalCenter: parent.horizontalCenter
         y: 149
-        width: 423
+        width: Math.min(423, frontPage.width - 114)
         height: 86
         text: i18n("Welcome to Ring-KDE. Before you can contact your friend, you have to have an account. Don't worry, creating one is easy and doesn't require sharing any personal information. If you are in an office or your phone service provider offers a SIP account, you can also configure Ring-KDE to take your \"real\" phone calls.")
         wrapMode: Text.WordWrap
@@ -99,20 +99,20 @@ Page {
 
     CreateRing {
         id: createRing
-        x: -20
-        y: text1.height + 8
+        x: frontPage.width/2 - width/2 - 20
+        y: frontPage.height/2 - height/2
+        anchors.centerIn: frontPage
         opacity: 0
         visible: false
-        width: logo.width + text1.width
     }
 
     ImportRing {
         id: importRing
-        x: -20
-        y: text1.height + 8
         opacity: 0
         visible: false
         width: logo.width + text1.width
+        x: frontPage.width/2 - width/2 - 20
+        y: frontPage.height/2 - height/2
     }
 
     ProfilePage {

@@ -39,10 +39,22 @@ public:
     };
     Q_ENUM(Pages);
 
+    Q_PROPERTY(QQuickItem* page READ page CONSTANT)
+    Q_PROPERTY(QQuickItem* header READ header WRITE setHeader CONSTANT)
+    Q_PROPERTY(bool mobile READ isMobile WRITE setMobile CONSTANT)
+
     Q_INVOKABLE explicit MainPage(QQuickItem* parent = nullptr);
     virtual ~MainPage();
 
     Q_INVOKABLE void setCurrentPage(Pages page);
+
+    QQuickItem* page() const;
+
+    QQuickItem* header() const;
+    void setHeader(QQuickItem* item);
+
+    bool isMobile() const;
+    void setMobile(bool v);
 
 protected:
     virtual bool eventFilter(QObject *obj, QEvent *event) override;

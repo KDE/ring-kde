@@ -29,6 +29,8 @@ Item {
     property double position: 0
     property alias  model: timelineOverlay.tlModel
     property bool   bottomUp: false
+    property bool   display: true
+    property alias  hideTimeout: hideTimer.interval
 
     property bool overlayVisible: false
 
@@ -66,6 +68,21 @@ Item {
         colorGroup: SystemPalette.Active
     }
 
+    Timer {
+        id: hideTimer
+        running: false
+        interval: 5000
+        repeat: false
+    }
+
+    onDisplayChanged: {
+        console.log("DISPLAY CHANGED!", display)
+        if (!display)
+            hideTimer.running = true
+
+//         else
+//             handle.visible = true
+    }
 
     Rectangle {
         id: handle
@@ -73,6 +90,11 @@ Item {
         color: inactivePalette.text
         width: parent.width
         height: 65
+        visible: scrollbar.display || hideTimer.running || stateGroup.state == "overlay"
+
+        onVisibleChanged: {
+            console.log("VISIBILITY CHANGED", visible)
+        }
 
         onYChanged: {
             if (!tmlList)
@@ -187,6 +209,7 @@ Item {
             anchors.fill: parent
             delegate: category
             model: tlModel
+            interactive: false
             Component.onCompleted: {
                 scrollbar.tmlList = tmlList
 
@@ -234,6 +257,8 @@ Item {
     }
 
     StateGroup {
+        id: stateGroup
+
         states: [
             State {
                 name: "overlay"

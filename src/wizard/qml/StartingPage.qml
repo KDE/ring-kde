@@ -22,7 +22,7 @@ StartingPageForm {
 
     signal quit()
 
-    /*Behavior on y {
+    Behavior on y {
         NumberAnimation {
             easing.type: Easing.InQuad
             duration: 500
@@ -32,7 +32,7 @@ StartingPageForm {
                 }
             }
         }
-    }*/
+    }
 
     MouseArea {
         anchors.fill: parent
@@ -46,8 +46,9 @@ StartingPageForm {
             y = 0
             width = parent.width
             height = parent.height
-            parent.visible = false /*ANIM remove*/
+
             startingPage.anchors.fill = undefined
+
             startingPage.state = "hidden"
         }
     }

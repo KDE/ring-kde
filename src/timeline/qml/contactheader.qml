@@ -27,6 +27,8 @@ import PhotoSelectorPlugin 1.0
 Rectangle {
     id: contactHeader
     property QtObject currentContactMethod: null
+    property bool isMobile: false
+    property bool isCompact: false
     color: "gray"
     height: 70
     Layout.fillWidth: true
@@ -41,7 +43,7 @@ Rectangle {
     onCurrentContactMethodChanged: {
         primaryName.text = currentContactMethod.bestName
 
-        photo.contactMethod = currentContactMethod
+        contactPhoto.contactMethod = currentContactMethod
 
         bookmarkSwitch.source = (currentContactMethod && currentContactMethod.bookmarked) ?
             "icons/bookmarked.svg" : "icons/not_bookmarked.svg"
@@ -59,7 +61,7 @@ Rectangle {
         target: currentContactMethod
         onChanged: {
             primaryName.text = currentContactMethod.bestName
-            photo.contactMethod = currentContactMethod
+            contactPhoto.contactMethod = currentContactMethod
 
             bookmarkSwitch.source = (currentContactMethod && currentContactMethod.bookmarked) ?
                 "icons/bookmarked.svg" : "icons/not_bookmarked.svg"
@@ -71,19 +73,21 @@ Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter
     }
 
-    RowLayout {
-        id: layout
-//         height: contactHeader.state == "compact"?  40 : 70
-        width: parent.width
-        anchors.margins: contactHeader.state == "compact"? 2 : 8
+    // Wrap the photo as AnchorChanges are unreliable for margins
+    Item {
+        id: photo
+
+        width: contactHeader.height
+        height: contactHeader.height
 
         ContactPhoto {
-            id: photo
-            Layout.preferredHeight: (contactHeader.state == "compact"?  40 : 70)-10
-            Layout.preferredWidth: (contactHeader.state == "compact" ?  40 : 70)-10
-            Layout.maximumHeight: (contactHeader.state == "compact" ?  40 : 70)-10
-            Layout.maximumWidth: (contactHeader.state == "compact" ?  40 : 70)-10
+            id: contactPhoto
+            anchors.fill: parent
+            anchors.verticalCenter: contactHeader.verticalCenter
+            anchors.margins: contactHeader.state == "" ? 5 : 2
+
             displayEmpty: false
+
             MouseArea {
                 id: mouseArea
                 anchors.fill: parent
@@ -106,7 +110,7 @@ Rectangle {
                 border.color: activePalette.text
                 radius: 5
                 color: "transparent"
-                visible: mouseArea.containsMouse || (!photo.hasPhoto)
+                visible: mouseArea.containsMouse || (!contactPhoto.hasPhoto)
 
                 Text {
                     text: i18n("Add\nPhoto")
@@ -117,275 +121,229 @@ Rectangle {
                 }
             }
         }
+    }
 
-        Text {
-            id: primaryName
-            font.bold: true
-//             font.pointSize: 14
-            text: "My name"
-            color: textColor
-            Layout.fillHeight: true
-            verticalAlignment: Text.AlignVCenter
-        }
-        Image {
-            id: bookmarkSwitch
-            anchors.rightMargin: 1
-            anchors.topMargin: 3
-            height: 16
-            width: 16
-            source: (currentContactMethod && currentContactMethod.bookmarked) ?
-                "icons/bookmarked.svg" : "icons/not_bookmarked.svg"
-            z: 100
-            MouseArea {
-                anchors.fill: parent
-                onClicked: {
-                    mouse.accepted = true
-                    currentContactMethod.bookmarked = !currentContactMethod.bookmarked
-                    bookmarkSwitch.source = currentContactMethod.bookmarked ?
-                        "icons/bookmarked.svg" : "icons/not_bookmarked.svg"
-                }
-            }
-        }
+    Text {
+        id: primaryName
+        anchors.leftMargin: 5
+        anchors.rightMargin: 5
+        anchors.left: photo.right
+        anchors.verticalCenter: contactHeader.verticalCenter
+        font.bold: true
+        text: "My name"
+        color: textColor
+        verticalAlignment: Text.AlignVCenter
+    }
 
-        Item {
-            id: separator
-            Layout.fillHeight: true
-            width: 2
-            Rectangle {
-                height: parent.height -10
-                y: 5
-                width: 1
-                color: inactivePalette.text
-                opacity: 0.2
-            }
-        }
-
-        //TODO Qt5.10 deps: use native icons
-        Button {
-            id: button
-            implicitWidth: label.implicitWidth + 20
-            visible: currentContactMethod &&
-                ((!currentContactMethod) ||
-                    currentContactMethod.canCall == ContactMethod.AVAILABLE)
-
-            checkable: currentContactMethod && currentContactMethod.hasActiveCall
-            checked: currentContactMethod && currentContactMethod.firstOutgoingCall
-
+    Image {
+        id: bookmarkSwitch
+        anchors.left: primaryName.right
+        anchors.verticalCenter: contactHeader.verticalCenter
+        anchors.rightMargin: 1
+        anchors.topMargin: 3
+        anchors.leftMargin: 5
+        height: 16
+        width: 16
+        source: (currentContactMethod && currentContactMethod.bookmarked) ?
+            "icons/bookmarked.svg" : "icons/not_bookmarked.svg"
+        z: 100
+        MouseArea {
+            anchors.fill: parent
             onClicked: {
-                if (currentContactMethod == null) return
-
-                if (currentContactMethod.hasInitCall) {
-                    contactHeader.selectVideo()
-                    return
-                }
-
-                CallModel.dialingCall(currentContactMethod)
-                    .performAction(Call.ACCEPT)
-            }
-
-            Row {
-                id: label
-                anchors.centerIn: parent
-                height: parent.height
-                Image {
-                    height: 22
-                    width: 22
-                    sourceSize.width: 22
-                    sourceSize.height: 22
-                    anchors.verticalCenter: parent.verticalCenter
-                    source: "image://SymbolicColorizer/:/sharedassets/outline/call.svg"
-                }
-
-                Text {
-                    anchors.margins: 5
-                    height: parent.height
-                    verticalAlignment: Text.AlignVCenter
-                    color: activePalette.text
-                    text: "   " + i18n("Call")
-                }
-            }
-        }
-
-        Button {
-            id: button2
-            implicitWidth: label2.implicitWidth + 20
-
-            visible: currentContactMethod &&
-                ((!currentContactMethod) ||
-                    currentContactMethod.canVideoCall == ContactMethod.AVAILABLE)
-
-            checkable: currentContactMethod && currentContactMethod.hasActiveCall
-            checked: currentContactMethod && currentContactMethod.firstOutgoingCall
-                && currentContactMethod.firstOutgoingCall.videoRenderer
-
-            onClicked: {
-                if (currentContactMethod == null) return
-
-                if (currentContactMethod.hasInitCall) {
-                    contactHeader.selectVideo()
-                    return
-                }
-
-                CallModel.dialingCall(currentContactMethod)
-                    .performAction(Call.ACCEPT)
-            }
-
-            Row {
-                id: label2
-                anchors.centerIn: parent
-                height: parent.height
-                Image {
-                    height: 22
-                    width: 22
-                    sourceSize.width: 22
-                    sourceSize.height: 22
-                    anchors.verticalCenter: parent.verticalCenter
-                    source: "image://SymbolicColorizer/:/sharedassets/outline/camera.svg"
-                }
-
-                Text {
-                    anchors.margins: 5
-                    height: parent.height
-                    verticalAlignment: Text.AlignVCenter
-                    color: activePalette.text
-                    text: "   " + i18n("Video")
-                }
-            }
-        }
-
-        Button {
-            id: button3
-            implicitWidth: label3.implicitWidth + 20
-            checkable: currentContactMethod && currentContactMethod.hasActiveCall
-            checked: currentContactMethod && currentContactMethod.firstOutgoingCall
-                && currentContactMethod.firstOutgoingCall.videoRenderer
-
-            visible: currentContactMethod &&
-                ((!currentContactMethod) ||
-                    currentContactMethod.canVideoCall == ContactMethod.AVAILABLE)
-
-            onClicked: {
-                if (currentContactMethod == null) return
-
-                if (currentContactMethod.hasInitCall) {
-                    contactHeader.selectVideo()
-                    return
-                }
-
-                CallModel.dialingCall(currentContactMethod)
-                    .performAction(Call.ACCEPT)
-            }
-
-            Row {
-                id: label3
-                anchors.centerIn: parent
-                height: parent.height
-                Image {
-                    height: 22
-                    width: 22
-                    sourceSize.width: 22
-                    sourceSize.height: 22
-                    anchors.verticalCenter: parent.verticalCenter
-                    source: "image://SymbolicColorizer/:/sharedassets/outline/screen.svg"
-                }
-
-                Text {
-                    anchors.margins: 5
-                    color: activePalette.text
-                    height: parent.height
-                    verticalAlignment: Text.AlignVCenter
-                    text: "   " + i18n("Screen sharing")
-                }
-            }
-        }
-
-        Button {
-            id: button4
-            implicitWidth: label4.implicitWidth + 20
-
-            visible: currentContactMethod &&
-                currentContactMethod.canSendTexts == ContactMethod.AVAILABLE
-
-            onClicked: {
-                if (currentContactMethod == null) return
-
-                contactHeader.selectChat()
-            }
-
-            Row {
-                id: label4
-                anchors.centerIn: parent
-                height: parent.height
-                Image {
-                    height: 22
-                    width: 22
-                    sourceSize.width: 22
-                    sourceSize.height: 22
-                    anchors.verticalCenter: parent.verticalCenter
-                    source: "image://SymbolicColorizer/:/sharedassets/outline/chat.svg"
-                }
-
-                Text {
-                    anchors.margins: 5
-                    height: parent.height
-                    verticalAlignment: Text.AlignVCenter
-                    color: activePalette.text
-                    text: "   " + i18n("Chat")
-                }
-            }
-        }
-
-        Item {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            // Display reasons why the media buttons are not present
-            MediaAvailability {
-                defaultSize: parent.height < 48 ? parent.height : 48
-                currentContactMethod: contactHeader.currentContactMethod
-                anchors.verticalCenter: parent.verticalCenter
+                mouse.accepted = true
+                currentContactMethod.bookmarked = !currentContactMethod.bookmarked
+                bookmarkSwitch.source = currentContactMethod.bookmarked ?
+                    "icons/bookmarked.svg" : "icons/not_bookmarked.svg"
             }
         }
     }
 
-    onStateChanged: {
-        layout.height = state == "compact" ? 40 : 70
-        console.log("the fucking state changed", state)
+    Item {
+        id: separator
+        anchors.left: bookmarkSwitch.right
+        anchors.verticalCenter: contactHeader.verticalCenter
+        width: 10
+        height: contactHeader.height - 10
+        Rectangle {
+            height: parent.height -10
+            y: 5
+            width: 1
+            color: inactivePalette.text
+            opacity: 0.2
+            anchors.horizontalCenter: parent.horizontalCenter
+        }
+    }
+
+    MediaButtons {
+        id: mediaButtons
+        anchors.verticalCenter: contactHeader.verticalCenter
+        anchors.left: separator.right
+        anchors.leftMargin: 5
+        anchors.rightMargin: 5
+    }
+
+    Item {
+        id: mediaAvailability
+        anchors.left: mediaButtons.right
+        anchors.right: contactHeader.right
+        anchors.top: contactHeader.top
+        anchors.bottom: contactHeader.bottom
+        anchors.leftMargin: 5
+
+        // Display reasons why the media buttons are not present
+        MediaAvailability {
+            defaultSize: parent.height < 48 ? parent.height : 48
+            currentContactMethod: contactHeader.currentContactMethod
+            anchors.verticalCenter: parent.verticalCenter
+        }
     }
 
     states: [
         State {
             name: ""
+            when: (!isCompact) && (!isMobile)
+
             PropertyChanges {
                 target: contactHeader
                 height: 70
             }
+
+            PropertyChanges {
+                target: primaryName
+                font.pointSize: 10
+            }
+
+            PropertyChanges {
+                target: separator
+                visible: true
+            }
+
+            PropertyChanges {
+                target: photo
+                anchors.margins: 10
+            }
+
+            AnchorChanges {
+                target: photo
+                anchors.horizontalCenter: undefined
+                anchors.top: undefined
+                anchors.verticalCenter: contactHeader.verticalCenter
+                anchors.left: contactHeader.left
+            }
+
+            AnchorChanges {
+                target: primaryName
+                anchors.left: photo.right
+                anchors.horizontalCenter: undefined
+                anchors.top: undefined
+                anchors.right: undefined
+                anchors.verticalCenter: contactHeader.verticalCenter
+            }
+
+            AnchorChanges {
+                target: bookmarkSwitch
+                anchors.left: primaryName.right
+                anchors.top: undefined
+                anchors.right: undefined
+                anchors.verticalCenter: contactHeader.verticalCenter
+            }
+
+            AnchorChanges {
+                target: mediaButtons
+                anchors.left: separator.left
+                anchors.top: undefined
+                anchors.right: undefined
+                anchors.verticalCenter: contactHeader.verticalCenter
+            }
+
         },
         State {
             name: "compact"
+            extend: ""
+            when: isCompact && !isMobile
+
             PropertyChanges {
                 target: contactHeader
                 height: 40
             }
-            PropertyChanges {
-                target: button
-                visible: false
-            }
-            PropertyChanges {
-                target: button2
-                visible: false
-            }
-            PropertyChanges {
-                target: button3
-                visible: false
-            }
-            PropertyChanges {
-                target: button4
-                visible: false
-            }
+
             PropertyChanges {
                 target: photo
-//                 height: 30
-//                 width: 30
+                anchors.margins: 2
+            }
+
+            PropertyChanges {
+                target: mediaButtons
+                visible: false
+            }
+
+            PropertyChanges {
+                target: separator
+                visible: false
+            }
+        },
+        State {
+            name: "mobile"
+            when: isMobile
+
+            PropertyChanges {
+                target: contactHeader
+                height: photo.height +
+                    mediaButtons.implicitHeight +
+                    primaryName.implicitHeight +
+                    10 // margins and spacing
+            }
+
+            AnchorChanges {
+                target: photo
+                anchors.horizontalCenter: contactHeader.horizontalCenter
+                anchors.top: contactHeader.top
+                anchors.left: undefined
+                anchors.verticalCenter: undefined
+            }
+
+            AnchorChanges {
+                target: primaryName
+                anchors.top: photo.bottom
+                anchors.horizontalCenter: contactHeader.horizontalCenter
+                anchors.left: undefined
+                anchors.right: undefined
+                anchors.verticalCenter: undefined
+            }
+
+            AnchorChanges {
+                target: bookmarkSwitch
+                anchors.left: undefined
+                anchors.top: contactHeader.top
+                anchors.right: contactHeader.right
+                anchors.verticalCenter: undefined
+            }
+
+            AnchorChanges {
+                target: mediaButtons
+                anchors.left: undefined
+                anchors.top: undefined
+                anchors.right: undefined
+                anchors.bottom: contactHeader.bottom
+                anchors.verticalCenter: undefined
+                anchors.horizontalCenter: contactHeader.horizontalCenter
+            }
+
+            PropertyChanges {
+                target: photo
+                height: 50
+                width: 50
+                anchors.margins: 2
+            }
+
+            PropertyChanges {
+                target: primaryName
+                font.pointSize: 14
+            }
+
+            PropertyChanges {
+                target: separator
+                visible: false
             }
         }
     ]

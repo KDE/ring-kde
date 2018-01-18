@@ -57,6 +57,7 @@ public:
     QSharedPointer<QAbstractItemModel> m_TimelineModel;
     QSharedPointer<QAbstractItemModel> m_DeduplicatedTimelineModel;
     QQuickItem* m_pItem {nullptr};
+    QQuickItem* m_pHeader {nullptr};
 
     QList< QTimer* > m_lTimers;
 
@@ -84,9 +85,10 @@ MainPage::MainPage(QQuickItem* parent) :
 
     installEventFilter(this);
 
-    QTimer::singleShot(0, [this]() {
+    QTimer::singleShot(500, [this]() {
         setContactMethod(qvariant_cast<ContactMethod*>(
-            PeersTimelineModel::instance().index(0, 0).data((int)Ring::Role::Object)
+            PeersTimelineModel::instance().deduplicatedTimelineModel()
+                ->index(0, 0).data((int)Ring::Role::Object)
         ));
     });
 
@@ -218,6 +220,33 @@ void MainPage::showVideo(Call* c)
 {
     setContactMethod(c->peerContactMethod());
     QMetaObject::invokeMethod(d_ptr->m_pItem, "showVideo");
+}
+
+QQuickItem* MainPage::page() const
+{
+    return d_ptr->m_pItem;
+}
+
+
+QQuickItem* MainPage::header() const
+{
+    return d_ptr->m_pHeader;
+}
+
+void MainPage::setHeader(QQuickItem* item)
+{
+    d_ptr->m_pItem->setProperty("contactHeader", QVariant::fromValue(item));
+    d_ptr->m_pHeader = item;
+}
+
+bool MainPage::isMobile() const
+{
+    return d_ptr->m_pItem->property("mobile").toBool();
+}
+
+void MainPage::setMobile(bool v)
+{
+    d_ptr->m_pItem->setProperty("mobile", v);
 }
 
 #include <mainpage.moc>

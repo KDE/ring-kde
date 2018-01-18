@@ -67,6 +67,17 @@ Rectangle {
         }
     }
 
+    // Select the newest CM after half a second (assume it's fast enough to load
+    // the history)
+    Timer {
+        repeat: false
+        running: true
+        interval: 500
+        onTriggered: {
+            recentView.currentIndex = 0
+        }
+    }
+
     // Give time to all the code to run before invalidating the temporary
     // contact method. By then the code will have created a real one.
     Timer {
@@ -196,6 +207,8 @@ Rectangle {
                 width: 10
                 model: PeersTimelineModel.timelineSummaryModel
                 z: 100
+                display: recentView.moving || recentDock.state == ""
+
                 onWidthChanged: {
                     burryOverlay.width = scrollBar.fullWidth + 15
                 }
@@ -382,5 +395,15 @@ Rectangle {
             }
         ]
     }
+
+    states: [
+        State {
+            name: ""
+        },
+        State {
+            name: "mobile"
+
+        }
+    ]
 
 }

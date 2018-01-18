@@ -71,6 +71,10 @@ SET( libqmlwidgets_LIB_SRCS
     symboliccolorizer.cpp
 )
 
+QT5_ADD_RESOURCES(libqmlwidgets_LIB_SRCS
+   qmlwidgets.qrc
+)
+
 ADD_LIBRARY( libqmlwidgets  STATIC ${libqmlwidgets_LIB_SRCS} )
 
 target_link_libraries( libqmlwidgets

@@ -21,14 +21,19 @@ import QtQuick.Layouts 1.0
 import Ring 1.0
 import PhotoSelectorPlugin 1.0
 import RingQmlWidgets 1.0
+import org.kde.kirigami 2.2 as Kirigami
 
-Item {
+Kirigami.ScrollablePage {
     id: contactViewPage
     property var currentContactMethod: null
     property var currentPerson: null
     property string forcedState: ""
+    property bool editing: true
 
     signal changed()
+
+    signal selectChat()
+    signal selectHistory()
 
     property bool showStat: true
     property bool showImage: false
@@ -40,19 +45,11 @@ Item {
 
     property var cachedPhoto: undefined
 
-
     state: forcedState
 
     function save() {
         if ((!currentContactMethod) && (!currentPerson))
             return
-
-        // Changing the CM will flush the content, preserve it
-        var old_formattedName  = formattedName.text
-        var old_firstName      = firstName.text
-        var old_secondName     = lastName.text
-        var old_preferredEmail = email.text
-        var old_organization   = organization.text
 
         // Create a real contact method in case this is a temporary one
         if (currentContactMethod && currentContactMethod.type == ContactMethod.TEMPORARY)
@@ -63,14 +60,11 @@ Item {
             )
 
         var person = currentPerson
+
         if (!currentPerson)
             person = contactBuilder.from(currentContactMethod)
 
-        person.formattedName  = old_formattedName
-        person.firstName      = old_firstName
-        person.secondName     = old_secondName
-        person.preferredEmail = old_preferredEmail
-        person.organization   = old_organization
+        vCardForm.syncDetails(person)
 
         if (contactViewPage.cachedPhoto != undefined)
             person.photo = contactViewPage.cachedPhoto
@@ -106,6 +100,16 @@ Item {
         colorGroup: SystemPalette.Active
     }
 
+    actions {
+        main: Kirigami.Action {
+            iconName: "document-edit"
+            visible: contactViewPage.state == "mobile"
+            onTriggered: {
+                editing = !editing
+            }
+        }
+    }
+
     onCurrentContactMethodChanged: {
         if (!currentContactMethod)
             return
@@ -127,20 +131,11 @@ Item {
         addresses.model = currentPerson ?
             currentPerson.addressesModel : null
 
-        // Contact info
-        formattedName.text = currentPerson ?
-            currentPerson.formattedName : ""
-        firstName.text = currentPerson ?
-            currentPerson.firstName : ""
-        lastName.text = currentPerson ?
-            currentPerson.secondName : ""
-        email.text = currentPerson ?
-            currentPerson.preferredEmail : ""
-        organization.text = currentPerson ?
-            currentPerson.organization : ""
         photo.pixmap = currentPerson ?
             currentPerson.photo : undefined
         phoneNumbersModel.person = currentPerson
+
+        vCardForm.currentPerson = currentPerson
     }
 
     /**
@@ -200,6 +195,10 @@ Item {
         clip: true
         height: 300
 
+        Behavior on height {
+            NumberAnimation { duration: 200 }
+        }
+
         ColumnLayout {
             id: tabbedContactInfo
             anchors.topMargin: contactViewPage.showImage ? 95 : 0
@@ -210,7 +209,7 @@ Item {
             TabBar {
                 Layout.fillWidth: true
                 id: tabBar
-//                 currentIndex: sv.currentIndex
+
                 onCurrentIndexChanged: {
                     sv.currentIndex = currentIndex
                 }
@@ -218,8 +217,6 @@ Item {
                 TabButton {
                     id: detailsButton
                     text: i18n("Details")
-                    visible: state == "phone"
-                    width: state == "phone" ? 200 : 0
                 }
                 TabButton {
                     text: i18n("Phone numbers")
@@ -230,8 +227,6 @@ Item {
                 TabButton {
                     id: statButton
                     text: i18n("Statistics")
-                    visible: state == "phone"
-                    width: state == "phone" ? 200 : 0
                 }
             }
 
@@ -252,73 +247,14 @@ Item {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     id: tabbedContactInfoPage1
-                    GridLayout {
-                        id: mainInfo
+
+                    VCardForm {
+                        id: vCardForm
                         height: implicitHeight
+                        editing: contactViewPage.editing
 
-                        columns: 2
-                        rowSpacing: 10
-                        columnSpacing: 10
-
-                        Label {
-                            id: label
-                            text: i18n("Formatted name:")
-                            color: labelColor ? labelColor : activePalette.text
-                        }
-                        TextField {
-                            id: formattedName
-                            onTextChanged: {
-                                contactViewPage.changed()
-                            }
-                        }
-
-                        Label {
-                            text: i18n("Primary name:")
-                            color: labelColor ? labelColor : activePalette.text
-                        }
-                        TextField {
-                            id: firstName
-                            onTextChanged: {
-                                contactViewPage.changed()
-                            }
-                        }
-
-                        Label {
-                            text: i18n("Last name:")
-                            color: labelColor ? labelColor : activePalette.text
-                        }
-                        TextField {
-                            id: lastName
-                            onTextChanged: {
-                                contactViewPage.changed()
-                            }
-                        }
-
-                        Label {
-                            text: i18n("Email:")
-                            color: labelColor ? labelColor : activePalette.text
-                        }
-                        TextField {
-                            id: email
-                            onTextChanged: {
-                                contactViewPage.changed()
-                            }
-                        }
-
-                        Label {
-                            text: i18n("Organization:")
-                            color: labelColor ? labelColor : activePalette.text
-                        }
-                        TextField {
-                            id: organization
-                            onTextChanged: {
-                                contactViewPage.changed()
-                            }
-                        }
-
-                        Item {
-                            id: filler
-                            Layout.fillHeight: true
+                        onChanged: {
+                            isChanged = true
                         }
                     }
 
@@ -326,11 +262,13 @@ Item {
                 }
 
                 Page {
+                    id: phoneNumbersPage
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     PhoneNumbers {
                         id: phoneNumbersModel
                         anchors.fill: parent
+                        editing: contactViewPage.editing
                         onPersonCreated: {
                             if (!currentPerson) {
                                 console.log("Setting the person from a phone number")
@@ -343,6 +281,7 @@ Item {
                 }
 
                 Page {
+                    id: addressesPage
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     Addresses {
@@ -385,10 +324,10 @@ Item {
                         }
 
                         Rectangle {
-                            color: contactViewPage.state == "phone" ? "transparent" : activePalette.text
+                            color: contactViewPage.state == "mobile" ? "transparent" : activePalette.text
                             height: 1
                             Layout.fillWidth: true
-                            Layout.fillHeight: contactViewPage.state == "phone"
+                            Layout.fillHeight: contactViewPage.state == "mobile"
                         }
                     }
                 }
@@ -428,13 +367,90 @@ Item {
         }
     }
 
+    Column {
+        id: phoneLayout
+        visible: false
+        anchors.left: parent.left
+        anchors.top: parent.top
+//         anchors.right: parent.right
+        width: parent.width
+
+        Kirigami.BasicListItem {
+            id: statisticHeader
+            label: "Statistics"
+            sectionDelegate: true
+        }
+
+        Item {
+            id: statisticHolder
+            anchors.left: parent.left
+            height: statistics.implicitHeight
+            width: parent.width
+        }
+
+        Kirigami.BasicListItem {
+            id: viewHistory
+            label: "View history"
+            icon: "view-history"
+            separatorVisible: true
+            onClicked: {
+                contactViewPage.selectHistory()
+            }
+        }
+
+        Kirigami.BasicListItem {
+            id: openChat
+            label: "Open chat"
+            icon: "dialog-messages"
+            onClicked: {
+                contactViewPage.selectChat()
+            }
+        }
+
+        Kirigami.BasicListItem {
+            label: "Contact details"
+            sectionDelegate: true
+        }
+
+        Item {
+            id: contactHolder
+            height: vCardForm.implicitHeight
+            width: parent.width
+        }
+
+        Kirigami.BasicListItem {
+            label: "Phone numbers"
+            sectionDelegate: true
+        }
+
+        Item {
+            id: phoneNumberHolder
+            height: phoneNumbersModel.contentHeight+ 48 // 48 == (+)
+            width: parent.width
+        }
+
+        Kirigami.BasicListItem {
+            label: "Addresses"
+            sectionDelegate: true
+        }
+
+        Item {
+            id: addressesHolder
+            height: addresses.contentHeight
+            width: parent.width
+        }
+    }
+
     onStateChanged: {
+        //FIXME this is zombie code, but needs work to remove
         tabBar.currentIndex = 1
         sv.currentIndex = 1
         detailsButton.visible = state == "phone"
         statButton.visible = state == "phone"
         detailsButton.width = state == "phone" ? detailsButton.implicitWidth : 0
         statButton.width = state == "phone" ? statButton.implicitWidth : 0
+
+        editing = state != "mobile"
     }
 
     /**
@@ -446,41 +462,62 @@ Item {
         State {
             name: "tablet"
             when: (forcedState == "" ) && (contactViewPage.width >= 600 && contactViewPage.height <= (
-                statistics.implicitHeight + mainInfo.implicitHeight + 320) // 320 = advanced.height + 2*spacing
+                statistics.implicitHeight + vCardForm.implicitHeight + 320) // 320 = advanced.height + 2*spacing
             )
             ParentChange {
                 target: advanced
                 parent: contactViewPage
             }
             ParentChange {
-                target: mainInfo
+                target: vCardForm
                 parent: contactViewPage
             }
             ParentChange {
                 target: statistics
                 parent: contactViewPage
             }
+            ParentChange {
+                target: phoneNumbersModel
+                parent: phoneNumbersPage
+            }
+            ParentChange {
+                target: addresses
+                parent: addressesPage
+            }
             AnchorChanges {
                 target: advanced
-                anchors.right: contactViewPage.right
-                anchors.bottom: contactViewPage.bottom
+                anchors.right: advanced.parent.right
+                anchors.bottom: advanced.parent.bottom
                 anchors.top:  contactPicture.bottom
                 anchors.left: undefined
             }
             AnchorChanges {
                 target: statistics
-                anchors.top: contactPicture.bottom
-                anchors.left: contactViewPage.left
+                anchors.top: contactPicture.visible ?
+                    contactPicture.bottom : contactViewPage.top
+                anchors.left: statistics.parent.left
             }
             AnchorChanges {
-                target: mainInfo
-                anchors.left: contactViewPage.left
+                target: vCardForm
+                anchors.left: vCardForm.parent.left
                 anchors.top: statistics.bottom
             }
+            AnchorChanges {
+                target: phoneNumbersModel
+                anchors.left: undefined
+                anchors.top: undefined
+            }
+
+            AnchorChanges {
+                target: addresses
+                anchors.left: undefined
+            }
+
             PropertyChanges {
                 target: advanced
                 visible: true
                 width: contactViewPage.width / 2
+                height: contactViewPage.height
             }
             PropertyChanges {
                 target: statistics
@@ -488,15 +525,21 @@ Item {
                 height: statistics.implicitHeight
             }
             PropertyChanges {
-                target: mainInfo
+                target: vCardForm
                 width: contactViewPage.width / 2
+            }
+            PropertyChanges {
+                target: phoneNumbersModel
+                anchors.fill: phoneNumbersPage
+                width: undefined
+                interactive: true
             }
 
             AnchorChanges {
                 target: saveButton
-                anchors.bottom: contactViewPage.bottom
+                anchors.bottom: saveButton.parent.bottom
                 anchors.top: undefined
-                anchors.left: contactViewPage.left
+                anchors.left: saveButton.parent.left
                 anchors.right: undefined
                 anchors.horizontalCenter: undefined
             }
@@ -515,8 +558,8 @@ Item {
 
             AnchorChanges {
                 target: saveButton
-                anchors.top: contactViewPage.top
-                anchors.right: parent.right
+                anchors.top: saveButton.parent.top
+                anchors.right: saveButton.parent.right
                 anchors.bottom: undefined
                 anchors.left: undefined
                 anchors.horizontalCenter: undefined
@@ -529,77 +572,154 @@ Item {
 
             AnchorChanges {
                 target: advanced
-                anchors.right: contactViewPage.right
-                anchors.bottom: contactViewPage.bottom
+                anchors.right: advanced.parent.right
+                anchors.bottom: advanced.parent.bottom
                 anchors.top: undefined
-                anchors.left: contactViewPage.left
+                anchors.left: advanced.parent.left
             }
             PropertyChanges {
                 target: statistics
                 width: contactViewPage.width
             }
             PropertyChanges {
-                target: mainInfo
-                width: mainInfo.implicitWidth
-                height: mainInfo.implicitHeight
+                target: vCardForm
+                width: vCardForm.implicitWidth
+                height: vCardForm.implicitHeight
                 anchors.topMargin: 10
             }
             PropertyChanges {
                 target: advanced
-                height: contactViewPage.heght ? 300 : 299 //BUG prevent a race condition in QML
+                height: contactViewPage.height ? 300 : 299 //BUG prevent a race condition in QML
                 visible: true
                 anchors.topMargin: 10
             }
         },
 
-        // On the phone, use 2 tab bars at the top and bottom to fit all pages
-        // in the tiny space
+        // The first phone mode was not very usable, lets try again
         State {
-            name: "phone"
-            when: (forcedState == "" && (contactViewPage.width < 600 || contactViewPage.height < (
-                statistics.implicitHeight + mainInfo.implicitHeight + 320) // 320 = advanced.height + 2*spacing
-            ))
-            ParentChange {
-                target: tabbedContactInfo
-                parent: contactViewPage
+            name: "mobile"
+            when: ((forcedState == "" && (contactViewPage.width < 600 || contactViewPage.height < (
+                statistics.implicitHeight + vCardForm.implicitHeight + 320) // 320 = advanced.height + 2*spacing
+            ))) || forcedState == "mobile"
+
+            // Mute the QML warning about having elements with anchors in `Column`
+            AnchorChanges {
+                target: saveButton
+                anchors.right: undefined
+                anchors.bottom: undefined
+                anchors.top: undefined
+                anchors.left: undefined
+                anchors.horizontalCenter: undefined
             }
-            ParentChange {
-                target: mainInfo
-                parent: tabbedContactInfoPage1
+
+            AnchorChanges {
+                target: advanced
+                anchors.right: undefined
+                anchors.bottom: undefined
+                anchors.top: undefined
+                anchors.left: undefined
             }
+
+            AnchorChanges {
+                target: vCardForm
+                anchors.left: contactHolder.left
+                anchors.top: contactHolder.top
+            }
+
+            AnchorChanges {
+                target: phoneNumbersModel
+                anchors.left: phoneNumberHolder.left
+                anchors.top: phoneNumberHolder.top
+            }
+
+            AnchorChanges {
+                target: addresses
+                anchors.left: contactViewPage.left
+            }
+
+            AnchorChanges {
+                target: statistics
+                anchors.left: statisticHolder.left
+                anchors.top: statisticHolder.top
+            }
+
+            PropertyChanges {
+                target: phoneNumbersModel
+                anchors.fill: undefined
+                width: contactViewPage.width
+                interactive: false
+            }
+
+            PropertyChanges {
+                target: addresses
+                anchors.fill: undefined
+            }
+
             ParentChange {
                 target: statistics
-                parent: tabbedContactInfoPage4
+                parent: statisticHolder
             }
+            ParentChange {
+                target: vCardForm
+                parent: contactHolder
+            }
+            ParentChange {
+                target: phoneNumbersModel
+                parent: phoneNumberHolder
+            }
+            ParentChange {
+                target: addresses
+                parent: addressesHolder
+            }
+
             PropertyChanges {
-                target: mainInfo
-                anchors.fill: mainInfo.parent
+                target: phoneLayout
+                visible: true
             }
-            PropertyChanges {
-                target: statistics
-                anchors.fill: statistics.parent
-            }
-            PropertyChanges {
-                target: tabbedContactInfo
-                anchors.fill: contactViewPage
-            }
+
+            // Hide the tabs and groupbox in favor of standard rows
             PropertyChanges {
                 target: advanced
                 visible: false
             }
-            AnchorChanges {
-                target: saveButton
-                anchors.bottom: contactViewPage.bottom
-                anchors.left: undefined
-                anchors.top: undefined
-                anchors.right: undefined
-                anchors.horizontalCenter: contactViewPage.horizontalCenter
+            PropertyChanges {
+                target: tabBar
+                visible: false
             }
             PropertyChanges {
-                target: saveButton
-                width: 64
-                height: 64
+                target: sv
+                visible: false
+            }
+        },
+
+        State {
+            name: "profile"
+            extend: "mobile"
+
+            PropertyChanges {
+                target: openChat
+                visible: false
+            }
+
+            PropertyChanges {
+                target: viewHistory
+                visible: false
+            }
+
+            PropertyChanges {
+                target: statisticHeader
+                visible: false
+            }
+
+            AnchorChanges {
+                target: phoneLayout
+                anchors.top: contactPicture.bottom
             }
         }
     ]
+
+    transitions: Transition {
+        AnchorAnimation { duration: 300 }
+    }
+
 }

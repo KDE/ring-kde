@@ -22,5 +22,6 @@ ContactInfo {
     showStat: false
     showImage: true
     showSave: false
+    forcedState: "profile"
     labelColor: "white"
 }

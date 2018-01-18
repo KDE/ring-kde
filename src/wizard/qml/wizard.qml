@@ -39,7 +39,7 @@ Rectangle {
 
                 // Begin the first animation
                 /*ANIM footer.state = "shown"*/
-                footer.state = "locked"
+                footer.state = "shown"
             }
         }
 
@@ -101,15 +101,15 @@ Rectangle {
             previousState = stateGroup.state
 
             switch (stateGroup.state) {
-            case 'createRegRing':
-            case 'importRing':
-                stateGroup.state = "*"
-                break;
-            case 'showProfile':
-                previousState = "*"
-                footer.state = "nextUnavailable" //FIXME
-                stateGroup.state = oldPreviousState
-                break;
+                case 'createRegRing':
+                case 'importRing':
+                    stateGroup.state = "*"
+                    break;
+                case 'showProfile':
+                    previousState = "*"
+                    footer.state = "nextUnavailable" //FIXME
+                    stateGroup.state = oldPreviousState
+                    break;
             }
         }
     }
@@ -118,23 +118,22 @@ Rectangle {
     Connections {
         target: footer.nextButton
         onClicked: {
-
             switch (stateGroup.state) {
-            case 'createRegRing':
-                frontPage.createRing.createAccount()
-                break;
-            case 'importRing':
-                frontPage.importRing.createAccount()
-                break;
-            case '*':
-                stateGroup.state = "*"
-                stateGroup.state = "showProfile"
-                footer.state = "finish"
-                break;
-            case 'showProfile':
-                frontPage.profilePage.save()
-                applicationWindow.visible = false
-                break;
+                case 'createRegRing':
+                    frontPage.createRing.createAccount()
+                    break;
+                case 'importRing':
+                    frontPage.importRing.createAccount()
+                    break;
+                case '*':
+                    stateGroup.state = "*"
+                    stateGroup.state = "showProfile"
+                    footer.state = "finish"
+                    break;
+                case 'showProfile':
+                    frontPage.profilePage.save()
+                    applicationWindow.visible = false
+                    break;
             }
         }
     }
@@ -227,13 +226,13 @@ Rectangle {
 
                 PropertyChanges {
                     target: frontPage.logo
-                    x: 8
+                    x: applicationWindow.width/2 - frontPage.welcomeMessage.width/2
                     y: 8
                 }
 
                 PropertyChanges {
                     target: frontPage.welcomeMessage
-                    x: 114
+                    x: applicationWindow.width/2 - 114/2
                     y: 8
                 }
             },
@@ -254,8 +253,8 @@ Rectangle {
                     visible: true
 
                     // Use raw [x,y] to avoid following the animation
-                    x: 8
-                    y: frontPage.welcomeMessage.height + 8
+                    x: frontPage.width/2 - width/2
+
                 }
             },
 
@@ -275,8 +274,7 @@ Rectangle {
                     visible: true
 
                     // Use raw [x,y] to avoid following the animation
-                    x: 8
-                    y: frontPage.welcomeMessage.height + 8
+                    x: frontPage.width/2 - width/2
                 }
             },
 
@@ -309,7 +307,7 @@ Rectangle {
             }
         ]
 
-        /*transitions: [
+        transitions: [
             Transition {
                 from: "*"; to: "hideAccountTypes"
                 NumberAnimation {
@@ -401,6 +399,6 @@ Rectangle {
                 }
             }
 
-        ]*/
+        ]
     }
 }

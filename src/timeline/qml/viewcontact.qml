@@ -19,25 +19,25 @@ import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
 import Ring 1.0
+import org.kde.kirigami 2.2 as Kirigami
 
-Rectangle {
+Item {
     id: viewContact
     property var currentContactMethod: null
     property var currentPerson: null
     property string currentPage: ""
+    property var contactHeader: null
+    property bool mobile: false
 
     function showVideo() {
-        tabBar.currentIndex = 1
+        avView.active = true
+        if (state == "mobile")
+            stackView.push(avPage)
+        else
+            tabBar.currentIndex = 1
     }
 
     clip: true
-
-    SystemPalette {
-        id: activePalette
-        colorGroup: SystemPalette.Active
-    }
-
-    color: activePalette.base
 
     onCurrentContactMethodChanged: {
         contactHeader.currentContactMethod = currentContactMethod
@@ -106,60 +106,33 @@ Rectangle {
         }
     }
 
-//     RowLayout {
-//         anchors.topMargin: 5
-//         anchors.rightMargin: 5
-//         anchors.top: parent.top
-//         anchors.right: parent.right
-//         z: 100
-//
-//         TextField {
-//             id: textField1
-//             placeholderText: i18n("search box")
-//         }
-//
-//         Button {
-//             id: button1
-//             text: i18n("Search")
-//         }
-//     }
+    Timer {
+        repeat: false
+        running: true
+        interval: 500
+        onTriggered: {
+            if (PeersTimelineModel.rowCount() > 0) {
+                firstRun.visible = false
+            }
+        }
+    }
 
     FirstRun {
+        id: firstRun
         anchors.fill: parent
-        z: 99999
+        z: 9999
         color: activePalette.base
         visible: currentContactMethod == null || currentContactMethod.isSelf
     }
 
     ColumnLayout {
+        id: columnLayout
         anchors.fill: parent
-
-        ContactHeader {
-            id: contactHeader
-            backgroundColor: activePalette.alternateBase
-            textColor: activePalette.text
-            Layout.maximumHeight: height
-            Layout.minimumHeight: height
-
-            onCachedPhotoChanged: {
-                contactInfo.cachedPhoto = contactHeader.cachedPhoto
-            }
-
-            onSelectChat: {
-                tabBar.currentIndex = 2
-                timelinePage.currentInstance.focusEdit()
-            }
-
-            onSelectVideo: {
-                tabBar.currentIndex = 1
-            }
-        }
 
         TabBar {
             Layout.fillWidth: true
             id: tabBar
             currentIndex: swipeView.currentIndex
-            width: contentWidth + 100
             TabButton {
                 text: i18n("Information")
             }
@@ -196,50 +169,70 @@ Rectangle {
             currentIndex: tabBar.currentIndex
 
             Page {
+                id: contactInfoPage
                 background: Rectangle { color: activePalette.base }
                 ContactInfo {
-                    anchors.fill: parent
                     id: contactInfo
-                }
-            }
-
-            Page {
-                background: Rectangle { color: activePalette.base }
-                CallView {
-                    id: avView
-                    mode: "CONVERSATION"
                     anchors.fill: parent
-                    onCallWithAudio: {
-                        if (currentContactMethod.hasInitCall) {
-                            contactHeader.selectVideo()
-                            return
-                        }
 
-                        CallModel.dialingCall(currentContactMethod)
-                            .performAction(Call.ACCEPT)
+                    onSelectChat: {
+                        stackView.push(page3)
                     }
-                    onCallWithVideo: {
-                        if (currentContactMethod.hasInitCall) {
-                            contactHeader.selectVideo()
-                            return
-                        }
 
-                        CallModel.dialingCall(currentContactMethod)
-                            .performAction(Call.ACCEPT)
-                    }
-                    onCallWithScreen: {
-                        if (currentContactMethod.hasInitCall) {
-                            contactHeader.selectVideo()
-                            return
-                        }
-
-                        CallModel.dialingCall(currentContactMethod)
-                            .performAction(Call.ACCEPT)
+                    onSelectHistory: {
+                        stackView.push(page2)
                     }
                 }
             }
 
             Page {
+                id: avPage
+                background: Rectangle { color: activePalette.base }
+                Loader {
+                    id: avView
+                    asynchronous: true
+                    active: false
+                    anchors.fill: parent
+
+                    property var call: null
+
+                    CallView {
+                        mode: "CONVERSATION"
+                        anchors.fill: parent
+                        call: callLoader.call
+                        onCallWithAudio: {
+                            if (currentContactMethod.hasInitCall) {
+                                contactHeader.selectVideo()
+                                return
+                            }
+
+                            CallModel.dialingCall(currentContactMethod)
+                                .performAction(Call.ACCEPT)
+                        }
+                        onCallWithVideo: {
+                            if (currentContactMethod.hasInitCall) {
+                                contactHeader.selectVideo()
+                                return
+                            }
+
+                            CallModel.dialingCall(currentContactMethod)
+                                .performAction(Call.ACCEPT)
+                        }
+                        onCallWithScreen: {
+                            if (currentContactMethod.hasInitCall) {
+                                contactHeader.selectVideo()
+                                return
+                            }
+
+                            CallModel.dialingCall(currentContactMethod)
+                                .performAction(Call.ACCEPT)
+                        }
+                    }
+                }
+            }
+
+            Page {
+                id: chatPage
                 background: Rectangle { color: activePalette.base }
                 Loader {
                     anchors.fill: parent
@@ -248,8 +241,10 @@ Rectangle {
                     id: timelinePage
                     property QtObject currentContactMethod: null
                     property var currentInstance: undefined
+                    property bool showScrollbar: true
 
                     sourceComponent: TimelinePage {
+                        showScrollbar: timelinePage.showScrollbar
                         anchors.fill: parent
                         Component.onDestruction: {
                             timelinePage.currentInstance = undefined
@@ -270,6 +265,7 @@ Rectangle {
             }
 
             Page {
+                id: historyPage
                 background: Rectangle { color: activePalette.base }
                 Loader {
                     property QtObject currentContactMethod: null
@@ -300,13 +296,138 @@ Rectangle {
         }
     }
 
+    Kirigami.PageRow {
+        id: stackView
+        visible: false
+        background: Rectangle {
+            color: activePalette.base
+        }
+        anchors.fill: parent
+
+        Page {
+            id: page1
+            background: Rectangle {
+            color: activePalette.base
+            }
+        }
+        Page {
+            id: page3
+            background: Rectangle {
+                color: activePalette.base
+            }
+        }
+        Page {
+            id: page2
+            background: Rectangle {
+                color: activePalette.base
+            }
+        }
+        Page {
+            id: page4
+            background: Rectangle {
+                color: activePalette.base
+            }
+        }
+
+    }
+
+    onStateChanged: {
+        stackView.clear()
+
+        if (state == "mobile")
+            stackView.push(page1)
+    }
+
     states: [
         State {
-            name: "compact"
-            when: height < 700
+            name: ""
+            when: !viewContact.mobile
+
+            ParentChange {
+                target: contactInfo
+                parent: contactInfoPage
+            }
+
+            ParentChange {
+                target: callHistory
+                parent: historyPage
+            }
+
+            ParentChange {
+                target: timelinePage
+                parent: chatPage
+            }
+
             PropertyChanges {
-                target: contactHeader
-                state: "compact"
+                target: columnLayout
+                visible: true
+            }
+
+            PropertyChanges {
+                target: stackView
+                visible: false
+            }
+
+            PropertyChanges {
+                target: contactInfo
+                anchors.fill: contactInfoPage
+                flickable.interactive: false
+            }
+
+            PropertyChanges {
+                target: timelinePage
+                showScrollbar: true
+            }
+        },
+        State {
+            name: "mobile"
+            when: viewContact.mobile
+
+            ParentChange {
+                target: contactInfo
+                parent: page1
+            }
+
+            ParentChange {
+                target: callHistory
+                parent: page2
+            }
+
+            ParentChange {
+                target: timelinePage
+                parent: page3
+            }
+
+            PropertyChanges {
+                target: columnLayout
+                visible: false
+            }
+
+            PropertyChanges {
+                target: stackView
+                visible: true
+            }
+
+            PropertyChanges {
+                target: contactInfo
+                width: page1.width + 26 //BUG wtf
+                height: page1.height + 26 //BUG wtf
+                x: -13
+                y: -13
+                anchors.fill: undefined //BUG no idea why, but it causes large 13px margins, using x/y/w/h for now
+                flickable.interactive: true
+            }
+            PropertyChanges {
+                target: callHistory
+                active: true
+            }
+            PropertyChanges {
+                target: timelinePage
+                active: true
+            }
+            PropertyChanges {
+                target: timelinePage
+                showScrollbar: false
             }
         }
     ]

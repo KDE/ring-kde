@@ -36,6 +36,11 @@ Item {
         RowLayout {
             anchors.fill: parent
 
+            // The kirigami handle
+            Item {
+                width: 40
+            }
+
             // Align left
             Button {
                 id: backButton

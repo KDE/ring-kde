@@ -26,7 +26,7 @@ Page1Form {
     // Let the pretty little animation run its course
     Timer {
         id: createAccountTimer
-        interval: 0 /*ANIM 1000*/
+        interval: 1000
         running: false
         repeat: false
         onTriggered: {
@@ -36,7 +36,7 @@ Page1Form {
 
     Timer {
         id: importAccountTimer
-        interval: 0 /*ANIM 1000*/
+        interval: 1000
         running: false
         repeat: false
         onTriggered: {

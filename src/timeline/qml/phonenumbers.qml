@@ -26,7 +26,11 @@ Item {
     id: phoneNumbers
     property alias model : numbers.model
     property QtObject person: null
+    property alias contentHeight: numbers.contentHeight
+    property alias interactive: numbers.interactive
+    property bool editing: (model && person && numbers.count > len(person.phoneNumbers.length)) || !person
 
+    clip: true
     signal personCreated(QtObject newPerson)
 
     SystemPalette {
@@ -39,6 +43,61 @@ Item {
         colorGroup: SystemPalette.Disabled
     }
 
+    Component {
+        id: editComponent
+
+        RowLayout {
+            Layout.fillWidth: true
+            Layout.preferredHeight: 40
+            ComboBox {
+                id: numbertype
+                model: NumberCategoryModel
+                textRole: "display"
+                onActivated: {
+                }
+            }
+
+            TextField {
+                Layout.fillWidth: true
+                id: newPhoneNumber
+                text: editUri
+            }
+
+            Button {
+                id: button
+                text: i18n("Save")
+                onClicked: {
+
+                    if (newPhoneNumber.text == "") {
+                        console.log("No number added, the field is empty")
+                        return
+                    }
+
+                    var cm = contactBuilder.updatePhoneNumber(object,
+                        person, newPhoneNumber.text, numbertype.index
+                    )
+
+                    console.log("adding", newPhoneNumber.text, cm)
+
+                    if (cm && cm.person) {
+                        console.log("Setting the person")
+                        person = cm.person
+                        phoneNumbers.model = cm.person.phoneNumbersModel
+                        personCreated(cm.person)
+                    }
+                }
+            }
+            Button {
+                text: i18n("Cancel")
+                onClicked: {
+                    numbers.currentIndex = index
+                    numbers.currentItem.state = ""
+                }
+            }
+        }
+
+    }
+
     ColumnLayout {
         anchors.fill: parent
 
@@ -47,15 +106,63 @@ Item {
             Layout.fillWidth: true
             Layout.fillHeight: true
             anchors.margins: 3
+
+            footer: OutlineButton {
+                id: mainArea
+                height: fontMetrics.height * 3.5
+                expandedHeight: fontMetrics.height * 3.5
+                sideMargin: 2
+                width: parent.width
+                label: i18n("Add a phone number or GNU Ring identity")
+                topPadding: 2
+                visible: phoneNumbers.editing
+                onClicked: {
+                    if (phoneNumbers.model) {
+                        contactBuilder.addEmptyPhoneNumber(phoneNumbers.person)
+                        numbers.currentIndex = numbers.count - 1
+                        numbers.currentItem.state = "edit"
+                    }
+                    else
+                        console.log("No contact, not implemented")
+                }
+            }
+
             delegate: Kirigami.SwipeListItem {
-//                 height: 30
-//                 width: phoneNumbers.width
+
+                states: [
+                    State {
+                        name: ""
+                    },
+                    State {
+                        name: "edit"
+                        PropertyChanges {
+                            target: editorLoader
+                            editUri: uri
+
+                            active: true
+                        }
+
+                        PropertyChanges {
+                            target: readOnly
+                            visible: false
+                        }
+                    }
+                ]
 
                 actions: [
                     Kirigami.Action {
                         iconName: "edit-delete"
                         text: i18n("Delete")
-                        onTriggered: print("Action 1 clicked")
+                        onTriggered: {
+                            phoneNumbers.person.removePhoneNumber(object)
+                        }
+                    },
+                    Kirigami.Action {
+                        iconName: "document-edit"
+                        text: i18n("Edit")
+                        onTriggered: {
+                            state = "edit"
+                        }
                     },
                     Kirigami.Action {
                         iconSource: "image://SymbolicColorizer/:/sharedassets/outline/call.svg"
@@ -77,41 +184,61 @@ Item {
                     }
                 ]
 
-                RowLayout {
-                    anchors.leftMargin: 10
-                    anchors.fill: parent
-                    spacing: 10
+                // Wrap in an extra Item to bypass Kirigami limitations regarding
+                // the number of elements
+                Item {
+                    height: readOnly.implicitHeight
+                    implicitHeight: height
 
-                    PixmapWrapper {
-                        Layout.preferredHeight: 16
-                        Layout.preferredWidth: 16
-                        anchors.verticalCenter: parent.verticalCenter
-                        pixmap: decoration
+                    Loader {
+                        id: editorLoader
+                        property ContactMethod object: object
+                        property int index: index
+                        property string editUri: object ? object.uri : ""
+                        sourceComponent: editComponent
+                        anchors.fill: parent
+                        anchors.rightMargin: 50
+                        active: false
                     }
 
-                    ColumnLayout {
-                        Layout.fillWidth: true
-                        Row {
+                    RowLayout {
+                        id: readOnly
+                        anchors.leftMargin: 10
+                        anchors.fill: parent
+                        spacing: 10
+
+                        PixmapWrapper {
+                            Layout.preferredHeight: 16
+                            Layout.preferredWidth: 16
+                            anchors.verticalCenter: parent.verticalCenter
+                            pixmap: decoration
+                        }
+
+                        ColumnLayout {
                             Layout.fillWidth: true
-                            Text {
-                                text: display
-                                color: activePalette.text
+                            Row {
+                                Layout.fillWidth: true
+                                Text {
+                                    id: dsfdsf
+                                    text: display
+                                    color: activePalette.text
+                                }
+                                Text {
+                                    text: "  ("+categoryName+")"
+                                    color: inactivePalette.text
+                                }
                             }
+
                             Text {
-                                text: "  ("+categoryName+")"
+                                text: lastUsed == undefined || lastUsed == "" ? i18n("Never used") :
+                                    i18n("Used ")+totalCallCount+i18n(" time (Last used on: ") + formattedLastUsed + ")"
                                 color: inactivePalette.text
                             }
                         }
 
-                        Text {
-                            text: lastUsed == undefined || lastUsed == "" ? i18n("Never used") :
-                                i18n("Used ")+totalCallCount+i18n(" time (Last used on: ") + formattedLastUsed + ")"
-                            color: inactivePalette.text
+                        Item {
+                            Layout.preferredWidth: 5
                         }
-                    }
-
-                    Item {
-                        Layout.preferredWidth: 5
                     }
                 }
             }
@@ -119,48 +246,6 @@ Item {
 
         ContactBuilder {
             id: contactBuilder
-        }
-
-        RowLayout {
-            Layout.fillWidth: true
-            Layout.preferredHeight: 40
-            ComboBox {
-                id: numbertype
-                model: NumberCategoryModel
-                textRole: "display"
-                onActivated: {
-                }
-            }
-
-            TextField {
-                Layout.fillWidth: true
-                id: newPhoneNumber
-            }
-
-            Button {
-                id: button
-                text: i18n("Add")
-                onClicked: {
-
-                    if (newPhoneNumber.text == "") {
-                        console.log("No number added, the field is empty")
-                        return
-                    }
-
-                    var cm = contactBuilder.addPhoneNumber(
-                        person, newPhoneNumber.text, numbertype.index
-                    )
-
-                    console.log("adding", newPhoneNumber.text, cm)
-
-                    if (cm && cm.person) {
-                        console.log("Setting the person")
-                        person = cm.person
-                        phoneNumbers.model = cm.person.phoneNumbersModel
-                        personCreated(cm.person)
-                    }
-                }
-            }
         }
     }
 }

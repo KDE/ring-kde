@@ -35,6 +35,8 @@
 #include "qmlaction.h"
 #include "qactionbinder.h"
 
+#include "qrc_qmlwidgets.cpp"
+
 void RingQmlWidgets::registerTypes(const char *uri)
 {
     Q_ASSERT(uri == QLatin1String("RingQmlWidgets"));
@@ -54,6 +56,7 @@ void RingQmlWidgets::registerTypes(const char *uri)
     qmlRegisterType<TimelineDots>(uri, 1, 0, "TimelineDots");
     qmlRegisterType<QmlAction>(uri, 1, 0, "QmlAction");
     qmlRegisterType<QActionBinder>(uri, 1, 0, "QActionBinder");
+    qmlRegisterType(QStringLiteral("qrc:/OutlineButton.qml"), uri, 1, 0, "OutlineButton");
 
     qmlRegisterUncreatableType<QuickListViewSections>("Ring", 1,0,
         "QuickListViewSections", "QuickListViewSections cannot be instanciated"

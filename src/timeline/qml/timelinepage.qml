@@ -25,6 +25,7 @@ import RingQmlWidgets 1.0
 
 Rectangle {
     id: timelinePage
+    property bool showScrollbar: true
 
     function focusEdit() {
         chatBox.focusEdit()
@@ -131,6 +132,7 @@ Rectangle {
                 bottomUp: true
                 Layout.fillHeight: true
                 Layout.preferredWidth: 10
+                display: chatView.moving || timelinePage.showScrollbar
 
                 onWidthChanged: {
                     burryOverlay.width = scrollbar.fullWidth + 15

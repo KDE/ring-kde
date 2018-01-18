@@ -28,6 +28,9 @@ Item {
 
     signal registrationCompleted()
 
+    width: Math.min(createForm.implicitWidth, parent.width - 20)
+    height: createForm.implicitHeight
+
     function isNextAvailable() {
         nextAvailable = pinField.text.length > 0 && password.text.length > 0
     }

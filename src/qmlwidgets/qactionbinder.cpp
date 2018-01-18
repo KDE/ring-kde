@@ -128,6 +128,11 @@ QObject* QActionBinder::actionCollection() const
 
 void QActionBinder::setActionCollection(QObject* ac)
 {
+    if (d_ptr->m_pActionCollection == ac)
+        return;
+
+    //TODO clear if the collection changed
+
     Q_ASSERT(parent());
     d_ptr->m_pParent = qobject_cast<QQuickItem*>(parent());
 

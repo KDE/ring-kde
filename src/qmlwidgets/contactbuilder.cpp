@@ -41,8 +41,8 @@ ContactBuilder::~ContactBuilder()
 
 Person* ContactBuilder::from(ContactMethod* cm)
 {
-    if (cm->contact())
-        return nullptr;
+    if (cm && cm->contact())
+        return cm->contact();
 
     auto cols = PersonModel::instance().enabledCollections(
         CollectionInterface::SupportedFeatures::ADD |
@@ -59,8 +59,12 @@ Person* ContactBuilder::from(ContactMethod* cm)
 
     auto p = new Person();
     p->setCollection(col); //TODO have a selection widget again
-    cm->setPerson(p);
-    p->setContactMethods({cm});
+
+    if (cm) {
+        cm->setPerson(p);
+        p->setContactMethods({cm});
+    }
+
     col->editor<Person>()->addExisting(p);
 
     qDebug() << "New contact successfully added";
@@ -68,18 +72,17 @@ Person* ContactBuilder::from(ContactMethod* cm)
     return p;
 }
 
-ContactMethod* ContactBuilder::addPhoneNumber(Person* p, const QString& number, int categoryIndex)
+ContactMethod* ContactBuilder::updatePhoneNumber(ContactMethod* cm, Person* p, const QString& number, int categoryIndex)
 {
-
     auto catIndex = NumberCategoryModel::instance().index(categoryIndex, 0);
 
     if (!catIndex.isValid())
         return nullptr;
 
-    ContactMethod* newCM = nullptr;
+    ContactMethod* newCM = cm;
 
     // Create a person and add the CM to the phone numbers
-    if (!p) {
+    if ((!p) && !cm) {
         newCM = PhoneDirectoryModel::instance().getNumber(
             number, catIndex.data().toString()
         );
@@ -88,21 +91,61 @@ ContactMethod* ContactBuilder::addPhoneNumber(Person* p, const QString& number, 
         return newCM;
     }
 
-    p = p ? p : newCM->contact();
+    p = (p || !newCM) ? p : newCM->contact();
 
     if (!p) {
         qWarning() << "Failed to create a contact";
         return nullptr;
     }
 
-    if (!newCM)
+    if (!newCM) {
         newCM = PhoneDirectoryModel::instance().getNumber(
             number, p, nullptr, catIndex.data().toString()
         );
+        p->addPhoneNumber(newCM);
+    }
+    else if (p && newCM->type() == ContactMethod::Type::TEMPORARY) {
+        p->addPhoneNumber(newCM);
 
-    p->addPhoneNumber(newCM);
+        const auto lastRow = p->phoneNumbersModel()->index(
+            p->phoneNumbersModel()->rowCount()-1, 0
+        );
+
+        if (QVariant::fromValue(cm) == p->phoneNumbersModel()->data(lastRow, (int)Ring::Role::Object))
+            p->phoneNumbersModel()->removeRows(lastRow.row(), 1);
+    }
+    else if (p) {
+        auto newCM2 = PhoneDirectoryModel::instance().getNumber(
+            number, p, newCM->account(), catIndex.data().toString()
+        );
+        p->replacePhoneNumber(newCM, newCM2);
+        newCM = newCM2;
+    }
 
     qDebug() << "New phone number added to" << p;
 
     return newCM;
+}
+
+
+void ContactBuilder::addEmptyPhoneNumber(Person* p)
+{
+    if (!p)
+        return;
+
+    const auto idx = p->phoneNumbersModel()->index(p->phoneNumbersModel()->rowCount(), 0);
+    const bool ret = p->phoneNumbersModel()->setData(idx, QString(), Qt::DisplayRole);
+}
+
+void ContactBuilder::acceptEmptyPhoneNumber(Person* p)
+{
+    if (!p)
+        return;
+
+}
+void ContactBuilder::rejectEmptyPhoneNumber(Person* p)
+{
+    if (!p)
+        return;
+
 }
