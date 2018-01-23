@@ -689,6 +689,7 @@ void TreeView2Private::slotRowsInserted(const QModelIndex& parent, int first, in
     for (int i = first; i <= last; i++) {
         auto idx = q_ptr->model()->index(i, 0, parent);
         Q_ASSERT(idx.parent() != idx);
+        Q_ASSERT(idx.model() == q_ptr->model());
 
         auto e = addChildren(pitem, idx);
 

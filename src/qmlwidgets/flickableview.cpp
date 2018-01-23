@@ -75,6 +75,14 @@ void FlickableView::setModel(QSharedPointer<QAbstractItemModel> model)
         model->sort(0);
     }
 
+    // In theory it can cause an issue when QML set both properties in random
+    // order when replacing this model, but for until that happens, better be
+    // strict.
+    Q_ASSERT((!d_ptr->m_pSelectionModel)
+        || (!model)
+        || model == d_ptr->m_pSelectionModel->model()
+    );
+
     d_ptr->m_pModel = model;
     d_ptr->m_hRoleNames.clear();
 
@@ -156,6 +164,10 @@ QSharedPointer<QItemSelectionModel> FlickableView::selectionModel() const
 void FlickableView::setSelectionModel(QSharedPointer<QItemSelectionModel> m)
 {
     d_ptr->m_pSelectionModel = m;
+
+    // This will cause undebugable issues. Better ban it early
+    Q_ASSERT((!model()) || model() == m->model());
+
     d_ptr->slotSelectionModelChanged();
     Q_EMIT selectionModelChanged();
 }
@@ -222,10 +234,14 @@ QHash<int, QString>* FlickableViewPrivate::reloadRoleNames(const QModelIndex& in
     return hash;
 }
 
+#include <QSortFilterProxyModel>
+
 void FlickableView::applyRoles(QQmlContext* ctx, const QModelIndex& self) const
 {
-    auto* hash = self.model() == d_ptr->m_pModel ?
-        &d_ptr->m_hRoleNames : d_ptr->m_hhOtherRoleNames.value(self.model());
+    auto m = self.model();
+
+    auto* hash = m == d_ptr->m_pModel ?
+        &d_ptr->m_hRoleNames : d_ptr->m_hhOtherRoleNames.value(m);
 
     // Refresh the cache
     if ((!hash) || model()->roleNames().size() != hash->size())
@@ -236,10 +252,10 @@ void FlickableView::applyRoles(QQmlContext* ctx, const QModelIndex& self) const
         ctx->setContextProperty(i.value() , self.data(i.key()));
 
     // Set extra index to improve ListView compatibility
-    ctx->setContextProperty(QStringLiteral("index"        ) , self.row()              );
-    ctx->setContextProperty(QStringLiteral("rootIndex"    ) , self                    );
-    ctx->setContextProperty(QStringLiteral("rowCount"     ) , model()->rowCount(self) );
-    ctx->setContextProperty(QStringLiteral("isCurrentItem") , false                   );
+    ctx->setContextProperty(QStringLiteral("index"        ) , self.row()        );
+    ctx->setContextProperty(QStringLiteral("rootIndex"    ) , self              );
+    ctx->setContextProperty(QStringLiteral("rowCount"     ) , m->rowCount(self) );
+    ctx->setContextProperty(QStringLiteral("isCurrentItem") , false             );
 }
 
 QPair<QQuickItem*, QQmlContext*> FlickableView::loadDelegate(QQuickItem* parentI, QQmlContext* parentCtx, const QModelIndex& self) const

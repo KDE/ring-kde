@@ -272,10 +272,10 @@ QuickListViewSection* QuickListViewPrivate::getSection(QuickListViewItem* i)
         reloadSectionIndices();
 
     if (m_pSectionModel) {
-        q_ptr->applyRoles(
-            i->m_pSection->m_pContent,
-            m_pSectionModel->index(i->m_pSection->m_Index, 0)
-        );
+        const auto idx = m_pSectionModel->index(i->m_pSection->m_Index, 0);
+        Q_ASSERT((!idx.isValid()) || idx.model() == m_pSectionModel);
+
+        q_ptr->applyRoles( i->m_pSection->m_pContent, idx);
     }
 
     // Create the item *after* applyRoles to avoid O(N) number of reloads
