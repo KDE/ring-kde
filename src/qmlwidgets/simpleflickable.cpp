@@ -39,6 +39,7 @@ public:
     enum class DragState {
         IDLE    , /*!< Nothing is happening */
         PRESSED , /*!< A potential drag     */
+        EVAL    , /*!< Drag without lock    */
         DRAGGED , /*!< An in progress grag  */
         INERTIA , /*!< A leftover drag      */
     };
@@ -51,6 +52,8 @@ public:
         MOVE    , /*!< When the mouse moves            */
         TIMER   , /*!< 30 times per seconds            */
         OTHER   , /*!< Doesn't affect the state        */
+        ACCEPT  , /*!< Accept the drag ownership       */
+        REJECT  , /*!< Reject the drag ownership       */
     };
 
     // Actions
@@ -62,6 +65,8 @@ public:
     bool cancel  (QMouseEvent* e); /*!< Cancel potential drag        */
     bool inertia (QMouseEvent* e); /*!< Iterate on the inertia curve */
     bool release (QMouseEvent* e); /*!< Trigger the inertia          */
+    bool eval    (QMouseEvent* e); /*!< Check for potential drag ops */
+    bool lock    (QMouseEvent* e); /*!< Lock the input grabber       */
 
     // Attributes
     QQuickItem* m_pContainer {nullptr};
@@ -81,8 +86,8 @@ public:
     DragEvent eventMapper(QEvent* e) const;
 
     // State machine
-    static const StateF m_fStateMachine[4][6];
-    static const DragState m_fStateMap [4][6];
+    static const StateF m_fStateMachine[5][8];
+    static const DragState m_fStateMap [5][8];
 
     SimpleFlickable* q_ptr;
 
@@ -95,18 +100,20 @@ public Q_SLOTS:
 /**
  * This is a Mealy machine, states callbacks are allowed to throw more events
  */
-const SimpleFlickablePrivate::DragState SimpleFlickablePrivate::m_fStateMap[4][6] {
-/*             TIMEOUT      PRESS      RELEASE     MOVE       TIMER      OTHER  */
-/* IDLE    */ {S IDLE   , S PRESSED, S IDLE    , S IDLE   , S IDLE   , S IDLE   },
-/* PRESSED */ {S PRESSED, S PRESSED, S IDLE    , S DRAGGED, S PRESSED, S PRESSED},
-/* DRAGGED */ {S DRAGGED, S DRAGGED, S INERTIA , S DRAGGED, S DRAGGED, S DRAGGED},
-/* INERTIA */ {S IDLE   , S IDLE   , S IDLE    , S DRAGGED, S INERTIA, S INERTIA}};
-const SimpleFlickablePrivate::StateF SimpleFlickablePrivate::m_fStateMachine[4][6] {
-/*             TIMEOUT      PRESS      RELEASE     MOVE       TIMER      OTHER   */
-/* IDLE    */ {A error  , A start  , A nothing , A nothing, A error  , A nothing },
-/* PRESSED */ {A error  , A nothing, A cancel  , A drag   , A error  , A nothing },
-/* DRAGGED */ {A error  , A drag   , A release , A drag   , A error  , A nothing },
-/* INERTIA */ {A stop   , A stop   , A stop    , A error  , A inertia, A nothing}};
+const SimpleFlickablePrivate::DragState SimpleFlickablePrivate::m_fStateMap[5][8] {
+/*             TIMEOUT      PRESS      RELEASE     MOVE       TIMER      OTHER      ACCEPT    REJECT  */
+/* IDLE    */ {S IDLE   , S PRESSED, S IDLE    , S IDLE   , S IDLE   , S IDLE   , S IDLE   , S IDLE   },
+/* PRESSED */ {S PRESSED, S PRESSED, S IDLE    , S EVAL   , S PRESSED, S PRESSED, S PRESSED, S PRESSED},
+/* EVAL    */ {S IDLE   , S EVAL   , S IDLE    , S EVAL   , S EVAL   , S EVAL   , S DRAGGED, S IDLE   },
+/* DRAGGED */ {S DRAGGED, S DRAGGED, S INERTIA , S DRAGGED, S DRAGGED, S DRAGGED, S DRAGGED, S DRAGGED},
+/* INERTIA */ {S IDLE   , S IDLE   , S IDLE    , S DRAGGED, S INERTIA, S INERTIA, S INERTIA, S INERTIA}};
+const SimpleFlickablePrivate::StateF SimpleFlickablePrivate::m_fStateMachine[5][8] {
+/*             TIMEOUT      PRESS      RELEASE     MOVE       TIMER      OTHER     ACCEPT   REJECT  */
+/* IDLE    */ {A error  , A start  , A nothing , A nothing, A error  , A nothing, A error, A error  },
+/* PRESSED */ {A error  , A nothing, A cancel  , A eval   , A error  , A nothing, A error, A error  },
+/* EVAL    */ {A error  , A nothing, A cancel  , A eval   , A error  , A nothing, A lock , A cancel },
+/* DRAGGED */ {A error  , A drag   , A release , A drag   , A error  , A nothing, A error, A error  },
+/* INERTIA */ {A stop   , A stop   , A stop    , A error  , A inertia, A nothing, A error, A error  }};
 #undef S
 #undef A
 
@@ -201,7 +208,7 @@ bool SimpleFlickablePrivate::updateVelocity()
     m_Velocity = (dy/dt);
 
     // Do not start for low velocity mouse release
-    if (std::fabs(m_Velocity) < 40)
+    if (std::fabs(m_Velocity) < 40) //TODO C++17 use std::clamp
         m_Velocity = 0;
 
     return m_Velocity;
@@ -302,6 +309,7 @@ bool SimpleFlickablePrivate::nothing(QMouseEvent*)
 bool SimpleFlickablePrivate::error(QMouseEvent*)
 {
     qWarning() << "simpleFlickable: Invalid state change";
+    Q_ASSERT(false);
     return false;
 }
 
@@ -322,9 +330,6 @@ bool SimpleFlickablePrivate::drag(QMouseEvent* e)
 {
     if (!m_pContainer)
         return false;
-
-    q_ptr->setKeepMouseGrab(true);
-    q_ptr->grabMouse();
 
     const int dy(e->pos().y() - m_DragPoint.y());
     m_DragPoint = e->pos();
@@ -354,7 +359,7 @@ bool SimpleFlickablePrivate::start(QMouseEvent* e)
 
 bool SimpleFlickablePrivate::cancel(QMouseEvent*)
 {
-    m_StartPoint = m_DragPoint  = {};
+    m_StartPoint = m_DragPoint = {};
     q_ptr->setKeepMouseGrab(false);
 
     // Reject the event, let the click pass though
@@ -374,6 +379,27 @@ bool SimpleFlickablePrivate::release(QMouseEvent*)
     m_DragPoint = {};
 
     return false;
+}
+
+bool SimpleFlickablePrivate::lock(QMouseEvent*)
+{
+    q_ptr->setKeepMouseGrab(true);
+    q_ptr->grabMouse();
+
+    return true;
+}
+
+bool SimpleFlickablePrivate::eval(QMouseEvent* e)
+{
+    // Reject large horizontal swipe and allow large vertical ones
+    if (std::fabs(m_StartPoint.x() - e->pos().x()) > 10) {
+        applyEvent(DragEvent::REJECT, e);
+        return false;
+    }
+    else if (std::fabs(m_StartPoint.y() - e->pos().y()) > 10)
+        applyEvent(DragEvent::ACCEPT, e);
+
+    return drag(e);
 }
 
 bool SimpleFlickablePrivate::inertia(QMouseEvent*)

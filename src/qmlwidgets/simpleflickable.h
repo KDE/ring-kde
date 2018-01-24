@@ -22,7 +22,7 @@
 class SimpleFlickablePrivate;
 
 /**
- * This file re-implement the flickable view.
+ * This file re-implements the flickable view.
  *
  * It is necessary to avoid a dependency on Qt private APIs in order to
  * re-implement higher level views such as the tree view. The upstream code
