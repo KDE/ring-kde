@@ -76,6 +76,10 @@ public:
     qint64      m_StartTime  {   0   };
     int         m_LastDelta  {   0   };
     qreal       m_Velocity   {   0   };
+    qreal       m_DecelRate  {  0.9  };
+    bool        m_Interactive{ true  };
+
+    qreal m_MaxVelocity {std::numeric_limits<qreal>::max()};
 
     DragState m_State {DragState::IDLE};
 
@@ -211,6 +215,9 @@ bool SimpleFlickablePrivate::updateVelocity()
     if (std::fabs(m_Velocity) < 40) //TODO C++17 use std::clamp
         m_Velocity = 0;
 
+    if (std::fabs(m_Velocity) > std::fabs(m_MaxVelocity))
+        m_Velocity = m_Velocity > 0 ? m_MaxVelocity : -m_MaxVelocity;
+
     return m_Velocity;
 }
 
@@ -247,6 +254,9 @@ SimpleFlickablePrivate::DragEvent SimpleFlickablePrivate::eventMapper(QEvent* ev
  */
 bool SimpleFlickable::childMouseEventFilter(QQuickItem* item, QEvent* event)
 {
+    if (!d_ptr->m_Interactive)
+        return false;
+
     const auto e = d_ptr->eventMapper(event);
 
     return e == SimpleFlickablePrivate::DragEvent::OTHER ?
@@ -256,6 +266,9 @@ bool SimpleFlickable::childMouseEventFilter(QQuickItem* item, QEvent* event)
 
 bool SimpleFlickable::event(QEvent *event)
 {
+    if (!d_ptr->m_Interactive)
+        return false;
+
     const auto e = d_ptr->eventMapper(event);
 
     if (event->type() == QEvent::Wheel) {
@@ -290,6 +303,8 @@ bool SimpleFlickablePrivate::applyEvent(DragEvent event, QMouseEvent* e)
     if (!m_pContainer)
         return false;
 
+    const bool wasDragging(q_ptr->isDragging()), wasMoving(q_ptr->isMoving());
+
     // Set the state before the callback so recursive events work
     const int s = (int)m_State;
     m_State     = m_fStateMap            [s][(int)event];
@@ -297,6 +312,12 @@ bool SimpleFlickablePrivate::applyEvent(DragEvent event, QMouseEvent* e)
 
     if (ret && e)
         e->accept();
+
+    if (wasDragging != q_ptr->isDragging())
+        emit q_ptr->draggingChanged(q_ptr->isDragging());
+
+    if (wasMoving != q_ptr->isMoving())
+        emit q_ptr->movingChanged(q_ptr->isMoving());
 
     return ret && e;
 }
@@ -404,7 +425,7 @@ bool SimpleFlickablePrivate::eval(QMouseEvent* e)
 
 bool SimpleFlickablePrivate::inertia(QMouseEvent*)
 {
-    m_Velocity *= 0.90; //TODO a configurable easing curve
+    m_Velocity *= m_DecelRate;
 
     q_ptr->setCurrentY(q_ptr->currentY() - m_Velocity);
 
@@ -412,6 +433,48 @@ bool SimpleFlickablePrivate::inertia(QMouseEvent*)
         applyEvent(DragEvent::TIMEOUT, nullptr);
 
     return true;
+}
+
+bool SimpleFlickable::isDragging() const
+{
+    return d_ptr->m_State == SimpleFlickablePrivate::DragState::DRAGGED
+        || d_ptr->m_State == SimpleFlickablePrivate::DragState::EVAL;
+}
+
+bool SimpleFlickable::isMoving() const
+{
+    return isDragging()
+        || d_ptr->m_State == SimpleFlickablePrivate::DragState::INERTIA;
+}
+
+qreal SimpleFlickable::flickDeceleration() const
+{
+    return d_ptr->m_DecelRate;
+}
+
+void SimpleFlickable::setFlickDeceleration(qreal v)
+{
+    d_ptr->m_DecelRate = v;
+}
+
+bool SimpleFlickable::isInteractive() const
+{
+    return d_ptr->m_Interactive;
+}
+
+void SimpleFlickable::setInteractive(bool v)
+{
+    d_ptr->m_Interactive = v;
+}
+
+qreal SimpleFlickable::maximumFlickVelocity() const
+{
+    return d_ptr->m_MaxVelocity;
+}
+
+void SimpleFlickable::setMaximumFlickVelocity(qreal v)
+{
+    d_ptr->m_MaxVelocity = v;
 }
 
 #include <simpleflickable.moc>

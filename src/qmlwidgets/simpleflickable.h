@@ -39,8 +39,19 @@ class SimpleFlickable : public QQuickItem
 {
     Q_OBJECT
 public:
+
+    // Implement some of the QtQuick2.Flickable API
     Q_PROPERTY(qreal contentY READ currentY WRITE setCurrentY NOTIFY currentYChanged)
     Q_PROPERTY(qreal contentHeight READ contentHeight NOTIFY contentHeightChanged )
+    Q_PROPERTY(bool dragging READ isDragging NOTIFY draggingChanged)
+    Q_PROPERTY(bool flicking READ isDragging NOTIFY movingChanged)
+    Q_PROPERTY(bool moving READ isDragging NOTIFY movingChanged)
+    Q_PROPERTY(bool movingHorizontally READ isDragging NOTIFY movingChanged)
+    Q_PROPERTY(bool draggingHorizontally READ isDragging NOTIFY draggingChanged)
+    Q_PROPERTY(bool flickingHorizontally READ isDragging NOTIFY movingChanged)
+    Q_PROPERTY(qreal flickDeceleration READ flickDeceleration WRITE setFlickDeceleration)
+    Q_PROPERTY(bool interactive READ isInteractive WRITE setInteractive)
+    Q_PROPERTY(qreal maximumFlickVelocity READ maximumFlickVelocity  WRITE setMaximumFlickVelocity)
 
     explicit SimpleFlickable(QQuickItem* parent = nullptr);
     virtual ~SimpleFlickable();
@@ -52,10 +63,24 @@ public:
 
     QQuickItem* contentItem();
 
+    bool isDragging() const;
+    bool isMoving() const;
+
+    qreal flickDeceleration() const;
+    void setFlickDeceleration(qreal v);
+
+    bool isInteractive() const;
+    void setInteractive(bool v);
+
+    qreal maximumFlickVelocity() const;
+    void setMaximumFlickVelocity(qreal v);
+
 Q_SIGNALS:
     void contentHeightChanged(qreal height);
     void currentYChanged(qreal y);
     void percentageChanged(qreal percent);
+    void draggingChanged(bool dragging);
+    void movingChanged(bool dragging);
 
 protected:
     bool event(QEvent *ev) override;
