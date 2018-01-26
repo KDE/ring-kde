@@ -412,12 +412,19 @@ bool SimpleFlickablePrivate::lock(QMouseEvent*)
 
 bool SimpleFlickablePrivate::eval(QMouseEvent* e)
 {
+    // It might look like an oversimplification, but the math here is correct.
+    // Think of the rectangle being at the origin of a radiant wheel. The
+    // hypotenuse of the rectangle will point at an angle. This code is
+    // equivalent to the range PI/2 <-> 3*(PI/2) U 5*(PI/2) <-> 7*(PI/2)
+
+    static const constexpr uchar EVENT_THRESHOLD = 10;
+
     // Reject large horizontal swipe and allow large vertical ones
-    if (std::fabs(m_StartPoint.x() - e->pos().x()) > 10) {
+    if (std::fabs(m_StartPoint.x() - e->pos().x()) > EVENT_THRESHOLD) {
         applyEvent(DragEvent::REJECT, e);
         return false;
     }
-    else if (std::fabs(m_StartPoint.y() - e->pos().y()) > 10)
+    else if (std::fabs(m_StartPoint.y() - e->pos().y()) > EVENT_THRESHOLD)
         applyEvent(DragEvent::ACCEPT, e);
 
     return drag(e);
@@ -429,6 +436,7 @@ bool SimpleFlickablePrivate::inertia(QMouseEvent*)
 
     q_ptr->setCurrentY(q_ptr->currentY() - m_Velocity);
 
+    // Clamp the asymptotes to avoid an infinite loop, I chose a random value
     if (std::fabs(m_Velocity) < 0.05)
         applyEvent(DragEvent::TIMEOUT, nullptr);
 
