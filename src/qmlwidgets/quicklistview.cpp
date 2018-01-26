@@ -374,7 +374,7 @@ bool QuickListViewItem::move()
 
     const qreal y = d()->m_DepthChart.first()*index().row();
 
-    if (!m_pItem->width())
+    if (m_pItem->width() != view()->contentItem()->width())
         m_pItem->setWidth(view()->contentItem()->width());
 
     prevItem = prevItem ? prevItem : prev ? prev->m_pItem : nullptr;
