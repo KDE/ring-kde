@@ -82,7 +82,7 @@ Rectangle {
             case ContactMethod.CODECS      :
                 return i18n("All video codecs are disabled, video call isn't possible")
             case ContactMethod.ACCOUNT_DOWN:
-                return i18n("All account capable of reaching this person are currently unavailable")
+                return i18n("All accounts capable of reaching this person are currently unavailable")
             case ContactMethod.NETWORK     :
                 return i18n("Ring-KDE is experiencing a network issue, please try later")
         }

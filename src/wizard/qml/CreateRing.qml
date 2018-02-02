@@ -362,7 +362,7 @@ Item {
                 registerFoundLabel.color = "green"
             }
             else if (status == 1 || name == "") {
-                registerFoundLabel.text = i18n("Please enter an username (3 character minimum)")
+                registerFoundLabel.text = i18n("Please enter an username (3 characters minimum)")
                 registerFoundLabel.color = "white"
                 nextAvailable = false
             }
