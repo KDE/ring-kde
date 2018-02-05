@@ -110,6 +110,10 @@ Item {
             id: dockHolder
             width: Math.min(335, root.width-48)
             Layout.fillHeight: true
+            visible: (
+                timelineView.active || dialView.active || contactView.active
+            )
+
             Loader {
                 id: timelineView
                 active: dockBar.selectedItem == "timeline"
@@ -183,7 +187,7 @@ Item {
 
             PropertyChanges {
                 target: dockHolder
-                width: 32
+                width: 0
             }
 
             PropertyChanges {

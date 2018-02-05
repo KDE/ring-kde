@@ -57,6 +57,7 @@ Kirigami.ApplicationWindow {
         z: 10000
         visible: false
         state: ""
+        clip: true
 
         Behavior on width {
             NumberAnimation {duration: 200;  easing.type: Easing.OutQuad }
@@ -99,6 +100,7 @@ Kirigami.ApplicationWindow {
                 PropertyChanges {
                     target: newHolder
                     visible: false
+                    width: 0
                 }
             },
             State {

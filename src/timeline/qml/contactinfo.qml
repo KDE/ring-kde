@@ -47,6 +47,9 @@ Kirigami.ScrollablePage {
 
     state: forcedState
 
+//     verticalScrollBarPolicy: Qt.ScrollBarAlwaysOff
+//     horizontalScrollBarPolicy: Qt.ScrollBarAlwaysOff
+
     function save() {
         if ((!currentContactMethod) && (!currentPerson))
             return
@@ -690,6 +693,14 @@ Kirigami.ScrollablePage {
                 target: sv
                 visible: false
             }
+
+            PropertyChanges {
+                target: contactViewPage
+                bottomPadding: undefined
+                topPadding: undefined
+                leftPadding: undefined
+                rightPadding: undefined
+            }
         },
 
         State {
@@ -709,6 +720,14 @@ Kirigami.ScrollablePage {
             PropertyChanges {
                 target: statisticHeader
                 visible: false
+            }
+
+            PropertyChanges {
+                target: contactViewPage
+                bottomPadding: 0
+                topPadding: 0
+                leftPadding: 0
+                rightPadding: 0
             }
 
             AnchorChanges {

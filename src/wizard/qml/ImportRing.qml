@@ -62,6 +62,7 @@ Item {
             clip: false
             text: i18n("Link this device")
             verticalAlignment: Text.AlignVCenter
+            color: "white"
             padding: 0
             font.bold: true
             horizontalAlignment: Text.AlignHCenter
@@ -80,6 +81,7 @@ Item {
         Label {
             id: label1
             text: i18n("Enter your main Ring account password")
+            color: "white"
             Layout.fillWidth: true
             anchors.leftMargin: 8
             anchors.left: parent.left
@@ -95,6 +97,7 @@ Item {
         Label {
             id: label
             wrapMode: "WordWrap"
+            color: "white"
             text: i18n("Enter the PIN number from another configured Ring account. Use the \"Export account on Ring\" feature to obtain a PIN.")
             Layout.fillWidth: true
             anchors.leftMargin: 8

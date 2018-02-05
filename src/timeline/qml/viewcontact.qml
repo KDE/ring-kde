@@ -306,6 +306,7 @@ Item {
 
         Page {
             id: page1
+            anchors.margins: 0
             background: Rectangle {
             color: activePalette.base
             }
@@ -410,11 +411,7 @@ Item {
 
             PropertyChanges {
                 target: contactInfo
-                width: page1.width + 26 //BUG wtf
-                height: page1.height + 26 //BUG wtf
-                x: -13
-                y: -13
-                anchors.fill: undefined //BUG no idea why, but it causes large 13px margins, using x/y/w/h for now
+                anchors.fill: page1
                 flickable.interactive: true
             }
             PropertyChanges {
