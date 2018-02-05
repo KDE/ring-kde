@@ -17,6 +17,7 @@
  *****************************************************************************/
 import QtQuick 2.0
 import Ring 1.0
+import org.kde.kirigami 2.2 as Kirigami
 
 Item {
     id: mainArea
@@ -58,7 +59,7 @@ Item {
             opacity: 0
             color: activePalette.text
             text: i18n("Merge all calls")
-            font.pointSize: 14
+            font.pointSize: Kirigami.Theme.defaultFont.pointSize*1.6
             anchors.centerIn: parent
             Behavior on opacity {
                 NumberAnimation {duration: 200;  easing.type: Easing.OutQuad }

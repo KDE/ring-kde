@@ -21,6 +21,7 @@ import Ring 1.0
 import RingQmlWidgets 1.0
 import QtGraphicalEffects 1.0
 import Style 1.0
+import org.kde.kirigami 2.2 as Kirigami
 
 Item {
     id: chatMessage
@@ -53,7 +54,7 @@ Item {
                 anchors.margins: 5
                 anchors.right: direction == 0 ? parent.right : undefined
                 anchors.left : direction == 0 ? undefined : parent.left
-                font.pointSize: 10
+                font.pointSize: Kirigami.Theme.defaultFont.pointSize*1.2
                 font.family: "Noto Color Emoji"
                 z: 1
 

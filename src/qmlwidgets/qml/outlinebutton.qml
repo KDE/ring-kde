@@ -17,6 +17,7 @@
  **************************************************************************/
 import QtQuick 2.0
 import Ring 1.0
+import org.kde.kirigami 2.2 as Kirigami
 
 Item {
     id: button
@@ -94,7 +95,7 @@ Item {
             opacity: 0
             color: activePalette.text
             text: button.label
-            font.pointSize: 14
+            font.pointSize: Kirigami.Theme.defaultFont.pointSize*1.6
             Behavior on opacity {
                 NumberAnimation {duration: 200;  easing.type: Easing.OutQuad }
             }

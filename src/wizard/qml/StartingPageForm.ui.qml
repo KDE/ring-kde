@@ -18,6 +18,7 @@
 import QtQuick 2.4
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
+import org.kde.kirigami 2.2 as Kirigami
 
 Item {
 
@@ -196,7 +197,7 @@ Item {
                 id: label
                 color: "white"
                 text: i18n("Press anywhere to begin")
-                font.pointSize: 12
+                font.pointSize: Kirigami.Theme.defaultFont.pointSize*1.4
                 horizontalAlignment: Text.AlignHCenter
                 Layout.fillWidth: true
                 font.bold: true

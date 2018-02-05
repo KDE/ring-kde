@@ -20,6 +20,7 @@ import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
 import Ring 1.0
 import RingQmlWidgets 1.0
+import org.kde.kirigami 2.2 as Kirigami
 
 Item {
     id: scrollbar
@@ -166,7 +167,7 @@ Item {
                     Layout.fillWidth: true
                     text: display
                     color: activePalette.text
-                    font.pointSize: 10
+                    font.pointSize: Kirigami.Theme.defaultFont.pointSize*1.2
                     Behavior on font.pointSize {
                         NumberAnimation {duration: 150}
                     }
@@ -179,7 +180,7 @@ Item {
                     when: !selected
                     PropertyChanges {
                         target:  label
-                        font.pointSize: 10
+                        font.pointSize: Kirigami.Theme.defaultFont.pointSize*1.2
                     }
                 },
                 State {
@@ -195,7 +196,7 @@ Item {
                     }
                     PropertyChanges {
                         target:  label
-                        font.pointSize: 14
+                        font.pointSize: Kirigami.Theme.defaultFont.pointSize*1.6
                     }
                 }
             ]
