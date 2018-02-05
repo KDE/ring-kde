@@ -23,6 +23,7 @@ import ContactView 1.0
 
 import RingQmlWidgets 1.0
 import PhotoSelectorPlugin 1.0
+import org.kde.kirigami 2.2 as Kirigami
 
 Rectangle {
     id: contactHeader
@@ -210,7 +211,7 @@ Rectangle {
 
             PropertyChanges {
                 target: primaryName
-                font.pointSize: 10
+                font.pointSize: Kirigami.Theme.defaultFont.pointSize
             }
 
             PropertyChanges {
@@ -329,6 +330,16 @@ Rectangle {
                 anchors.horizontalCenter: contactHeader.horizontalCenter
             }
 
+            AnchorChanges {
+                target: mediaAvailability
+                anchors.left: contactHeader.left
+                anchors.top: contactHeader.top
+                anchors.right: undefined
+                anchors.bottom: undefined
+                anchors.verticalCenter: undefined
+                anchors.horizontalCenter: undefined
+            }
+
             PropertyChanges {
                 target: photo
                 height: 50
@@ -338,7 +349,7 @@ Rectangle {
 
             PropertyChanges {
                 target: primaryName
-                font.pointSize: 14
+                font.pointSize: Kirigami.Theme.defaultFont.pointSize*1.5
             }
 
             PropertyChanges {
