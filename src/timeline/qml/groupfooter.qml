@@ -20,6 +20,10 @@ import QtQuick.Layouts 1.0
 
 RowLayout {
     anchors.horizontalCenter: parent.horizontalCenter
+    clip: true
+    height: implicitHeight
+
+    property real lineWidth: Math.min(50, (width - label.implicitWidth)/2)
 
     SystemPalette {
         id: inactivePalette
@@ -32,6 +36,7 @@ RowLayout {
         color: inactivePalette.text
     }
     Text {
+        id: label
         text: endAt
         color: inactivePalette.text
     }

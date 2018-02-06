@@ -26,6 +26,7 @@ import org.kde.kirigami 2.2 as Kirigami
 Item {
     id: chatMessage
     width: parent.width
+
     property color background
     property color foreground
     signal clicked()
@@ -62,15 +63,16 @@ Item {
                 color: background
 
                 text: display != undefined ? display : "N/A"
-                maximumWidth: parent.width*0.7
+                maximumWidth: parent.width*((height > (width*0.5)) ? 0.9 : 0.7)
+                height: Math.max(50, label.implicitHeight + dateLabel.implicitHeight + 5)
 
                 Text {
+                    id: label
                     anchors.fill: parent
                     anchors.leftMargin: 30
                     anchors.rightMargin: 30
                     anchors.topMargin: 5
                     anchors.bottomMargin: 5
-                    anchors.margins: 20
                     horizontalAlignment: direction == 0 ? Text.AlignRight : Text.AlignLeft
                     font: bubble.font
                     text: display != undefined ? display : "N/A"
@@ -79,6 +81,7 @@ Item {
                 }
 
                 Text {
+                    id: dateLabel
                     anchors.bottom: parent.bottom
                     anchors.left: direction == 0 ? parent.left : undefined
                     anchors.right: direction == 1 ? parent.right : undefined

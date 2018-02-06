@@ -37,6 +37,10 @@ ColumnLayout {
         modelIndex: rootIndex
     }
 
+    Item {
+        height: 3
+    }
+
     GroupFooter {
         Layout.fillWidth: true
     }

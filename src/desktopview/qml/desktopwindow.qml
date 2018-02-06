@@ -196,6 +196,7 @@ Kirigami.ApplicationWindow {
 
     RowLayout {
         anchors.fill: parent
+        spacing: 0
 
         DockBar {
             id: dockBar

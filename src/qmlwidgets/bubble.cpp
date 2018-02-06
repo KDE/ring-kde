@@ -161,12 +161,12 @@ void Bubble::slotWindowChanged(QQuickWindow *w)
 
     static qreal ratio   = 0;
     static qreal arrow   = 20;
-    static qreal margins = 20;
+    static qreal margins = 30;
     static qreal dateW   = 0;
 
     // There is a race condition, the item are created before the window
     if (!ratio) {
-        ratio   = w ? w->effectiveDevicePixelRatio():0;
+        ratio  = w ? w->effectiveDevicePixelRatio():0;
 
         //TODO make point size configurable
         QFont f = d_ptr->m_Font;
@@ -186,5 +186,4 @@ void Bubble::slotWindowChanged(QQuickWindow *w)
     const qreal mw = std::max(dateW*1.66, r.width())+arrow+2*margins;
 
     setWidth(std::min(d_ptr->m_MaximumWidth, mw));
-    setHeight(std::max(50.0, r.height() + 2*d_ptr->m_FontMetrics.height()));
 }
