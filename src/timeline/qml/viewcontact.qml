@@ -48,14 +48,16 @@ Item {
         if (currentContactMethod && currentContactMethod.person)
             personConn.target = currentContactMethod.person
 
+        var call = null
+
         // Check if the CM already has an active call, switch to it
         for (var i=0; i<CallModel.size; i++) {
-            var call = CallModel.getCall(CallModel.index(i, 0))
-            if (call && call.peerContactMethod == currentContactMethod && call.lifeCycleState != Call.FINISHED) {
-                avView.call = call
+            call = CallModel.getCall(CallModel.index(i, 0))
+            if (call && call.peerContactMethod == currentContactMethod && call.lifeCycleState != Call.FINISHED)
                 break
-            }
         }
+
+        avView.call = call
     }
 
     onCurrentPageChanged: {
@@ -196,10 +198,17 @@ Item {
 
                     property var call: null
 
+                    // QML bug?
+                    onCallChanged: {
+                        if (active)
+                            callViewWidget.call = call
+                    }
+
                     CallView {
+                        id: callViewWidget
                         mode: "CONVERSATION"
                         anchors.fill: parent
-                        call: callLoader.call
+                        call: avView.call
                         onCallWithAudio: {
                             if (currentContactMethod.hasInitCall) {
                                 contactHeader.selectVideo()
