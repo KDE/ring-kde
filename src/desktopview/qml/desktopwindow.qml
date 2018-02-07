@@ -222,12 +222,12 @@ Kirigami.ApplicationWindow {
                 }
 
                 onSelectChat: {
-                    tabBar.currentIndex = 2
+                    mainPage.setCurrentPage(MainPage.TIMELINE)
                     timelinePage.currentInstance.focusEdit()
                 }
 
                 onSelectVideo: {
-                    tabBar.currentIndex = 1
+                    mainPage.setCurrentPage(MainPage.MEDIA)
                 }
             }
 
