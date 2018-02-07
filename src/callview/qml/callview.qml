@@ -183,6 +183,7 @@ Item {
 
         anchors.fill: parent
         hoverEnabled: true
+        propagateComposedEvents: true
         onMouseXChanged: trackActivity()
         onMouseYChanged: trackActivity()
     }

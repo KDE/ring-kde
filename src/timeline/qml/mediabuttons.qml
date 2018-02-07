@@ -41,6 +41,7 @@ Row {
         checked: currentContactMethod && currentContactMethod.firstOutgoingCall
 
         onClicked: {
+            console.log("CLICL")
             if (currentContactMethod == null) return
 
             if (currentContactMethod.hasInitCall) {
@@ -126,8 +127,8 @@ Row {
         id: button3
         implicitWidth: label3.implicitWidth + 20
         checkable: currentContactMethod && currentContactMethod.hasActiveCall
-        checked: currentContactMethod && currentContactMethod.firstOutgoingCall
-            && currentContactMethod.firstOutgoingCall.videoRenderer
+        checked: currentContactMethod && currentContactMethod.firstOutgoingCall != null
+            && currentContactMethod.firstOutgoingCall.videoRenderer != null
 
         visible: currentContactMethod &&
             ((!currentContactMethod) ||
