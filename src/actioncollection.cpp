@@ -188,7 +188,7 @@ Q_ASSERT(action_configureRing );
    INIT_ACTION(action_showDialDock          , QIcon::fromTheme(QStringLiteral("bookmark-new-list"               )), i18n("Display call manager"    ));
    INIT_ACTION(action_editToolBar           , QIcon::fromTheme(QStringLiteral("configure-toolbars"              )), i18n("Configure Toolbars"      ));
    INIT_ACTION(action_addPerson             , QIcon::fromTheme(QStringLiteral("contact-new"                     )), i18n("Add new contact"         ));
-   INIT_ACTION(action_configureShortcut     , QIcon::fromTheme(QStringLiteral("configure-shortcuts"             )), i18n("Configure Shortcut"      ));
+   INIT_ACTION(action_configureShortcut     , QIcon::fromTheme(QStringLiteral("configure-shortcuts"             )), i18n("Configure Shortcuts"     ));
    INIT_ACTION(action_configureNotifications, QIcon::fromTheme(QStringLiteral("preferences-desktop-notification")), i18n("Configure Notifications" ));
 
 #define COL(a,b) col->setDefaultShortcut(a,b)
