@@ -39,11 +39,11 @@ DockModel::DockModel(QObject* parent) : QAbstractListModel(parent), d_ptr(new Do
     d_ptr->q_ptr = this;
 
     for (auto tuple : {
-        std::make_tuple(ActionCollection::instance()->showTimelineDockAction(), "/toolbar/timeline.svg", "timeline"),
-        std::make_tuple(ActionCollection::instance()->showDialDockAction    (), "/toolbar/call.svg"    , "call"    ),
-        std::make_tuple(ActionCollection::instance()->showContactDockAction (), "/toolbar/contact.svg" , "contact" ),
         std::make_tuple(ActionCollection::instance()->showBookmarkDockAction(), "/toolbar/bookmark.svg", "bookmark"),
+        std::make_tuple(ActionCollection::instance()->showContactDockAction (), "/toolbar/contact.svg" , "contact" ),
+        std::make_tuple(ActionCollection::instance()->showTimelineDockAction(), "/toolbar/timeline.svg", "timeline"),
         std::make_tuple(ActionCollection::instance()->showHistoryDockAction (), "/toolbar/history.svg" , "history" ),
+        std::make_tuple(ActionCollection::instance()->showDialDockAction    (), "/toolbar/call.svg"    , "call"    ),
     }) {
         connect(std::get<0>(tuple), &QAction::toggled, d_ptr, &DockModelPrivate::reload);
         std::get<0>(tuple)->setProperty("iconpath"  , std::get<1>(tuple));
@@ -115,11 +115,11 @@ void DockModelPrivate::reload()
     QVector<QAction*> l;
 
     for (QAction* a : {
-        ActionCollection::instance()->showTimelineDockAction(),
-        ActionCollection::instance()->showDialDockAction    (),
-        ActionCollection::instance()->showContactDockAction (),
         ActionCollection::instance()->showBookmarkDockAction(),
+        ActionCollection::instance()->showContactDockAction (),
+        ActionCollection::instance()->showTimelineDockAction(),
         ActionCollection::instance()->showHistoryDockAction (),
+        ActionCollection::instance()->showDialDockAction    (),
     }) {
         if (a->isChecked())
             l << a;
