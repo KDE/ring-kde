@@ -111,7 +111,8 @@ Item {
             width: Math.min(335, root.width-48)
             Layout.fillHeight: true
             visible: (
-                timelineView.active || dialView.active || contactView.active
+                timelineView.active || dialView.active ||
+                contactView.active || bookmarkView.active || historyView.active
             )
 
             Loader {
@@ -150,6 +151,28 @@ Item {
                     }
                 }
             }
+            Loader {
+                id: bookmarkView
+                active: dockBar.selectedItem == "bookmark"
+                anchors.fill: parent
+                sourceComponent: BookmarkList {
+                    anchors.fill: parent
+                    onContactMethodSelected: {
+                        mainPage.setContactMethod(cm)
+                    }
+                }
+            }
+            Loader {
+                id: historyView
+                active: dockBar.selectedItem == "history"
+                anchors.fill: parent
+                sourceComponent: ContactList {
+                    anchors.fill: parent
+                    onContactMethodSelected: {
+                        mainPage.setContactMethod(cm)
+                    }
+                }
+            }
         }
     }
 
@@ -171,6 +194,14 @@ Item {
             }
             ParentChange {
                 target: contactView
+                parent: newHolder.container
+            }
+            ParentChange {
+                target: historyView
+                parent: newHolder.container
+            }
+            ParentChange {
+                target: bookmarkView
                 parent: newHolder.container
             }
             PropertyChanges {
