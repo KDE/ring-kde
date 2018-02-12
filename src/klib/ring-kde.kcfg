@@ -86,6 +86,7 @@
     </entry>
     <entry name="displayPopularAsBookmark" type="Bool">
       <label>Defines whether or not to display the 10 most popular phone number as bookmark automagically</label>
+      <default>false</default>
     </entry>
    <entry name="historySortMode" type="Int">
       <label>Define sorting order for history list</label>
@@ -236,7 +237,7 @@
     </entry>
     <entry name="displayBookmarkDock" type="Bool">
       <label>Enable audio feedback from common actions</label>
-      <default> false </default>
+      <default> true </default>
     </entry>
     <entry name="displayRecentDock" type="Bool">
       <label>Display the recently used contacts</label>
