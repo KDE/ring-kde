@@ -19,21 +19,29 @@
 
 #include <collectionconfigurationinterface.h>
 
+class Ui_Bookmark;
+
 class BookmarkConfigurator : public CollectionConfigurationInterface
 {
     Q_OBJECT
 public:
     explicit BookmarkConfigurator(QObject* parent = nullptr);
+    virtual ~BookmarkConfigurator();
 
     //Getter
     virtual QByteArray id  () const override;
     virtual QString    name() const override;
     virtual QVariant   icon() const override;
 
+    virtual void save() override;
+    virtual bool hasChanged() override;
+
     virtual void loadCollection(CollectionInterface* col, QObject* parent = nullptr) override;
 
 private:
     bool m_Init {false};
+    bool m_HasChanged {false};
+    Ui_Bookmark* m_pUi {nullptr};
 
 };
 

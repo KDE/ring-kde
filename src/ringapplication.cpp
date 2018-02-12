@@ -308,7 +308,9 @@ void RingApplication::initCollections()
 #endif
 
    CategorizedBookmarkModel::instance().addCollection<LocalBookmarkCollection>();
-   CategorizedBookmarkModel::instance().reloadCategories();
+   CategorizedBookmarkModel::instance().setDisplayPopular(
+      ConfigurationSkeleton::displayPopularAsBookmark()
+   );
 
    PersonModel::instance().addCollection<FallbackPersonCollection>(LoadOptions::FORCE_ENABLED);
    auto ppc = PersonModel::instance().addCollection<PeerProfileCollection2>(LoadOptions::FORCE_ENABLED);

@@ -27,6 +27,11 @@ BookmarkConfigurator::BookmarkConfigurator(QObject* parent) : CollectionConfigur
 {
 }
 
+BookmarkConfigurator::~BookmarkConfigurator()
+{
+    delete m_pUi;
+}
+
 QByteArray BookmarkConfigurator::id() const
 {
     return "peerProfileConfigurator";
@@ -50,12 +55,35 @@ void BookmarkConfigurator::loadCollection(CollectionInterface* col, QObject* par
         return;
 
     if (auto w = qobject_cast<QWidget*>(parent)) {
-        Ui_Bookmark ui;
-        ui.setupUi(w);
-        connect(ui.pushButton, &QPushButton::clicked, &CategorizedBookmarkModel::instance(), &CategorizedBookmarkModel::clear);
+        m_pUi = new Ui_Bookmark();
+        m_pUi->setupUi(w);
+        connect(m_pUi->pushButton, &QPushButton::clicked, &CategorizedBookmarkModel::instance(), &CategorizedBookmarkModel::clear);
+        connect(m_pUi->pushButton, &QPushButton::clicked, this, [this]() {
+            m_HasChanged = true;
+        });
+        connect(m_pUi->kcfg_displayPopularAsBookmark, &QPushButton::toggled, this, [this]() {
+            m_HasChanged = true;
+        });
     }
 
     m_Init = true;
+}
+
+bool BookmarkConfigurator::hasChanged()
+{
+    return m_HasChanged;
+}
+
+void BookmarkConfigurator::save()
+{
+    if (!m_pUi)
+        return;
+
+    CategorizedBookmarkModel::instance().setDisplayPopular(
+        m_pUi->kcfg_displayPopularAsBookmark->isChecked()
+    );
+
+    m_HasChanged = false;
 }
 
 // kate: space-indent on; indent-width 4; replace-tabs on;
