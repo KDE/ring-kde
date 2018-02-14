@@ -50,6 +50,7 @@ public:
 public Q_SLOTS:
     void slotCurrentIndexChanged(const QModelIndex& idx);
     void slotSelectionModelChanged();
+    void slotModelDestroyed();
 };
 
 FlickableView::FlickableView(QQuickItem* parent) : SimpleFlickable(parent),
@@ -75,6 +76,10 @@ void FlickableView::setModel(QSharedPointer<QAbstractItemModel> model)
         model->sort(0);
     }
 
+    if (d_ptr->m_pModel)
+        disconnect(d_ptr->m_pModel.data(), &QObject::destroyed,
+            d_ptr, &FlickableViewPrivate::slotModelDestroyed);
+
     // In theory it can cause an issue when QML set both properties in random
     // order when replacing this model, but for until that happens, better be
     // strict.
@@ -85,6 +90,10 @@ void FlickableView::setModel(QSharedPointer<QAbstractItemModel> model)
 
     d_ptr->m_pModel = model;
     d_ptr->m_hRoleNames.clear();
+
+    if (d_ptr->m_pModel)
+        connect(d_ptr->m_pModel.data(), &QObject::destroyed,
+            d_ptr, &FlickableViewPrivate::slotModelDestroyed);
 
     emit modelChanged(model);
 
@@ -166,7 +175,7 @@ void FlickableView::setSelectionModel(QSharedPointer<QItemSelectionModel> m)
     d_ptr->m_pSelectionModel = m;
 
     // This will cause undebugable issues. Better ban it early
-    Q_ASSERT((!model()) || model() == m->model());
+    Q_ASSERT((!model()) || (!m) || model() == m->model());
 
     d_ptr->slotSelectionModelChanged();
     Q_EMIT selectionModelChanged();
@@ -239,6 +248,9 @@ QHash<int, QString>* FlickableViewPrivate::reloadRoleNames(const QModelIndex& in
 void FlickableView::applyRoles(QQmlContext* ctx, const QModelIndex& self) const
 {
     auto m = self.model();
+
+    if (Q_UNLIKELY(!m))
+        return;
 
     auto* hash = m == d_ptr->m_pModel ?
         &d_ptr->m_hRoleNames : d_ptr->m_hhOtherRoleNames.value(m);
@@ -367,6 +379,15 @@ void FlickableViewPrivate::slotSelectionModelChanged()
     slotCurrentIndexChanged(
         m_pSelectionModel ? m_pSelectionModel->currentIndex() : QModelIndex()
     );
+}
+
+// Because smart pointer are ref counted and QItemSelectionModel is not, there
+// is a race condition where ::loadDelegate or ::applyRoles can be called
+// on a QItemSelectionModel::currentIndex while the model has just been destroyed
+void FlickableViewPrivate::slotModelDestroyed()
+{
+    if (m_pSelectionModel && m_pSelectionModel->model() == QObject::sender())
+        q_ptr->setSelectionModel(nullptr);
 }
 
 #include <flickableview.moc>
