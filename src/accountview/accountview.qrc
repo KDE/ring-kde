@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file alias="AccountList.qml">qml/accountlist.qml</file>
+    </qresource>
+</RCC>

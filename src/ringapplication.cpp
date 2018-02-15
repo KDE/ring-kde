@@ -116,6 +116,7 @@
 #include "canvasindicators/ringingimageprovider.h"
 #include "desktopview/desktopviewplugin.h"
 #include "contactview/contactviewplugin.h"
+#include "accountview/accountviewplugin.h"
 #include "dialview/dialviewplugin.h"
 #include "timeline/timelineplugin.h"
 
@@ -127,6 +128,7 @@ RingQmlWidgets* RingApplication::m_pQmlWidget {nullptr};
 PhotoSelectorPlugin* RingApplication::m_pPhotoSelector {nullptr};
 DesktopView* RingApplication::m_pDesktopView {nullptr};
 ContactView* RingApplication::m_pContactView {nullptr};
+AccountView* RingApplication::m_pAccountView {nullptr};
 DialView* RingApplication::m_pDialView {nullptr};
 TimelinePlugin* RingApplication::m_pTimeline {nullptr};
 CanvasIndicator* RingApplication::m_pCanvasIndicator {nullptr};
@@ -266,6 +268,8 @@ static void loadNumberCategories()
 void RingApplication::initCollections()
 {
    GlobalInstances::setInterface<KDEActionExtender>();
+
+   GlobalInstances::setInterface<ColorDelegate>();
 
    GlobalInstances::setInterface<KDEPixmapManipulation>();
 
@@ -426,6 +430,9 @@ QQmlApplicationEngine* RingApplication::engine()
 
       m_pContactView = new ContactView;
       m_pContactView->registerTypes("ContactView");
+
+      m_pAccountView = new AccountView;
+      m_pAccountView->registerTypes("AccountView");
 
       m_pDialView = new DialView;
       m_pDialView->registerTypes("DialView");

@@ -125,6 +125,7 @@ Kirigami.ApplicationWindow {
     }
 
     globalDrawer: Kirigami.GlobalDrawer {
+        id: globalDrawer
         title: "Ring KDE client"
         titleIcon: "ring-kde"
         actions: [
@@ -163,6 +164,18 @@ Kirigami.ApplicationWindow {
             }
         ]
 
+        // Yes, this is a Kirigami bug, the Item should *not* be needed, but
+        // `content` cannot be resized after being created
+        content: Loader {
+            id: testLoader
+            width: globalDrawer.width
+            Layout.preferredWidth: globalDrawer.width
+            active: globalDrawer.drawerOpen
+            sourceComponent: AccountList {
+                height: contentHeight
+                width: globalDrawer.width
+            }
+        }
         handleVisible: true
         drawerOpen: false
     }

@@ -70,8 +70,8 @@ Item {
                         Image {
                             anchors.verticalCenter: parent.verticalCenter
                             source: decoration
-                            width: dockBar.width
-                            height: dockBar.width
+                            width: 48
+                            height: 48
                             fillMode: Image.PreserveAspectFit
                         }
 

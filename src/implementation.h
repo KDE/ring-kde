@@ -36,16 +36,18 @@ class Macro;
 
 //Implement all client dependant libringqt abstract interfaces
 
-class ColorDelegate final : public Interfaces::AccountListColorizerI
+class ColorDelegate final : public QObject, public Interfaces::AccountListColorizerI
 {
+   Q_OBJECT
 public:
-   explicit ColorDelegate(const QPalette& pal);
+   explicit ColorDelegate();
+
    ColorDelegate(const ColorDelegate&) = delete;
    ColorDelegate& operator=(const ColorDelegate&) = delete;
 
-   virtual QVariant color(const Account* a) override;
+   virtual Q_INVOKABLE QVariant color(const Account* a) override;
 
-   virtual QVariant icon(const Account* a) override;
+   virtual Q_INVOKABLE QVariant icon(const Account* a) override;
 private:
    QPalette m_Pal;
    QColor   m_Green;

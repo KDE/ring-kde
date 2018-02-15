@@ -179,6 +179,9 @@ ADD_SUBDIRECTORY( canvasindicators )
 # Build the contact manager subsystem
 ADD_SUBDIRECTORY( contactview )
 
+# Build the account manager subsystem
+ADD_SUBDIRECTORY( accountview )
+
 # Build the main desktop component
 ADD_SUBDIRECTORY( desktopview )
 
@@ -405,6 +408,7 @@ TARGET_LINK_LIBRARIES(ring-kde
   libcanvasindicator
   desktopview
   contactview
+  accountview
   libqmlwidgets
 
   # Qt5

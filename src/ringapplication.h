@@ -38,6 +38,7 @@ class PhotoSelectorPlugin;
 class CanvasIndicator;
 class DesktopView;
 class ContactView;
+class AccountView;
 class DialView;
 class TimelinePlugin;
 class Call;
@@ -98,6 +99,7 @@ private:
    static RingApplication* m_spInstance;
    static DesktopView* m_pDesktopView;
    static ContactView* m_pContactView;
+   static AccountView* m_pAccountView;
    static DialView* m_pDialView;
    static TimelinePlugin* m_pTimeline;
    PhoneWindowEvent* m_pEventFilter {nullptr};

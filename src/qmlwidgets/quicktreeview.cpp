@@ -97,7 +97,7 @@ QuickTreeViewPrivate* QuickTreeViewItem::d() const
 bool QuickTreeViewItem::attach()
 {
     if (!view()->delegate()) {
-        qDebug() << "Cannot attach, there is no delegate";
+        //qDebug() << "Cannot attach, there is no delegate";
         return false;
     }
 

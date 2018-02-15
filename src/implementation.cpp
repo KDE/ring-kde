@@ -54,7 +54,7 @@
 #include "icons/icons.h"
 #include <ringapplication.h>
 
-ColorDelegate::ColorDelegate(const QPalette& pal) : m_Pal(pal) {
+ColorDelegate::ColorDelegate() : m_Pal(QGuiApplication::palette()) {
    m_Green = QColor(m_Pal.color(QPalette::Base));
    if (m_Green.green()+20 >= 255) {
       m_Green.setRed ( ((int)m_Green.red()  -20));
