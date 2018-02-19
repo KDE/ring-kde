@@ -161,9 +161,4 @@ GridLayout {
         topPadding: 2
         visible: mainInfo.editing
     }
-
-    Item {
-        id: filler
-        Layout.fillHeight: true
-    }
 }

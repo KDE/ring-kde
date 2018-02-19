@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2017 by Bluesystems                                     *
+ *   Copyright (C) 2018 by Bluesystems                                     *
  *   Author : Emmanuel Lepage Vallee <elv1313@gmail.com>                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -16,26 +16,27 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
 import QtQuick 2.7
+import QtQuick.Layouts 1.0
+import RingQmlWidgets 1.0
+import Ring 1.0
+import QtQuick.Controls 2.2
+import ContactView 1.0
 import org.kde.kirigami 2.2 as Kirigami
 
+Dialog {
+    parent: applicationWindow().contentItem
+    x: applicationWindow().contentItem.width / 2 - width/2
+    y: applicationWindow().contentItem.height / 2 - height/2
+    width: applicationWindow().contentItem.width * 0.66
+    height: applicationWindow().contentItem.height * 0.66
 
-Kirigami.ApplicationItem {
-    property alias currentPerson: contactInfo.currentPerson
-    property alias showStat     : contactInfo.showStat
-    property alias showImage    : contactInfo.showImage
-    property alias forcedState  : contactInfo.forcedState
-
-    SystemPalette {
-        id: activePalette
-        colorGroup: SystemPalette.Active
-    }
-
-    FontMetrics {
-        id: fontMetrics
-    }
-
-    ContactInfo {
-        id: contactInfo
+    ListView {
         anchors.fill: parent
+        model: PresenceStatusModel
+        delegate: Text {
+            text: "hello"
+        }
     }
+
+    standardButtons: Dialog.Close
 }

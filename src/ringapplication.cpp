@@ -79,7 +79,7 @@
 #include <certificatemodel.h>
 #include <availableaccountmodel.h>
 #include <numbercategorymodel.h>
-// #include <presencestatusmodel.h>
+#include <presencestatusmodel.h>
 #include <personmodel.h>
 
 //Collections
@@ -473,6 +473,7 @@ QQmlApplicationEngine* RingApplication::engine()
          QML_SINGLETON( CallModel                );
          QML_SINGLETON( CategorizedHistoryModel  );
          QML_SINGLETON( AccountModel             );
+         QML_SINGLETON( AvailableAccountModel    );
          QML_SINGLETON( CategorizedContactModel  );
          QML_SINGLETON( CategorizedBookmarkModel );
          QML_SINGLETON( NameDirectory            );
@@ -480,8 +481,10 @@ QQmlApplicationEngine* RingApplication::engine()
          QML_SINGLETON( NumberCategoryModel      );
          QML_SINGLETON( PhoneDirectoryModel      );
          QML_SINGLETON( RecentFileModel          );
+         QML_SINGLETON( ProfileModel             );
+         QML_SINGLETON( PresenceStatusModel      );
 
-         QML_SINGLETON2( ActionCollection         );
+         QML_SINGLETON2( ActionCollection        );
 
          QML_ADD_OBJECT(VideoRateSelectionModel      , &Video::ConfigurationProxy::rateSelectionModel      ());
          QML_ADD_OBJECT(VideoResolutionSelectionModel, &Video::ConfigurationProxy::resolutionSelectionModel());

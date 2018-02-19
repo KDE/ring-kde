@@ -19,7 +19,7 @@ import QtQuick 2.7
 import QtQuick.Layouts 1.0
 import RingQmlWidgets 1.0
 import Ring 1.0
-import QtQuick.Controls 2.0
+import QtQuick.Controls 2.2
 import ContactView 1.0
 import org.kde.kirigami 2.2 as Kirigami
 
@@ -163,6 +163,40 @@ ListView {
         }
     }
 
+    Loader {
+        id: accountDeleter
+        property string name: ""
+        property var account: ""
+        active: false
+        sourceComponent: Dialog {
+            height: 150
+            parent: applicationWindow().contentItem
+            x: applicationWindow().contentItem.width / 2 - width/2
+            y: applicationWindow().contentItem.height / 2 - height/2
+            standardButtons: Dialog.Ok | Dialog.Cancel
+            closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
+            modal: true
+            title: i18n("Delete an account")
+
+            Label {
+                text: i18n("<center>Are you sure you want to delete the account called ")
+                    + name + i18n(". <br><br> This cannot be undone and you will lose the account <b>permanently</b></center>")
+            }
+
+            onAccepted: {
+                accountDeleter.active = false
+                AccountModel.remove(account)
+                AccountModel.save()
+                accountDeleter.account = null
+            }
+
+            onRejected: {
+                accountDeleter.active = false
+                accountDeleter.account = null
+            }
+        }
+    }
+
     delegate: Kirigami.SwipeListItem {
         property bool hasProblems: object.enabled && registrationState != Account.READY
 
@@ -186,9 +220,13 @@ ListView {
             },
             Kirigami.Action {
                 iconName: "edit-delete"
-                text: i18n("Remove")
+                text: i18n("Delete")
                 onTriggered: {
-                    //TODO
+                    accountDeleter.name = alias
+                    accountDeleter.account = object
+                    accountDeleter.active = true
+                    accountDeleter.item.open()
+                    //applicationWindow().globalDrawer.drawerOpen = false //FIXME
                 }
             },
             Kirigami.Action {

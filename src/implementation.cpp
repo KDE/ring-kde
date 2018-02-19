@@ -218,9 +218,9 @@ void KDEActionExtender::editPerson(Person* p)
    d->setResizeMode(QQuickView::SizeRootObjectToView);
    auto item = d->rootObject();
    item->setProperty("currentPerson", QVariant::fromValue(p));
-   item->setProperty("showStat"   , false   );
-   item->setProperty("showImage"  , true    );
-   item->setProperty("forcedState", "phone" );
+   item->setProperty("showStat"   , false     );
+   item->setProperty("showImage"  , true      );
+   item->setProperty("forcedState", "profile" );
 
    d->resize(800, 600);
    d->show();

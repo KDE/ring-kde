@@ -194,7 +194,7 @@ void DlgAccount::slotNewAddAccount()
                 AccountModel::getSimilarAliasIndex(i18n("New account")));
    Account* a = AccountModel::instance().add(newAlias,proto);
 
-   QModelIndex accIdx = ProfileModel::instance().mapFromSource(a->index());
+   QModelIndex accIdx = ProfileModel::instance().accountIndex(a);
    accIdx = static_cast<QAbstractProxyModel*>(
       ProfileModel::instance().sortedProxyModel()
    )->mapFromSource(accIdx);

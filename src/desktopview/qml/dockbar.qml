@@ -21,6 +21,7 @@ import QtQuick.Layouts 1.0
 import QtQuick.Controls 2.0 as Controls
 import org.kde.kirigami 2.2 as Kirigami
 import QtQuick.Window 2.2
+import ContactView 1.0
 
 import DesktopView 1.0
 
@@ -31,6 +32,7 @@ Item {
 
     RowLayout {
         id: dockLayout
+        spacing: 0
         anchors.fill: parent
 
         Image {
@@ -59,6 +61,71 @@ Item {
             }
 
             Column {
+                Item {
+                    width: dockBar.width
+                    height: Math.max(
+                        dockBar.width * 1.33,
+                        availableAccounts.count*(dockBar.width+5) + 6
+                    )
+
+                    ListView {
+                        y: 5
+                        id: availableAccounts
+                        model: ProfileModel.availableProfileModel
+                        height: 200
+                        spacing: 5
+                        interactive: false
+                        delegate: MouseArea {
+                            width: dockBar.width
+                            height: dockBar.width
+                            ContactPhoto {
+                                anchors.centerIn: parent
+                                width: dockBar.width - 3
+                                height: dockBar.width - 3
+                                person: object
+                            }
+                            onClicked: {
+                                var component = Qt.createComponent("PresenceSelector.qml")
+                                if (component.status == Component.Ready) {
+                                    var window = component.createObject(applicationWindow().contentItem)
+//                                     window.contactMethod = currentContactMethod
+                                    window.open()
+                                }
+                                else
+                                    console.log("ERROR", component.status, component.errorString())
+                            }
+                        }
+                    }
+
+                    Loader {
+                        active: availableAccounts.count == 0 || !ProfileModel.hasAvailableProfiles
+                        anchors.centerIn: parent
+                        sourceComponent: Rectangle {
+                            height: 48
+                            width: 48
+                            border.width: 2
+                            border.color: Kirigami.Theme.negativeTextColor
+                            color: "transparent"
+                            radius: 99
+
+                            Image {
+                                anchors.fill: parent
+                                sourceSize.width: 48
+                                sourceSize.height: 48
+                                anchors.verticalCenter: parent.verticalCenter
+                                source: "image://SymbolicColorizer/:/sharedassets/outline/warning.svg"
+                            }
+                        }
+                    }
+
+                    Rectangle {
+                        height: 1
+                        width: parent.width
+                        color: "#939393"
+                        anchors.bottom: parent.bottom
+                    }
+                }
+
                 Repeater {
                     model: icons
                     Rectangle {
@@ -72,6 +139,8 @@ Item {
                             source: decoration
                             width: 48
                             height: 48
+                            sourceSize.width: 48
+                            sourceSize.height: 48
                             fillMode: Image.PreserveAspectFit
                         }
 

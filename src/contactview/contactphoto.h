@@ -39,6 +39,8 @@ public:
     Q_PROPERTY(bool hasPhoto READ hasPhoto NOTIFY hasPhotoChanged)
     Q_PROPERTY(bool displayEmpty READ displayEmpty WRITE setDisplayEmpty)
     Q_PROPERTY(bool drawEmptyOutline READ drawEmptyOutline WRITE setDrawEmptyOutline)
+    Q_PROPERTY(bool tracked READ isTracked WRITE setTracked NOTIFY changed)
+    Q_PROPERTY(bool isPresent READ isPresent NOTIFY changed)
 
     explicit ContactPhoto(QQuickItem* parent = nullptr);
     virtual ~ContactPhoto();
@@ -59,8 +61,13 @@ public:
     bool drawEmptyOutline() const;
     void setDrawEmptyOutline(bool val);
 
+    bool isTracked() const;
+    bool isPresent() const;
+    void setTracked(bool t);
+
 Q_SIGNALS:
     void hasPhotoChanged();
+    void changed();
 
 private:
     ContactPhotoPrivate* d_ptr;

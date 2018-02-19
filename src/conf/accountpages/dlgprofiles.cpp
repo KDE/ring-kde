@@ -39,7 +39,12 @@ DlgProfiles::DlgProfiles(QWidget *parent, QQmlEngine* e, const QString& name, co
    setResizeMode(QQuickWidget::SizeRootObjectToView);
    setSource(QUrl(QStringLiteral("qrc:/ContactDialog.qml")));
    auto item = rootObject();
-   item->setProperty("currentPerson", QVariant::fromValue(this));
+
+   if (!item) {
+      qDebug() << errors();
+      Q_ASSERT(false);
+   }
+
    item->setProperty("showStat"     , false     );
    item->setProperty("showImage"    , true      );
    item->setProperty("forcedState"  , "profile" );

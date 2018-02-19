@@ -22,6 +22,7 @@ import Ring 1.0
 import PhotoSelectorPlugin 1.0
 import RingQmlWidgets 1.0
 import org.kde.kirigami 2.2 as Kirigami
+import ContactView 1.0
 
 Kirigami.ScrollablePage {
     id: contactViewPage
@@ -139,57 +140,6 @@ Kirigami.ScrollablePage {
         phoneNumbersModel.person = currentPerson
 
         vCardForm.currentPerson = currentPerson
-    }
-
-    /**
-     * When showing the profile or adding a contact, display the image at the top.
-     *
-     * When showing the main GUI, this image is part of the header and should
-     * not be shown.
-     */
-    Item {
-        id: contactPicture
-
-        visible: showImage
-        height: showImage ? 90 : 0
-        width: parent.width
-        anchors.top: parent.top
-
-        Rectangle {
-            id: photoRect
-            visible: showImage
-            anchors.centerIn: parent
-            clip: true
-            radius: 5
-            height: 90
-            width: 90
-            color: "white"
-            PixmapWrapper {
-                id: photo
-                anchors.fill: parent
-            }
-
-            function onNewPhoto(p) {
-                contactViewPage.cachedPhoto = p
-                photo.pixmap = p
-                contactViewPage.changed()
-            }
-
-            MouseArea {
-                anchors.fill: parent
-                z: 100
-                onClicked: {
-                    var component = Qt.createComponent("PhotoEditor.qml")
-                    if (component.status == Component.Ready) {
-                        var window    = component.createObject(contactViewPage)
-                        window.person = currentContactMethod ? currentContactMethod.person : null
-                        window.newPhoto.connect(photoRect.onNewPhoto)
-                    }
-                    else
-                        console.log("ERROR", component.status, component.errorString())
-                }
-            }
-        }
     }
 
     GroupBox {
@@ -375,13 +325,60 @@ Kirigami.ScrollablePage {
         visible: false
         anchors.left: parent.left
         anchors.top: parent.top
-//         anchors.right: parent.right
         width: parent.width
 
-        Kirigami.BasicListItem {
+        /**
+         * When showing the profile or adding a contact, display the image at the top.
+         *
+         * When showing the main GUI, this image is part of the header and should
+         * not be shown.
+         */
+        Item {
+            id: contactPicture
+
+            visible: showImage
+            height: showImage ? 90 : 0
+            width: parent.width
+
+            ContactPhoto {
+                id: photoRect
+
+                tracked: false
+                visible: showImage
+                anchors.centerIn: parent
+                height: 90
+                width: 90
+
+                contactMethod: currentContactMethod
+                person: currentPerson
+
+                function onNewPhoto(p) {
+                    contactViewPage.cachedPhoto = p
+                    photo.pixmap = p
+                    contactViewPage.changed()
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    z: 100
+                    onClicked: {
+                        var component = Qt.createComponent("PhotoEditor.qml")
+                        if (component.status == Component.Ready) {
+                            var window    = component.createObject(contactViewPage)
+                            window.person = currentContactMethod ? currentContactMethod.person : null
+                            window.newPhoto.connect(photoRect.onNewPhoto)
+                        }
+                        else
+                            console.log("ERROR", component.status, component.errorString())
+                    }
+                }
+            }
+        }
+
+        Kirigami.Heading {
             id: statisticHeader
-            label: "Statistics"
-            sectionDelegate: true
+            text: i18n("Statistics")
+            level: 2
         }
 
         Item {
@@ -393,7 +390,7 @@ Kirigami.ScrollablePage {
 
         Kirigami.BasicListItem {
             id: viewHistory
-            label: "View history"
+            label: i18n("View history")
             icon: "view-history"
             separatorVisible: true
             onClicked: {
@@ -403,16 +400,16 @@ Kirigami.ScrollablePage {
 
         Kirigami.BasicListItem {
             id: openChat
-            label: "Open chat"
+            label: i18n("Open chat")
             icon: "dialog-messages"
             onClicked: {
                 contactViewPage.selectChat()
             }
         }
 
-        Kirigami.BasicListItem {
-            label: "Contact details"
-            sectionDelegate: true
+        Kirigami.Heading {
+            text: i18n("Contact details")
+            level: 2
         }
 
         Item {
@@ -421,9 +418,9 @@ Kirigami.ScrollablePage {
             width: parent.width
         }
 
-        Kirigami.BasicListItem {
-            label: "Phone numbers"
-            sectionDelegate: true
+        Kirigami.Heading {
+            text: i18n("Phone numbers")
+            level: 2
         }
 
         Item {
@@ -432,9 +429,9 @@ Kirigami.ScrollablePage {
             width: parent.width
         }
 
-        Kirigami.BasicListItem {
-            label: "Addresses"
-            sectionDelegate: true
+        Kirigami.Heading {
+            text: i18n("Addresses")
+            level: 2
         }
 
         Item {
@@ -452,8 +449,6 @@ Kirigami.ScrollablePage {
         statButton.visible = state == "phone"
         detailsButton.width = state == "phone" ? detailsButton.implicitWidth : 0
         statButton.width = state == "phone" ? statButton.implicitWidth : 0
-
-        editing = state != "mobile"
     }
 
     /**
@@ -537,6 +532,10 @@ Kirigami.ScrollablePage {
                 width: undefined
                 interactive: true
             }
+            PropertyChanges {
+                target: contactViewPage
+                editing: true
+            }
 
             AnchorChanges {
                 target: saveButton
@@ -589,7 +588,9 @@ Kirigami.ScrollablePage {
                 width: vCardForm.implicitWidth
                 height: vCardForm.implicitHeight
                 anchors.topMargin: 10
+                anchors.horizontalCenter: undefined
             }
+
             PropertyChanges {
                 target: advanced
                 height: contactViewPage.height ? 300 : 299 //BUG prevent a race condition in QML
@@ -623,23 +624,44 @@ Kirigami.ScrollablePage {
                 anchors.left: undefined
             }
 
+            ParentChange {
+                target: vCardForm
+                parent: contactHolder
+            }
             AnchorChanges {
                 target: vCardForm
                 anchors.left: contactHolder.left
                 anchors.top: contactHolder.top
             }
 
+            PropertyChanges {
+                target: vCardForm
+                anchors.horizontalCenter: undefined
+            }
+
+            ParentChange {
+                target: phoneNumbersModel
+                parent: phoneNumberHolder
+            }
             AnchorChanges {
                 target: phoneNumbersModel
                 anchors.left: phoneNumberHolder.left
                 anchors.top: phoneNumberHolder.top
             }
 
+            ParentChange {
+                target: addresses
+                parent: addressesHolder
+            }
             AnchorChanges {
                 target: addresses
                 anchors.left: contactViewPage.left
             }
 
+            ParentChange {
+                target: statistics
+                parent: statisticHolder
+            }
             AnchorChanges {
                 target: statistics
                 anchors.left: statisticHolder.left
@@ -658,22 +680,6 @@ Kirigami.ScrollablePage {
                 anchors.fill: undefined
             }
 
-            ParentChange {
-                target: statistics
-                parent: statisticHolder
-            }
-            ParentChange {
-                target: vCardForm
-                parent: contactHolder
-            }
-            ParentChange {
-                target: phoneNumbersModel
-                parent: phoneNumberHolder
-            }
-            ParentChange {
-                target: addresses
-                parent: addressesHolder
-            }
 
             PropertyChanges {
                 target: phoneLayout
@@ -700,6 +706,7 @@ Kirigami.ScrollablePage {
                 topPadding: undefined
                 leftPadding: undefined
                 rightPadding: undefined
+                editing: false
             }
         },
 
@@ -709,6 +716,16 @@ Kirigami.ScrollablePage {
 
             PropertyChanges {
                 target: openChat
+                visible: false
+            }
+
+            PropertyChanges {
+                target: vCardForm
+                anchors.horizontalCenter: contactHolder.horizontalCenter
+            }
+
+            PropertyChanges {
+                target: statisticHolder
                 visible: false
             }
 
@@ -728,6 +745,7 @@ Kirigami.ScrollablePage {
                 topPadding: 0
                 leftPadding: 0
                 rightPadding: 0
+                editing: true
             }
 
             AnchorChanges {

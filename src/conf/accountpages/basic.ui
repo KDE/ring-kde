@@ -42,7 +42,7 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="0">
+     <item row="2" column="0">
       <widget class="QLabel" name="label2_protocol">
        <property name="text">
         <string>Protocol</string>
@@ -52,7 +52,7 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="1">
+     <item row="2" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
         <widget class="AutoComboBox" name="m_pProtocol"/>
@@ -72,7 +72,7 @@
        </item>
       </layout>
      </item>
-     <item row="2" column="0">
+     <item row="3" column="0">
       <widget class="QLabel" name="label">
        <property name="text">
         <string>&amp;Display Name*</string>
@@ -82,14 +82,14 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="1">
+     <item row="3" column="1">
       <widget class="QLineEdit" name="lrcfg_displayName">
        <property name="placeholderText">
         <string>The name as seen by the peer</string>
        </property>
       </widget>
      </item>
-     <item row="3" column="0">
+     <item row="4" column="0">
       <widget class="QLabel" name="lrcfg_registeredNameBuddy2">
        <property name="text">
         <string>Re&amp;gistered Name*</string>
@@ -99,7 +99,7 @@
        </property>
       </widget>
      </item>
-     <item row="3" column="1">
+     <item row="4" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout_3">
        <item>
         <widget class="QLineEdit" name="lrcfg_registeredName">
@@ -117,7 +117,7 @@
        </item>
       </layout>
      </item>
-     <item row="4" column="0">
+     <item row="5" column="0">
       <widget class="QLabel" name="label3_server">
        <property name="text">
         <string comment="SIP server">Server*</string>
@@ -127,7 +127,7 @@
        </property>
       </widget>
      </item>
-     <item row="4" column="1">
+     <item row="5" column="1">
       <widget class="QLineEdit" name="lrcfg_hostname">
        <property name="minimumSize">
         <size>
@@ -140,7 +140,7 @@
        </property>
       </widget>
      </item>
-     <item row="5" column="0">
+     <item row="6" column="0">
       <widget class="QLabel" name="label4_user">
        <property name="accessibleDescription">
         <string comment="Account username"/>
@@ -153,14 +153,14 @@
        </property>
       </widget>
      </item>
-     <item row="5" column="1">
+     <item row="6" column="1">
       <widget class="QLineEdit" name="lrcfg_username">
        <property name="placeholderText">
         <string>Usually your extension number</string>
        </property>
       </widget>
      </item>
-     <item row="6" column="0">
+     <item row="7" column="0">
       <widget class="QLabel" name="label5_password">
        <property name="text">
         <string comment="Account password">Password*</string>
@@ -170,7 +170,7 @@
        </property>
       </widget>
      </item>
-     <item row="6" column="1">
+     <item row="7" column="1">
       <widget class="QLineEdit" name="lrcfg_password">
        <property name="echoMode">
         <enum>QLineEdit::Password</enum>
@@ -180,35 +180,34 @@
        </property>
       </widget>
      </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_profile">
+       <property name="text">
+        <string>Profile</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout_7">
+       <item>
+        <widget class="AutoComboBox" name="m_pProfile"/>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_3">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
     </layout>
-   </item>
-   <item row="1" column="0" colspan="2">
-    <widget class="QCheckBox" name="lrcfg_hasCustomBootstrap">
-     <property name="text">
-      <string>Use custom bootstrap nodes</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0" colspan="3">
-    <widget class="QTableView" name="m_pBootstrapModel">
-     <attribute name="verticalHeaderVisible">
-      <bool>false</bool>
-     </attribute>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QCheckBox" name="lrcfg_autoAnswer">
-     <property name="text">
-      <string>Auto answer</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="label7_state">
-     <property name="text">
-      <string>Status</string>
-     </property>
-    </widget>
    </item>
    <item row="4" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout">
@@ -257,6 +256,27 @@
      </item>
     </layout>
    </item>
+   <item row="2" column="0" colspan="3">
+    <widget class="QTableView" name="m_pBootstrapModel">
+     <attribute name="verticalHeaderVisible">
+      <bool>false</bool>
+     </attribute>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="2">
+    <widget class="QCheckBox" name="lrcfg_hasCustomBootstrap">
+     <property name="text">
+      <string>Use custom bootstrap nodes</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QCheckBox" name="lrcfg_autoAnswer">
+     <property name="text">
+      <string>Auto answer</string>
+     </property>
+    </widget>
+   </item>
    <item row="5" column="2">
     <spacer name="verticalSpacer">
      <property name="orientation">
@@ -269,6 +289,13 @@
       </size>
      </property>
     </spacer>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="label7_state">
+     <property name="text">
+      <string>Status</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

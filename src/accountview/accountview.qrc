@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file alias="AccountList.qml">qml/accountlist.qml</file>
+        <file alias="PresenceSelector.qml">qml/presenceselector.qml</file>
     </qresource>
 </RCC>

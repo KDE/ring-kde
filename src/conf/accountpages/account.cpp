@@ -25,7 +25,6 @@
 #include <accountmodel.h>
 #include <profilemodel.h>
 #include <person.h>
-#include <profile.h>
 
 //Binder
 #include "conf/accountserializationadapter.h"
@@ -115,33 +114,18 @@ void Pages::Account::setProfile(Person* p)
 
 void Pages::Account::setAccount(const QModelIndex& idx)
 {
+   auto prof = idx;
 
-   QModelIndex prof = idx;
-   QModelIndex i = idx;
+   while (qobject_cast<const QSortFilterProxyModel*>(prof.model()))
+      prof = static_cast<const QSortFilterProxyModel*>(prof.model())->mapToSource(prof);
 
-   while (qobject_cast<const QSortFilterProxyModel*>(i.model()))
-      i = prof = static_cast<const QSortFilterProxyModel*>(i.model())->mapToSource(i);
-
-   if (i.model() == &ProfileModel::instance())
-      i = ProfileModel::instance().mapToSource(i);
-
-
-   if (!i.isValid()) {
-      Profile* pr = ProfileModel::instance().getProfile(prof);
-
-      if (pr) {
-         Person* p = pr->person();
-
-         if (p) {
-            setProfile(p);
-            displayProfile(true);
-         }
-      }
-   }
-   else if (::Account* a = AccountModel::instance().getAccountByModelIndex(i)) {
-
+   if (auto a = ProfileModel::instance().getAccount(prof)) {
       displayProfile(false);
       setAccount(a);
+   }
+   else if (auto pr = ProfileModel::instance().getProfile(prof)) {
+      setProfile(pr);
+      displayProfile(true);
    }
 }
 

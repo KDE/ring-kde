@@ -30,19 +30,20 @@ Dialog {
     signal done()
     modal: true
 
-    id: root
     visible: true
     width: 500
     height: 400
     standardButtons: Dialog.Ok | Dialog.Cancel
     closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
 
+    x: (applicationWindow().width / 2 - width/2) /2 //BUG WTF!
+    y: applicationWindow().height / 2 - height/2
+
     PhotoSelector {
         id: selector
     }
 
-    ColumnLayout {
-        anchors.fill: parent
+    contentItem: ColumnLayout {
 
         // The photo fills the item, but is a child of the selection rectangle
         Item {
@@ -50,6 +51,12 @@ Dialog {
             Layout.fillWidth: true
             Layout.fillHeight: true
             clip: true
+
+            Label {
+                anchors.centerIn: parent
+                text: i18n("Either select a file or take a selfie")
+                z: -2
+            }
 
             Rectangle {
                 id: overlay
@@ -63,7 +70,7 @@ Dialog {
 
                 Image {
                     id: fromFile
-                    z: -1
+                    z: -2
                     visible: true
                     fillMode: Image.PreserveAspectFit
                 }
@@ -188,6 +195,9 @@ Dialog {
             }
         }
 
+        Item {
+            height: 30
+        }
     }
 
     onAccepted: {

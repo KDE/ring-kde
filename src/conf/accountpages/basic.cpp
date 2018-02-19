@@ -21,6 +21,7 @@
 
 #include <account.h>
 #include <protocolmodel.h>
+#include <profilemodel.h>
 #include <bootstrapmodel.h>
 #include <credentialmodel.h>
 
@@ -33,6 +34,11 @@ Pages::Basic::Basic(QWidget *parent) : PageBase(parent)
       disconnect(m_CredConn );
 
       m_pProtocol->bindToModel(account()->protocolModel(),account()->protocolModel()->selectionModel());
+
+      m_pProfile->bindToModel(
+         &ProfileModel::instance(),
+         ProfileModel::instance().getAccountSelectionModel(account())
+      );
 
       m_pBootstrapModel->setModel((account()->protocol() == Account::Protocol::RING)?
          account()->bootstrapModel() : nullptr

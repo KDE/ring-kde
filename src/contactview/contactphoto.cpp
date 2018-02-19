@@ -37,11 +37,17 @@ public:
     Person* m_pCurrentPerson {nullptr};
     bool m_DisplayEmpty {true};
     bool m_DrawEmptyOutline {true};
+    enum class TrackingStatus {
+        AUTO     = 0,
+        DISABLED = 1,
+        ENABLED  = 2
+    } m_TrackingStatus {TrackingStatus::AUTO};
 
     ContactPhoto* q_ptr;
 public Q_SLOTS:
     void slotPhotoChanged();
     void slotContactChanged();
+    void slotPresenceChanged();
 };
 
 ContactPhoto::ContactPhoto(QQuickItem* parent) : QQuickPaintedItem(parent),
@@ -73,10 +79,8 @@ void ContactPhoto::paint(QPainter *painter)
         p = d_ptr->m_pContactMethod->contact();
     }
 
-    const bool isTracked = p ? p->isTracked() :
-        d_ptr->m_pContactMethod ? d_ptr->m_pContactMethod->isTracked() : false;
-    const bool isPresent = p ? p->isPresent() :
-        d_ptr->m_pContactMethod ? d_ptr->m_pContactMethod->isPresent() : false;
+    const bool tracked = isTracked();
+    const bool present = isPresent();
 
 // for tests
 //     const bool isTracked(true), isPresent(rand()%2);
@@ -109,13 +113,13 @@ void ContactPhoto::paint(QPainter *painter)
 
         painter->setClipping(false);
 
-        if (isTracked) {
+        if (tracked) {
             pen.setWidthF(1);
             painter->setPen(pen);
             painter->setBrush(pen.color());
             painter->drawPath(cornerPath);
 
-            painter->setBrush(isPresent ? presentBrush : awayBrush);
+            painter->setBrush(present ? presentBrush : awayBrush);
 
             painter->drawEllipse(s-12, s-12, 12, 12);
         }
@@ -126,8 +130,8 @@ void ContactPhoto::paint(QPainter *painter)
 
         painter->setClipPath(imageClip);
 
-        if (isTracked)
-            pen.setColor(isPresent ? presentBrush : awayBrush);
+        if (tracked)
+            pen.setColor(present ? presentBrush : awayBrush);
 
         painter->setBrush({});
         painter->setPen(pen);
@@ -177,11 +181,16 @@ void ContactPhoto::setPerson(Person* p)
     if (d_ptr->m_pPerson) {
         disconnect(d_ptr->m_pPerson, &Person::photoChanged,
             d_ptr, &ContactPhotoPrivate::slotPhotoChanged);
+        disconnect(d_ptr->m_pPerson, &Person::presenceChanged,
+            d_ptr, &ContactPhotoPrivate::slotPresenceChanged);
     }
 
     if (d_ptr->m_pCurrentPerson) {
         disconnect(d_ptr->m_pCurrentPerson, &Person::photoChanged,
             d_ptr, &ContactPhotoPrivate::slotPhotoChanged);
+        disconnect(d_ptr->m_pCurrentPerson, &Person::presenceChanged,
+            d_ptr, &ContactPhotoPrivate::slotPresenceChanged);
+
         d_ptr->m_pCurrentPerson = nullptr;
     }
 
@@ -189,6 +198,8 @@ void ContactPhoto::setPerson(Person* p)
 
     connect(d_ptr->m_pPerson, &Person::photoChanged,
         d_ptr, &ContactPhotoPrivate::slotPhotoChanged);
+    connect(d_ptr->m_pPerson, &Person::presenceChanged,
+        d_ptr, &ContactPhotoPrivate::slotPresenceChanged);
 
     update();
 
@@ -209,12 +220,22 @@ void ContactPhotoPrivate::slotContactChanged()
             this, &ContactPhotoPrivate::slotPhotoChanged);
     }
 
-    m_pCurrentPerson = m_pContactMethod->contact();
+    m_pCurrentPerson = m_pContactMethod ?
+        m_pContactMethod->contact() : m_pCurrentPerson;
 
-    if (m_pCurrentPerson) {
+    if (m_pCurrentPerson && m_pContactMethod) {
         connect(m_pContactMethod, &ContactMethod::contactChanged,
             this, &ContactPhotoPrivate::slotContactChanged);
+        connect(m_pContactMethod, &ContactMethod::presentChanged,
+            this, &ContactPhotoPrivate::slotPresenceChanged);
+        connect(m_pContactMethod, &ContactMethod::trackedChanged,
+            this, &ContactPhotoPrivate::slotPresenceChanged);
     }
+}
+
+void ContactPhotoPrivate::slotPresenceChanged()
+{
+    //
 }
 
 bool ContactPhoto::hasPhoto() const
@@ -247,6 +268,49 @@ bool ContactPhoto::drawEmptyOutline() const
 void ContactPhoto::setDrawEmptyOutline(bool val)
 {
     d_ptr->m_DrawEmptyOutline = val;
+}
+
+bool ContactPhoto::isTracked() const
+{
+    if (d_ptr->m_TrackingStatus != ContactPhotoPrivate::TrackingStatus::AUTO)
+        return d_ptr->m_TrackingStatus == ContactPhotoPrivate::TrackingStatus::ENABLED;
+
+    if (d_ptr->m_pPerson)
+        return d_ptr->m_pPerson->isTracked();
+
+    if (d_ptr->m_pCurrentPerson) {
+        if (auto p = d_ptr->m_pContactMethod->contact())
+            return p->isTracked();
+
+        return d_ptr->m_pCurrentPerson->isPresent();
+    }
+
+    return false;
+}
+
+void ContactPhoto::setTracked(bool t)
+{
+    d_ptr->m_TrackingStatus = t ?
+        ContactPhotoPrivate::TrackingStatus::ENABLED :
+        ContactPhotoPrivate::TrackingStatus::DISABLED;
+
+    update();
+    emit changed();
+}
+
+bool ContactPhoto::isPresent() const
+{
+    if (d_ptr->m_pPerson)
+        return d_ptr->m_pPerson->isPresent();
+
+    if (d_ptr->m_pCurrentPerson) {
+        if (auto p = d_ptr->m_pContactMethod->contact())
+            return p->isPresent();
+
+        return d_ptr->m_pCurrentPerson->isPresent();
+    }
+
+    return false;
 }
 
 #include <contactphoto.moc>
