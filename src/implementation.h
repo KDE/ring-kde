@@ -55,22 +55,22 @@ private:
    QColor   m_Red;
 };
 
-class KDEPresenceSerializationDelegate final : public Interfaces::PresenceSerializerI
-{
-public:
-   KDEPresenceSerializationDelegate():m_isLoaded(false){}
-   KDEPresenceSerializationDelegate(const KDEPresenceSerializationDelegate&) = delete;
-   KDEPresenceSerializationDelegate& operator=(const KDEPresenceSerializationDelegate&) = delete;
-
-   virtual void save() override;
-   virtual void load() override;
-   virtual ~KDEPresenceSerializationDelegate();
-   virtual bool isTracked(CollectionInterface* backend) const override;
-   virtual void setTracked(CollectionInterface* backend, bool tracked) override;
-private:
-   mutable QHash<QString,bool> m_hTracked;
-   mutable bool m_isLoaded;
-};
+// class KDEPresenceSerializationDelegate final : public Interfaces::PresenceSerializerI
+// {
+// public:
+//    KDEPresenceSerializationDelegate():m_isLoaded(false){}
+//    KDEPresenceSerializationDelegate(const KDEPresenceSerializationDelegate&) = delete;
+//    KDEPresenceSerializationDelegate& operator=(const KDEPresenceSerializationDelegate&) = delete;
+//
+//    virtual void save() override;
+//    virtual void load() override;
+//    virtual ~KDEPresenceSerializationDelegate();
+//    virtual bool isTracked(CollectionInterface* backend) const override;
+//    virtual void setTracked(CollectionInterface* backend, bool tracked) override;
+// private:
+//    mutable QHash<QString,bool> m_hTracked;
+//    mutable bool m_isLoaded;
+// };
 
 class KDEShortcutDelegate final : public Interfaces::ShortcutCreatorI
 {

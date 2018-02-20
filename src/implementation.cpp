@@ -112,97 +112,97 @@ QVariant ColorDelegate::icon(const Account* a) {
    return QVariant();
 }
 
-void KDEPresenceSerializationDelegate::save() {
-   PresenceStatusModel& m = PresenceStatusModel::instance();
-   QStringList list;
-   for (int i=0;i<m.rowCount();i++) {
-      QString line = QStringLiteral("%1///%2///%3///%4///%5")
-         .arg(m.data(m.index(i,(int)PresenceStatusModel::Columns::Name),Qt::DisplayRole).toString())
-         .arg(m.data(m.index(i,(int)PresenceStatusModel::Columns::Message),Qt::DisplayRole).toString())
-         .arg(qvariant_cast<QColor>(m.data(m.index(i,(int)PresenceStatusModel::Columns::Message),Qt::BackgroundColorRole)).name())    //Color
-         .arg(m.data(m.index(i,(int)PresenceStatusModel::Columns::Status),Qt::CheckStateRole) == Qt::Checked)    //Status
-         .arg(m.data(m.index(i,(int)PresenceStatusModel::Columns::Default),Qt::CheckStateRole) == Qt::Checked);   //Default
+// void KDEPresenceSerializationDelegate::save() {
+//    PresenceStatusModel& m = PresenceStatusModel::instance();
+//    QStringList list;
+//    for (int i=0;i<m.rowCount();i++) {
+//       QString line = QStringLiteral("%1///%2///%3///%4///%5")
+//          .arg(m.data(m.index(i,(int)PresenceStatusModel::Columns::Name),Qt::DisplayRole).toString())
+//          .arg(m.data(m.index(i,(int)PresenceStatusModel::Columns::Message),Qt::DisplayRole).toString())
+//          .arg(qvariant_cast<QColor>(m.data(m.index(i,(int)PresenceStatusModel::Columns::Message),Qt::BackgroundColorRole)).name())    //Color
+//          .arg(m.data(m.index(i,(int)PresenceStatusModel::Columns::Status),Qt::CheckStateRole) == Qt::Checked)    //Status
+//          .arg(m.data(m.index(i,(int)PresenceStatusModel::Columns::Default),Qt::CheckStateRole) == Qt::Checked);   //Default
+//
+//       list << line;
+//    }
+//    ConfigurationSkeleton::setPresenceStatusList(list);
+// }
 
-      list << line;
-   }
-   ConfigurationSkeleton::setPresenceStatusList(list);
-}
+// void KDEPresenceSerializationDelegate::load() {
+//    QStringList list = ConfigurationSkeleton::presenceStatusList();
+//    PresenceStatusModel& m = PresenceStatusModel::instance();
+//
+//    //Load the default one
+//    if (!list.size()) {
+//       PresenceStatusModel::StatusData* data = new PresenceStatusModel::StatusData();
+//       data->name       = i18n("Online")    ;
+//       data->message    = i18n("I am available");
+//       data->status     = true      ;
+//       data->defaultStatus = true;
+//       m.addStatus(data);
+//       data = new PresenceStatusModel::StatusData();
+//       data->name       = i18n("Away")    ;
+//       data->message    = i18n("I am away");
+//       data->status     = false      ;
+//       m.addStatus(data);
+//       data = new PresenceStatusModel::StatusData();
+//       data->name       = i18n("Busy")    ;
+//       data->message    = i18n("I am busy");
+//       data->status     = false      ;
+//       m.addStatus(data);
+//       data = new PresenceStatusModel::StatusData();
+//       data->name       = i18n("DND")    ;
+//       data->message    = i18n("Please do not disturb me");
+//       data->status     = false      ;
+//       m.addStatus(data);
+//    }
+//    else {
+//       foreach(const QString& line, list) {
+//          QStringList fields = line.split(QStringLiteral("///"));
+//          PresenceStatusModel::StatusData* data = new PresenceStatusModel::StatusData();
+//          data->name          = fields[(int)PresenceStatusModel::Columns::Name   ];
+//          data->message       = fields[(int)PresenceStatusModel::Columns::Message];
+//          data->color         = QColor(fields[(int)PresenceStatusModel::Columns::Color]);
+//          data->status        = fields[(int)PresenceStatusModel::Columns::Status] == QLatin1String("1");
+//          data->defaultStatus = fields[(int)PresenceStatusModel::Columns::Default] == QLatin1String("1");
+//          m.addStatus(data);
+//       }
+//    }
+// }
 
-void KDEPresenceSerializationDelegate::load() {
-   QStringList list = ConfigurationSkeleton::presenceStatusList();
-   PresenceStatusModel& m = PresenceStatusModel::instance();
+// KDEPresenceSerializationDelegate::~KDEPresenceSerializationDelegate()
+// {
+//
+// }
 
-   //Load the default one
-   if (!list.size()) {
-      PresenceStatusModel::StatusData* data = new PresenceStatusModel::StatusData();
-      data->name       = i18n("Online")    ;
-      data->message    = i18n("I am available");
-      data->status     = true      ;
-      data->defaultStatus = true;
-      m.addStatus(data);
-      data = new PresenceStatusModel::StatusData();
-      data->name       = i18n("Away")    ;
-      data->message    = i18n("I am away");
-      data->status     = false      ;
-      m.addStatus(data);
-      data = new PresenceStatusModel::StatusData();
-      data->name       = i18n("Busy")    ;
-      data->message    = i18n("I am busy");
-      data->status     = false      ;
-      m.addStatus(data);
-      data = new PresenceStatusModel::StatusData();
-      data->name       = i18n("DND")    ;
-      data->message    = i18n("Please do not disturb me");
-      data->status     = false      ;
-      m.addStatus(data);
-   }
-   else {
-      foreach(const QString& line, list) {
-         QStringList fields = line.split(QStringLiteral("///"));
-         PresenceStatusModel::StatusData* data = new PresenceStatusModel::StatusData();
-         data->name          = fields[(int)PresenceStatusModel::Columns::Name   ];
-         data->message       = fields[(int)PresenceStatusModel::Columns::Message];
-         data->color         = QColor(fields[(int)PresenceStatusModel::Columns::Color]);
-         data->status        = fields[(int)PresenceStatusModel::Columns::Status] == QLatin1String("1");
-         data->defaultStatus = fields[(int)PresenceStatusModel::Columns::Default] == QLatin1String("1");
-         m.addStatus(data);
-      }
-   }
-}
+// bool KDEPresenceSerializationDelegate::isTracked(CollectionInterface* backend) const
+// {
+//    Q_UNUSED(backend)
+//    if (!m_isLoaded) {
+//       foreach(const QString& str, ConfigurationSkeleton::presenceAutoTrackedCollections()) {
+//          m_hTracked[str] = true;
+//       }
+//       m_isLoaded = true;
+//    }
+//    return m_hTracked.value(backend->name());
+// }
 
-KDEPresenceSerializationDelegate::~KDEPresenceSerializationDelegate()
-{
-
-}
-
-bool KDEPresenceSerializationDelegate::isTracked(CollectionInterface* backend) const
-{
-   Q_UNUSED(backend)
-   if (!m_isLoaded) {
-      foreach(const QString& str, ConfigurationSkeleton::presenceAutoTrackedCollections()) {
-         m_hTracked[str] = true;
-      }
-      m_isLoaded = true;
-   }
-   return m_hTracked.value(backend->name());
-}
-
-void KDEPresenceSerializationDelegate::setTracked(CollectionInterface* backend, bool tracked)
-{
-   if (!m_isLoaded) {
-      foreach(const QString& str,ConfigurationSkeleton::presenceAutoTrackedCollections()) {
-         m_hTracked[str] = true;
-      }
-      m_isLoaded = true;
-   }
-   m_hTracked[backend->name()] = tracked;
-   QStringList ret;
-   for (QHash<QString,bool>::const_iterator i = m_hTracked.constBegin(); i != m_hTracked.constEnd(); ++i) {
-      if (i.value())
-         ret << i.key();
-   }
-   ConfigurationSkeleton::setPresenceAutoTrackedCollections(ret);
-}
+// void KDEPresenceSerializationDelegate::setTracked(CollectionInterface* backend, bool tracked)
+// {
+//    if (!m_isLoaded) {
+//       foreach(const QString& str,ConfigurationSkeleton::presenceAutoTrackedCollections()) {
+//          m_hTracked[str] = true;
+//       }
+//       m_isLoaded = true;
+//    }
+//    m_hTracked[backend->name()] = tracked;
+//    QStringList ret;
+//    for (QHash<QString,bool>::const_iterator i = m_hTracked.constBegin(); i != m_hTracked.constEnd(); ++i) {
+//       if (i.value())
+//          ret << i.key();
+//    }
+//    ConfigurationSkeleton::setPresenceAutoTrackedCollections(ret);
+// }
 
 QVariant KDEShortcutDelegate::createAction(Macro* macro)
 {
@@ -285,10 +285,10 @@ Person* KDEActionExtender::selectPerson(FlagPack<SelectPersonHint> hints, const 
 {
    Q_UNUSED(hints)
 
-   ContactMethod* cm = nullptr;
+//    ContactMethod* cm = nullptr;
 
-   if (hintVar.canConvert<ContactMethod*>())
-      cm = qvariant_cast<ContactMethod*>(hintVar);
+//    if (hintVar.canConvert<ContactMethod*>())
+//       cm = qvariant_cast<ContactMethod*>(hintVar);
 
 //FIXME DROP QTWIDGET
 //    auto selector = new PersonSelector(PhoneWindow::app(), cm);
