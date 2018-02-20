@@ -36,6 +36,8 @@ Item {
     property alias  peerRunning    : videoWidget.started
     property var    call           : null
 
+    property bool previewVisible: mode != "PREVIEW" && call && PreviewManager.previewing
+
     // Let the animations finish before
     Timer {
         id: toolbarTimer
@@ -47,7 +49,6 @@ Item {
             actionToolbar.visible  = false
             videoSource.visible    = false
             controlToolbar.visible = false
-            videoPreview.visible   = false
         }
     }
 
@@ -58,12 +59,11 @@ Item {
         // This toolbar is only useful when there is video
         if (videoWidget.started)
             controlToolbar.visible = true
-            videoPreview.visible   = true
 
         actionToolbar.opacity  = 1
         videoSource.opacity    = 1
         controlToolbar.opacity = 1
-        videoPreview.opacity   = 1
+        videoPreview.opacity   = 0.8
         actionToolbar.anchors.bottomMargin = 0
         videoSource.anchors.rightMargin    = 0
         controlToolbar.anchors.topMargin   = 0
@@ -73,7 +73,7 @@ Item {
         actionToolbar.opacity  = 0
         videoSource.opacity    = 0
         controlToolbar.opacity = 0
-        videoPreview.opacity   = 0
+        videoPreview.opacity   = 1
         videoSource.anchors.rightMargin    = -20
         actionToolbar.anchors.bottomMargin = -20
         controlToolbar.anchors.topMargin   = -20
@@ -91,7 +91,7 @@ Item {
         id: videoPreview
         z: -95
         started: false
-        visible: false
+        visible: previewVisible
         anchors.left: parent.left
         anchors.bottom: parent.bottom
         width: 192
@@ -194,7 +194,6 @@ Item {
             videoWidget.rendererName = "preview"
         }
         else if (mode == "CONVERSATION") {
-            videoPreview.visible = true
             videoPreview.started = PreviewManager.previewing
             videoWidget.rendererName = "peer"
         }
@@ -216,8 +215,6 @@ Item {
         onPreviewingChanged: {
             if (mode == "PREVIEW")
                 videoWidget.started = PreviewManager.previewing
-            else
-                videoPreview.visible = PreviewManager.previewing
 
             videoPreview.started = PreviewManager.previewing
         }
