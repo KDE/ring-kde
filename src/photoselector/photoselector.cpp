@@ -85,7 +85,11 @@ QString PhotoSelector::selectFile(const QString& defaultPath)
 void PhotoSelector::setToPerson(Person* p)
 {
     if (p) {
-        p->setPhoto(QPixmap::fromImage(d_ptr->m_Image));
+        p->setPhoto(
+            d_ptr->m_Image.isNull() ? QVariant() :
+            QPixmap::fromImage(d_ptr->m_Image)
+        );
+
         qDebug() << "Set the photo on" << p << d_ptr->m_Image.size() << p->collection();
     }
     else {
@@ -116,6 +120,10 @@ QString PhotoSelector::path() const
     return d_ptr->m_Path;
 }
 
+void PhotoSelector::clear()
+{
+    d_ptr->m_Image = {};
+}
 
 QImage PhotoSelector::image() const
 {

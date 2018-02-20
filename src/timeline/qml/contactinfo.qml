@@ -135,11 +135,11 @@ Kirigami.ScrollablePage {
         addresses.model = currentPerson ?
             currentPerson.addressesModel : null
 
-        photo.pixmap = currentPerson ?
-            currentPerson.photo : undefined
         phoneNumbersModel.person = currentPerson
 
         vCardForm.currentPerson = currentPerson
+
+        isChanged = false
     }
 
     GroupBox {
@@ -354,7 +354,7 @@ Kirigami.ScrollablePage {
 
                 function onNewPhoto(p) {
                     contactViewPage.cachedPhoto = p
-                    photo.pixmap = p
+
                     contactViewPage.changed()
                 }
 
@@ -365,7 +365,8 @@ Kirigami.ScrollablePage {
                         var component = Qt.createComponent("PhotoEditor.qml")
                         if (component.status == Component.Ready) {
                             var window    = component.createObject(contactViewPage)
-                            window.person = currentContactMethod ? currentContactMethod.person : null
+                            window.person = currentContactMethod ?
+                                currentContactMethod.person : currentPerson
                             window.newPhoto.connect(photoRect.onNewPhoto)
                         }
                         else

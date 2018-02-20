@@ -48,8 +48,9 @@ DlgProfiles::DlgProfiles(QWidget *parent, QQmlEngine* e, const QString& name, co
    item->setProperty("showStat"     , false     );
    item->setProperty("showImage"    , true      );
    item->setProperty("forcedState"  , "profile" );
+   item->setProperty("showSave"     , false     );
 
-   connect(rootObject(), SIGNAL(changed()), this, SLOT(slotChanged()));
+   connect(item, SIGNAL(changed(bool)), this, SLOT(slotChanged()));
 }
 
 DlgProfiles::~DlgProfiles()
@@ -126,6 +127,7 @@ void DlgProfiles::slotChanged()
 {
    if (m_Lock)
       return;
+
    emit changed();
 }
 

@@ -46,7 +46,7 @@ public:
     ContactPhoto* q_ptr;
 public Q_SLOTS:
     void slotPhotoChanged();
-    void slotContactChanged();
+    void slotContactChanged(Person* newContact, Person* oldContact);
     void slotPresenceChanged();
 };
 
@@ -160,11 +160,14 @@ void ContactPhoto::setContactMethod(ContactMethod* cm)
     if (d_ptr->m_pContactMethod) {
         disconnect(d_ptr->m_pContactMethod, &ContactMethod::contactChanged,
             d_ptr, &ContactPhotoPrivate::slotContactChanged);
+        if (d_ptr->m_pContactMethod->contact())
+            disconnect(d_ptr->m_pContactMethod->contact(), &Person::photoChanged,
+                d_ptr, &ContactPhotoPrivate::slotPhotoChanged);
     }
 
     d_ptr->m_pContactMethod = cm;
 
-    d_ptr->slotContactChanged();
+    d_ptr->slotContactChanged(cm ? cm->contact() : nullptr, nullptr);
 
     emit hasPhotoChanged();
 
@@ -190,6 +193,13 @@ void ContactPhoto::setPerson(Person* p)
             d_ptr, &ContactPhotoPrivate::slotPhotoChanged);
         disconnect(d_ptr->m_pCurrentPerson, &Person::presenceChanged,
             d_ptr, &ContactPhotoPrivate::slotPresenceChanged);
+        disconnect(d_ptr->m_pContactMethod, &ContactMethod::contactChanged,
+            d_ptr, &ContactPhotoPrivate::slotContactChanged);
+
+        if (d_ptr->m_pContactMethod->contact()) {
+            disconnect(d_ptr->m_pContactMethod->contact(), &Person::photoChanged,
+                d_ptr, &ContactPhotoPrivate::slotPhotoChanged);
+        }
 
         d_ptr->m_pCurrentPerson = nullptr;
     }
@@ -213,11 +223,19 @@ void ContactPhotoPrivate::slotPhotoChanged()
     q_ptr->update();
 }
 
-void ContactPhotoPrivate::slotContactChanged()
+void ContactPhotoPrivate::slotContactChanged(Person* newContact, Person* oldContact)
 {
+    Q_UNUSED(newContact)
+
+    if (oldContact)
+        disconnect(oldContact, &Person::photoChanged,
+            this, &ContactPhotoPrivate::slotPhotoChanged);
+
     if (m_pCurrentPerson) {
         disconnect(m_pCurrentPerson, &Person::photoChanged,
             this, &ContactPhotoPrivate::slotPhotoChanged);
+        disconnect(m_pCurrentPerson, &Person::presenceChanged,
+            this, &ContactPhotoPrivate::slotPresenceChanged);
     }
 
     m_pCurrentPerson = m_pContactMethod ?
@@ -230,6 +248,8 @@ void ContactPhotoPrivate::slotContactChanged()
             this, &ContactPhotoPrivate::slotPresenceChanged);
         connect(m_pContactMethod, &ContactMethod::trackedChanged,
             this, &ContactPhotoPrivate::slotPresenceChanged);
+        connect(m_pCurrentPerson, &Person::photoChanged,
+            this, &ContactPhotoPrivate::slotPhotoChanged);
     }
 }
 
