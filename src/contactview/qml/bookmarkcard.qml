@@ -76,9 +76,7 @@ Item {
             anchors.fill: parent
             onClicked: {
                 treeView.selectItem(modelIndex)
-
-                if (objectType == 0)
-                    bookmarkList.contactMethodSelected(object)
+                bookmarkList.contactMethodSelected(object)
             }
         }
     }
