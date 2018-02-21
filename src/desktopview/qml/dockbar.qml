@@ -88,7 +88,7 @@ Item {
                                 var component = Qt.createComponent("PresenceSelector.qml")
                                 if (component.status == Component.Ready) {
                                     var window = component.createObject(applicationWindow().contentItem)
-//                                     window.contactMethod = currentContactMethod
+                                    window.person = object
                                     window.open()
                                 }
                                 else

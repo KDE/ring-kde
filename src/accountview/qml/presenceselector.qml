@@ -30,13 +30,22 @@ Dialog {
     width: applicationWindow().contentItem.width * 0.66
     height: applicationWindow().contentItem.height * 0.66
 
-    ListView {
+    property QtObject person: null
+
+    ContactInfo {
+        id: contactInfo
         anchors.fill: parent
-        model: PresenceStatusModel
-        delegate: Text {
-            text: "hello"
-        }
+        showStat: false
+        showImage: true
+        showSave: false
+        forcedState: "profile"
+        currentPerson: person
     }
 
-    standardButtons: Dialog.Close
+    onAccepted: {
+        if (person)
+            contactInfo.save()
+    }
+
+    standardButtons: Dialog.Close | Dialog.Save
 }

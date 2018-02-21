@@ -36,7 +36,8 @@ Item {
     property alias  peerRunning    : videoWidget.started
     property var    call           : null
 
-    property bool previewVisible: mode != "PREVIEW" && call && PreviewManager.previewing
+    property bool previewVisible: mode != "PREVIEW" &&
+        call && PreviewManager.previewing
 
     // Let the animations finish before
     Timer {
