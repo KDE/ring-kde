@@ -130,12 +130,12 @@ Kirigami.ScrollablePage {
 
     onCurrentPersonChanged: {
         // Sub-models
-        phoneNumbersModel.model = currentPerson ?
-            currentPerson.phoneNumbersModel : null
+        individual.model = currentPerson ?
+            currentPerson.individual : null
         addresses.model = currentPerson ?
             currentPerson.addressesModel : null
 
-        phoneNumbersModel.person = currentPerson
+        individual.person = currentPerson
 
         vCardForm.currentPerson = currentPerson
 
@@ -219,13 +219,13 @@ Kirigami.ScrollablePage {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     PhoneNumbers {
-                        id: phoneNumbersModel
+                        id: individual
                         anchors.fill: parent
                         editing: contactViewPage.editing
                         onPersonCreated: {
                             if (!currentPerson) {
                                 console.log("Setting the person from a phone number")
-                                currentPerson = phoneNumbersModel.person
+                                currentPerson = individual.person
                             }
                         }
                     }
@@ -426,7 +426,7 @@ Kirigami.ScrollablePage {
 
         Item {
             id: phoneNumberHolder
-            height: phoneNumbersModel.contentHeight+ 48 // 48 == (+)
+            height: individual.contentHeight+ 48 // 48 == (+)
             width: parent.width
         }
 
@@ -476,7 +476,7 @@ Kirigami.ScrollablePage {
                 parent: contactViewPage
             }
             ParentChange {
-                target: phoneNumbersModel
+                target: individual
                 parent: phoneNumbersPage
             }
             ParentChange {
@@ -502,7 +502,7 @@ Kirigami.ScrollablePage {
                 anchors.top: statistics.bottom
             }
             AnchorChanges {
-                target: phoneNumbersModel
+                target: individual
                 anchors.left: undefined
                 anchors.top: undefined
             }
@@ -528,7 +528,7 @@ Kirigami.ScrollablePage {
                 width: contactViewPage.width / 2
             }
             PropertyChanges {
-                target: phoneNumbersModel
+                target: individual
                 anchors.fill: phoneNumbersPage
                 width: undefined
                 interactive: true
@@ -641,11 +641,11 @@ Kirigami.ScrollablePage {
             }
 
             ParentChange {
-                target: phoneNumbersModel
+                target: individual
                 parent: phoneNumberHolder
             }
             AnchorChanges {
-                target: phoneNumbersModel
+                target: individual
                 anchors.left: phoneNumberHolder.left
                 anchors.top: phoneNumberHolder.top
             }
@@ -670,7 +670,7 @@ Kirigami.ScrollablePage {
             }
 
             PropertyChanges {
-                target: phoneNumbersModel
+                target: individual
                 anchors.fill: undefined
                 width: contactViewPage.width
                 interactive: false

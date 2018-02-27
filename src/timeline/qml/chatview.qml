@@ -117,19 +117,19 @@ HierarchyView {
             // Some elements don't have delegates because they are handled
             // by their parent delegates
             function selectDelegate() {
-                if (nodeType == PeerTimelineModel.TIME_CATEGORY)
+                if (nodeType == IndividualTimelineModel.TIME_CATEGORY)
                     return categoryDelegate
 
-                if (nodeType == PeerTimelineModel.TEXT_MESSAGE)
+                if (nodeType == IndividualTimelineModel.TEXT_MESSAGE)
                     return textDelegate
 
-                if (nodeType == PeerTimelineModel.SNAPSHOT_GROUP)
+                if (nodeType == IndividualTimelineModel.SNAPSHOT_GROUP)
                     return snapshotGroupDelegate
 
-                if (nodeType == PeerTimelineModel.SECTION_DELIMITER)
+                if (nodeType == IndividualTimelineModel.SECTION_DELIMITER)
                     return sectionDelegate
 
-                if (nodeType == PeerTimelineModel.CALL_GROUP)
+                if (nodeType == IndividualTimelineModel.CALL_GROUP)
                     return callDelegate
             }
 

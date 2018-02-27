@@ -26,6 +26,7 @@
 #include "numbercategory.h"
 #include "phonedirectorymodel.h"
 #include <person.h>
+#include <individual.h>
 
 
 void KPhoneNumberSelector::init()
@@ -35,11 +36,11 @@ void KPhoneNumberSelector::init()
 ContactMethod* KPhoneNumberSelector::number(const Person* contact)
 {
    if (contact) {
-      if (contact->phoneNumbers().size()>1) {
+      if (contact->individual()->phoneNumbers().size()>1) {
          bool                   ok = false;
          QHash<QString,QString> map       ;
          QStringList            list;
-         const auto pn = contact->phoneNumbers();
+         const auto pn = contact->individual()->phoneNumbers();
          for (auto number : qAsConst(pn)) {
             map[number->category()->name()+" ("+number->uri()+')'] = number->uri();
             list << number->category()->name()+" ("+number->uri()+')';
@@ -47,8 +48,8 @@ ContactMethod* KPhoneNumberSelector::number(const Person* contact)
          const QString result = QInputDialog::getItem (nullptr,i18n("Select phone number"), i18n("This contact has many phone numbers, please select the one you wish to call"), list, 0, false, &ok);
          return PhoneDirectoryModel::instance().getNumber(result);//new ContactMethod(result,"");
       }
-      else if (contact->phoneNumbers().size() == 1)
-         return contact->phoneNumbers().constFirst();
+      else if (contact->individual()->phoneNumbers().size() == 1)
+         return contact->individual()->phoneNumbers().constFirst();
    }
    return const_cast<ContactMethod*>(ContactMethod::BLANK());
 }

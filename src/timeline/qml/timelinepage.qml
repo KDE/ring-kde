@@ -39,11 +39,7 @@ Rectangle {
     color: activePalette.base
 
     property var currentContactMethod: null
-
-    onCurrentContactMethodChanged: {
-        chatView.model = currentContactMethod ? currentContactMethod.timelineModel : null
-        scrollbar.model = currentContactMethod ? currentContactMethod.timelineModel : null
-    }
+    property var timelineModel: null
 
     // Add a blurry background
     ShaderEffectSource {
@@ -82,6 +78,7 @@ Rectangle {
                 ChatView {
                     id: chatView
                     anchors.fill: parent
+                    model: timelinePage.timelineModel
 
                     onPercentageChanged: {
                         chatScrollView.lock = true
@@ -133,6 +130,7 @@ Rectangle {
                 Layout.fillHeight: true
                 Layout.preferredWidth: 10
                 display: chatView.moving || timelinePage.showScrollbar
+                model: timelinePage.timelineModel
 
                 onWidthChanged: {
                     burryOverlay.width = scrollbar.fullWidth + 15

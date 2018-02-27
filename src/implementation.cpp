@@ -46,6 +46,7 @@
 #include <contactmethod.h>
 #include <presencestatusmodel.h>
 #include <phonedirectorymodel.h>
+#include <individual.h>
 #include <media/textrecording.h>
 #include <securityevaluationmodel.h>
 #include "klib/kcfg_settings.h"
@@ -251,7 +252,7 @@ void KDEActionExtender::viewChatHistory(Person* p)
    if (!p)
       return;
 
-   foreach(ContactMethod* cm, p->phoneNumbers())
+   foreach(ContactMethod* cm, p->individual()->phoneNumbers())
       viewChatHistory(cm);
 }
 

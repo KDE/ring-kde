@@ -33,6 +33,7 @@
 #include "peerstimelinemodel.h"
 #include "phonedirectorymodel.h"
 #include <contactmethod.h>
+#include <individual.h>
 #include <person.h>
 #include <call.h>
 #include <callmodel.h>
@@ -53,7 +54,7 @@ class MainPagePrivate : public QObject {
     Q_OBJECT
 public:
     QSharedPointer<QAbstractItemModel> m_CallsModel;
-    QSharedPointer<QAbstractItemModel> m_PersomCMModel;
+    QSharedPointer<QAbstractItemModel> m_Invididual;
     QSharedPointer<QAbstractItemModel> m_TimelineModel;
     QSharedPointer<QAbstractItemModel> m_DeduplicatedTimelineModel;
     QQuickItem* m_pItem {nullptr};
@@ -98,7 +99,7 @@ MainPage::MainPage(QQuickItem* parent) :
 MainPage::~MainPage()
 {
     d_ptr->m_TimelineModel.clear();
-    d_ptr->m_PersomCMModel.clear();
+    d_ptr->m_Invididual.clear();
     d_ptr->m_CallsModel.clear();
     d_ptr->m_DeduplicatedTimelineModel.clear();
 
@@ -130,7 +131,7 @@ void MainPage::setContactMethod(ContactMethod* cm)
         );
 
     // Keep a reference for 5 minutes to avoid double free from QML
-    for (auto ptr : {d_ptr->m_PersomCMModel, d_ptr->m_CallsModel, d_ptr->m_TimelineModel})
+    for (auto ptr : {d_ptr->m_Invididual, d_ptr->m_CallsModel, d_ptr->m_TimelineModel})
         if (ptr) {
             auto t = new QTimer(this);
             t->setInterval(5 * 60 * 1000);
@@ -144,14 +145,13 @@ void MainPage::setContactMethod(ContactMethod* cm)
 
 
     // Keep a strong reference because QML wont
-    d_ptr->m_PersomCMModel = cm->contact() ? cm->contact()->phoneNumbersModel()
-        : QSharedPointer<QAbstractItemModel>();
+    d_ptr->m_Invididual = cm->individual();
     d_ptr->m_CallsModel = cm->callsModel();
 
-    d_ptr->m_TimelineModel = cm->timelineModel();
+    d_ptr->m_TimelineModel = cm->individual()->timelineModel();
 
     d_ptr->m_pItem->setProperty( "currentContactMethod", QVariant::fromValue(cm));
-
+    d_ptr->m_pItem->setProperty( "timelineModel", QVariant::fromValue(d_ptr->m_TimelineModel));
 }
 
 void MainPage::setPerson(Person* p)

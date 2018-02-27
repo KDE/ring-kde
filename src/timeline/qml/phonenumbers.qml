@@ -82,7 +82,7 @@ Item {
                     if (cm && cm.person) {
                         console.log("Setting the person")
                         person = cm.person
-                        phoneNumbers.model = cm.person.phoneNumbersModel
+                        phoneNumbers.model = cm.person.individual
                         personCreated(cm.person)
                     }
                 }

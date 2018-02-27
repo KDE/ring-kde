@@ -23,6 +23,7 @@
 #include <collectioninterface.h>
 #include <numbercategorymodel.h>
 #include <phonedirectorymodel.h>
+#include <individual.h>
 
 class ContactBuilderPrivate
 {
@@ -62,7 +63,7 @@ Person* ContactBuilder::from(ContactMethod* cm)
 
     if (cm) {
         cm->setPerson(p);
-        p->setContactMethods({cm});
+        p->individual()->addPhoneNumber(cm);
     }
 
     col->editor<Person>()->addExisting(p);
@@ -102,23 +103,23 @@ ContactMethod* ContactBuilder::updatePhoneNumber(ContactMethod* cm, Person* p, c
         newCM = PhoneDirectoryModel::instance().getNumber(
             number, p, nullptr, catIndex.data().toString()
         );
-        p->addPhoneNumber(newCM);
+        p->individual()->addPhoneNumber(newCM);
     }
     else if (p && newCM->type() == ContactMethod::Type::TEMPORARY) {
-        p->addPhoneNumber(newCM);
+        p->individual()->addPhoneNumber(newCM);
 
-        const auto lastRow = p->phoneNumbersModel()->index(
-            p->phoneNumbersModel()->rowCount()-1, 0
+        const auto lastRow = p->individual()->index(
+            p->individual()->rowCount()-1, 0
         );
 
-        if (QVariant::fromValue(cm) == p->phoneNumbersModel()->data(lastRow, (int)Ring::Role::Object))
-            p->phoneNumbersModel()->removeRows(lastRow.row(), 1);
+        if (QVariant::fromValue(cm) == p->individual()->data(lastRow, (int)Ring::Role::Object))
+            p->individual()->removeRows(lastRow.row(), 1, {});
     }
     else if (p) {
         auto newCM2 = PhoneDirectoryModel::instance().getNumber(
             number, p, newCM->account(), catIndex.data().toString()
         );
-        p->replacePhoneNumber(newCM, newCM2);
+        p->individual()->replacePhoneNumber(newCM, newCM2);
         newCM = newCM2;
     }
 
@@ -133,8 +134,8 @@ void ContactBuilder::addEmptyPhoneNumber(Person* p)
     if (!p)
         return;
 
-    const auto idx = p->phoneNumbersModel()->index(p->phoneNumbersModel()->rowCount(), 0);
-    const bool ret = p->phoneNumbersModel()->setData(idx, QString(), Qt::DisplayRole);
+    const auto idx = p->individual()->index(p->individual()->rowCount(), 0);
+    const bool ret = p->individual()->setData(idx, QString(), Qt::DisplayRole);
 }
 
 void ContactBuilder::acceptEmptyPhoneNumber(Person* p)

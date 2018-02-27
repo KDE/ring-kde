@@ -42,6 +42,7 @@
 #include <callmodel.h>
 #include <accountmodel.h>
 #include <account.h>
+#include <individual.h>
 #include <contactmethod.h>
 #include <phonedirectorymodel.h>
 #include <categorizedhistorymodel.h>
@@ -57,7 +58,7 @@
 #include <contactmethod.h>
 #include <media/recordingmodel.h>
 #include <peerstimelinemodel.h>
-#include <peertimelinemodel.h>
+#include <individualtimelinemodel.h>
 #include <video/previewmanager.h>
 #include <media/recording.h>
 #include <media/textrecording.h>
@@ -119,6 +120,7 @@
 #include "accountview/accountviewplugin.h"
 #include "dialview/dialviewplugin.h"
 #include "timeline/timelineplugin.h"
+#include "flickableview.h"
 
 //Other
 #include <unistd.h>
@@ -411,7 +413,6 @@ void RingApplication::setStartPhone(bool value)
 
 constexpr static const char AppName[]= "Ring";
 
-
 /// Create a QML engine for various canvas widgets
 QQmlApplicationEngine* RingApplication::engine()
 {
@@ -447,14 +448,16 @@ QQmlApplicationEngine* RingApplication::engine()
       KirigamiPlugin::getInstance().registerTypes();
 #endif
 
-      QML_TYPE( Account           )
-      QML_TYPE( const Account     )
-      QML_TYPE( Call              )
-      QML_TYPE( Person            )
-      QML_TYPE( ContactMethod     )
-      QML_TYPE( UserActionModel   )
-      QML_TYPE( PeerTimelineModel )
-      QML_TYPE( RingDeviceModel   )
+      qRegisterMetaType<IndividualPointer>("IndividualPointer");
+
+      QML_TYPE( Account                 )
+      QML_TYPE( const Account           )
+      QML_TYPE( Call                    )
+      QML_TYPE( Person                  )
+      QML_TYPE( ContactMethod           )
+      QML_TYPE( UserActionModel         )
+      QML_TYPE( IndividualTimelineModel )
+      QML_TYPE( RingDeviceModel         )
 
       QML_TYPE( QAction)
 

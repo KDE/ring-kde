@@ -24,6 +24,7 @@ import org.kde.kirigami 2.2 as Kirigami
 Item {
     id: viewContact
     property var currentContactMethod: null
+    property var timelineModel: null
     property var currentPerson: null
     property string currentPage: ""
     property var contactHeader: null
@@ -43,7 +44,6 @@ Item {
         contactHeader.currentContactMethod = currentContactMethod
         contactInfo.currentContactMethod   = currentContactMethod
         callHistory.currentContactMethod   = currentContactMethod
-        timelinePage.currentContactMethod  = currentContactMethod
 
         if (currentContactMethod && currentContactMethod.person)
             personConn.target = currentContactMethod.person
@@ -248,27 +248,13 @@ Item {
                     asynchronous: true
                     active: false
                     id: timelinePage
-                    property QtObject currentContactMethod: null
-                    property var currentInstance: undefined
                     property bool showScrollbar: true
 
                     sourceComponent: TimelinePage {
                         showScrollbar: timelinePage.showScrollbar
+                        timelineModel: viewContact.timelineModel
+                        currentContactMethod: viewContact.currentContactMethod
                         anchors.fill: parent
-                        Component.onDestruction: {
-                            timelinePage.currentInstance = undefined
-                        }
-                    }
-
-                    onLoaded: {
-                        currentInstance = item
-                        if (currentContactMethod)
-                            item.currentContactMethod = currentContactMethod
-                    }
-
-                    onCurrentContactMethodChanged: {
-                        if (currentInstance)
-                            currentInstance.currentContactMethod = currentContactMethod
                     }
                 }
             }
@@ -278,27 +264,13 @@ Item {
                 background: Rectangle { color: activePalette.base }
                 Loader {
                     property QtObject currentContactMethod: null
-                    property var currentInstance: undefined
                     anchors.fill: parent
                     id: callHistory
                     asynchronous: true
                     active: false
                     sourceComponent: CallHistory {
                         anchors.fill: parent
-                        Component.onDestruction: {
-                            timelinePage.currentInstance = undefined
-                        }
-                    }
-
-                    onLoaded: {
-                        currentInstance = item
-                        if (currentContactMethod)
-                            item.currentContactMethod = currentContactMethod
-                    }
-
-                    onCurrentContactMethodChanged: {
-                        if (currentInstance)
-                            currentInstance.currentContactMethod = currentContactMethod
+                        currentContactMethod: viewContact.currentContactMethod
                     }
                 }
             }
