@@ -151,12 +151,14 @@ void MainPage::setContactMethod(ContactMethod* cm)
     d_ptr->m_TimelineModel = cm->individual()->timelineModel();
 
     d_ptr->m_pItem->setProperty( "currentContactMethod", QVariant::fromValue(cm));
+    d_ptr->m_pItem->setProperty( "currentIndividual", QVariant::fromValue(d_ptr->m_Invididual));
     d_ptr->m_pItem->setProperty( "timelineModel", QVariant::fromValue(d_ptr->m_TimelineModel));
 }
 
 void MainPage::setPerson(Person* p)
 {
     d_ptr->m_pItem->setProperty( "currentPerson", QVariant::fromValue(p));
+    d_ptr->m_pItem->setProperty( "currentIndividual", QVariant::fromValue(p->individual()));
 }
 
 void MainPage::setCurrentPage(MainPage::Pages page)

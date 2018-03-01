@@ -28,6 +28,7 @@ Kirigami.ScrollablePage {
     id: contactViewPage
     property var currentContactMethod: null
     property var currentPerson: null
+    property var individual: null
     property string forcedState: ""
     property bool editing: true
 
@@ -130,12 +131,12 @@ Kirigami.ScrollablePage {
 
     onCurrentPersonChanged: {
         // Sub-models
-        individual.model = currentPerson ?
-            currentPerson.individual : null
-        addresses.model = currentPerson ?
-            currentPerson.addressesModel : null
+//         phoneNumbers.model = currentPerson ?
+//             currentPerson.phoneNumbers : null
+//         addresses.model = currentPerson ?
+//             currentPerson.addressesModel : null
 
-        individual.person = currentPerson
+        phoneNumbers.person = currentPerson
 
         vCardForm.currentPerson = currentPerson
 
@@ -174,9 +175,9 @@ Kirigami.ScrollablePage {
                 TabButton {
                     text: i18n("Phone numbers")
                 }
-                TabButton {
-                    text: i18n("Addresses")
-                }
+//                 TabButton {
+//                     text: i18n("Addresses")
+//                 }
                 TabButton {
                     id: statButton
                     text: i18n("Statistics")
@@ -219,31 +220,32 @@ Kirigami.ScrollablePage {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     PhoneNumbers {
-                        id: individual
+                        id: phoneNumbers
                         anchors.fill: parent
                         editing: contactViewPage.editing
+                        model: contactViewPage.individual
                         onPersonCreated: {
-                            if (!currentPerson) {
-                                console.log("Setting the person from a phone number")
-                                currentPerson = individual.person
-                            }
+//                             if (!currentPerson) {
+//                                 console.log("Setting the person from a phone number")
+//                                 currentPerson = phoneNumbers.person
+//                             }
                         }
                     }
 
                     background: Rectangle { color: activePalette.base }
                 }
 
-                Page {
-                    id: addressesPage
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    Addresses {
-                        id: addresses
-                        anchors.fill: parent
-                    }
-
-                    background: Rectangle { color: activePalette.base }
-                }
+//                 Page {
+//                     id: addressesPage
+//                     Layout.fillWidth: true
+//                     Layout.fillHeight: true
+//                     Addresses {
+//                         id: addresses
+//                         anchors.fill: parent
+//                     }
+//
+//                     background: Rectangle { color: activePalette.base }
+//                 }
 
                 Page {
                     Layout.fillWidth: true
@@ -426,7 +428,7 @@ Kirigami.ScrollablePage {
 
         Item {
             id: phoneNumberHolder
-            height: individual.contentHeight+ 48 // 48 == (+)
+            height: phoneNumbers.contentHeight+ 48 // 48 == (+)
             width: parent.width
         }
 
@@ -476,13 +478,13 @@ Kirigami.ScrollablePage {
                 parent: contactViewPage
             }
             ParentChange {
-                target: individual
+                target: phoneNumbers
                 parent: phoneNumbersPage
             }
-            ParentChange {
-                target: addresses
-                parent: addressesPage
-            }
+//             ParentChange {
+//                 target: addresses
+//                 parent: addressesPage
+//             }
             AnchorChanges {
                 target: advanced
                 anchors.right: advanced.parent.right
@@ -502,15 +504,15 @@ Kirigami.ScrollablePage {
                 anchors.top: statistics.bottom
             }
             AnchorChanges {
-                target: individual
+                target: phoneNumbers
                 anchors.left: undefined
                 anchors.top: undefined
             }
 
-            AnchorChanges {
-                target: addresses
-                anchors.left: undefined
-            }
+//             AnchorChanges {
+//                 target: addresses
+//                 anchors.left: undefined
+//             }
 
             PropertyChanges {
                 target: advanced
@@ -528,7 +530,7 @@ Kirigami.ScrollablePage {
                 width: contactViewPage.width / 2
             }
             PropertyChanges {
-                target: individual
+                target: phoneNumbers
                 anchors.fill: phoneNumbersPage
                 width: undefined
                 interactive: true
@@ -641,23 +643,23 @@ Kirigami.ScrollablePage {
             }
 
             ParentChange {
-                target: individual
+                target: phoneNumbers
                 parent: phoneNumberHolder
             }
             AnchorChanges {
-                target: individual
+                target: phoneNumbers
                 anchors.left: phoneNumberHolder.left
                 anchors.top: phoneNumberHolder.top
             }
 
-            ParentChange {
-                target: addresses
-                parent: addressesHolder
-            }
-            AnchorChanges {
-                target: addresses
-                anchors.left: contactViewPage.left
-            }
+//             ParentChange {
+//                 target: addresses
+//                 parent: addressesHolder
+//             }
+//             AnchorChanges {
+//                 target: addresses
+//                 anchors.left: contactViewPage.left
+//             }
 
             ParentChange {
                 target: statistics
@@ -670,16 +672,16 @@ Kirigami.ScrollablePage {
             }
 
             PropertyChanges {
-                target: individual
+                target: phoneNumbers
                 anchors.fill: undefined
                 width: contactViewPage.width
                 interactive: false
             }
 
-            PropertyChanges {
-                target: addresses
-                anchors.fill: undefined
-            }
+//             PropertyChanges {
+//                 target: addresses
+//                 anchors.fill: undefined
+//             }
 
 
             PropertyChanges {

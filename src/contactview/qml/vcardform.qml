@@ -44,7 +44,7 @@ GridLayout {
         var old_firstName      = firstName.text
         var old_secondName     = lastName.text
         var old_preferredEmail = email.text
-        var old_organization   = organization.text
+//         var old_organization   = organization.text
 
         // Create a real contact method in case this is a temporary one
         if (currentContactMethod && currentContactMethod.type == ContactMethod.TEMPORARY)
@@ -58,7 +58,7 @@ GridLayout {
         person.firstName      = old_firstName
         person.secondName     = old_secondName
         person.preferredEmail = old_preferredEmail
-        person.organization   = old_organization
+//         person.organization   = old_organization
 
         currentPerson = person
     }
@@ -84,8 +84,8 @@ GridLayout {
             currentPerson.secondName : ""
         email.text = currentPerson ?
             currentPerson.preferredEmail : ""
-        organization.text = currentPerson ?
-            currentPerson.organization : ""
+//         organization.text = currentPerson ?
+//             currentPerson.organization : ""
 
     }
 
@@ -138,25 +138,25 @@ GridLayout {
         }
     }
 
-    Label {
-        id: organizationLabel
-        text: i18n("Organization:")
-        color: labelColor ? labelColor : activePalette.text
-    }
-    TextField {
-        id: organization
-        readOnly: !mainInfo.editing
-        onTextChanged: {
-            mainInfo.changed()
-        }
-    }
+//     Label {
+//         id: organizationLabel
+//         text: i18n("Organization:")
+//         color: labelColor ? labelColor : activePalette.text
+//     }
+//     TextField {
+//         id: organization
+//         readOnly: !mainInfo.editing
+//         onTextChanged: {
+//             mainInfo.changed()
+//         }
+//     }
 
     OutlineButton {
         id: mainArea
         height: 54
         sideMargin: 2
         Layout.columnSpan: 2
-        width: organization.width + organizationLabel.width + 30
+        width: formattedName.width + label.width + 30
         label: i18n("Add a field")
         topPadding: 2
         visible: mainInfo.editing

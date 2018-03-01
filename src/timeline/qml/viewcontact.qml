@@ -29,6 +29,7 @@ Item {
     property string currentPage: ""
     property var contactHeader: null
     property bool mobile: false
+    property var currentIndividual: null
 
     function showVideo() {
         avView.active = true
@@ -65,16 +66,16 @@ Item {
             return
 
         switch(currentPage) {
-            case "INFORMATION":
+            case "TIMELINE":
                 tabBar.currentIndex = 0
                 break
             case "MEDIA":
                 tabBar.currentIndex = 1
                 break
-            case "TIMELINE":
+            case "CALL_HISTORY":
                 tabBar.currentIndex = 2
                 break
-            case "CALL_HISTORY":
+            case "INFORMATION":
                 tabBar.currentIndex = 3
                 break
         }
@@ -136,24 +137,24 @@ Item {
             id: tabBar
             currentIndex: swipeView.currentIndex
             TabButton {
-                text: i18n("Information")
+                text: i18n("Chat/Timeline")
             }
             TabButton {
                 text: i18n("Audio/Video")
             }
             TabButton {
-                text: i18n("Chat/Timeline")
+                text: i18n("Calls/Recordings")
             }
             TabButton {
-                text: i18n("Calls/Recordings")
+                text: i18n("Information")
             }
 
             onCurrentIndexChanged: {
                 //TODO deactivate it after a minute in other tabs
-                if (currentIndex == 2) {
+                if (currentIndex == 0) {
                     timelinePage.active = true
                 }
-                if (currentIndex == 3) {
+                if (currentIndex == 2) {
                     callHistory.active = true
                 }
             }
@@ -171,18 +172,20 @@ Item {
             currentIndex: tabBar.currentIndex
 
             Page {
-                id: contactInfoPage
+                id: chatPage
                 background: Rectangle { color: activePalette.base }
-                ContactInfo {
-                    id: contactInfo
+                Loader {
                     anchors.fill: parent
+                    asynchronous: true
+                    active: true
+                    id: timelinePage
+                    property bool showScrollbar: true
 
-                    onSelectChat: {
-                        stackView.push(page3)
-                    }
-
-                    onSelectHistory: {
-                        stackView.push(page2)
+                    sourceComponent: TimelinePage {
+                        showScrollbar: timelinePage.showScrollbar
+                        timelineModel: viewContact.timelineModel
+                        currentContactMethod: viewContact.currentContactMethod
+                        anchors.fill: parent
                     }
                 }
             }
@@ -241,25 +244,6 @@ Item {
             }
 
             Page {
-                id: chatPage
-                background: Rectangle { color: activePalette.base }
-                Loader {
-                    anchors.fill: parent
-                    asynchronous: true
-                    active: false
-                    id: timelinePage
-                    property bool showScrollbar: true
-
-                    sourceComponent: TimelinePage {
-                        showScrollbar: timelinePage.showScrollbar
-                        timelineModel: viewContact.timelineModel
-                        currentContactMethod: viewContact.currentContactMethod
-                        anchors.fill: parent
-                    }
-                }
-            }
-
-            Page {
                 id: historyPage
                 background: Rectangle { color: activePalette.base }
                 Loader {
@@ -271,6 +255,24 @@ Item {
                     sourceComponent: CallHistory {
                         anchors.fill: parent
                         currentContactMethod: viewContact.currentContactMethod
+                    }
+                }
+            }
+
+            Page {
+                id: contactInfoPage
+                background: Rectangle { color: activePalette.base }
+                ContactInfo {
+                    id: contactInfo
+                    individual: viewContact.currentIndividual
+                    anchors.fill: parent
+
+                    onSelectChat: {
+                        stackView.push(page3)
+                    }
+
+                    onSelectHistory: {
+                        stackView.push(page2)
                     }
                 }
             }
@@ -286,10 +288,9 @@ Item {
         anchors.fill: parent
 
         Page {
-            id: page1
-            anchors.margins: 0
+            id: page2
             background: Rectangle {
-            color: activePalette.base
+                color: activePalette.base
             }
         }
         Page {
@@ -299,15 +300,16 @@ Item {
             }
         }
         Page {
-            id: page2
+            id: page4
             background: Rectangle {
                 color: activePalette.base
             }
         }
         Page {
-            id: page4
+            id: page1
+            anchors.margins: 0
             background: Rectangle {
-                color: activePalette.base
+            color: activePalette.base
             }
         }
 

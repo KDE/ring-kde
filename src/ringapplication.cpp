@@ -82,6 +82,7 @@
 #include <numbercategorymodel.h>
 #include <presencestatusmodel.h>
 #include <personmodel.h>
+#include <infotemplatemanager.h>
 
 //Collections
 #include <foldercertificatecollection.h>
@@ -278,6 +279,8 @@ void RingApplication::initCollections()
    loadNumberCategories();
 
    CallModel::instance().setAudoCleanDelay(5000);
+
+   InfoTemplateManager::instance();
 
    /*******************************************
       *           Set the configurator          *

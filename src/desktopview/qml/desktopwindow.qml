@@ -147,9 +147,9 @@ Kirigami.ApplicationWindow {
                     action: ActionCollection.showBookmarkDockAction
                 }
             },
-            QmlAction {
-                action: ActionCollection.newContact
-            },
+//             QmlAction {
+//                 action: ActionCollection.newContact
+//             },
             QmlAction {
                 action: ActionCollection.showWizard
             },
