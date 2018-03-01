@@ -336,6 +336,7 @@ bool QuickListViewItem::attach()
     m_pItem    = pair.first;
 
     m_pContent->setContextProperty("isCurrentItem", false);
+    m_pContent->setContextProperty("modelIndex", index());
 
     return move();
 }

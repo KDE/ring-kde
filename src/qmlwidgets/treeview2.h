@@ -58,11 +58,11 @@ public:
     };
 
     // Helpers
-    int               depth   () const;
-    TreeView2*        view    () const;
-    QModelIndex       index   () const;
-    VisualTreeItem* previous() const;
-    VisualTreeItem* next    () const;
+    int                   depth   () const;
+    TreeView2*            view    () const;
+    QPersistentModelIndex index   () const;
+    VisualTreeItem*       previous() const;
+    VisualTreeItem*       next    () const;
 
     /// Allows to keep a reference while still being tracked by the state machine
     virtual QWeakPointer<ModelIndexItem> reference() const final override;

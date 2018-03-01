@@ -1145,7 +1145,7 @@ TreeView2* VisualTreeItem::view() const
     return m_pParent->d_ptr->q_ptr;
 }
 
-QModelIndex VisualTreeItem::index() const
+QPersistentModelIndex VisualTreeItem::index() const
 {
     return m_pParent->m_Index;
 }
