@@ -108,6 +108,7 @@ public:
 
 public Q_SLOTS:
     void slotCurrentIndexChanged(const QModelIndex& index);
+    void slotDataChanged(const QModelIndex& tl, const QModelIndex& br);
 };
 
 QuickListView::QuickListView(QQuickItem* parent) : TreeView2(parent),
@@ -171,6 +172,21 @@ void QuickListView::setCurrentIndex(int index)
     );
 }
 
+void QuickListView::setModel(QSharedPointer<QAbstractItemModel> m)
+{
+    if (auto oldM = model())
+        disconnect(oldM.data(), &QAbstractItemModel::dataChanged, d_ptr,
+            &QuickListViewPrivate::slotDataChanged);
+
+    TreeView2::setModel(m);
+
+    if (!m)
+        return;
+
+    connect(m.data(), &QAbstractItemModel::dataChanged, d_ptr,
+        &QuickListViewPrivate::slotDataChanged);
+}
+
 QuickListViewSections* QuickListView::section() const
 {
     if (!d_ptr->m_pSections) {
@@ -226,7 +242,9 @@ QuickListViewSection* QuickListViewPrivate::getSection(QuickListViewItem* i)
     if (m_pSections->property().isEmpty() || !m_pDelegate)
         return nullptr;
 
-    if (i->m_pSection)
+    const auto val = q_ptr->model()->data(i->index(), m_pSections->role());
+
+    if (i->m_pSection && i->m_pSection->m_Value == val)
         return i->m_pSection;
 
     const auto prev = static_cast<QuickListViewItem*>(i->previous());
@@ -235,8 +253,6 @@ QuickListViewSection* QuickListViewPrivate::getSection(QuickListViewItem* i)
     if ((!prev) && i->index().row() > 0) {
         Q_ASSERT(false); //TODO when GC is enabled, the assert is to make sure I don't forget
     }
-
-    const auto val = q_ptr->model()->data(i->index(), m_pSections->role());
 
     // Use the previous section
     if (prev && prev->m_pSection && prev->m_pSection->m_Value == val) {
@@ -502,6 +518,29 @@ void QuickListViewSections::setModel(const QSharedPointer<QAbstractItemModel>& m
 void QuickListViewPrivate::slotCurrentIndexChanged(const QModelIndex& index)
 {
     emit q_ptr->indexChanged(index.row());
+}
+
+// Make sure the section stay in sync with the content
+void QuickListViewPrivate::slotDataChanged(const QModelIndex& tl, const QModelIndex& br)
+{
+    if (!m_pSections)
+        return;
+
+    auto tli = static_cast<QuickListViewItem*>(q_ptr->itemForIndex(tl));
+    auto bri = static_cast<QuickListViewItem*>(q_ptr->itemForIndex(br));
+
+    Q_ASSERT(tli);
+    Q_ASSERT(bri);
+
+    bool outdated = false;
+
+    //TODO there is some possible optimizations here, not *all* subsequent
+    // elements needs to be moved
+    do {
+        if (outdated || (outdated = (tli->m_pSection != getSection(tli))))
+            tli->move();
+
+    } while(tli != bri && (tli = static_cast<QuickListViewItem*>(tli->next())));
 }
 
 void QuickListViewItem::setSelected(bool s)

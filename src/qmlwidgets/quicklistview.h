@@ -103,6 +103,8 @@ public:
 
     QuickListViewSections* section() const;
 
+    virtual void setModel(QSharedPointer<QAbstractItemModel> model) override;
+
     int count() const;
 
     int currentIndex() const;

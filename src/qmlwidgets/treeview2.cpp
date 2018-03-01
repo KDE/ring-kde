@@ -293,24 +293,24 @@ void TreeView2::setModel(QSharedPointer<QAbstractItemModel> m)
     if (m == model())
         return;
 
-    if (model()) {
-        disconnect(model().data(), &QAbstractItemModel::rowsInserted, d_ptr,
+    if (auto oldM = model()) {
+        disconnect(oldM.data(), &QAbstractItemModel::rowsInserted, d_ptr,
             &TreeView2Private::slotRowsInserted);
-        disconnect(model().data(), &QAbstractItemModel::rowsAboutToBeRemoved, d_ptr,
+        disconnect(oldM.data(), &QAbstractItemModel::rowsAboutToBeRemoved, d_ptr,
             &TreeView2Private::slotRowsRemoved);
-        disconnect(model().data(), &QAbstractItemModel::layoutAboutToBeChanged, d_ptr,
+        disconnect(oldM.data(), &QAbstractItemModel::layoutAboutToBeChanged, d_ptr,
             &TreeView2Private::cleanup);
-        disconnect(model().data(), &QAbstractItemModel::layoutChanged, d_ptr,
+        disconnect(oldM.data(), &QAbstractItemModel::layoutChanged, d_ptr,
             &TreeView2Private::slotLayoutChanged);
-        disconnect(model().data(), &QAbstractItemModel::modelAboutToBeReset, d_ptr,
+        disconnect(oldM.data(), &QAbstractItemModel::modelAboutToBeReset, d_ptr,
             &TreeView2Private::cleanup);
-        disconnect(model().data(), &QAbstractItemModel::modelReset, d_ptr,
+        disconnect(oldM.data(), &QAbstractItemModel::modelReset, d_ptr,
             &TreeView2Private::slotLayoutChanged);
-        disconnect(model().data(), &QAbstractItemModel::rowsAboutToBeMoved, d_ptr,
+        disconnect(oldM.data(), &QAbstractItemModel::rowsAboutToBeMoved, d_ptr,
             &TreeView2Private::slotRowsMoved);
-        disconnect(model().data(), &QAbstractItemModel::rowsMoved, d_ptr,
+        disconnect(oldM.data(), &QAbstractItemModel::rowsMoved, d_ptr,
             &TreeView2Private::slotRowsMoved2);
-        disconnect(model().data(), &QAbstractItemModel::dataChanged, d_ptr,
+        disconnect(oldM.data(), &QAbstractItemModel::dataChanged, d_ptr,
             &TreeView2Private::slotDataChanged);
     }
 
