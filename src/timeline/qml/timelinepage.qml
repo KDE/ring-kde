@@ -41,6 +41,11 @@ Rectangle {
     property var currentContactMethod: null
     property var timelineModel: null
 
+    onTimelineModelChanged: {
+        if (!fixmeTimer.running)
+            chatView.model = timelineModel
+    }
+
     // Add a blurry background
     ShaderEffectSource {
         id: effectSource
@@ -78,7 +83,19 @@ Rectangle {
                 ChatView {
                     id: chatView
                     anchors.fill: parent
-                    model: timelinePage.timelineModel
+                    model: null//FIXME timelinePage.timelineModel
+
+                    // Due to a race condition, wait a bit, it should be fixed elsewhere,
+                    //FIXME but it would take much longer.
+                    Timer {
+                        id: fixmeTimer
+                        repeat: false
+                        running: true
+                        interval: 33
+                        onTriggered: {
+                            chatView.model = timelinePage.timelineModel
+                        }
+                    }
 
                     onPercentageChanged: {
                         chatScrollView.lock = true
