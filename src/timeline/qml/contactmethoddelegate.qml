@@ -235,11 +235,11 @@ Item {
             onClicked: {
 
                 if (mouse.button == Qt.LeftButton) {
-                    recentView.currentIndex = index
+                    recentView.currentIndex = modelIndex.row
                     contactMethodSelected(object)
                 }
                 else if (mouse.button == Qt.RightButton)
-                    contextMenuRequested(object, index)
+                    contextMenuRequested(object, modelIndex.row)
             }
         }
 
