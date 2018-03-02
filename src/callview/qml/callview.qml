@@ -93,7 +93,7 @@ Item {
         z: -95
         started: false
         visible: previewVisible
-        anchors.left: parent.left
+        anchors.right: parent.right
         anchors.bottom: parent.bottom
         width: 192
         height: 108
