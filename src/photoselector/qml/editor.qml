@@ -26,6 +26,7 @@ import Ring 1.0
 Dialog {
     property QtObject person: null
     property QtObject contactMethod: null
+    property bool isSelected: false
     signal newPhoto(var photo)
     signal done()
     modal: true
@@ -149,6 +150,7 @@ Dialog {
                         newPhoto(result.image)
                         overlay.border.color = "red"
                         overlay.border.width = 3
+                        isSelected = true
                     });
                 }
             }
@@ -210,7 +212,7 @@ Dialog {
         }
     }
 
-    onAccepted: {
+    function applyPhoto() {
         if (person)
             selector.setToPerson(person)
         else if (contactMethod)
@@ -219,6 +221,27 @@ Dialog {
         videoWidget.started = false
         if (PreviewManager.previewing)
             PreviewManager.stopPreview()
+    }
+
+    onAccepted: {
+        // It's not obvious that you have to select a square, so do it
+        // if the user has not done it
+
+        if ((!isSelected) && (videoWidget.started || fromFile.source != "")) {
+            overlay.x = selectorContainer.width/2 - selectorContainer.height/2
+            overlay.y = 0
+            overlay.width = selectorContainer.height
+            overlay.height = selectorContainer.height
+            overlay.border.color = "transparent"
+            overlay.border.width = 0
+            overlay.grabToImage(function(result) {
+                selector.image = result.image;
+                newPhoto(result.image)
+                applyPhoto()
+            });
+        }
+
+        applyPhoto()
 
         done()
     }
