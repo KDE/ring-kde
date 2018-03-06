@@ -38,5 +38,7 @@
         <file>./outline/screen.svg</file>
         <file>./outline/chat.svg</file>
         <file>./outline/warning.svg</file>
+        <file>./outline/qrcode.svg</file>
+        <file>./outline/web.svg</file>
     </qresource>
 </RCC>

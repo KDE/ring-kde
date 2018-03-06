@@ -125,33 +125,37 @@ Rectangle {
         ]
     }
 
-    Grid {
+    Loader {
         id: emojis
         visible: false
         anchors.fill: parent
-        spacing: 2
-        rows: 2
+        active: visible
+        sourceComponent: Grid {
+            anchors.fill: parent
+            spacing: 2
+            rows: 2
 
-        Repeater {
-            model: emoji
-            Rectangle {
-                width:  30
-                height: 30
-                color:  emojiColor
-                radius: 2
+            Repeater {
+                model: emoji
+                Rectangle {
+                    width:  30
+                    height: 30
+                    color:  emojiColor
+                    radius: 2
 
-                Text {
-                    anchors.centerIn: parent
-                    font.family: "Noto Color Emoji"
-                    font.pixelSize : 18
-                    text: symbol
-                }
+                    Text {
+                        anchors.centerIn: parent
+                        font.family: "Noto Color Emoji"
+                        font.pixelSize : 18
+                        text: symbol
+                    }
 
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: {
-                        messageTextArea.insert(messageTextArea.length, symbol)
-                        emojiButton.checked = false
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: {
+                            messageTextArea.insert(messageTextArea.length, symbol)
+                            emojiButton.checked = false
+                        }
                     }
                 }
             }

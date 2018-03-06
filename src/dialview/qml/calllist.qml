@@ -30,7 +30,6 @@ ListView {
     id: callList
     spacing: 10
 
-    anchors.fill: parent
     delegate: callDelegate
     model: CallModel
 } //CallList

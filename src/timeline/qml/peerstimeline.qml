@@ -96,41 +96,6 @@ Rectangle {
     ColumnLayout {
         anchors.fill: parent
 
-        TextField {
-            id: search
-            Layout.fillWidth: true
-            placeholderText: i18n("Find someone")
-            text: CallModel.hasDialingCall ?
-                CallModel.dialingCall().dialNumber : ""
-
-            onTextChanged: {
-                // Cache the text to avoid a binding loop when the dialing call
-                // is created for the first time
-                var text = search.text
-                var call = CallModel.dialingCall()
-                call.dialNumber = text
-            }
-            Keys.onDownPressed: {
-                searchView.currentIndex = (searchView.currentIndex == searchView.count - 1) ?
-                    0 : searchView.currentIndex + 1
-            }
-            Keys.onUpPressed: {
-                searchView.currentIndex = (searchView.currentIndex == 0) ?
-                    searchView.count - 1 : searchView.currentIndex - 1
-            }
-            Keys.onReturnPressed: {
-                if (searchStateGroup.state != "searchActive")
-                    return
-
-                var cm = searchView.currentItem.contactMethod
-
-                if (!cm)
-                    return
-
-                contactMethodSelected(cm)
-            }
-        }
-
         Item {
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -265,13 +230,6 @@ Rectangle {
                     opacity: 0.75
                 }
             }
-
-            FindPeers {
-                id: searchView
-                visible: false
-                anchors.fill: parent
-                z: 99999999
-            }
         }
     }
 
@@ -306,14 +264,6 @@ Rectangle {
         scrollBar.handleHeight = recentDock.height * (recentDock.height/(recentView.count*50))
     }
 
-    Connections {
-        target: CallModel
-        onDialNumberChanged: {
-            search.text = CallModel.hasDialingCall ?
-                CallModel.dialingCall().dialNumber : ""
-        }
-    }
-
     // Timeline scrollbar
     StateGroup {
         states: [
@@ -342,54 +292,6 @@ Rectangle {
                     properties: "opacity"
                     easing.type: Easing.InQuad
                     duration: 400
-                    loops: 1
-                }
-            }
-        ]
-    }
-
-    // Search
-    StateGroup {
-        id: searchStateGroup
-        states: [
-            State {
-                name: "searchActive"
-                when: search.text != ""
-                PropertyChanges {
-                    target:  scrollBar
-                    visible: false
-                }
-                PropertyChanges {
-                    target:  searchView
-                    visible: true
-                }
-                PropertyChanges {
-                    target:  burryOverlay
-                    visible: true
-                    opacity: 1
-                    width: recentView.width
-                    height: recentView.height
-                }
-                PropertyChanges {
-                    target:  effectSource
-                    sourceRect: Qt.rect(0, 0, parent.width, parent.height)
-                }
-            }
-        ]
-
-        transitions: [
-            Transition {
-                to: "searchActive"
-                NumberAnimation {
-                    properties: "opacity"
-                    easing.type: Easing.InQuad
-                    duration: 200
-                    loops: 1
-                }
-                NumberAnimation {
-                    properties: "width,height"
-                    easing.type: Easing.InQuad
-                    duration: 0
                     loops: 1
                 }
             }

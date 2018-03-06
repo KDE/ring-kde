@@ -17,8 +17,6 @@
  **************************************************************************/
 import QtQuick 2.0
 import Ring 1.0
-import org.kde.kirigami 2.2 as Kirigami
-
 
 Item {
     id: button

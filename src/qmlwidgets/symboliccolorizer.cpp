@@ -48,11 +48,20 @@ SymbolicColorizer::~SymbolicColorizer()
 
 QPixmap SymbolicColorizer::requestPixmap(const QString &id, QSize *size, const QSize &requestedSize)
 {
+    QString realId = id;
 
-    auto r = d_ptr->m_hRenderers.value(id);
+    QColor color = QGuiApplication::palette().text().color();
+
+    if (realId.size() && realId.left(7) == QLatin1String("?color=")) {
+        const auto s = realId.split(';');
+        realId = s[1];
+        color = QColor(s[0].mid(7, s[0].size()-7));
+    }
+
+    auto r = d_ptr->m_hRenderers.value(realId);
 
     if (!r)
-        d_ptr->m_hRenderers[id] = r = new QSvgRenderer(id);
+        d_ptr->m_hRenderers[realId] = r = new QSvgRenderer(realId);
 
     // Always honor the original aspect ratio
     const qreal aspectRatio = r->defaultSize().width()/r->defaultSize().height();
@@ -66,12 +75,24 @@ QPixmap SymbolicColorizer::requestPixmap(const QString &id, QSize *size, const Q
         hOrW ? requestedSize.height() : requestedSize.width()*aspectRatio
     );
 
+    // avoid 150 qpainter warnings being printed on stderr
+    if (size->width() == -1 || size->height() == -1) {
+        qWarning() << "Failed to render due to an invalid size" << id;
+        return {};
+    }
+
     QPixmap px(size->width(), size->height());
 
     QRect rect {0, 0, size->width(), size->height()};
     px.fill(Qt::transparent);
 
     QPainter painter(&px);
+
+    if (!painter.isActive()) {
+        qWarning() << "Failed to create painter" << id;
+        return {};
+    }
+
     painter.setCompositionMode(QPainter::CompositionMode_Clear);
     painter.fillRect(rect, QBrush(Qt::white));
     painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
@@ -79,7 +100,7 @@ QPixmap SymbolicColorizer::requestPixmap(const QString &id, QSize *size, const Q
     r->render(&painter, rect);
 
     painter.setCompositionMode(QPainter::CompositionMode_SourceIn);
-    painter.fillRect(rect, QGuiApplication::palette().text());
+    painter.fillRect(rect, color);
 
     return px;
 }

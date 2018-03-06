@@ -54,13 +54,6 @@ Kirigami.Page {
         color: activePalette.base
         anchors.fill: parent
 
-        TextField {
-            id: search
-            Layout.fillWidth: true
-            placeholderText: i18n("Find someone")
-            width: parent.width
-        }
-
         ListView {
             id: sorting
             height: 32

@@ -17,204 +17,166 @@
  **************************************************************************/
 import QtQuick 2.7
 import QtQuick.Layouts 1.0
+import RingQmlWidgets 1.0
 import QtQuick.Controls 2.0
 import Ring 1.0
-import RingQmlWidgets 1.0
+import ContactView 1.0
+import org.kde.kirigami 2.0 as Kirigami
 
 Item {
-    id: componentItem
-
-    property bool showAccount: AccountModel.hasAmbiguousAccounts
-    property bool showPhoto: true
-    property bool showControls: true
-    property bool showSeparator: true
-    property var  textColor: ListView.isCurrentItem ?
-                        activePalette.highlightedText : activePalette.text
-    property var  altTextColor: ListView.isCurrentItem ?
-                        activePalette.highlightedText : inactivePalette.text
-
-    width: parent.width
-    height: getHeight()
-
-    function getHeight() {
-        var rowCount = 2 + (showAccount ? 2 : 1) + (supportsRegistry ? 1 : 0)
-        var controlHeight = (showControls && temporary) ? buttonHeight : 0
-
-        return rowCount*(fontMetrics.height+2) + 16 + controlHeight
-    }
-
     property QtObject contactMethod: object
     property double buttonHeight: 30
     property double labelHeight: fontMetrics.height*2
+    property bool showPhoto: true
+    property bool showControls: true
+    property bool showSeparator: true
+    height: rows.implicitHeight + 10 //10 == 2*margins
 
-    TextMetrics {
-        id: accTextMetrics
-        text: accountAlias
+    function getSourceColor(src) {
+        if (src == NumberCompletionModel.FROM_BOOKMARKS)
+            return "#cfa02a"
+        if (src == NumberCompletionModel.FROM_HISTORY)
+            return "#be3411"
+        if (src == NumberCompletionModel.FROM_CONTACTS)
+            return "#14883b"
+        if (src == NumberCompletionModel.FROM_WEB)
+            return "#2c53bd"
+
+        return "red"
     }
 
-    RowLayout {
-        anchors.margins: 3
+    Rectangle {
+        anchors.margins: 5
+        anchors.leftMargin: 10
+        anchors.rightMargin: 10
+        border.width: 1
+        border.color: inactivePalette.text
+        color: "transparent"
         anchors.fill: parent
-        PixmapWrapper {
-            visible: componentItem.showPhoto
-            height:  Math.min(46, 4*componentItem.labelHeight + 12)
-            width:  Math.min(46, 4*componentItem.labelHeight + 12)
-            pixmap: decoration
-        }
+        radius: 5
 
         ColumnLayout {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
+            id: rows
+            spacing: 5
+            anchors.fill: parent
+
+            Item {
+                height: 5
+            }
+
             RowLayout {
-                spacing: 2
-                Text {
-                    Layout.fillWidth: true
-                    text: display
-                    font.bold: true
-                    color: textColor
-                }
-                Text {
-                    visible: componentItem.showPhoto
-                    anchors.rightMargin: 5
-                    text: formattedLastUsed
-                    color: altTextColor
-                }
+                anchors.topMargin: 5
+                anchors.bottomMargin: 5
+                anchors.fill: parent
+
                 Item {
-                    width: 2
+                    height: 32
+                    width: 20
+                    Rectangle {
+                        width: 10
+                        height: 10
+                        radius: 99
+                        anchors.centerIn: parent
+
+                        color: getSourceColor(entrySource)
+                    }
                 }
-            }
-            RowLayout {
-                Layout.fillWidth: true
-                PixmapWrapper {
-                    height: 16
-                    width:  16
-                    pixmap: categoryIcon
+
+                ContactPhoto {
+                    width:  32
+                    height: 32
+                    implicitHeight: 32
+                    implicitWidth: 32
+                    anchors.margins: 5
+                    contactMethod: object
                 }
-                Text {
-                    text: categoryName+"  "
-                    color: altTextColor
-                }
+
                 Text {
                     Layout.fillWidth: true
-                    text: uri
-                    color: textColor
+                    height: 32
+                    id: displayNameLabel
+                    text: display
+                    color: activePalette.text
+                    verticalAlignment: Text.AlignHCenter
+                    font.bold: true
                 }
             }
-            RowLayout {
+
+            Layout.fillHeight: true
+            Layout.fillWidth: true
+
+            Rectangle {
+                id: uriSeparator
+                height: 1
                 Layout.fillWidth: true
+                color: inactivePalette.text
+            }
+
+            Text {
+                Layout.fillWidth: true
+                color: inactivePalette.text
+                text: "  "+uri
+                height: implicitHeight * 2
+
+                BusyIndicator {
+                    id: busyIndicator
+                    visible: nameStatus == NumberCompletionModel.IN_PROGRESS
+                    anchors.right: searchStatus.left
+                    anchors.rightMargin: 2
+                    height: searchStatus.implicitHeight * 2
+                    width: searchStatus.implicitHeight * 2
+                    anchors.top: uriSeparator.bottom
+                }
+
                 Text {
+                    id: searchStatus
+                    anchors.right: parent.right
+                    anchors.rightMargin: 5
                     color: nameStatus == NumberCompletionModel.SUCCESS ?
-                        "green"  : (nameStatus == NumberCompletionModel.IN_PROGRESS ?
-                        "yellow" :
-                        "red")
+                        Kirigami.Theme.positiveTextColor : (nameStatus == NumberCompletionModel.IN_PROGRESS ?
+                        Kirigami.Theme.neutralTextColor :
+                        Kirigami.Theme.negativeTextColor)
                     visible: supportsRegistry
                     text: nameStatusString
                 }
-                Item {
-                    Layout.fillWidth: true
-                }
-                Rectangle {
-                    color: activePalette.highlight
-                    radius: 99
-                    height: componentItem.labelHeight + 4
-                    visible: componentItem.showAccount && accountAlias != ""
-                    width: accTextMetrics.width + 32
-                    Text {
-                        id: accountAliasText
-                        anchors.centerIn: parent
-                        anchors.leftMargin: 16
-                        anchors.rightMargin: 16
-                        text: accountAlias
-                        color: activePalette.highlightedText
-                    }
-                }
             }
-            Loader {
-                active:  componentItem.showControls && temporary
-                visible: componentItem.showControls && temporary
-                height:  componentItem.buttonHeight
-                Layout.preferredHeight: componentItem.buttonHeight
-                Layout.fillWidth: true
 
-                sourceComponent: RowLayout {
-                    anchors.fill: parent
-                    Rectangle {
-                        id: contactRequestButton
-                        anchors.margins: 3
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        color: "transparent"
-                        radius: 5
-                        border.width: 1
-                        border.color: textColor
-                        opacity: 0.8
-                        Behavior on color {
-                            ColorAnimation {duration:100}
-                        }
-                        Text {
-                            anchors.centerIn: parent
-                            text: "Send request"
-                            color: textColor
-                        }
-                        MouseArea {
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            onContainsMouseChanged: {
-                                contactRequestButton.color = containsMouse ? "#55ffffff" : "transparent"
-                            }
-                        }
-                    }
-                    Rectangle {
-                        id: callButton
-                        anchors.margins: 3
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        color: "transparent"
-                        radius: 5
-                        border.width: 1
-                        border.color: textColor
-                        opacity: 0.8
-                        Behavior on color {
-                            ColorAnimation {duration:100}
-                        }
-                        Text {
-                            anchors.centerIn: parent
-                            text: "Call"
-                            color: textColor
-                        }
-                        MouseArea {
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            onContainsMouseChanged: {
-                                callButton.color = containsMouse ? "#55ffffff" : "transparent"
-                            }
-                        }
-                    }
+            Rectangle {
+                visible: accountAlias != ""
+                height: 1
+                Layout.fillWidth: true
+                color: inactivePalette.text
+            }
+
+            Rectangle {
+                color: activePalette.highlight
+                radius: 99
+                anchors.right: parent.right
+                anchors.rightMargin: 5
+                height: accountAliasText.implicitHeight + 4
+                visible: accountAlias != ""
+                width: accountAliasText.implicitWidth + accountAliasText.implicitHeight
+                Text {
+                    id: accountAliasText
+                    anchors.centerIn: parent
+                    anchors.leftMargin: 16
+                    anchors.rightMargin: 16
+                    text: accountAlias
+                    color: activePalette.highlightedText
                 }
             }
+
             Item {
-                Layout.fillHeight: true
+                height: 2
             }
         }
-    }
 
-
-    Rectangle {
-        visible: componentItem.showSeparator
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 3
-        width: parent.width
-        height: 1
-        color: ListView.isCurrentItem ?
-                        activePalette.highlightedText : inactivePalette.text
-        opacity: 0.7
-    }
-
-    MouseArea {
-        anchors.fill: parent
-        onClicked: {
-            searchView.currentIndex = index
-            contactMethodSelected(object)
+        MouseArea {
+            anchors.fill: parent
+            onClicked: {
+                contactMethodSelected(contactMethod)
+                hide()
+            }
         }
     }
 }

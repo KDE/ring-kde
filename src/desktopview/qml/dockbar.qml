@@ -27,7 +27,9 @@ import DesktopView 1.0
 
 Item {
     id: topLevel
-    width: dockLayout.implicitWidth
+
+    width: Math.min(335, root.width-48) + dockBar.width
+
     property var newHolder: null
 
     RowLayout {
@@ -47,6 +49,26 @@ Item {
 
             Layout.fillHeight: true
             Layout.maximumWidth: width
+
+            onSelectedItemChanged: {
+                switch(selectedItem) {
+                    case "timeline":
+                        dockLoader.sourceComponent = timelineViewComponent
+                        break
+                    case "call"    :
+                        dockLoader.sourceComponent = dialViewComponent
+                        break
+                    case "contact" :
+                        dockLoader.sourceComponent = contactViewComponent
+                        break
+                    case "bookmark":
+                        dockLoader.sourceComponent = bookmarkViewComponent
+                        break
+                    case "history" :
+                        dockLoader.sourceComponent = historyViewComponent
+                        break
+                }
+            }
 
             Behavior on width {
                 NumberAnimation {duration: 200;  easing.type: Easing.OutQuad }
@@ -175,7 +197,58 @@ Item {
             }
         }
 
-        Item {
+
+
+        Component {
+            id: timelineViewComponent
+            PeersTimeline {
+                anchors.fill: parent
+                state: topLevel.state
+                onContactMethodSelected: {
+                    mainPage.setContactMethod(cm)
+                    if (topLevel.state == "mobile")
+                        newHolder.show = false
+                }
+            }
+        }
+        Component {
+            id: dialViewComponent
+            DialView {
+                anchors.fill: parent
+                onSelectCall: {
+                    mainPage.showVideo(call)
+                }
+            }
+        }
+        Component {
+            id: contactViewComponent
+            ContactList {
+                anchors.fill: parent
+                onContactMethodSelected: {
+                    mainPage.setContactMethod(cm)
+                }
+            }
+        }
+        Component {
+            id: bookmarkViewComponent
+            BookmarkList {
+                anchors.fill: parent
+                onContactMethodSelected: {
+                    mainPage.setContactMethod(cm)
+                }
+            }
+        }
+        Component {
+            id: historyViewComponent
+            ContactList {
+                anchors.fill: parent
+                onContactMethodSelected: {
+                    mainPage.setContactMethod(cm)
+                }
+            }
+        }
+
+        ColumnLayout {
             id: dockHolder
             width: Math.min(335, root.width-48)
             Layout.fillHeight: true
@@ -184,64 +257,30 @@ Item {
                 contactView.active || bookmarkView.active || historyView.active
             )
 
-            Loader {
-                id: timelineView
-                active: dockBar.selectedItem == "timeline"
-                anchors.fill: parent
-                sourceComponent: PeersTimeline {
-                    anchors.fill: parent
-                    state: topLevel.state
-                    onContactMethodSelected: {
-                        mainPage.setContactMethod(cm)
-                        if (topLevel.state == "mobile")
-                            newHolder.show = false
-                    }
-                }
+            // This is a placeholder for the searchbox
+            Item {
+                Layout.fillWidth: true
+                Layout.minimumHeight: 32
+                Layout.maximumHeight: 32
             }
+
             Loader {
-                id: dialView
-                active: dockBar.selectedItem == "call"
-                anchors.fill: parent
-                sourceComponent: DialView {
-                    anchors.fill: parent
-                    onSelectCall: {
-                        mainPage.showVideo(call)
-                    }
-                }
+                id: dockLoader
+
+                sourceComponent: timelineViewComponent
+                Layout.fillWidth: true
+                Layout.fillHeight: true
             }
-            Loader {
-                id: contactView
-                active: dockBar.selectedItem == "contact"
-                anchors.fill: parent
-                sourceComponent: ContactList {
-                    anchors.fill: parent
-                    onContactMethodSelected: {
-                        mainPage.setContactMethod(cm)
-                    }
-                }
-            }
-            Loader {
-                id: bookmarkView
-                active: dockBar.selectedItem == "bookmark"
-                anchors.fill: parent
-                sourceComponent: BookmarkList {
-                    anchors.fill: parent
-                    onContactMethodSelected: {
-                        mainPage.setContactMethod(cm)
-                    }
-                }
-            }
-            Loader {
-                id: historyView
-                active: dockBar.selectedItem == "history"
-                anchors.fill: parent
-                sourceComponent: ContactList {
-                    anchors.fill: parent
-                    onContactMethodSelected: {
-                        mainPage.setContactMethod(cm)
-                    }
-                }
-            }
+        }
+    }
+
+    SearchOverlay {
+        id: searchView
+        source: parent
+        anchors.fill: parent
+        onContactMethodSelected: {
+            console.log("DSFDSF",cm)
+            mainPage.setContactMethod(cm)
         }
     }
 

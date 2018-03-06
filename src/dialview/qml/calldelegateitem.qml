@@ -163,7 +163,7 @@ Rectangle {
                     border.color: activePalette.highlightedText
                     radius: 5
                     clip: true
-                    SearchDelegate {
+                    CompletionDelegate {
                         id: searchDelegate
                         textColor: parent.selected ?
                             activePalette.highlight : activePalette.highlightedText

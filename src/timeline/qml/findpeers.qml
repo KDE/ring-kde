@@ -18,6 +18,8 @@
 import QtQuick 2.7
 
 ListView {
+    clip: true
+
     FontMetrics {
         id: fontMetrics
     }
@@ -31,8 +33,20 @@ ListView {
         }
     }
 
-    highlight: Rectangle {
-        color: activePalette.highlight
+    highlight: Item {
+        anchors.topMargin: 5
+        anchors.bottomMargin: 5
+        anchors.leftMargin: 5
+        anchors.rightMargin: 5
+        Rectangle {
+            anchors.fill: parent
+            anchors.topMargin: 5
+            anchors.bottomMargin: 5
+            anchors.leftMargin: 10
+            anchors.rightMargin: 10
+            radius: 5
+            color: activePalette.highlight
+        }
     }
 
     model: CompletionModel

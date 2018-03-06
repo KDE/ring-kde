@@ -48,27 +48,8 @@ FocusScope {
         selectionModel: CompletionModel.selectionModel
     }
 
-    Kirigami.ScrollablePage {
-        id: page
+    CallList {
         anchors.fill: parent
-        title: "Calls"
-
-//         ColumnLayout {
-//             anchors.fill: parent
-//
-//             Rectangle {
-//                 Layout.fillWidth: true
-//                 height: 10
-//                 color: "blue"
-//             }
-
-            CallList {
-            anchors.fill: parent
-//                 Layout.fillWidth: true
-//                 Layout.fillHeight: true
-            }
-
-//         }
     }
 
     DialPad {

@@ -41,7 +41,6 @@ Row {
         checked: currentContactMethod && currentContactMethod.firstOutgoingCall
 
         onClicked: {
-            console.log("CLICL")
             if (currentContactMethod == null) return
 
             if (currentContactMethod.hasInitCall) {
