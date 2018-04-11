@@ -39,7 +39,7 @@ Item {
         PixmapWrapper {
             width: 50
             height: 50
-            visible: direction == 1
+            visible: direction == 0
             pixmap: decoration
             themeFallback: "im-user"
             anchors.bottom: parent.bottom
@@ -53,13 +53,13 @@ Item {
             Bubble {
                 id: bubble
                 anchors.margins: 5
-                anchors.right: direction == 0 ? parent.right : undefined
-                anchors.left : direction == 0 ? undefined : parent.left
+                anchors.right: direction == 1 ? parent.right : undefined
+                anchors.left : direction == 1 ? undefined : parent.left
                 font.pointSize: Kirigami.Theme.defaultFont.pointSize*1.2
                 font.family: "Noto Color Emoji"
                 z: 1
 
-                alignment: direction == 0 ? Text.AlignRight : Text.AlignLeft
+                alignment: direction == 1 ? Text.AlignRight : Text.AlignLeft
                 color: background
 
                 text: display != undefined ? display : "N/A"
@@ -73,7 +73,7 @@ Item {
                     anchors.rightMargin: 30
                     anchors.topMargin: 5
                     anchors.bottomMargin: 5
-                    horizontalAlignment: direction == 0 ? Text.AlignRight : Text.AlignLeft
+                    horizontalAlignment: direction == 1 ? Text.AlignRight : Text.AlignLeft
                     font: bubble.font
                     text: display != undefined ? display : "N/A"
                     color: foreground
@@ -83,11 +83,11 @@ Item {
                 Text {
                     id: dateLabel
                     anchors.bottom: parent.bottom
-                    anchors.left: direction == 0 ? parent.left : undefined
-                    anchors.right: direction == 1 ? parent.right : undefined
+                    anchors.left: direction == 1 ? parent.left : undefined
+                    anchors.right: direction == 0 ? parent.right : undefined
                     anchors.bottomMargin: 4
-                    anchors.leftMargin: direction == 0 ? 4 : undefined
-                    anchors.rightMargin: direction == 1 ? 4 : undefined
+                    anchors.leftMargin: direction == 1 ? 4 : undefined
+                    anchors.rightMargin: direction == 0 ? 4 : undefined
                     text: formattedDate != undefined ? formattedDate : "N/A"
                     color: "gray"
                 }
@@ -104,7 +104,7 @@ Item {
         PixmapWrapper {
             width: 50
             height: 50
-            visible: direction == 0
+            visible: direction == 1
             pixmap: decoration
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 20
