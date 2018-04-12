@@ -254,10 +254,6 @@ Kirigami.ApplicationWindow {
 
     }
 
-    onClosing: {
-        ActionCollection.quitAction.trigger()
-    }
-
     StateGroup {
         id: stateGroup
 
