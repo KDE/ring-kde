@@ -161,6 +161,9 @@ Kirigami.ApplicationWindow {
             },
             QmlAction {
                 action: ActionCollection.configureNotification
+            },
+            QmlAction {
+                action: ActionCollection.quitAction
             }
         ]
 
@@ -252,6 +255,11 @@ Kirigami.ApplicationWindow {
             }
         }
 
+    }
+
+    onClosing: {
+        close.accepted = false
+        hide()
     }
 
     StateGroup {

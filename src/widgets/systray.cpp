@@ -24,9 +24,14 @@
 #include <QtWidgets/QMenu>
 #include <QtGui/QIcon>
 #include <QtCore/QDebug>
+#include <QQuickWindow>
 
 //KDE
 #include <QtWidgets/QAction>
+
+// Ring
+#include "actioncollection.h"
+#include "ringapplication.h"
 
 ///Constructor
 SysTray::SysTray(const QIcon &icon, QWidget *parent)
@@ -43,6 +48,12 @@ SysTray::SysTray(const QIcon &icon, QWidget *parent)
  #ifndef Q_OS_MAC //FIXME segfault as of mid 2017
    setStatus(KStatusNotifierItem::ItemStatus::Active);
  #endif
+
+   addAction( ActionCollection::instance()->acceptAction  () );
+   addAction( ActionCollection::instance()->holdAction    () );
+   addAction( ActionCollection::instance()->transferAction() );
+   addAction( ActionCollection::instance()->recordAction  () );
+   setObjectName( QStringLiteral("m_pTrayIcon") );
 }
 
 ///Destructor
@@ -75,10 +86,7 @@ void SysTray::slotActivated(bool active, const QPoint& pos)
    Q_UNUSED(active)
    Q_UNUSED(pos)
 
-//FIXME DROP QTWIDGET
-//    PhoneWindow::app()->show          ();
-//    PhoneWindow::app()->activateWindow();
-//    PhoneWindow::app()->raise         ();
+   RingApplication::instance()->desktopWindow()->show();
 }
 
 // kate: space-indent on; indent-width 3; replace-tabs on;

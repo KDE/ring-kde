@@ -124,6 +124,9 @@
 #include "timeline/timelineplugin.h"
 #include "flickableview.h"
 
+//Widgets
+#include "widgets/systray.h"
+
 //Other
 #include <unistd.h>
 
@@ -379,6 +382,7 @@ int RingApplication::newInstance()
 //       }
 //       else
          desktopWindow();
+         new SysTray(QIcon(QStringLiteral(":appicon/icons/64-apps-ring-kde.png")));
    }
 
    // The first run wizard

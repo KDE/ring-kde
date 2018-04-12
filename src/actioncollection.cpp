@@ -167,6 +167,8 @@ Q_ASSERT(action_configureRing );
    action_quit          ->setObjectName( QStringLiteral("action_quit")          );
    action_configureRing ->setObjectName( QStringLiteral("action_configureRing") );
 
+   action_quit->setText(i18n("Quit"));
+
    INIT_ACTION(action_displayDialpad        , QIcon(RingIcons::DISPLAY_DIALPAD                   ), i18n("Display dialpad"         ));
    INIT_ACTION(action_displayVolumeControls , {}                                                  , i18n("Display volume controls" ));
    INIT_ACTION(action_displayAccountCbb     , {}                                                  , i18n("Display account selector"));
