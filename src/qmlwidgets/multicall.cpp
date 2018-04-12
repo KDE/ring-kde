@@ -17,7 +17,7 @@
  **************************************************************************/
 #include "multicall.h"
 
-#include <call.h>
+#include <libcard/event.h>
 
 #include <QtGui/QPainter>
 #include <QtGui/QIcon>
@@ -111,12 +111,17 @@ void MultiCall::paint(QPainter *painter)
 
     for (int i = 0; i < rc; i++) {
         const auto cidx = d_ptr->m_Index.model()->index(i, 0, d_ptr->m_Index);
-        if (const auto call = qvariant_cast<Call*>(cidx.data((int)Ring::Role::Object))) {
+
+        if (const auto event = qvariant_cast<QSharedPointer<Event>>(cidx.data((int)Ring::Role::Object))) {
             const int col = (i/perRow) * 32;
             const int row = (i%perRow) * 32;
+
+            const bool isMissed   = event->status   () == Event::Status::X_MISSED;
+            const bool isOutgoing = event->direction() == Event::Direction::OUTGOING;
+
             painter->drawPixmap(
                 QPoint{row, col},
-                *d_ptr->iconCache[call->isMissed()][call->direction() == Call::Direction::OUTGOING]
+                *d_ptr->iconCache[isMissed][isOutgoing]
             );
         }
     }

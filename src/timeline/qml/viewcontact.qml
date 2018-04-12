@@ -30,6 +30,7 @@ Item {
     property var contactHeader: null
     property bool mobile: false
     property var currentIndividual: null
+    property var unsortedListView: null
 
     function showVideo() {
         avView.active = true
@@ -247,14 +248,15 @@ Item {
                 id: historyPage
                 background: Rectangle { color: activePalette.base }
                 Loader {
-                    property QtObject currentContactMethod: null
+                    property QtObject individual: viewContact.currentIndividual
                     anchors.fill: parent
                     id: callHistory
                     asynchronous: true
                     active: false
                     sourceComponent: CallHistory {
                         anchors.fill: parent
-                        currentContactMethod: viewContact.currentContactMethod
+                        individual: viewContact.currentIndividual
+                        unsortedListView: viewContact.unsortedListView
                     }
                 }
             }

@@ -21,7 +21,8 @@ import QtQuick.Layouts 1.0
 import Ring 1.0
 
 Rectangle {
-    property var currentContactMethod: null
+    property var individual: null
+    property var unsortedListView: null
 
     SystemPalette {
         id: activePalette
@@ -33,15 +34,15 @@ Rectangle {
         colorGroup: SystemPalette.Disabled
     }
 
-    onCurrentContactMethodChanged: currentContactMethod ?
-        callsModels.model = currentContactMethod.callsModel : null
+//     onIndividualChanged: individual ?
+//         callsModels.model = individual.eventAggregate.unsortedListView : null
 
     function selectIcon(isMissed, direction) {
-        if (isMissed && direction == Call.INCOMING)
+        if (isMissed && direction == Event.INCOMING)
             return "sharedassets/phone_dark/missed_incoming.svg"
-        else if (isMissed && direction == Call.OUTGOING)
+        else if (isMissed && direction == Event.OUTGOING)
             return "sharedassets/phone_dark/missed_outgoing.svg"
-        else if (direction == Call.INCOMING)
+        else if (direction == Event.INCOMING)
             return "sharedassets/phone_dark/incoming.svg"
         else
             return "sharedassets/phone_dark/outgoing.svg"
@@ -60,13 +61,13 @@ Rectangle {
                 anchors.top: parent.top
                 anchors.left: parent.left
                 Image {
-                    source: selectIcon(missed, direction)
+                    source: selectIcon(status == Event.X_MISSED, direction)
                     Layout.fillHeight: true
                     width: 30
                 }
                 Column {
                     Text {
-                        text: formattedDate
+                        text: formattedLastUsed
                         color: activePalette.text
                     }
                     anchors.verticalCenter: parent.verticalCenter
@@ -97,6 +98,7 @@ Rectangle {
     ListView {
         id: callsModels
         anchors.fill: parent
+        model: unsortedListView
         delegate: historyDelegate
     }
 }

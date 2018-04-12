@@ -63,6 +63,7 @@
 #include <media/recording.h>
 #include <media/textrecording.h>
 #include <media/media.h>
+#include <libcard/historyimporter.h>
 
 //Ring
 #include "klib/kcfg_settings.h"
@@ -301,7 +302,19 @@ void RingApplication::initCollections()
       *           Load the collections          *
       ******************************************/
 
-   CategorizedHistoryModel::instance().addCollection<LocalHistoryCollection>(LoadOptions::FORCE_ENABLED);
+   // Load the old phone call history and port it to the newer calendar events format.
+   if (QFile::exists(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1Char('/') +"history.ini")) {
+      auto histo = CategorizedHistoryModel::instance().addCollection<LocalHistoryCollection>(LoadOptions::FORCE_ENABLED);
+      HistoryImporter::importHistory(histo, [](const QVector<Calendar*>&) {
+         Q_ASSERT(false);
+      });
+      histo->clear();
+   }
+
+   //HACK load the Calendar now to speedup everything else
+   const int accountCount = AccountModel::instance().size();
+   for (int i=0; i < accountCount; i++)
+      AccountModel::instance()[i]->calendar();
 
    ProfileModel::instance().addCollection<LocalProfileCollection>(LoadOptions::FORCE_ENABLED);
 
@@ -461,6 +474,7 @@ QQmlApplicationEngine* RingApplication::engine()
       QML_TYPE( UserActionModel         )
       QML_TYPE( IndividualTimelineModel )
       QML_TYPE( RingDeviceModel         )
+      QML_TYPE( Event                   )
 
       QML_TYPE( QAction)
 

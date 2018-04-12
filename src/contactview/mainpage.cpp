@@ -33,6 +33,7 @@
 #include "peerstimelinemodel.h"
 #include "phonedirectorymodel.h"
 #include <contactmethod.h>
+#include <libcard/eventaggregate.h>
 #include <individual.h>
 #include <person.h>
 #include <call.h>
@@ -146,19 +147,26 @@ void MainPage::setContactMethod(ContactMethod* cm)
 
     // Keep a strong reference because QML wont
     d_ptr->m_Invididual = cm->individual();
-    d_ptr->m_CallsModel = cm->callsModel();
+    d_ptr->m_CallsModel = cm->individual()->eventAggregate()->unsortedListView();
+    Q_ASSERT(d_ptr->m_CallsModel);
 
     d_ptr->m_TimelineModel = cm->individual()->timelineModel();
 
     d_ptr->m_pItem->setProperty( "currentContactMethod", QVariant::fromValue(cm));
     d_ptr->m_pItem->setProperty( "currentIndividual", QVariant::fromValue(d_ptr->m_Invididual));
     d_ptr->m_pItem->setProperty( "timelineModel", QVariant::fromValue(d_ptr->m_TimelineModel));
+    d_ptr->m_pItem->setProperty( "unsortedListView", QVariant::fromValue(d_ptr->m_CallsModel));
 }
 
 void MainPage::setPerson(Person* p)
 {
     d_ptr->m_pItem->setProperty( "currentPerson", QVariant::fromValue(p));
     d_ptr->m_pItem->setProperty( "currentIndividual", QVariant::fromValue(p->individual()));
+
+    d_ptr->m_CallsModel = p->individual()->eventAggregate()->unsortedListView();
+    Q_ASSERT(d_ptr->m_CallsModel);
+
+    d_ptr->m_pItem->setProperty( "unsortedListView", QVariant::fromValue(d_ptr->m_CallsModel));
 }
 
 void MainPage::setCurrentPage(MainPage::Pages page)
@@ -214,8 +222,10 @@ void MainPagePrivate::slotWindowChanged()
     Q_ASSERT(m_pItem);
     m_pItem->setParentItem(q_ptr);
 
+
     auto anchors = qvariant_cast<QObject*>(m_pItem->property("anchors"));
     anchors->setProperty("fill", QVariant::fromValue(q_ptr));
+    m_pItem->setProperty( "unsortedListView", QVariant::fromValue(nullptr));
 }
 
 void MainPage::showVideo(Call* c)
