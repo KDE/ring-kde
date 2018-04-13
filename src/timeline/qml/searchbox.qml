@@ -145,6 +145,8 @@ Item {
             if (!cm)
                 return
 
+            cm = PhoneDirectoryModel.fromTemporary(cm)
+
             contactMethodSelected(cm)
         }
         Keys.onEscapePressed: {

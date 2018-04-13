@@ -126,10 +126,7 @@ void MainPage::setContactMethod(ContactMethod* cm)
     if ((!cm) || (!d_ptr->m_pItem))
         return;
 
-    if (cm->type() == ContactMethod::Type::TEMPORARY)
-        cm = PhoneDirectoryModel::instance().fromTemporary(
-            static_cast<TemporaryContactMethod*>(cm)
-        );
+    cm = PhoneDirectoryModel::instance().fromTemporary(cm);
 
     // Keep a reference for 5 minutes to avoid double free from QML
     for (auto ptr : {d_ptr->m_Invididual, d_ptr->m_CallsModel, d_ptr->m_TimelineModel})

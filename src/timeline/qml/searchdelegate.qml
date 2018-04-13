@@ -174,7 +174,7 @@ Item {
         MouseArea {
             anchors.fill: parent
             onClicked: {
-                contactMethodSelected(contactMethod)
+                contactMethodSelected(PhoneDirectoryModel.fromTemporary(contactMethod))
                 hide()
             }
         }
