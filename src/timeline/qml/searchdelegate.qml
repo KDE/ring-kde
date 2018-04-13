@@ -125,7 +125,7 @@ Item {
                     anchors.rightMargin: 2
                     height: searchStatus.implicitHeight * 2
                     width: searchStatus.implicitHeight * 2
-                    anchors.top: uriSeparator.bottom
+                    //anchors.top: uriSeparator.bottom
                 }
 
                 Text {

@@ -18,6 +18,7 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
+import org.kde.kirigami 2.2 as Kirigami
 
 import Ring 1.0
 
@@ -26,7 +27,7 @@ Item {
     property real xPadding: 0
     property alias searchFocus: search.focus
     property alias labelWidth: findLabel.implicitWidth
-    height: search.focus ? 60 : 30
+    height: (search.focus ? textMetric.height*3 : textMetric.height*1.5) + 6
 
     signal contactMethodSelected(var cm)
 
@@ -35,13 +36,19 @@ Item {
         search.focus = false
     }
 
+    FontMetrics {
+        id: textMetric
+        font: search.font
+    }
+
     TextField {
         id: search
         width: parent.width - (focus ? 0 : parent.xPadding)
         x: focus ? 0 : parent.xPadding
-        y: focus ? 30 : 0
+        y: focus ? textMetric.height*1.5 + 3 : 3
 
-        font.pixelSize: height * 0.55
+
+        font.pointSize: Kirigami.Theme.defaultFont.pointSize*1.4
         text: CallModel.hasDialingCall ?
             CallModel.dialingCall().dialNumber : ""
 
@@ -58,9 +65,9 @@ Item {
         }
 
         background : Item {
-            height: 30
+            height: textMetric.height*1.5
             Rectangle {
-                height: 28 // 1px border
+                height: parent.height - 2 // 1px border
                 width: parent.width
                 color: "transparent"
                 border.width: 1

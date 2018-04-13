@@ -21,6 +21,7 @@ import QtQuick.Layouts 1.0
 import QtGraphicalEffects 1.0
 import Ring 1.0
 import RingQmlWidgets 1.0
+import org.kde.kirigami 2.0 as Kirigami
 
 import Ring 1.0
 
@@ -156,8 +157,8 @@ Item {
         id: filterList
         active: searchView.count > 0 && searchStateGroup.state == "searchActive"
         opacity: searchView.count > 0 ? 1 : 0
-        height: 40
-        y: 65
+        height: 30 + Kirigami.Units.fontMetrics.height*1.5
+        y: searchBox.y+searchBox.height+5
         width: parent.width
 
         Behavior on opacity {
@@ -215,7 +216,7 @@ Item {
         id: searchView
         visible: false
         anchors.fill: parent
-        anchors.topMargin: 120
+        anchors.topMargin: filterList.y + filterList.height
         z: 99999999
     }
 
