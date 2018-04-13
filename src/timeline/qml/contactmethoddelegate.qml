@@ -117,7 +117,7 @@ Item {
                 }
 
                 Text {
-                    text: name.length == 40 ? "Unknown" : name
+                    text: object.primaryName.length == 40 ? "Unknown" : object.primaryName
                     clip: true
                     font.bold : true
                     Layout.fillWidth: true
@@ -233,7 +233,6 @@ Item {
             acceptedButtons: Qt.LeftButton | Qt.RightButton
             z: 99
             onClicked: {
-
                 if (mouse.button == Qt.LeftButton) {
                     recentView.currentIndex = modelIndex.row
                     contactMethodSelected(object)

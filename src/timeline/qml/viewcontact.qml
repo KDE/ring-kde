@@ -45,7 +45,6 @@ Item {
     onCurrentContactMethodChanged: {
         contactHeader.currentContactMethod = currentContactMethod
         contactInfo.currentContactMethod   = currentContactMethod
-        callHistory.currentContactMethod   = currentContactMethod
 
         if (currentContactMethod && currentContactMethod.person)
             personConn.target = currentContactMethod.person
@@ -248,14 +247,12 @@ Item {
                 id: historyPage
                 background: Rectangle { color: activePalette.base }
                 Loader {
-                    property QtObject individual: viewContact.currentIndividual
                     anchors.fill: parent
                     id: callHistory
                     asynchronous: true
                     active: false
                     sourceComponent: CallHistory {
                         anchors.fill: parent
-                        individual: viewContact.currentIndividual
                         unsortedListView: viewContact.unsortedListView
                     }
                 }

@@ -21,7 +21,6 @@ import QtQuick.Layouts 1.0
 import Ring 1.0
 
 Rectangle {
-    property var individual: null
     property var unsortedListView: null
 
     SystemPalette {
@@ -33,9 +32,6 @@ Rectangle {
         id: inactivePalette
         colorGroup: SystemPalette.Disabled
     }
-
-//     onIndividualChanged: individual ?
-//         callsModels.model = individual.eventAggregate.unsortedListView : null
 
     function selectIcon(isMissed, direction) {
         if (isMissed && direction == Event.INCOMING)

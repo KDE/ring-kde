@@ -128,6 +128,8 @@ Item {
             }
 
             delegate: Kirigami.SwipeListItem {
+                height: readOnly.height
+                implicitHeight: readOnly.height
 
                 states: [
                     State {
@@ -187,8 +189,8 @@ Item {
                 // Wrap in an extra Item to bypass Kirigami limitations regarding
                 // the number of elements
                 Item {
-                    height: readOnly.implicitHeight
-                    implicitHeight: height
+                    height: readOnly.height
+                    implicitHeight: readOnly.height
 
                     Loader {
                         id: editorLoader
@@ -205,6 +207,8 @@ Item {
                         id: readOnly
                         anchors.leftMargin: 10
                         anchors.fill: parent
+                        height: columns.implicitHeight + 30 // 30 == 3*spacing
+                        implicitHeight: columns.implicitHeight + 30
                         spacing: 10
 
                         PixmapWrapper {
@@ -215,6 +219,7 @@ Item {
                         }
 
                         ColumnLayout {
+                            id: columns
                             Layout.fillWidth: true
                             Row {
                                 Layout.fillWidth: true

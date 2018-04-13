@@ -78,21 +78,6 @@ Rectangle {
         }
     }
 
-    // Give time to all the code to run before invalidating the temporary
-    // contact method. By then the code will have created a real one.
-    Timer {
-        id: clearTimer
-        running: false
-        repeat: false
-        interval: 0 // Run idle
-        onTriggered: {
-            search.text = ""
-        }
-    }
-    onContactMethodSelected: {
-        clearTimer.running = true
-    }
-
     ColumnLayout {
         anchors.fill: parent
 

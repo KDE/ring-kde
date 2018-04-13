@@ -60,6 +60,15 @@ HierarchyView {
         id: slideshow
     }
 
+    // Display something when the chat is empty
+    Text {
+        color: activePalette.text
+        text: i18n("There is nothing yet, enter a message below or place a call using the buttons\nfound in the header")
+        anchors.centerIn: parent
+        visible: chatView.empty
+        horizontalAlignment: Text.AlignHCenter
+    }
+
     Component {
         id: messageDelegate
         Loader {
