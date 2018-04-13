@@ -128,7 +128,7 @@ Item {
     }
 
     ListModel {
-        id: fruitModel
+        id: searchCategoryModel
 
         ListElement {
             name: "Web"
@@ -154,7 +154,7 @@ Item {
 
     Loader {
         id: filterList
-        active: searchView.count > 0
+        active: searchView.count > 0 && searchStateGroup.state == "searchActive"
         opacity: searchView.count > 0 ? 1 : 0
         height: 40
         y: 65
@@ -167,7 +167,7 @@ Item {
         sourceComponent: Row {
             anchors.fill: parent
             Repeater {
-                model: fruitModel
+                model: searchCategoryModel
                 Item {
                     width: parent.width / 4
                     height: sourceName.implicitHeight + 34
