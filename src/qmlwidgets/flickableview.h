@@ -76,6 +76,7 @@ public:
     Q_PROPERTY(QQmlComponent* highlight READ highlight WRITE setHighlight)
     Q_PROPERTY(QSharedPointer<QItemSelectionModel> selectionModel READ selectionModel WRITE setSelectionModel NOTIFY selectionModelChanged)
     Q_PROPERTY(bool sortingEnabled READ isSortingEnabled WRITE setSortingEnabled)
+    Q_PROPERTY(bool empty READ isEmpty NOTIFY countChanged)
 
     // QML support for selectionModels is rather bad since many Q_INVOKABLE are missing
     Q_PROPERTY(QModelIndex currentIndex READ currentIndex WRITE setCurrentIndex)
@@ -109,6 +110,8 @@ public:
     bool isSortingEnabled() const;
     void setSortingEnabled(bool val);
 
+    bool isEmpty() const;
+
 protected:
     virtual void refresh();
     void applyRoles(QQmlContext* ctx, const QModelIndex& self) const;
@@ -131,6 +134,7 @@ Q_SIGNALS:
     void currentIndexChanged(const QModelIndex& index);
     void modelChanged(QSharedPointer<QAbstractItemModel> model);
     void selectionModelChanged() const;
+    void countChanged();
 
 private:
 

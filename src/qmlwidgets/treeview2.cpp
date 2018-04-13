@@ -746,6 +746,9 @@ void TreeView2Private::slotRowsInserted(const QModelIndex& parent, int first, in
     _test_validateTree(m_pRoot);
 
     Q_EMIT q_ptr->contentChanged();
+
+    if (!parent.isValid())
+        Q_EMIT q_ptr->countChanged();
 }
 
 void TreeView2Private::slotRowsRemoved(const QModelIndex& parent, int first, int last)
@@ -775,6 +778,9 @@ void TreeView2Private::slotRowsRemoved(const QModelIndex& parent, int first, int
 
         elem->performAction(TreeTraversalItems::Action::DETACH);
     }
+
+    if (!parent.isValid())
+        Q_EMIT q_ptr->countChanged();
 }
 
 void TreeView2Private::slotLayoutChanged()
@@ -784,6 +790,8 @@ void TreeView2Private::slotLayoutChanged()
         slotRowsInserted({}, 0, rc - 1);
 
     Q_EMIT q_ptr->contentChanged();
+
+    Q_EMIT q_ptr->countChanged();
 }
 
 void TreeView2Private::createGap(VisualTreeItem* first, VisualTreeItem* last)

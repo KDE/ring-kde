@@ -96,6 +96,7 @@ void FlickableView::setModel(QSharedPointer<QAbstractItemModel> model)
             d_ptr, &FlickableViewPrivate::slotModelDestroyed);
 
     emit modelChanged(model);
+    emit countChanged();
 
     refresh();
     setCurrentY(contentHeight());
@@ -388,6 +389,11 @@ void FlickableViewPrivate::slotModelDestroyed()
 {
     if (m_pSelectionModel && m_pSelectionModel->model() == QObject::sender())
         q_ptr->setSelectionModel(nullptr);
+}
+
+bool FlickableView::isEmpty() const
+{
+    return d_ptr->m_pModel ? !d_ptr->m_pModel->rowCount() : true;
 }
 
 #include <flickableview.moc>

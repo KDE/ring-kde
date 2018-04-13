@@ -230,6 +230,9 @@ void HierarchyViewPrivate::slotRowsInserted(const QModelIndex& parent, int first
     }
 
     q_ptr->setCurrentY(q_ptr->contentHeight());
+
+    if (!parent.isValid())
+        Q_EMIT q_ptr->countChanged();
 }
 
 void HierarchyViewPrivate::slotRowsRemoved(const QModelIndex& parent, int first, int last)
@@ -239,6 +242,9 @@ void HierarchyViewPrivate::slotRowsRemoved(const QModelIndex& parent, int first,
         Q_UNUSED(n)
         //TODO
     });
+
+    if (!parent.isValid())
+        Q_EMIT q_ptr->countChanged();
 }
 
 // void HierarchyViewPrivate::slotRowsMoved(const QModelIndex& parent, int first, int last)
