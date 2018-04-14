@@ -131,7 +131,12 @@ Rectangle {
                     footer.state = "finish"
                     break;
                 case 'showProfile':
+                    var acc = frontPage.createRing.account
+                    if (acc && acc.alias == "")
+                        frontPage.createRing.account.alias = frontPage.createRing.account.profile.formattedName
+
                     frontPage.profilePage.save()
+
                     applicationWindow.visible = false
                     break;
             }
@@ -143,14 +148,20 @@ Rectangle {
         onRegistrationCompleted: {
             stateGroup.state = "showProfile"
             footer.state = "finish"
+            var acc = frontPage.createRing.account
+            acc.createProfile()
+
+            frontPage.profilePage.currentPerson = acc.profile
+            frontPage.profilePage.individual = acc.profile.individual
         }
         onAccountChanged: {
-            var acc = frontPage.importRing.account
+            var acc = frontPage.createRing.account
 
             if (!acc)
                 return
 
-            frontPage.profilePage.currentPerson = acc.profile.person
+            frontPage.profilePage.currentPerson = acc.profile
+            frontPage.profilePage.individual = acc.profile.individual
         }
     }
 
@@ -166,7 +177,7 @@ Rectangle {
             if (!acc)
                 return
 
-            frontPage.profilePage.currentPerson = acc.profile.person
+            frontPage.profilePage.currentPerson = acc.profile
         }
     }
 

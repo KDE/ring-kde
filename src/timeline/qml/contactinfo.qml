@@ -26,6 +26,7 @@ import ContactView 1.0
 
 Kirigami.ScrollablePage {
     id: contactViewPage
+    property string defaultName: ""
     property var currentContactMethod: null
     property var currentPerson: null
     property var individual: null

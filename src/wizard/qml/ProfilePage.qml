@@ -24,4 +24,5 @@ ContactInfo {
     showSave: false
     forcedState: "profile"
     labelColor: "white"
+    defaultName: ""
 }

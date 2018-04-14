@@ -26,6 +26,7 @@ Item {
 
     property bool nextAvailable: false
     property bool busy: false
+    property var lookupState: 2
 
     property var account: null
 
@@ -35,9 +36,10 @@ Item {
     height: createForm.implicitHeight
 
     function isNextAvailable() {
-        nextAvailable = (userName.text.length > 0 || !registerUserName.checked)
+        nextAvailable = (userName.text.length > 2 || !registerUserName.checked)
             && (password.text.length > 0)
             && (password.text == repeatPassword.text)
+            && (lookupState == 2 || !registerUserName.checked)
     }
 
     function createAccount() {
@@ -55,8 +57,8 @@ Item {
         state = "registrationResult"
         registrationTimeout.running = true
 
-        var name = userName.text == "" ?
-            WelcomeDialog.defaultUserName : userName.text
+        // The alias is not selected by the profile (if necessary)
+        var name = userName.text
 
         // Make sure they are unique
         name = name + AccountModel.getSimilarAliasIndex(name)
@@ -109,16 +111,19 @@ Item {
             clip: true
             x: 8
             y: 74
-            text: WelcomeDialog.defaultUserName
             height: 40
             Layout.fillWidth: true
 
             onTextChanged: {
-                isNextAvailable()
-                busyIndicator.visible = true
-
-                if (userName.text != "")
+                if (userName.text != "") {
+                    registerFoundLabel.text = i18n("Please enter an username")
+                    registerFoundLabel.color = "white"
+                    createRing.lookupState = 2
                     NameDirectory.lookupName(undefined, "", userName.text)
+                }
+
+                busyIndicator.visible = userName.text != ""
+                isNextAvailable()
             }
         }
 
@@ -309,18 +314,6 @@ Item {
             }
 
             PropertyChanges {
-                target: userName
-                Layout.maximumHeight: 0
-                opacity: 0
-            }
-
-            PropertyChanges {
-                target: rowLayout
-                Layout.maximumHeight: 0
-                opacity: 0
-            }
-
-            PropertyChanges {
                 target: label
                 padding: 0
             }
@@ -356,6 +349,8 @@ Item {
             if (userName.text != name)
                 return;
 
+            createRing.lookupState = status
+
             busyIndicator.visible = false
             if (status == 2) { //NameDirectory.NOT_FOUND
                 registerFoundLabel.text = i18n("The username is available")
@@ -375,6 +370,7 @@ Item {
                 registerFoundLabel.color = "red"
                 nextAvailable = false
             }
+            isNextAvailable()
         }
     }
 
