@@ -225,6 +225,7 @@ Kirigami.ScrollablePage {
                         anchors.fill: parent
                         editing: contactViewPage.editing
                         model: contactViewPage.individual
+                        buttonColor: contactViewPage.labelColor
                         onPersonCreated: {
 //                             if (!currentPerson) {
 //                                 console.log("Setting the person from a phone number")
@@ -266,17 +267,17 @@ Kirigami.ScrollablePage {
 
                         Label {
                             id: lastContactedTime
-                            color: activePalette.text
+                            color: contactViewPage.labelColor ? contactViewPage.labelColor : activePalette.text
                         }
 
                         Label {
                             id: totalCall
-                            color: activePalette.text
+                            color: contactViewPage.labelColor ? contactViewPage.labelColor : activePalette.text
                         }
 
                         Label {
                             id: totalText
-                            color: activePalette.text
+                            color: contactViewPage.labelColor ? contactViewPage.labelColor : activePalette.text
                         }
 
                         Rectangle {
@@ -351,6 +352,7 @@ Kirigami.ScrollablePage {
                 anchors.centerIn: parent
                 height: 90
                 width: 90
+                defaultColor: contactViewPage.labelColor
 
                 contactMethod: currentContactMethod
                 person: currentPerson
@@ -382,6 +384,7 @@ Kirigami.ScrollablePage {
         Kirigami.Heading {
             id: statisticHeader
             text: i18n("Statistics")
+            color: contactViewPage.labelColor
             level: 2
         }
 
@@ -413,6 +416,7 @@ Kirigami.ScrollablePage {
 
         Kirigami.Heading {
             text: i18n("Contact details")
+            color: contactViewPage.labelColor
             level: 2
         }
 
@@ -424,6 +428,7 @@ Kirigami.ScrollablePage {
 
         Kirigami.Heading {
             text: i18n("Phone numbers")
+            color: contactViewPage.labelColor
             level: 2
         }
 
@@ -435,6 +440,7 @@ Kirigami.ScrollablePage {
 
         Kirigami.Heading {
             text: i18n("Addresses")
+            color: contactViewPage.labelColor
             level: 2
         }
 

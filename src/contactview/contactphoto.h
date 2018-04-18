@@ -41,6 +41,7 @@ public:
     Q_PROPERTY(bool drawEmptyOutline READ drawEmptyOutline WRITE setDrawEmptyOutline)
     Q_PROPERTY(bool tracked READ isTracked WRITE setTracked NOTIFY changed)
     Q_PROPERTY(bool isPresent READ isPresent NOTIFY changed)
+    Q_PROPERTY(QVariant defaultColor READ defaultColor WRITE setDefaultColor)
 
     explicit ContactPhoto(QQuickItem* parent = nullptr);
     virtual ~ContactPhoto();
@@ -64,6 +65,9 @@ public:
     bool isTracked() const;
     bool isPresent() const;
     void setTracked(bool t);
+
+    QVariant defaultColor() const;
+    void setDefaultColor(const QVariant& color);
 
 Q_SIGNALS:
     void hasPhotoChanged();

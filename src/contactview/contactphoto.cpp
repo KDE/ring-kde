@@ -37,6 +37,8 @@ public:
     Person* m_pCurrentPerson {nullptr};
     bool m_DisplayEmpty {true};
     bool m_DrawEmptyOutline {true};
+    QVariant m_DefaultColor {};
+
     enum class TrackingStatus {
         AUTO     = 0,
         DISABLED = 1,
@@ -96,7 +98,14 @@ void ContactPhoto::paint(QPainter *painter)
     painter->setRenderHint(QPainter::Antialiasing);
 
     auto pen = painter->pen();
-    pen.setColor(QGuiApplication::palette().text().color());
+
+    auto color = d_ptr->m_DefaultColor.value<QColor>();
+
+    if (color.isValid()) //TODO C++17
+        pen.setColor(color);
+    else
+        pen.setColor(QGuiApplication::palette().text().color());
+
     pen.setWidthF(1.5);
 
     painter->setPen(pen);
@@ -331,6 +340,16 @@ bool ContactPhoto::isPresent() const
     }
 
     return false;
+}
+
+QVariant ContactPhoto::defaultColor() const
+{
+    return d_ptr->m_DefaultColor;
+}
+
+void ContactPhoto::setDefaultColor(const QVariant& color)
+{
+    d_ptr->m_DefaultColor = color;
 }
 
 #include <contactphoto.moc>

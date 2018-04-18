@@ -24,6 +24,7 @@ import org.kde.kirigami 2.2 as Kirigami
 
 Item {
     id: phoneNumbers
+    property color buttonColor: undefined
     property alias model : numbers.model
     property QtObject person: null
     property alias contentHeight: numbers.contentHeight
@@ -113,6 +114,7 @@ Item {
                 expandedHeight: fontMetrics.height * 3.5
                 sideMargin: 2
                 width: parent.width
+                color: phoneNumbers.buttonColor
                 label: i18n("Add a phone number or GNU Ring identity")
                 topPadding: 2
                 visible: phoneNumbers.editing
