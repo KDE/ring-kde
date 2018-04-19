@@ -85,28 +85,14 @@ Rectangle {
             Layout.fillWidth: true
             Layout.fillHeight: true
 
-            Item {
-                id: newUserHelper
-                width: parent.width - 20
-                height: 200
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.topMargin: 10
-
-                Rectangle {
-                    anchors.fill: parent
-                    color: activePalette.text
-                    opacity: 0.1
-                    radius: 10
-                }
-
-                Text {
-                    anchors.fill: parent
-                    anchors.margins: 10
-                    font.bold: true
-                    wrapMode: Text.WordWrap
-                    color: activePalette.base
-                    text: i18n("To begin using Ring-KDE, enter an username in the box above and press enter or add new contacts")
-                }
+            Text {
+                visible: recentView.empty
+                anchors.centerIn: parent
+                width: parent.width
+                anchors.margins: 10
+                wrapMode: Text.WordWrap
+                color: activePalette.text
+                text: i18n("To begin using Ring-KDE, enter an username in the box above and press enter")
             }
 
             QuickListView {
@@ -137,9 +123,6 @@ Rectangle {
                 model: PeersTimelineModel.deduplicatedTimelineModel
 
                 onCountChanged: {
-                    if (count > 0)
-                        newUserHelper.visible = false
-
                     scrollBar.visible = count*50 > recentDock.height
                     scrollBar.handleHeight = recentDock.height * (recentDock.height/(count*50))
                 }
