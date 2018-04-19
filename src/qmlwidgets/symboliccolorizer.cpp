@@ -21,6 +21,7 @@
 #include <QtCore/QDir>
 #include <QtCore/QFile>
 #include <QtGui/QPalette>
+#include <QtGui/QIcon>
 #include <QtGui/QPainter>
 #include <QtGui/QGuiApplication>
 #include <QtSvg/QSvgRenderer>
@@ -35,6 +36,9 @@ class SymbolicColorizerPrivate final : public QObject
     Q_OBJECT
 public:
     QHash<QString,QSvgRenderer*> m_hRenderers;
+
+    QPixmap paintSvg(const QString &id, QSize *size, const QSize &requestedSize, const QColor& col);
+    QPixmap paintTheme(const QString &id, QSize *size, const QSize &requestedSize, const QColor& col);
 };
 
 SymbolicColorizer::SymbolicColorizer()
@@ -46,22 +50,13 @@ SymbolicColorizer::~SymbolicColorizer()
     delete d_ptr;
 }
 
-QPixmap SymbolicColorizer::requestPixmap(const QString &id, QSize *size, const QSize &requestedSize)
+// Paint a rqc or local SVG file.
+QPixmap SymbolicColorizerPrivate::paintSvg(const QString &id, QSize *size, const QSize &requestedSize, const QColor& color)
 {
-    QString realId = id;
-
-    QColor color = QGuiApplication::palette().text().color();
-
-    if (realId.size() && realId.left(7) == QLatin1String("?color=")) {
-        const auto s = realId.split(';');
-        realId = s[1];
-        color = QColor(s[0].mid(7, s[0].size()-7));
-    }
-
-    auto r = d_ptr->m_hRenderers.value(realId);
+    auto r = m_hRenderers.value(id);
 
     if (!r)
-        d_ptr->m_hRenderers[realId] = r = new QSvgRenderer(realId);
+        m_hRenderers[id] = r = new QSvgRenderer(id);
 
     // Always honor the original aspect ratio
     const qreal aspectRatio = r->defaultSize().width()/r->defaultSize().height();
@@ -103,6 +98,45 @@ QPixmap SymbolicColorizer::requestPixmap(const QString &id, QSize *size, const Q
     painter.fillRect(rect, color);
 
     return px;
+}
+
+QPixmap SymbolicColorizerPrivate::paintTheme(const QString &id, QSize *size, const QSize &requestedSize, const QColor& col)
+{
+    const auto realId = id.right(id.size()-13);
+
+    const auto icn = QIcon::fromTheme(realId);
+
+    auto px = icn.pixmap(requestedSize.width(), requestedSize.height());
+    size->setWidth (px.width ());
+    size->setHeight(px.height());
+
+    QPainter painter(&px);
+    painter.setCompositionMode(QPainter::CompositionMode_SourceIn);
+    painter.fillRect(0, 0, size->width(), size->height(), col);
+
+    return px;
+}
+
+QPixmap SymbolicColorizer::requestPixmap(const QString &id, QSize *size, const QSize &requestedSize)
+{
+    QString realId = id;
+
+    QColor color = QGuiApplication::palette().text().color();
+
+    if (realId.size() && realId.left(7) == QLatin1String("?color=")) {
+        const auto s = realId.split(';');
+        realId = s[1];
+        color = QColor(s[0].mid(7, s[0].size()-7));
+    }
+
+    if (realId.left(8) != QLatin1String("image://"))
+        return d_ptr->paintSvg(realId, size, requestedSize, color);
+    else if (realId.mid(8, 4) == QLatin1String("icon"))
+        return d_ptr->paintTheme(realId, size, requestedSize, color);
+    else
+        Q_ASSERT(false);
+
+    return {};
 }
 
 #include <symboliccolorizer.moc>

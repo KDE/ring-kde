@@ -107,7 +107,7 @@ Item {
                         anchors.verticalCenter: parent.verticalCenter
                         sourceSize.height: parent.height - 6
                         sourceSize.width: parent.height - 6
-                        source: "image://icon/file-search-symbolic"
+                        source: "image://SymbolicColorizer/image://icon/file-search-symbolic"
                     }
                     Text {
                         id: findLabel
