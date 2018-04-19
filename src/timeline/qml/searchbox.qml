@@ -142,6 +142,12 @@ Item {
 
             var cm = recentView.currentItem.contactMethod
 
+            // Display an error message when the selected element doesn't exist
+            if (!recentView.currentItem.isSelectable) {
+                displayNotFoundMessage()
+                return
+            }
+
             if (!cm)
                 return
 

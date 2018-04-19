@@ -32,6 +32,7 @@ Item {
     property alias currentIndex: searchView.currentIndex
 
     signal contactMethodSelected(var cm)
+    signal displayNotFoundMessage()
 
     function hide() {
         searchBox.hide()
@@ -218,6 +219,52 @@ Item {
         anchors.fill: parent
         anchors.topMargin: filterList.y + filterList.height
         z: 99999999
+    }
+
+    Rectangle {
+        id: notFoundMessage
+        z: 999999999
+        visible: false
+        anchors.bottom: parent.bottom
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottomMargin: 20
+        radius: 5
+        width: parent.width * 0.80
+        height: errorLabel.implicitHeight + 20
+        color: inactivePalette.text
+        opacity: 0
+
+        Behavior on opacity {
+            NumberAnimation {duration: 150; easing.type: Easing.OutQuad}
+        }
+
+        Timer {
+            id: errorMessageTimer
+            running: false
+            interval: 3000
+            repeat: false
+
+            onTriggered: {
+                notFoundMessage.visible = false
+                notFoundMessage.opacity = 0
+            }
+        }
+
+        Text {
+            id: errorLabel
+            width: parent.width
+            y: 10
+            wrapMode: Text.WordWrap
+            horizontalAlignment: Text.AlignHCenter
+            color: inactivePalette.base
+            text: i18n("Cannot select this person because it was not found")
+        }
+    }
+
+    onDisplayNotFoundMessage: {
+        errorMessageTimer.running = true
+        notFoundMessage.visible = true
+        notFoundMessage.opacity = 1
     }
 
     // Search
