@@ -261,13 +261,8 @@ ListView {
         label: i18n("Add an account")
         topPadding: 2
         onClicked: {
-            if (phoneNumbers.model) {
-                contactBuilder.addEmptyPhoneNumber(phoneNumbers.person)
-                numbers.currentIndex = numbers.count - 1
-                numbers.currentItem.state = "edit"
-            }
-            else
-                console.log("No contact, not implemented")
+            applicationWindow().globalDrawer.drawerOpen = false
+            ActionCollection.showWizard.trigger()
         }
     }
 }

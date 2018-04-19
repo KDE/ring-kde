@@ -28,7 +28,7 @@ import PhotoSelectorPlugin 1.0
 Item {
     id: button
 
-    property color color: undefined
+    property color color: activePalette.text
     property string label: ""
     property real expandedHeight: height
     property real radius: Math.min(48, button.height) / 2
@@ -64,13 +64,13 @@ Item {
         radius: button.radius
         color: "transparent"
         border.width: 1
-        border.color: button.color ? button.color : activePalette.text
+        border.color: button.color
         opacity: 0
 
         Rectangle {
             id: background
             anchors.fill: parent
-            color: button.color ? button.color : activePalette.text
+            color: button.color
             opacity: 0
 
             Behavior on opacity {
@@ -105,14 +105,14 @@ Item {
                 width: 1
                 height: button.radius
                 anchors.centerIn: parent
-                color: button.color ? button.color : activePalette.text
+                color: button.color
             }
             Rectangle {
                 visible: icn.source == ""
                 height: 1
                 width: button.radius
                 anchors.centerIn: parent
-                color: button.color ? button.color : activePalette.text
+                color: button.color
             }
             Image {
                 id: icn
@@ -127,7 +127,7 @@ Item {
         Text {
             id: label
             opacity: 0
-            color: button.color ? button.color : activePalette.text
+            color: button.color
             text: button.label
             font.pointSize: Kirigami.Theme.defaultFont.pointSize*1.6
             Behavior on opacity {
