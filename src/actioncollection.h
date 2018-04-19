@@ -60,6 +60,7 @@ public:
    Q_PROPERTY(QAction* showDialDockAction          READ showDialDockAction          CONSTANT)
    Q_PROPERTY(QAction* showBookmarkDockAction      READ showBookmarkDockAction      CONSTANT)
    Q_PROPERTY(QAction* quitAction                  READ quitAction                  CONSTANT)
+   Q_PROPERTY(QAction* closeAction                 READ closeAction                 CONSTANT)
    Q_PROPERTY(QAction* addPerson                   READ addPerson                   CONSTANT)
    Q_PROPERTY(QAction* focusHistory                READ focusHistory                CONSTANT)
    Q_PROPERTY(QAction* focusContact                READ focusContact                CONSTANT)
@@ -103,6 +104,7 @@ public:
    QAction* showTimelineDockAction      ();
    QAction* showDialDockAction          ();
    QAction* quitAction                  ();
+   QAction* closeAction                 ();
    QAction* addPerson                   ();
    QAction* focusHistory                ();
    QAction* focusContact                ();
@@ -167,9 +169,8 @@ private:
 
    //Other actions
    QAction * action_new_contact            {nullptr};
-   QAction * action_close_phone            {nullptr};
-   QAction * action_close_timeline         {nullptr};
    QAction * action_quit                   {nullptr};
+   QAction * action_close                  {nullptr};
    QAction * action_displayVolumeControls  {nullptr};
    QAction * action_displayDialpad         {nullptr};
    QAction * action_displayAccountCbb      {nullptr};
@@ -209,6 +210,7 @@ private Q_SLOTS:
    void updateRecordButton    ();
    void updateVolumeButton    ();
    void slotNewContact        ();
+   void slotClose             ();
    void slotShowMenubar       (bool s);
 
 Q_SIGNALS:

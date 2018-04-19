@@ -24,6 +24,7 @@
 #include <QtCore/QTimer>
 #include <QtGui/QKeySequence>
 #include <QtWidgets/QAction>
+#include <QQuickWindow>
 
 //KDE
 #include <KLocalizedString>
@@ -82,6 +83,8 @@ static QString getName(const UserActionModel::Action a)
 ActionCollection::ActionCollection(QObject* parent) : QObject(parent)
 {
    // It is important to init the actions correctly for the menu and KDE global shortcuts
+   INIT_ACTION(action_close         , QIcon::fromTheme("window-close"), i18n( "Close"   ));
+
    INIT_ACTION(action_accept        , QIcon(QStringLiteral(":/sharedassets/phone_light/accept.svg"   )), i18n( "Accept"   ));
    INIT_ACTION(action_hold          , QIcon(QStringLiteral(":/sharedassets/phone_light/hold.svg"     )), i18n( "Hold"     ));
    INIT_ACTION(action_transfer      , QIcon(QStringLiteral(":/sharedassets/phone_light/transfert.svg")), i18n( "Transfer" ));
@@ -155,16 +158,13 @@ void ActionCollection::setupAction()
    auto col = mw->actionCollection();
 
    // Import standard actions
-   action_close_phone   = new QAction();//KStandardAction::close      ( RingApplication::instance()->phoneWindow(), SLOT(close())        , RingApplication::instance()->mainWindow());
-   action_close_timeline= new QAction();//KStandardAction::close      ( RingApplication::instance()->timelineWindow(), SLOT(close())        , RingApplication::instance()->mainWindow());
    action_quit          = KStandardAction::quit       ( RingApplication::instance(), SLOT(quit())   , this);
    action_configureRing = KStandardAction::preferences( this             , SLOT(slotConfigureRing()), this);
 Q_ASSERT(action_configureRing );
    action_configureRing->setText(i18n("Configure Ring-KDE"));
 
-   action_close_phone   ->setObjectName( QStringLiteral("action_close_phone")         );
-   action_close_timeline->setObjectName( QStringLiteral("action_close_timeline")         );
    action_quit          ->setObjectName( QStringLiteral("action_quit")          );
+   action_close         ->setObjectName( QStringLiteral("action_close")          );
    action_configureRing ->setObjectName( QStringLiteral("action_configureRing") );
 
    action_quit->setText(i18n("Quit"));
@@ -292,6 +292,7 @@ Q_ASSERT(action_configureRing );
    connect(action_mute_playback          , &QAction::toggled   , as                 , &Audio::Settings::mutePlayback            );
    connect(action_show_wizard            , &QAction::triggered , RingApplication::instance(), &RingApplication::showWizard      );
    connect(action_show_menu              , &QAction::toggled   , this               , &ActionCollection::slotShowMenubar        );
+   connect(action_close                  , &QAction::triggered , this               , &ActionCollection::slotClose              );
    connect(action_new_contact            , &QAction::triggered , this               , &ActionCollection::slotNewContact         );
    connect(action_configureShortcut      , &QAction::triggered , this               , &ActionCollection::showShortCutEditor     );
    connect(action_show_directory         , &QAction::triggered , this               , &ActionCollection::showDirectory          );
@@ -309,8 +310,8 @@ Q_ASSERT(action_configureRing );
    for (QAction* a : {
       action_accept            , action_new_call          , action_hold              ,
       action_transfer          , action_record            , action_new_contact       ,
-      action_close_phone       , action_quit              , action_displayDialpad    ,
-      action_displayAccountCbb , action_close_timeline    , action_configureRing     ,
+      action_quit              , action_displayDialpad    , action_showDialDock      ,
+      action_displayAccountCbb , action_close             , action_configureRing     ,
       action_configureShortcut , action_pastenumber       , action_showContactDock   ,
       action_showHistoryDock   , action_showBookmarkDock  , action_editToolBar       ,
       action_addPerson         , action_mute_capture      , action_mute_playback     ,
@@ -321,7 +322,7 @@ Q_ASSERT(action_configureRing );
       action_edit_contact      , action_focus_history     , action_remove_history    ,
       action_raise_client      , action_focus_contact     , action_focus_call        ,
       action_focus_bookmark    , action_show_wizard       , action_show_directory    ,
-      action_show_menu         , action_showTimelineDock  , action_showDialDock      ,
+      action_show_menu         , action_showTimelineDock  ,
       action_configureNotifications, action_displayVolumeControls ,
    }) {
       col->addAction(a->objectName(), a);
@@ -480,6 +481,11 @@ void ActionCollection::slotNewContact()
    col->editor<Person>()->addExisting(p);
 }
 
+void ActionCollection::slotClose()
+{
+   RingApplication::instance()->desktopWindow()->hide();
+}
+
 void ActionCollection::slotShowMenubar(bool s)
 {
 //    RingApplication::instance()->timelineWindow()->showMenu(s);
@@ -524,6 +530,7 @@ GETTER(showBookmarkDockAction       , action_showBookmarkDock      )
 GETTER(showTimelineDockAction       , action_showTimelineDock      )
 GETTER(showDialDockAction           , action_showDialDock          )
 GETTER(quitAction                   , action_quit                  )
+GETTER(closeAction                  , action_close                 )
 GETTER(addPerson                    , action_addPerson             )
 GETTER(focusHistory                 , action_focus_history         )
 GETTER(focusContact                 , action_focus_contact         )

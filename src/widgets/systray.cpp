@@ -53,6 +53,10 @@ SysTray::SysTray(const QIcon &icon, QWidget *parent)
    addAction( ActionCollection::instance()->holdAction    () );
    addAction( ActionCollection::instance()->transferAction() );
    addAction( ActionCollection::instance()->recordAction  () );
+   addSeparator();
+
+   addAction( ActionCollection::instance()->closeAction() );
+
    setObjectName( QStringLiteral("m_pTrayIcon") );
 }
 
