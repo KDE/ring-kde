@@ -30,6 +30,9 @@
         <file alias="Slideshow.qml">qml/slideshow.qml</file>
         <file alias="Thumbnail.qml">qml/thumbnail.qml</file>
         <file alias="HistoryCallIcon.qml">qml/historycallicon.qml</file>
+        <file alias="AccountError.qml">qml/accounterror.qml</file>
+        <file alias="AccountDisabled.qml">qml/accountdisabled.qml</file>
+        <file alias="NoAccount.qml">qml/noaccount.qml</file>
         <file alias="FirstRun.qml">qml/firstrun.qml</file>
         <file alias="SearchBox.qml">qml/searchbox.qml</file>
         <file alias="SearchOverlay.qml">qml/searchoverlay.qml</file>

@@ -78,125 +78,170 @@ Rectangle {
         }
     }
 
-    ColumnLayout {
+    Component {
+        id: noRegisteredAccounts
+        AccountError {
+            Component.onCompleted: {
+                implicitHeight = height + 20
+                accountError.height = height + 20
+            }
+        }
+    }
+
+    Component {
+        id: noEnabledAccounts
+        AccountDisabled {
+            Component.onCompleted: {
+                implicitHeight = height
+                accountError.height = height
+            }
+        }
+    }
+
+    Component {
+        id: noAccounts
+        NoAccount {
+            Component.onCompleted: {
+                implicitHeight = height
+                accountError.height = height
+            }
+        }
+    }
+
+    Item {
         anchors.fill: parent
 
-        Item {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
+        Text {
+            visible: recentView.empty
+            anchors.centerIn: parent
+            width: parent.width
+            anchors.margins: 10
+            wrapMode: Text.WordWrap
+            color: activePalette.text
+            text: i18n("To begin using Ring-KDE, enter an username in the box above and press enter")
+        }
 
-            Text {
-                visible: recentView.empty
-                anchors.centerIn: parent
-                width: parent.width
-                anchors.margins: 10
-                wrapMode: Text.WordWrap
-                color: activePalette.text
-                text: i18n("To begin using Ring-KDE, enter an username in the box above and press enter")
-            }
+        Loader {
+            id: accountError
+            active: (
+                (!AccountModel.hasAvailableAccounts) ||
+                (!AccountModel.hasEnabledAccounts  ) ||
+                (AccountModel.size == 0)
+            )
 
-            QuickListView {
-                id: recentView
-                clip: true
-                anchors.fill: parent
+            width: parent.width -20 - scrollBar.width
+            x: 10
+            y: 10
+            height: item ? item.implicitHeight : 0
+
+            sourceComponent: (AccountModel.size == 0) ? noAccounts : (
+                (!AccountModel.hasEnabledAccounts) ? noEnabledAccounts :
+                noRegisteredAccounts
+            )
+        }
+
+        QuickListView {
+            id: recentView
+            clip: true
+            anchors.fill: parent
+            anchors.topMargin: AccountModel.hasAvailableAccounts ? 0 : accountError.height + 20
 //                 highlightMoveVelocity: Infinity //HACK
-                delegate: contactDelegate
-                section.delegate: sectionDelegate
-                section.property: "formattedLastUsed" // indexedLastUsed
-                section.model: PeersTimelineModel.timelineSummaryModel
-                highlight: Item {
+            delegate: contactDelegate
+            section.delegate: sectionDelegate
+            section.property: "formattedLastUsed" // indexedLastUsed
+            section.model: PeersTimelineModel.timelineSummaryModel
+            highlight: Item {
 
+                anchors.topMargin: 5
+                anchors.bottomMargin: 5
+                anchors.leftMargin: 30
+                anchors.rightMargin: 40
+                Rectangle {
+                    anchors.fill: parent
                     anchors.topMargin: 5
                     anchors.bottomMargin: 5
                     anchors.leftMargin: 30
                     anchors.rightMargin: 40
-                    Rectangle {
-                        anchors.fill: parent
-                        anchors.topMargin: 5
-                        anchors.bottomMargin: 5
-                        anchors.leftMargin: 30
-                        anchors.rightMargin: 40
-                        radius: 10
-                        color: activePalette.highlight
-                    }
-                }
-                model: PeersTimelineModel.deduplicatedTimelineModel
-
-                onCountChanged: {
-                    scrollBar.visible = count*50 > recentDock.height
-                    scrollBar.handleHeight = recentDock.height * (recentDock.height/(count*50))
-                }
-
-                onHeightChanged: {
-                    scrollBar.handleHeight = recentDock.height * (recentDock.height/(count*50))
+                    radius: 10
+                    color: activePalette.highlight
                 }
             }
+            model: PeersTimelineModel.deduplicatedTimelineModel
 
-            TimelineScrollbar {
-                id: scrollBar
-                height: parent.height
-                anchors.top: parent.top
-                anchors.right: parent.right
-                width: 10
-                model: PeersTimelineModel.timelineSummaryModel
-                z: 100
-                display: recentView.moving || recentDock.state == ""
-
-                onWidthChanged: {
-                    burryOverlay.width = scrollBar.fullWidth + 15
-                }
-                visible: PeersTimelineModel.deduplicatedTimelineModel.count*50 > recentDock.height
-
-                onPositionChanged: {
-                    recentView.contentY = (recentView.contentHeight-recentView.height)*scrollBar.position
-                }
+            onCountChanged: {
+                scrollBar.visible = count*50 > recentDock.height
+                scrollBar.handleHeight = recentDock.height * (recentDock.height/(count*50))
             }
 
-            // Add a blurry background
-            ShaderEffectSource {
-                id: effectSource
-                visible: false
-
-                sourceItem: recentView
-                anchors.right: recentView.right
-                anchors.top: recentView.top
-                width: scrollBar.fullWidth + 15
-                height: recentView.height
-
-                sourceRect: Qt.rect(
-                    parent.width - scrollBar.fullWidth - 15,
-                    0,
-                    scrollBar.fullWidth + 15,
-                    recentView.height
-                )
+            onHeightChanged: {
+                scrollBar.handleHeight = recentDock.height * (recentDock.height/(count*50))
             }
+        }
 
-            Item {
-                id: burryOverlay
-                visible: false
-                opacity: 0
-                anchors.right: recentView.right
-                anchors.top: recentView.top
-                width: scrollBar.fullWidth + 15
-                height: recentView.height
-                clip: true
+        TimelineScrollbar {
+            id: scrollBar
+            height: parent.height
+            anchors.top: parent.top
+            anchors.right: parent.right
+            width: 10
+            model: PeersTimelineModel.timelineSummaryModel
+            z: 100
+            display: recentView.moving || recentDock.state == ""
 
-                Repeater {
+            onWidthChanged: {
+                burryOverlay.width = scrollBar.fullWidth + 15
+            }
+            visible: PeersTimelineModel.deduplicatedTimelineModel.count*50 > recentDock.height
+
+            onPositionChanged: {
+                recentView.contentY = (recentView.contentHeight-recentView.height)*scrollBar.position
+            }
+        }
+
+        // Add a blurry background
+        ShaderEffectSource {
+            id: effectSource
+            visible: false
+
+            sourceItem: recentView
+            anchors.right: recentView.right
+            anchors.top: recentView.top
+            width: scrollBar.fullWidth + 15
+            height: recentView.height
+
+            sourceRect: Qt.rect(
+                parent.width - scrollBar.fullWidth - 15,
+                0,
+                scrollBar.fullWidth + 15,
+                recentView.height
+            )
+        }
+
+        Item {
+            id: burryOverlay
+            visible: false
+            opacity: 0
+            anchors.right: recentView.right
+            anchors.top: recentView.top
+            width: scrollBar.fullWidth + 15
+            height: recentView.height
+            clip: true
+
+            Repeater {
+                anchors.fill: parent
+                model: 5
+                FastBlur {
                     anchors.fill: parent
-                    model: 5
-                    FastBlur {
-                        anchors.fill: parent
-                        source: effectSource
-                        radius: 30
+                    source: effectSource
+                    radius: 30
 
-                    }
                 }
+            }
 
-                Rectangle {
-                    anchors.fill: parent
-                    color: inactivePalette.highlight
-                    opacity: 0.75
-                }
+            Rectangle {
+                anchors.fill: parent
+                color: inactivePalette.highlight
+                opacity: 0.75
             }
         }
     }
