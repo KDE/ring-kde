@@ -23,6 +23,7 @@
 #include <QtGui/QPalette>
 
 #include <contactmethod.h>
+#include <individual.h>
 #include <person.h>
 
 // KDE
@@ -223,6 +224,62 @@ void ContactPhoto::setPerson(Person* p)
     update();
 
     emit hasPhotoChanged();
+}
+
+QSharedPointer<Individual> ContactPhoto::individual() const
+{
+    if (d_ptr->m_pPerson)
+        return d_ptr->m_pPerson->individual();
+
+    if (d_ptr->m_pCurrentPerson)
+        return d_ptr->m_pCurrentPerson->individual();
+
+    if (d_ptr->m_pContactMethod)
+        return d_ptr->m_pContactMethod->individual();
+
+    return {};
+}
+
+void ContactPhoto::setIndividual(QSharedPointer<Individual> ind)
+{
+    if (!ind) {
+        d_ptr->m_pPerson = nullptr;
+        d_ptr->m_pContactMethod = nullptr;
+    }
+    else if (auto p = ind->person())
+        d_ptr->m_pPerson = p;
+    else
+        d_ptr->m_pContactMethod = ind->lastUsedContactMethod(); //INCORECT
+
+    emit changed();
+}
+
+Individual* ContactPhoto::rawIndividual() const
+{
+    if (d_ptr->m_pPerson)
+        return d_ptr->m_pPerson->individual().data();
+
+    if (d_ptr->m_pCurrentPerson)
+        return d_ptr->m_pCurrentPerson->individual().data();
+
+    if (d_ptr->m_pContactMethod)
+        return d_ptr->m_pContactMethod->individual().data();
+
+    return {};
+}
+
+void ContactPhoto::setRawIndividual(Individual* ind)
+{
+    if (!ind) {
+        d_ptr->m_pPerson = nullptr;
+        d_ptr->m_pContactMethod = nullptr;
+    }
+    else if (auto p = ind->person())
+        d_ptr->m_pPerson = p;
+    else
+        d_ptr->m_pContactMethod = ind->lastUsedContactMethod(); //INCORECT
+
+    emit changed();
 }
 
 void ContactPhotoPrivate::slotPhotoChanged()

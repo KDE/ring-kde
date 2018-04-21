@@ -133,6 +133,7 @@ Item {
             Layout.fillHeight: false
             Layout.maximumHeight: 37
             Layout.fillWidth: true
+            visible: registerUserName.checked
             spacing: 6
 
             Item {

@@ -111,13 +111,13 @@ Item {
                     ContactPhoto {
                         anchors.margins: 3
                         anchors.fill: parent
-                        contactMethod: object
+                        rawIndividual: object
                         drawEmptyOutline: false
                     }
                 }
 
                 Text {
-                    text: object.primaryName.length == 40 ? "Unknown" : object.primaryName
+                    text: object.bestName
                     clip: true
                     font.bold : true
                     Layout.fillWidth: true
@@ -135,7 +135,7 @@ Item {
 
             Text {
                 Layout.fillWidth: true
-                text: number.length == 40 ? "RingId" : number
+                text: object.lastUsedUri.length == 40 ? "RingId" : object.lastUsedUri
 
                 height: 2*fontMetrics.height
                 leftPadding: 10
@@ -235,10 +235,10 @@ Item {
             onClicked: {
                 if (mouse.button == Qt.LeftButton) {
                     recentView.currentIndex = modelIndex.row
-                    contactMethodSelected(object)
+                    contactMethodSelected(object.lastUsedContactMethod)
                 }
                 else if (mouse.button == Qt.RightButton)
-                    contextMenuRequested(object, modelIndex.row)
+                    contextMenuRequested(object.lastUsedContactMethod, modelIndex.row)
             }
         }
 
