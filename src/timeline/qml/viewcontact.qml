@@ -25,7 +25,6 @@ Item {
     id: viewContact
     property var currentContactMethod: null
     property var timelineModel: null
-    property var currentPerson: null
     property string currentPage: ""
     property var contactHeader: null
     property bool mobile: false
@@ -43,22 +42,31 @@ Item {
     clip: true
 
     onCurrentContactMethodChanged: {
-        contactHeader.currentContactMethod = currentContactMethod
-        contactInfo.currentContactMethod   = currentContactMethod
+        if (contactHeader)
+            contactHeader.currentContactMethod = currentContactMethod
+
+        contactInfo.currentContactMethod = currentContactMethod
 
         if (currentContactMethod && currentContactMethod.person)
             personConn.target = currentContactMethod.person
 
-        var call = null
+        if (currentContactMethod)
+            avView.call = currentContactMethod.firstActiveCall
+        else if (currentIndividual)
+            avView.call = CallModel.firstActiveCall(
+                currentIndividual.getIndividual(currentIndividual)
+            )
+    }
 
-        // Check if the CM already has an active call, switch to it
-        for (var i=0; i<CallModel.size; i++) {
-            call = CallModel.getCall(CallModel.index(i, 0))
-            if (call && call.peerContactMethod == currentContactMethod && call.lifeCycleState != Call.FINISHED)
-                break
-        }
+    onCurrentIndividualChanged: {
+        if (contactHeader)
+            contactHeader.currentIndividual = currentIndividual
 
-        avView.call = call
+        if (currentIndividual && currentIndividual.person)
+            personConn.target = currentIndividual.person
+
+        if (currentIndividual != null)
+            avView.call = CallModel.firstActiveCall(currentIndividual)
     }
 
     onCurrentPageChanged: {
@@ -199,7 +207,7 @@ Item {
                     active: false
                     anchors.fill: parent
 
-                    property var call: null
+                    property QtObject call: null
 
                     // QML bug?
                     onCallChanged: {

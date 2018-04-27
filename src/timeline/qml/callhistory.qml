@@ -81,7 +81,7 @@ Rectangle {
             }
 
             Loader {
-                property QtObject call: object
+                property var event: object
 
                 width: parent.width
                 height: hasAVRecording ? 30 : 0

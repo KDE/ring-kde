@@ -204,8 +204,8 @@ Item {
             PeersTimeline {
                 anchors.fill: parent
                 state: topLevel.state
-                onContactMethodSelected: {
-                    mainPage.setContactMethod(cm)
+                onIndividualSelected: {
+                    mainPage.setIndividual(ind)
                     if (topLevel.state == "mobile")
                         newHolder.show = false
                 }

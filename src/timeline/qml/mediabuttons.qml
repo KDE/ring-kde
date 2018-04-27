@@ -30,26 +30,62 @@ Row {
     spacing: 5
     leftPadding: 5
 
+    function getContactMethod(callback) {
+
+        if (currentIndividual == null)
+            return
+
+        if (currentIndividual.requireUserSelection) {
+            var component = Qt.createComponent("CMSelector.qml")
+            if (component.status == Component.Ready) {
+                var window = component.createObject(applicationWindow().contentItem)
+                window.currentIndividual = currentIndividual
+                window.callback = callback
+                window.open()
+            }
+            else
+                console.log("ERROR", component.status, component.errorString())
+                return
+        }
+
+        var cm = currentIndividual.mainContactMethod
+
+        if (!cm)
+            return
+
+        if (callback)
+            callback(cm)
+
+        return cm
+    }
+
+    AvailabilityTracker {
+        id: availabilityTracker
+        rawIndividual: currentIndividual
+    }
+
     Button {
         id: button
         implicitWidth: label.implicitWidth + 20
-        visible: currentContactMethod &&
-            ((!currentContactMethod) ||
-                currentContactMethod.canCall == ContactMethod.AVAILABLE)
+        visible: availabilityTracker.canCall
 
-        checkable: currentContactMethod && currentContactMethod.hasActiveCall
-        checked: currentContactMethod && currentContactMethod.firstOutgoingCall
+        checkable: currentIndividual && currentIndividual.firstActiveCall != null
+        checked: currentIndividual && currentIndividual.firstActiveCall
 
         onClicked: {
-            if (currentContactMethod == null) return
 
-            if (currentContactMethod.hasInitCall) {
-                contactHeader.selectVideo()
-                return
-            }
+            getContactMethod(function(cm) {
+                if (!cm)
+                    return
 
-            CallModel.dialingCall(currentContactMethod)
-                .performAction(Call.ACCEPT)
+                if (cm.hasInitCall) {
+                    contactHeader.selectVideo()
+                    return
+                }
+
+                CallModel.dialingCall(cm)
+                    .performAction(Call.ACCEPT)
+            })
         }
 
         Row {
@@ -79,24 +115,26 @@ Row {
         id: button2
         implicitWidth: label2.implicitWidth + 20
 
-        visible: currentContactMethod &&
-            ((!currentContactMethod) ||
-                currentContactMethod.canVideoCall == ContactMethod.AVAILABLE)
+        visible: availabilityTracker.canVideoCall
 
-        checkable: currentContactMethod && currentContactMethod.hasActiveCall
-        checked: currentContactMethod && currentContactMethod.firstOutgoingCall
-            && currentContactMethod.firstOutgoingCall.videoRenderer
+        checkable: currentIndividual && currentIndividual.firstActiveCall
+        checked: currentIndividual && currentIndividual.firstActiveCall
+            && currentIndividual.firstActiveCall.videoRenderer
 
         onClicked: {
-            if (currentContactMethod == null) return
+            getContactMethod(function(cm) {
+                if (!cm)
+                    return
 
-            if (currentContactMethod.hasInitCall) {
-                contactHeader.selectVideo()
-                return
-            }
 
-            CallModel.dialingCall(currentContactMethod)
-                .performAction(Call.ACCEPT)
+                if (cm.hasInitCall) {
+                    contactHeader.selectVideo()
+                    return
+                }
+
+                CallModel.dialingCall(cm)
+                    .performAction(Call.ACCEPT)
+            })
         }
 
         Row {
@@ -125,24 +163,25 @@ Row {
     Button {
         id: button3
         implicitWidth: label3.implicitWidth + 20
-        checkable: currentContactMethod && currentContactMethod.hasActiveCall
-        checked: currentContactMethod && currentContactMethod.firstOutgoingCall != null
-            && currentContactMethod.firstOutgoingCall.videoRenderer != null
+        checkable: currentIndividual && currentIndividual.firstActiveCall
+        checked: currentIndividual && currentIndividual.firstActiveCall != null
+            && currentIndividual.firstActiveCall.videoRenderer != null
 
-        visible: currentContactMethod &&
-            ((!currentContactMethod) ||
-                currentContactMethod.canVideoCall == ContactMethod.AVAILABLE)
+        visible: availabilityTracker.canVideoCall
 
         onClicked: {
-            if (currentContactMethod == null) return
+            getContactMethod(function(cm) {
+                if (!cm)
+                    return
 
-            if (currentContactMethod.hasInitCall) {
-                contactHeader.selectVideo()
-                return
-            }
+                if (cm.hasInitCall) {
+                    contactHeader.selectVideo()
+                    return
+                }
 
-            CallModel.dialingCall(currentContactMethod)
-                .performAction(Call.ACCEPT)
+                CallModel.dialingCall(cm)
+                    .performAction(Call.ACCEPT)
+            })
         }
 
         Row {
@@ -172,11 +211,10 @@ Row {
         id: button4
         implicitWidth: label4.implicitWidth + 20
 
-        visible: currentContactMethod &&
-            currentContactMethod.canSendTexts == ContactMethod.AVAILABLE
+        visible: availabilityTracker.canSendTexts
 
         onClicked: {
-            if (currentContactMethod == null) return
+            if (currentIndividual == null) return
 
             contactHeader.selectChat()
         }

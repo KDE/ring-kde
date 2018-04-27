@@ -62,6 +62,7 @@
 #include <video/previewmanager.h>
 #include <media/recording.h>
 #include <media/textrecording.h>
+#include <media/availabilitytracker.h>
 #include <media/media.h>
 #include <libcard/historyimporter.h>
 
@@ -468,7 +469,7 @@ QQmlApplicationEngine* RingApplication::engine()
       KirigamiPlugin::getInstance().registerTypes();
 #endif
 
-      qRegisterMetaType<IndividualPointer>("IndividualPointer");
+//       qRegisterMetaType<IndividualPointer>("IndividualPointer");
 
       QML_TYPE( Account                 )
       QML_TYPE( const Account           )
@@ -519,7 +520,7 @@ QQmlApplicationEngine* RingApplication::engine()
             QML_SINGLETON( RecordingModel        );
             QML_TYPE     ( Recording             );
             QML_TYPE     ( TextRecording         );
-
+            QML_CRTYPE   ( AvailabilityTracker   );
          }
 
          { using namespace Video;

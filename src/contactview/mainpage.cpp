@@ -58,7 +58,7 @@ public:
     QSharedPointer<QAbstractItemModel> m_Invididual;
     QSharedPointer<QAbstractItemModel> m_TimelineModel;
     QSharedPointer<QAbstractItemModel> m_DeduplicatedTimelineModel;
-    QQuickItem* m_pItem {nullptr};
+    QQuickItem* m_pItem   {nullptr};
     QQuickItem* m_pHeader {nullptr};
 
     QList< QTimer* > m_lTimers;
@@ -88,10 +88,7 @@ MainPage::MainPage(QQuickItem* parent) :
     installEventFilter(this);
 
     QTimer::singleShot(500, [this]() {
-        setContactMethod(qvariant_cast<ContactMethod*>(
-            PeersTimelineModel::instance().deduplicatedTimelineModel()
-                ->index(0, 0).data((int)Ring::Role::Object)
-        ));
+        setIndividual(PeersTimelineModel::instance().mostRecentIndividual());
     });
 
     d_ptr->m_DeduplicatedTimelineModel = PeersTimelineModel::instance().deduplicatedTimelineModel();
@@ -119,6 +116,33 @@ bool MainPage::eventFilter(QObject *obj, QEvent *event)
     Q_UNUSED(event)
     //TODO the context menu
     return false;
+}
+
+void MainPage::setIndividual(Individual* ind)
+{
+    setIndividual(Individual::getIndividual(ind));
+}
+
+void MainPage::setIndividual(const QSharedPointer<Individual>& ind)
+{
+    if (!ind)
+        return;
+
+    d_ptr->m_Invididual = ind;
+    d_ptr->m_TimelineModel = ind->timelineModel();
+    d_ptr->m_CallsModel = ind->eventAggregate()->unsortedListView();
+    Q_ASSERT(d_ptr->m_CallsModel);
+
+    d_ptr->m_pItem->setProperty( "currentContactMethod", QVariant::fromValue(
+        static_cast<ContactMethod*>(nullptr)
+    ));
+
+    d_ptr->m_pItem->setProperty( "currentIndividual", QVariant::fromValue(
+        ind.data()
+    ));
+
+    d_ptr->m_pItem->setProperty( "timelineModel", QVariant::fromValue(d_ptr->m_TimelineModel));
+    d_ptr->m_pItem->setProperty( "unsortedListView", QVariant::fromValue(d_ptr->m_CallsModel));
 }
 
 void MainPage::setContactMethod(ContactMethod* cm)
@@ -150,17 +174,24 @@ void MainPage::setContactMethod(ContactMethod* cm)
     d_ptr->m_TimelineModel = cm->individual()->timelineModel();
 
     d_ptr->m_pItem->setProperty( "currentContactMethod", QVariant::fromValue(cm));
-    d_ptr->m_pItem->setProperty( "currentIndividual", QVariant::fromValue(d_ptr->m_Invididual));
+    d_ptr->m_pItem->setProperty( "currentIndividual", QVariant::fromValue(
+        cm->individual().data()
+    ));
     d_ptr->m_pItem->setProperty( "timelineModel", QVariant::fromValue(d_ptr->m_TimelineModel));
     d_ptr->m_pItem->setProperty( "unsortedListView", QVariant::fromValue(d_ptr->m_CallsModel));
 }
 
 void MainPage::setPerson(Person* p)
 {
-    d_ptr->m_pItem->setProperty( "currentPerson", QVariant::fromValue(p));
-    d_ptr->m_pItem->setProperty( "currentIndividual", QVariant::fromValue(p->individual()));
+    auto ind = p->individual();
+    d_ptr->m_Invididual = ind;
 
-    d_ptr->m_CallsModel = p->individual()->eventAggregate()->unsortedListView();
+    d_ptr->m_pItem->setProperty( "currentPerson", QVariant::fromValue(p));
+    d_ptr->m_pItem->setProperty( "currentIndividual", QVariant::fromValue(
+        ind.data()
+    ));
+
+    d_ptr->m_CallsModel = ind->eventAggregate()->unsortedListView();
     Q_ASSERT(d_ptr->m_CallsModel);
 
     d_ptr->m_pItem->setProperty( "unsortedListView", QVariant::fromValue(d_ptr->m_CallsModel));
@@ -227,6 +258,10 @@ void MainPagePrivate::slotWindowChanged()
 
 void MainPage::showVideo(Call* c)
 {
+    // Ignore clicks on dialing calls
+    if ((!c) || c->state() == Call::State::NEW || c->state() == Call::State::DIALING)
+        return;
+
     setContactMethod(c->peerContactMethod());
     QMetaObject::invokeMethod(d_ptr->m_pItem, "showVideo");
 }

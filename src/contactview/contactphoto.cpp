@@ -206,7 +206,7 @@ void ContactPhoto::setPerson(Person* p)
         disconnect(d_ptr->m_pContactMethod, &ContactMethod::contactChanged,
             d_ptr, &ContactPhotoPrivate::slotContactChanged);
 
-        if (d_ptr->m_pContactMethod->contact()) {
+        if (d_ptr->m_pContactMethod && d_ptr->m_pContactMethod->contact()) {
             disconnect(d_ptr->m_pContactMethod->contact(), &Person::photoChanged,
                 d_ptr, &ContactPhotoPrivate::slotPhotoChanged);
         }
@@ -246,11 +246,22 @@ void ContactPhoto::setIndividual(QSharedPointer<Individual> ind)
         d_ptr->m_pPerson = nullptr;
         d_ptr->m_pContactMethod = nullptr;
     }
-    else if (auto p = ind->person())
+    else if (auto p = ind->person()) {
+        d_ptr->slotContactChanged(p , d_ptr->m_pCurrentPerson);
         d_ptr->m_pPerson = p;
-    else
+        d_ptr->m_pContactMethod = nullptr;
+    }
+    else {
         d_ptr->m_pContactMethod = ind->lastUsedContactMethod(); //INCORECT
+        d_ptr->slotContactChanged(
+            d_ptr->m_pContactMethod ? d_ptr->m_pContactMethod->contact() : nullptr,
+            d_ptr->m_pCurrentPerson
+        );
+        d_ptr->m_pPerson = nullptr;
+    }
 
+    update();
+    emit hasPhotoChanged();
     emit changed();
 }
 
@@ -270,16 +281,7 @@ Individual* ContactPhoto::rawIndividual() const
 
 void ContactPhoto::setRawIndividual(Individual* ind)
 {
-    if (!ind) {
-        d_ptr->m_pPerson = nullptr;
-        d_ptr->m_pContactMethod = nullptr;
-    }
-    else if (auto p = ind->person())
-        d_ptr->m_pPerson = p;
-    else
-        d_ptr->m_pContactMethod = ind->lastUsedContactMethod(); //INCORECT
-
-    emit changed();
+    setIndividual(Individual::getIndividual(ind));
 }
 
 void ContactPhotoPrivate::slotPhotoChanged()
@@ -365,8 +367,9 @@ bool ContactPhoto::isTracked() const
         return d_ptr->m_pPerson->isTracked();
 
     if (d_ptr->m_pCurrentPerson) {
-        if (auto p = d_ptr->m_pContactMethod->contact())
-            return p->isTracked();
+        if (d_ptr->m_pContactMethod)
+            if (auto p = d_ptr->m_pContactMethod->contact())
+                return p->isTracked();
 
         return d_ptr->m_pCurrentPerson->isPresent();
     }
@@ -390,8 +393,9 @@ bool ContactPhoto::isPresent() const
         return d_ptr->m_pPerson->isPresent();
 
     if (d_ptr->m_pCurrentPerson) {
-        if (auto p = d_ptr->m_pContactMethod->contact())
-            return p->isPresent();
+        if (d_ptr->m_pContactMethod)
+            if (auto p = d_ptr->m_pContactMethod->contact())
+                return p->isPresent();
 
         return d_ptr->m_pCurrentPerson->isPresent();
     }

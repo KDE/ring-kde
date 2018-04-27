@@ -28,6 +28,7 @@ import org.kde.kirigami 2.2 as Kirigami
 Rectangle {
     id: contactHeader
     property QtObject currentContactMethod: null
+    property var currentIndividual: null
     property bool isMobile: false
     property bool isCompact: false
     color: "gray"
@@ -41,6 +42,20 @@ Rectangle {
     signal selectChat()
     signal selectVideo()
 
+    onCurrentIndividualChanged: {
+        if (!currentIndividual) {
+            primaryName.text = i18n("N/A")
+            contactPhoto.rawIndividual = null
+            return
+        }
+
+        primaryName.text = currentIndividual ? currentIndividual.bestName : i18n("N/A")
+
+        contactPhoto.rawIndividual = currentIndividual
+        bookmarkSwitch.source = (currentIndividual && currentIndividual.hasBookmarks) ?
+            "icons/bookmarked.svg" : "icons/not_bookmarked.svg"
+    }
+
     onCurrentContactMethodChanged: {
         primaryName.text = currentContactMethod.bestName
 
@@ -51,20 +66,21 @@ Rectangle {
     }
 
     Connections {
-        target: currentContactMethod
+        target: currentIndividual
         onBookmarkedChanged: {
-            bookmarkSwitch.source = (currentContactMethod && currentContactMethod.bookmarked) ?
+            bookmarkSwitch.source = (currentIndividual && currentIndividual.hasBookmarks) ?
                 "icons/bookmarked.svg" : "icons/not_bookmarked.svg"
         }
     }
 
     Connections {
-        target: currentContactMethod
+        target: currentIndividual
         onChanged: {
-            primaryName.text = currentContactMethod.bestName
-            contactPhoto.contactMethod = currentContactMethod
+            primaryName.text = currentIndividual.bestName
 
-            bookmarkSwitch.source = (currentContactMethod && currentContactMethod.bookmarked) ?
+            contactPhoto.rawIndividual = currentIndividual
+
+            bookmarkSwitch.source = (currentIndividual && currentIndividual.hasBookmarks) ?
                 "icons/bookmarked.svg" : "icons/not_bookmarked.svg"
         }
     }
@@ -194,7 +210,7 @@ Rectangle {
         // Display reasons why the media buttons are not present
         MediaAvailability {
             defaultSize: parent.height < 48 ? parent.height : 48
-            currentContactMethod: contactHeader.currentContactMethod
+            currentIndividual: contactHeader.currentIndividual
             anchors.verticalCenter: parent.verticalCenter
         }
     }

@@ -11,5 +11,6 @@
         <file alias="CanvasPopup.qml">qml/canvaspopup.qml</file>
         <file alias="ScreenSharing.qml">qml/screensharing.qml</file>
         <file alias="Streaming.qml">qml/streaming.qml</file>
+        <file alias="CMSelector.qml">qml/cmselector.qml</file>
     </qresource>
 </RCC>

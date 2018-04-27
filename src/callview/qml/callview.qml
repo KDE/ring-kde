@@ -34,7 +34,7 @@ Item {
     property string mode           : "PREVIEW"
     property bool   previewRunning : false
     property alias  peerRunning    : videoWidget.started
-    property var    call           : null
+    property QtObject    call           : null
 
     property bool previewVisible: mode != "PREVIEW" &&
         call && PreviewManager.previewing

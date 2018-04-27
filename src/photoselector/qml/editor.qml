@@ -26,6 +26,7 @@ import Ring 1.0
 Dialog {
     property QtObject person: null
     property QtObject contactMethod: null
+    property var individual: null
     property bool isSelected: false
     signal newPhoto(var photo)
     signal done()
@@ -217,6 +218,8 @@ Dialog {
             selector.setToPerson(person)
         else if (contactMethod)
             selector.setToContactMethod(contactMethod)
+        else if (individual)
+            selector.setToIndividual(person)
 
         videoWidget.started = false
         if (PreviewManager.previewing)

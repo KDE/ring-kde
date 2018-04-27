@@ -41,6 +41,7 @@ Rectangle {
 
     property alias overlayVisible: scrollBar.overlayVisible
     signal contactMethodSelected(var cm)
+    signal individualSelected(var ind)
     signal contextMenuRequested(var cm, int index)
 
     FontMetrics {

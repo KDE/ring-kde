@@ -25,69 +25,14 @@ import ContactView 1.0
 
 Rectangle {
     id: mediaAvailability
-    property QtObject currentContactMethod: null
+    property QtObject currentIndividual: null
     property real defaultSize: 48
-    property bool hasIssue: currentContactMethod && (
-        // If there's a contact, take the cumulative of all ways to reach it
-        (currentContactMethod.contact && (
-            (!currentContactMethod.contact.canCall) ||
-            (!currentContactMethod.contact.canVideoCall) ||
-            (!currentContactMethod.contact.canSendTexts)
-        ))
-        // Otherwise use the CM directly
-        || (
-            currentContactMethod.canCall      != ContactMethod.AVAILABLE ||
-            currentContactMethod.canVideoCall != ContactMethod.AVAILABLE ||
-            currentContactMethod.canSendTexts != ContactMethod.AVAILABLE
-        )
-    )
 
-    function getFaultyCM() {
-        if (currentContactMethod && (
-          currentContactMethod.canCall      != ContactMethod.AVAILABLE ||
-          currentContactMethod.canVideoCall != ContactMethod.AVAILABLE ||
-          currentContactMethod.canSendTexts != ContactMethod.AVAILABLE ))
-            return currentContactMethod
+    property bool accountState: true
 
-        //TODO
-        return null
-    }
-
-    function getFirstIssue(cm) {
-        var textsIssue = cm.canSendTexts
-        var videoIssue = cm.canVideoCall
-        var audioIssue = cm.canCall
-
-        return Math.max(textsIssue, videoIssue, audioIssue)
-    }
-
-    function getErrorMessage() {
-        var cm = getFaultyCM()
-
-        if (cm == null) {
-            return i18n("This contact has no known phone number or GNU Ring account")
-        }
-
-        switch(getFirstIssue(cm)) {
-            case ContactMethod.AVAILABLE   :
-                return "";
-            case ContactMethod.NO_CALL     :
-                return i18n("Sending text messages can only happen during an audio call in SIP accounts")
-            case ContactMethod.UNSUPPORTED :
-                return i18n("This account doesn't support all media")
-            case ContactMethod.SETTINGS    :
-                return i18n("Video isn't available because it's disabled for this account")
-            case ContactMethod.NO_ACCOUNT  :
-                return i18n("There is no account capable of reaching this person")
-            case ContactMethod.CODECS      :
-                return i18n("All video codecs are disabled, video call isn't possible")
-            case ContactMethod.ACCOUNT_DOWN:
-                return i18n("All accounts capable of reaching this person are currently unavailable")
-            case ContactMethod.NETWORK     :
-                return i18n("Ring-KDE is experiencing a network issue, please try later")
-        }
-
-        return ""
+    AvailabilityTracker {
+        id: availabilityTracker
+        rawIndividual: currentIndividual
     }
 
     border.width: 1
@@ -96,7 +41,7 @@ Rectangle {
     radius: 99
     width: defaultSize
     height: defaultSize
-    visible: hasIssue
+    visible: availabilityTracker.hasWarning
     opacity: 0.5
 
     SystemPalette {
@@ -162,12 +107,12 @@ Rectangle {
                 PropertyChanges {
                     target: errorMessage
                     visible: true
-                    text: getErrorMessage()
+                    text: availabilityTracker.warningMessage
                 }
             },
             State {
                 name: "active"
-                when: mediaAvailability.hasIssue
+                when: availabilityTracker.hasWarning
                 PropertyChanges {
                     target: errorMessage
                     visible: false

@@ -179,7 +179,7 @@ Item {
             anchors.topMargin: 3
             height: 16
             width: 16
-            source: isBookmarked ? "icons/bookmarked.svg" : "icons/not_bookmarked.svg"
+            source: object.hasBookmarks ? "icons/bookmarked.svg" : "icons/not_bookmarked.svg"
             z: 100
             MouseArea {
                 anchors.fill: parent
@@ -235,7 +235,7 @@ Item {
             onClicked: {
                 if (mouse.button == Qt.LeftButton) {
                     recentView.currentIndex = modelIndex.row
-                    contactMethodSelected(object.lastUsedContactMethod)
+                    individualSelected(object)
                 }
                 else if (mouse.button == Qt.RightButton)
                     contextMenuRequested(object.lastUsedContactMethod, modelIndex.row)

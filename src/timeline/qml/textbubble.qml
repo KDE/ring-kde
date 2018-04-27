@@ -63,7 +63,7 @@ Item {
                 color: background
 
                 text: display != undefined ? display : "N/A"
-                maximumWidth: parent.width*((height > (width*0.5)) ? 0.9 : 0.7)
+                maximumWidth: chatMessage.width*((height > (chatMessage.width*0.5)) ? 0.9 : 0.7)
                 height: Math.max(50, label.implicitHeight + dateLabel.implicitHeight + 5)
 
                 Text {
