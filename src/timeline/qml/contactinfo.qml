@@ -86,19 +86,28 @@ Kirigami.ScrollablePage {
     }
 
     function getLastContacted() {
-        var d = currentContactMethod.lastUsed == 0 ? i18n("Never") :
-            new Date(currentContactMethod.lastUsed * 1000).toLocaleString()
+        if (!individual)
+            return
 
-        return i18n("<b>Last contacted on:</b> ") + d + "[?]"
+        var d = individual.lastUsedTime == 0 ? i18n("Never") :
+            new Date(individual.lastUsedTime * 1000).toLocaleString()
+
+        return i18n("<b>Last contacted on:</b> ") + individual.formattedLastUsedTime
     }
 
     function getTotalCall() {
-        return i18n("<b>Called:</b> ") + currentContactMethod.callCount +
-            " (" + (currentContactMethod.totalSpentTime/60) + " minutes) [?]"
+        if (!individual)
+            return
+
+        return i18n("<b>Called:</b> ") + individual.callCount +
+            " (" + (Math.floor(individual.totalSpentTime/60)) + " minutes) [?]"
     }
 
     function getTotalText() {
-        return  i18n("<b>Texted:</b> ") + currentContactMethod.textRecording.instantTextMessagingModel.rowCount()
+        if (!individual)
+            return
+
+        return  i18n("<b>Texted:</b> ") + individual.textMessageCount
     }
 
     SystemPalette {
@@ -121,12 +130,6 @@ Kirigami.ScrollablePage {
             return
 
         currentPerson = currentContactMethod.person
-
-        // Stats
-        lastContactedTime.text = getLastContacted()
-        totalCall.text         = getTotalCall()
-        totalText.text         = getTotalText()
-
         isChanged = false
     }
 
@@ -268,16 +271,19 @@ Kirigami.ScrollablePage {
                         Label {
                             id: lastContactedTime
                             color: contactViewPage.labelColor ? contactViewPage.labelColor : activePalette.text
+                            text: individual ? getLastContacted() : ""
                         }
 
                         Label {
                             id: totalCall
                             color: contactViewPage.labelColor ? contactViewPage.labelColor : activePalette.text
+                            text: individual ? getTotalCall() : ""
                         }
 
                         Label {
                             id: totalText
                             color: contactViewPage.labelColor ? contactViewPage.labelColor : activePalette.text
+                            text: individual ? getTotalText() : ""
                         }
 
                         Rectangle {
