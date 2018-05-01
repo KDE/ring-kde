@@ -53,9 +53,7 @@ Item {
         if (currentContactMethod)
             avView.call = currentContactMethod.firstActiveCall
         else if (currentIndividual)
-            avView.call = CallModel.firstActiveCall(
-                currentIndividual.getIndividual(currentIndividual)
-            )
+            avView.call = currentIndividual.firstActiveCall
     }
 
     onCurrentIndividualChanged: {

@@ -21,6 +21,8 @@
 
 class ContactMethod;
 class Person;
+class Account;
+class Individual;
 
 class ContactBuilderPrivate;
 
@@ -33,8 +35,9 @@ public:
     virtual ~ContactBuilder();
 
     Q_INVOKABLE Person* from(ContactMethod* cm);
+    Q_INVOKABLE Person* from(Individual* cm);
 
-    Q_INVOKABLE ContactMethod* updatePhoneNumber(ContactMethod* cm, Person* p, const QString& number, int categoryIndex);
+    Q_INVOKABLE ContactMethod* updatePhoneNumber(ContactMethod* cm, Person* p, const QString& number, int categoryIndex, int accountIdx);
 
     Q_INVOKABLE void addEmptyPhoneNumber(Person* p);
     Q_INVOKABLE void acceptEmptyPhoneNumber(Person* p);

@@ -27,8 +27,6 @@ import ContactView 1.0
 Kirigami.ScrollablePage {
     id: contactViewPage
     property string defaultName: ""
-    property var currentContactMethod: null
-    property var currentPerson: null
     property var individual: null
     property string forcedState: ""
     property bool editing: true
@@ -44,7 +42,7 @@ Kirigami.ScrollablePage {
 
     property bool isChanged: false
 
-    property var labelColor: undefined
+    property var labelColor: inactivePalette.text
 
     property var cachedPhoto: undefined
 
@@ -54,21 +52,13 @@ Kirigami.ScrollablePage {
 //     horizontalScrollBarPolicy: Qt.ScrollBarAlwaysOff
 
     function save() {
-        if ((!currentContactMethod) && (!currentPerson))
+        if (!individual)
             return
 
-        // Create a real contact method in case this is a temporary one
-        if (currentContactMethod && currentContactMethod.type == ContactMethod.TEMPORARY)
-            currentContactMethod = PhoneDirectoryModel.getNumber(
-                currentContactMethod.uri,
-                null,
-                currentContactMethod.account
-            )
+        var person = individual.person
 
-        var person = currentPerson
-
-        if (!currentPerson)
-            person = contactBuilder.from(currentContactMethod)
+        if (!person)
+            person = contactBuilder.from(individual)
 
         vCardForm.syncDetails(person)
 
@@ -77,7 +67,7 @@ Kirigami.ScrollablePage {
 
         person.save()
 
-        currentPerson = person
+        //currentPerson = person
         isChanged = false
     }
 
@@ -114,6 +104,10 @@ Kirigami.ScrollablePage {
         id: activePalette
         colorGroup: SystemPalette.Active
     }
+    SystemPalette {
+        id: inactivePalette
+        colorGroup: SystemPalette.Inactive
+    }
 
     actions {
         main: Kirigami.Action {
@@ -125,25 +119,8 @@ Kirigami.ScrollablePage {
         }
     }
 
-    onCurrentContactMethodChanged: {
-        if (!currentContactMethod)
-            return
-
-        currentPerson = currentContactMethod.person
-        isChanged = false
-    }
-
-    onCurrentPersonChanged: {
-        // Sub-models
-//         phoneNumbers.model = currentPerson ?
-//             currentPerson.phoneNumbers : null
-//         addresses.model = currentPerson ?
-//             currentPerson.addressesModel : null
-
-        phoneNumbers.person = currentPerson
-
-        vCardForm.currentPerson = currentPerson
-
+    onIndividualChanged: {
+        vCardForm.currentPerson = individual ? individual.person : null
         isChanged = false
     }
 
@@ -229,12 +206,6 @@ Kirigami.ScrollablePage {
                         editing: contactViewPage.editing
                         model: contactViewPage.individual
                         buttonColor: contactViewPage.labelColor
-                        onPersonCreated: {
-//                             if (!currentPerson) {
-//                                 console.log("Setting the person from a phone number")
-//                                 currentPerson = phoneNumbers.person
-//                             }
-                        }
                     }
 
                     background: Rectangle { color: activePalette.base }
@@ -360,8 +331,7 @@ Kirigami.ScrollablePage {
                 width: 90
                 defaultColor: contactViewPage.labelColor
 
-                contactMethod: currentContactMethod
-                person: currentPerson
+                rawIndividual: individual
 
                 function onNewPhoto(p) {
                     contactViewPage.cachedPhoto = p
@@ -376,8 +346,8 @@ Kirigami.ScrollablePage {
                         var component = Qt.createComponent("PhotoEditor.qml")
                         if (component.status == Component.Ready) {
                             var window    = component.createObject(contactViewPage)
-                            window.person = currentContactMethod ?
-                                currentContactMethod.person : currentPerson
+                            window.person = individual ?
+                                individual.person : null
                             window.newPhoto.connect(photoRect.onNewPhoto)
                         }
                         else

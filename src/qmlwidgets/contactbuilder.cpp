@@ -24,6 +24,7 @@
 #include <numbercategorymodel.h>
 #include <phonedirectorymodel.h>
 #include <individual.h>
+#include <accountmodel.h>
 
 class ContactBuilderPrivate
 {
@@ -38,6 +39,33 @@ ContactBuilder::ContactBuilder(QObject* parent) : QObject(parent),
 ContactBuilder::~ContactBuilder()
 {
     delete d_ptr;
+}
+
+Person* ContactBuilder::from(Individual* ind)
+{
+    if (!ind)
+        return nullptr;
+
+    if (ind->phoneNumbers().isEmpty())
+        return nullptr;
+
+    auto cols = PersonModel::instance().enabledCollections(
+        CollectionInterface::SupportedFeatures::ADD |
+        CollectionInterface::SupportedFeatures::EDIT|
+        CollectionInterface::SupportedFeatures::SAVE
+    );
+
+    if (cols.isEmpty()) {
+        qWarning() << "Failed to add a contact: no suitable backend found";
+        return nullptr;
+    }
+
+    const auto col = cols.first();
+
+    auto p = ind->buildPerson();
+    p->setCollection(col);
+
+    return p;
 }
 
 Person* ContactBuilder::from(ContactMethod* cm)
@@ -73,20 +101,31 @@ Person* ContactBuilder::from(ContactMethod* cm)
     return p;
 }
 
-ContactMethod* ContactBuilder::updatePhoneNumber(ContactMethod* cm, Person* p, const QString& number, int categoryIndex)
+ContactMethod* ContactBuilder::updatePhoneNumber(ContactMethod* cm, Person* p, const QString& number, int categoryIndex, int accountIdx)
 {
     auto catIndex = NumberCategoryModel::instance().index(categoryIndex, 0);
 
     if (!catIndex.isValid())
         return nullptr;
 
-    ContactMethod* newCM = cm;
+    const bool wasTemporary = cm && cm->type() == ContactMethod::Type::TEMPORARY;
+
+    if (wasTemporary && !number.isEmpty()) {
+        qobject_cast<TemporaryContactMethod*>(cm)->setUri(number);
+    }
+
+    ContactMethod* newCM = PhoneDirectoryModel::instance().fromTemporary(cm);
+
+    Account* a = accountIdx == -1 ? nullptr : AccountModel::instance().getAccountByModelIndex(
+        AccountModel::instance().index(accountIdx, 0)
+    );
 
     // Create a person and add the CM to the phone numbers
-    if ((!p) && !cm) {
+    if (!cm) {
         newCM = PhoneDirectoryModel::instance().getNumber(
-            number, catIndex.data().toString()
+            number, a, catIndex.data().toString()
         );
+
         from(newCM);
 
         return newCM;
@@ -94,34 +133,45 @@ ContactMethod* ContactBuilder::updatePhoneNumber(ContactMethod* cm, Person* p, c
 
     p = (p || !newCM) ? p : newCM->contact();
 
+    if (newCM && a)
+        newCM->setAccount(a);
+
     if (!p) {
-        qWarning() << "Failed to create a contact";
-        return nullptr;
+        if (Q_UNLIKELY(!newCM)) {
+            qWarning() << "Failed to create a contact";
+            return nullptr;
+        }
+        else {
+            qWarning() << "Creating a contact for" << newCM;
+            from(newCM);
+            return newCM;
+        }
     }
 
     if (!newCM) {
         newCM = PhoneDirectoryModel::instance().getNumber(
-            number, p, nullptr, catIndex.data().toString()
+            number, p, a, catIndex.data().toString()
         );
         p->individual()->addPhoneNumber(newCM);
     }
-    else if (p && newCM->type() == ContactMethod::Type::TEMPORARY) {
+    else if (wasTemporary) {
         p->individual()->addPhoneNumber(newCM);
 
         const auto lastRow = p->individual()->index(
             p->individual()->rowCount()-1, 0
         );
 
-        if (QVariant::fromValue(cm) == p->individual()->data(lastRow, (int)Ring::Role::Object))
-            p->individual()->removeRows(lastRow.row(), 1, {});
     }
-    else if (p) {
+    else {
         auto newCM2 = PhoneDirectoryModel::instance().getNumber(
             number, p, newCM->account(), catIndex.data().toString()
         );
         p->individual()->replacePhoneNumber(newCM, newCM2);
         newCM = newCM2;
     }
+
+    if (wasTemporary)
+        p->individual()->setEditRow(false);
 
     qDebug() << "New phone number added to" << p;
 

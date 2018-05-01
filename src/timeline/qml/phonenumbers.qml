@@ -24,12 +24,12 @@ import org.kde.kirigami 2.2 as Kirigami
 
 Item {
     id: phoneNumbers
-    property color buttonColor: undefined
-    property alias model : numbers.model
+    property color buttonColor: inactivePalette.text
+    property alias model: numbers.model
     property QtObject person: null
     property alias contentHeight: numbers.contentHeight
     property alias interactive: numbers.interactive
-    property bool editing: (model && person && numbers.count > len(person.phoneNumbers.length)) || !person
+    property bool editing: (model && model.editRow) || !person
 
     clip: true
     signal personCreated(QtObject newPerson)
@@ -64,6 +64,21 @@ Item {
                 text: editUri
             }
 
+            CheckBox {
+                id: customAccount
+                checked: obj.account
+            }
+
+            ComboBox {
+                id: numberAccount
+                model: AccountModel
+                enabled: customAccount.checked
+                textRole: "display"
+                currentIndex: obj.account ? obj.account.index.row : 2
+                onActivated: {
+                }
+            }
+
             Button {
                 id: button
                 text: i18n("Save")
@@ -74,24 +89,38 @@ Item {
                         return
                     }
 
-                    var cm = contactBuilder.updatePhoneNumber(object,
-                        person, newPhoneNumber.text, numbertype.index
+                    var accIdx = customAccount.checked ? numberAccount.index : -1
+
+                    var p = phoneNumbers.person ? phoneNumbers.person : phoneNumbers.model.person
+
+                    var cm = contactBuilder.updatePhoneNumber(obj,
+                        p, newPhoneNumber.text, numbertype.index, accIdx
                     )
 
-                    console.log("adding", newPhoneNumber.text, cm)
-
                     if (cm && cm.person) {
-                        console.log("Setting the person")
+                        console.log("Setting the person", cm, cm.person)
                         person = cm.person
-                        phoneNumbers.model = cm.person.individual
-                        personCreated(cm.person)
+                        //phoneNumbers.model = cm.person.individual
                     }
+
+                    if (cm.person) {
+                        console.log("Saving", cm.person)
+                        cm.person.save()
+                    }
+
+                    personCreated(cm.person)
+
+                    numbers.currentIndex = idx
+                    numbers.currentItem.state = ""
                 }
             }
             Button {
                 text: i18n("Cancel")
                 onClicked: {
-                    numbers.currentIndex = index
+                    if (cmType == ContactMethod.TEMPORARY)
+                        numbers.model.editRow = false
+
+                    numbers.currentIndex = idx
                     numbers.currentItem.state = ""
                 }
             }
@@ -117,10 +146,11 @@ Item {
                 color: phoneNumbers.buttonColor
                 label: i18n("Add a phone number or GNU Ring identity")
                 topPadding: 2
-                visible: phoneNumbers.editing
+                visible: !numbers.model.editRow
                 onClicked: {
                     if (phoneNumbers.model) {
                         contactBuilder.addEmptyPhoneNumber(phoneNumbers.person)
+                        numbers.model.editRow = true
                         numbers.currentIndex = numbers.count - 1
                         numbers.currentItem.state = "edit"
                     }
@@ -158,7 +188,12 @@ Item {
                         iconName: "edit-delete"
                         text: i18n("Delete")
                         onTriggered: {
-                            phoneNumbers.person.removePhoneNumber(object)
+                            // Cache the person to avoid the race condition where
+                            // the delegate is deleted before the end of the callback
+                            var p = phoneNumbers.model.person
+                            phoneNumbers.model.removePhoneNumber(object).
+                            if (p)
+                                p.save()
                         }
                     },
                     Kirigami.Action {
@@ -196,9 +231,10 @@ Item {
 
                     Loader {
                         id: editorLoader
-                        property ContactMethod object: object
-                        property int index: index
+                        property ContactMethod obj: object
+                        property int idx: index
                         property string editUri: object ? object.uri : ""
+                        property var cmType: type
                         sourceComponent: editComponent
                         anchors.fill: parent
                         anchors.rightMargin: 50
