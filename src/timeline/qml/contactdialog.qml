@@ -20,7 +20,7 @@ import org.kde.kirigami 2.2 as Kirigami
 
 
 Kirigami.ApplicationItem {
-    property alias currentPerson: contactInfo.currentPerson
+    property alias individual: contactInfo.individual
     property alias showStat     : contactInfo.showStat
     property alias showSave     : contactInfo.showSave
     property alias showImage    : contactInfo.showImage
