@@ -66,7 +66,8 @@ Item {
 
             CheckBox {
                 id: customAccount
-                checked: obj.account
+                checked: obj.account && visible
+                visible: AccountModel.size > 1
             }
 
             ComboBox {
@@ -74,6 +75,7 @@ Item {
                 model: AccountModel
                 enabled: customAccount.checked
                 textRole: "display"
+                visible: AccountModel.size > 1
                 currentIndex: obj.account ? obj.account.index.row : 2
                 onActivated: {
                 }

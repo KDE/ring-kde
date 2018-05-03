@@ -34,6 +34,14 @@ Rectangle {
         visible: false
     }
 
+    Troubleshoot {
+        id: troubleshootDispatcher
+        call: placeholderMessage.call
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: parent.top
+        anchors.topMargin: 5
+    }
+
     NewCall {
         id: newCall
         visible: false
@@ -113,7 +121,7 @@ Rectangle {
                 }
                 PropertyChanges {
                     target: newCall
-                    visible:  mode != "PREVIEW"
+                    visible:  mode != "PREVIEW" && !troubleshootDispatcher.isActive
                 }
             },
             State {

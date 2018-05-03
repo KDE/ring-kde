@@ -12,5 +12,6 @@
         <file alias="ScreenSharing.qml">qml/screensharing.qml</file>
         <file alias="Streaming.qml">qml/streaming.qml</file>
         <file alias="CMSelector.qml">qml/cmselector.qml</file>
+        <file alias="Troubleshoot.qml">qml/troubleshoot.qml</file>
     </qresource>
 </RCC>

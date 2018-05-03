@@ -65,6 +65,7 @@
 #include <media/availabilitytracker.h>
 #include <media/media.h>
 #include <libcard/historyimporter.h>
+#include <troubleshoot/dispatcher.h>
 
 //Ring
 #include "klib/kcfg_settings.h"
@@ -488,6 +489,7 @@ QQmlApplicationEngine* RingApplication::engine()
       QML_CRTYPE( NumberCompletionModel       )
       QML_CRTYPE( QItemSelectionModel         )
 
+
       e = new QQmlApplicationEngine(QGuiApplication::instance());
 
       // Setup the icon theme provider and ki18n
@@ -526,6 +528,10 @@ QQmlApplicationEngine* RingApplication::engine()
          { using namespace Video;
             QML_SINGLETON( PreviewManager        );
             QML_TYPE     ( SourceModel           );
+         }
+
+         { using namespace Troubleshoot;
+            QML_CRTYPE(Dispatcher)
          }
 
          qmlRegisterUncreatableType<::Media::Media>(
