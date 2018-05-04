@@ -32,6 +32,7 @@ import QtQuick.Controls 2.2
  */
 Rectangle {
     property QtObject call: null
+    property bool isActive: troubleshootDispatcher.isActive && call
 
     radius: 5
     color: Kirigami.Theme.negativeTextColor
@@ -112,30 +113,30 @@ Rectangle {
         }
 
         Rectangle {
-                color: "transparent"
-                border.width: 1
-                border.color: activePalette.text
-                height: buttonText.implicitHeight + 15
-                width: content.width
-                radius: 5
-                anchors.topMargin: 3
+            color: "transparent"
+            border.width: 1
+            border.color: activePalette.text
+            height: buttonText.implicitHeight + 15
+            width: content.width
+            radius: 5
+            anchors.topMargin: 3
 
-                Layout.fillWidth: true
-                anchors.margins: 10
+            Layout.fillWidth: true
+            anchors.margins: 10
 
-                Text {
-                    id: buttonText
-                    anchors.centerIn: parent
-                    color: activePalette.text
-                    text: i18n("Dismiss")
-                }
+            Text {
+                id: buttonText
+                anchors.centerIn: parent
+                color: activePalette.text
+                text: i18n("Dismiss")
+            }
 
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: {
-                        troubleshootDispatcher.dismiss()
-                    }
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    troubleshootDispatcher.dismiss()
                 }
             }
+        }
     }
 }
