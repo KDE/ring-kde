@@ -104,13 +104,13 @@ Item {
                                 anchors.centerIn: parent
                                 width: dockBar.width - 3
                                 height: dockBar.width - 3
-                                person: object
+                                rawIndividual: object
                             }
                             onClicked: {
                                 var component = Qt.createComponent("PresenceSelector.qml")
                                 if (component.status == Component.Ready) {
                                     var window = component.createObject(applicationWindow().contentItem)
-                                    window.person = object
+                                    window.individual = object
                                     window.open()
                                 }
                                 else

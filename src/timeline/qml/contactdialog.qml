@@ -27,6 +27,10 @@ Kirigami.ApplicationItem {
     property alias forcedState  : contactInfo.forcedState
     property alias isChanged    : contactInfo.isChanged
 
+    function save() {
+        contactInfo.save()
+    }
+
     signal changed(bool value)
 
     onIsChangedChanged: {

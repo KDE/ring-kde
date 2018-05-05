@@ -24,13 +24,14 @@ import ContactView 1.0
 import org.kde.kirigami 2.2 as Kirigami
 
 Dialog {
+    id: dialog
     parent: applicationWindow().contentItem
     x: applicationWindow().contentItem.width / 2 - width/2
     y: applicationWindow().contentItem.height / 2 - height/2
     width: applicationWindow().contentItem.width * 0.66
     height: applicationWindow().contentItem.height * 0.66
 
-    property QtObject person: null
+    property QtObject individual: null
 
     ContactInfo {
         id: contactInfo
@@ -39,11 +40,11 @@ Dialog {
         showImage: true
         showSave: false
         forcedState: "profile"
-        currentPerson: person
+        individual: dialog.individual
     }
 
     onAccepted: {
-        if (person)
+        if (individual)
             contactInfo.save()
     }
 

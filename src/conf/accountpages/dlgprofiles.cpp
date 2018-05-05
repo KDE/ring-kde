@@ -29,6 +29,7 @@
 //Ring
 #include "profilemodel.h"
 #include "personmodel.h"
+#include "individual.h"
 
 DlgProfiles::DlgProfiles(QWidget *parent, QQmlEngine* e, const QString& name, const QString& uri) :
    QQuickWidget(e, parent), m_pCurrentPerson(nullptr)
@@ -67,7 +68,7 @@ void DlgProfiles::loadPerson(Person* profile)
 {
    auto item = rootObject();
    m_Lock = true;
-   item->setProperty("currentPerson", QVariant::fromValue(profile));
+   item->setProperty("individual", QVariant::fromValue(profile->individual().data()));
    item->setProperty("showStat", false);
    item->setProperty("showImage", true);
    item->setProperty("showSave", false);
@@ -80,7 +81,7 @@ bool DlgProfiles::saveToPerson(Person* p)
    auto item = rootObject();
 
    if (p)
-      item->setProperty("currentPerson", QVariant::fromValue(p));
+      item->setProperty("individual", QVariant::fromValue(p->individual().data()));
 
    QMetaObject::invokeMethod(item, "save");
    m_Lock = false;
