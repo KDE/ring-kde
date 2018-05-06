@@ -1294,7 +1294,7 @@ bool VisualTreeItem::destroy()
     });
 
     m_pSelf.clear();
-    //noreturn
+    return true;
 }
 
 bool TreeTraversalItems::performAction(Action a)
@@ -1456,7 +1456,7 @@ bool TreeTraversalItems::destroy()
     Q_ASSERT(m_hLookup.isEmpty());
 
     delete this;
-    //noreturn
+    return true;
 }
 
 bool TreeView2Private::nothing()
