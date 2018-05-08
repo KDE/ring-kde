@@ -52,8 +52,8 @@ protected:
     virtual bool eventFilter(QObject *obj, QEvent *event) override;
 
 public Q_SLOTS:
-    void addRenderer(Video::Renderer* renderer);
-    void removeRenderer(Video::Renderer* renderer);
+    void addRenderer(Call* call, Video::Renderer* renderer);
+    void removeRenderer(Call* call, Video::Renderer* renderer);
     void slotRotateLeft();
     void slotRotateRight();
     void slotShowPreview(bool show);

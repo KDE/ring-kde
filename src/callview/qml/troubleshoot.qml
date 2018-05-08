@@ -33,13 +33,16 @@ import QtQuick.Controls 2.2
 Rectangle {
     property QtObject call: null
     property bool isActive: troubleshootDispatcher.isActive && call
+    property alias currentIssue: troubleshootDispatcher.currentIssue
 
     radius: 5
-    color: Kirigami.Theme.negativeTextColor
+    color: troubleshootDispatcher.severity == 2 ?
+        Kirigami.Theme.neutralTextColor : Kirigami.Theme.negativeTextColor
     height: content.implicitHeight + 26
     width: Math.min(parent.width, 400)
     opacity: 0.8
-    visible: troubleshootDispatcher.isActive
+    visible: troubleshootDispatcher.isActive || isActive
+
 
     Dispatcher {
         id: troubleshootDispatcher

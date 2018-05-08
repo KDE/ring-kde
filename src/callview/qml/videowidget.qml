@@ -22,6 +22,7 @@ Rectangle {
     property bool   stretch: false
     property string rendererName: "preview"
     property alias  started: frameTimer.running
+    property bool   hasFailed: false
 
     color: "black"
 

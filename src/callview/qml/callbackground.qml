@@ -22,6 +22,7 @@ import Ring 1.0
 Rectangle {
     property QtObject call: null;
     property string   mode: "PREVIEW"
+    property alias toubleshooting: troubleshootDispatcher
 
     id: placeholderMessage
     color: "black"
@@ -40,6 +41,7 @@ Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
         anchors.topMargin: 5
+        z: 100000
     }
 
     NewCall {

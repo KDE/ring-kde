@@ -30,15 +30,25 @@
 #include <video/previewmanager.h>
 #include <video/sourcemodel.h>
 #include <call.h>
+#include <callmodel.h>
 #include <useractionmodel.h>
 
 #include "imageprovider.h"
 
-class VideoWidget3Private {
+class VideoWidget3Private : public QObject
+{
+    Q_OBJECT
 public:
+    explicit VideoWidget3Private(VideoWidget3* parent) : QObject(parent), q_ptr(parent) {}
     VideoWidget3::Mode m_Mode {VideoWidget3::Mode::CONVERSATION};
     static ImageProvider* m_spProvider;
     Video::SourceModel* m_pSourceModel {nullptr};
+
+    VideoWidget3* q_ptr;
+
+public Q_SLOTS:
+    void slotRendererIssue();
+    void slotRendererRestored();
 };
 
 // Only one must exist per context, better not try to regenerate it
@@ -46,7 +56,13 @@ ImageProvider* VideoWidget3Private::m_spProvider = nullptr;
 
 VideoWidget3::VideoWidget3(QWidget* parent) :
     VideoWidget3(VideoWidget3::Mode::CONVERSATION, parent)
-{}
+{
+    connect(&CallModel::instance(), &CallModel::rendererAdded,
+        this, &VideoWidget3::addRenderer);
+
+    connect(&CallModel::instance(), &CallModel::rendererRemoved,
+        this, &VideoWidget3::removeRenderer);
+}
 
 void VideoWidget3::initProvider()
 {
@@ -59,7 +75,7 @@ void VideoWidget3::initProvider()
 }
 
 VideoWidget3::VideoWidget3(VideoWidget3::Mode mode, QWidget* parent) :
-    QQuickWidget(RingApplication::engine(), parent), d_ptr(new VideoWidget3Private)
+    QQuickWidget(RingApplication::engine(), parent), d_ptr(new VideoWidget3Private(this))
 {
     d_ptr->m_Mode = mode;
 
@@ -72,6 +88,14 @@ VideoWidget3::VideoWidget3(VideoWidget3::Mode mode, QWidget* parent) :
 
     setAcceptDrops(true);
     installEventFilter(this);
+
+    if (mode == Mode::CONVERSATION) {
+        connect(&CallModel::instance(), &CallModel::rendererAdded,
+            this, &VideoWidget3::addRenderer);
+
+        connect(&CallModel::instance(), &CallModel::rendererRemoved,
+            this, &VideoWidget3::removeRenderer);
+    }
 }
 
 VideoWidget3::~VideoWidget3()
@@ -121,15 +145,29 @@ void VideoWidget3::setCall(Call* c)
    rootObject()->setProperty("call", QVariant::fromValue(c));
 }
 
-void VideoWidget3::addRenderer(Video::Renderer* renderer)
+void VideoWidget3::addRenderer(Call* call, Video::Renderer* renderer)
 {
-    Q_UNUSED(renderer)
+    if (d_ptr->m_Mode != Mode::CONVERSATION)
+        return;
+
+    connect(renderer, &Video::Renderer::failure,
+        d_ptr, &VideoWidget3Private::slotRendererIssue);
+    connect(renderer, &Video::Renderer::failure,
+        d_ptr, &VideoWidget3Private::slotRendererRestored);
+
     rootObject()->setProperty("peerRunning", true);
 }
 
-void VideoWidget3::removeRenderer(Video::Renderer* renderer)
+void VideoWidget3::removeRenderer(Call* call, Video::Renderer* renderer)
 {
-    Q_UNUSED(renderer)
+    if (d_ptr->m_Mode != Mode::CONVERSATION)
+        return;
+
+    disconnect(renderer, &Video::Renderer::failure,
+        d_ptr, &VideoWidget3Private::slotRendererIssue);
+    disconnect(renderer, &Video::Renderer::failure,
+        d_ptr, &VideoWidget3Private::slotRendererRestored);
+
     rootObject()->setProperty("peerRunning", false);
 }
 
@@ -193,6 +231,16 @@ void VideoWidget3::setMode(VideoWidget3::Mode mode)
             rootObject()->setProperty("rendererName", "preview");
             break;
     }
+}
+
+void VideoWidget3Private::slotRendererIssue()
+{
+    q_ptr->rootObject()->setProperty("peerRunning", false);
+}
+
+void VideoWidget3Private::slotRendererRestored()
+{
+    q_ptr->rootObject()->setProperty("peerRunning", true);
 }
 
 #include <videowidget.moc>

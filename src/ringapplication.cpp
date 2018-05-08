@@ -531,7 +531,8 @@ QQmlApplicationEngine* RingApplication::engine()
          }
 
          { using namespace Troubleshoot;
-            QML_CRTYPE(Dispatcher)
+            QML_CRTYPE( Dispatcher )
+            QML_TYPE  ( Base       )
          }
 
          qmlRegisterUncreatableType<::Media::Media>(

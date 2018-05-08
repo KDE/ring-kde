@@ -86,6 +86,7 @@ Item {
         anchors.fill: parent
         z: -100
         started: false
+        visible: started && !hasFailed
     }
 
     VideoWidget {
@@ -208,6 +209,7 @@ Item {
             videoSource.call        = call
             controlToolbar.call     = call
         }
+        videoWidget.hasFailed = false
         mainMouseArea.visible = call != null || mode == "PREVIEW"
     }
 
@@ -223,9 +225,6 @@ Item {
 
     Connections {
         target: call
-        onVideoStopped: {
-            videoWidget.started = false
-        }
     }
 
     Connections {
@@ -233,12 +232,23 @@ Item {
         onVideoStarted: {
             videoWidget.started = true
         }
+        onVideoStopped: {
+            videoWidget.started = false
+        }
+        onLiveMediaIssuesChanaged: {
+            // This isn't using properties because the renderer live in their
+            // own thread and QML doesn't support this yet
+            videoWidget.hasFailed = call.hasIssue(Call.VIDEO_ACQUISITION_FAILED)
+        }
     }
 
     Connections {
         target: videoWidget
         onStartedChanged: {
-            placeholderMessage.visible = !videoWidget.started
+            placeholderMessage.visible = (!videoWidget.started) || (videoWidget.hasFailed)
+        }
+        onHasFailedChanged: {
+            placeholderMessage.visible = (!videoWidget.started) || (videoWidget.hasFailed)
         }
     }
 
