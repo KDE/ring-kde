@@ -26,14 +26,13 @@ import org.kde.kirigami 2.0 as Kirigami
 Item {
     property QtObject contactMethod: object
     property double buttonHeight: 30
-    property bool isSelectable: nameStatus != NumberCompletionModel.FAILURE
     property double labelHeight: fontMetrics.height*2
     property bool showPhoto: true
     property bool showControls: true
     property bool showSeparator: true
     height: rows.implicitHeight + 10 //10 == 2*margins
 
-    opacity: isSelectable ? 1 : 0.6
+    opacity: selectable ? 1 : 0.6
 
     Behavior on opacity {
         NumberAnimation {duration: 200}
@@ -183,7 +182,7 @@ Item {
             anchors.fill: parent
             onClicked: {
                 // Display an error message when the selected element doesn't exist
-                if (!isSelectable) {
+                if (!selectable) {
                     displayNotFoundMessage()
                     return
                 }
