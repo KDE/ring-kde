@@ -42,6 +42,17 @@ Item {
             && (lookupState == 2 || !registerUserName.checked)
     }
 
+    function performLookup() {
+        if (userName.text != "" && userName.text.length > 2 && registerUserName.checked) {
+            registerFoundLabel.text = i18n("Please enter an username")
+            registerFoundLabel.color = "white"
+            createRing.lookupState = 2
+            NameDirectory.lookupName(undefined, "", userName.text)
+        }
+        else
+            createRing.lookupState = 2
+    }
+
     function createAccount() {
         if (!nextAvailable) {
             console.log("Account creation failed: missing fields")
@@ -80,11 +91,14 @@ Item {
         Switch {
             id: registerUserName
             height: 40
-            text: i18n("Register public username (experimental)*")
+            text: i18n("Register public username*")
             checked: true
             opacity: 1
             Layout.fillWidth: true
-            onCheckedChanged: isNextAvailable()
+            onCheckedChanged: {
+                performLookup()
+                isNextAvailable()
+            }
         }
 
         Label {
@@ -115,12 +129,7 @@ Item {
             Layout.fillWidth: true
 
             onTextChanged: {
-                if (userName.text != "") {
-                    registerFoundLabel.text = i18n("Please enter an username")
-                    registerFoundLabel.color = "white"
-                    createRing.lookupState = 2
-                    NameDirectory.lookupName(undefined, "", userName.text)
-                }
+                performLookup()
 
                 busyIndicator.visible = userName.text != ""
                 isNextAvailable()

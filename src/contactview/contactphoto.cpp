@@ -247,17 +247,11 @@ void ContactPhoto::setIndividual(QSharedPointer<Individual> ind)
         d_ptr->m_pContactMethod = nullptr;
     }
     else if (auto p = ind->person()) {
+        setPerson(p);
         d_ptr->slotContactChanged(p , d_ptr->m_pCurrentPerson);
-        d_ptr->m_pPerson = p;
-        d_ptr->m_pContactMethod = nullptr;
     }
     else {
-        d_ptr->m_pContactMethod = ind->lastUsedContactMethod(); //INCORECT
-        d_ptr->slotContactChanged(
-            d_ptr->m_pContactMethod ? d_ptr->m_pContactMethod->contact() : nullptr,
-            d_ptr->m_pCurrentPerson
-        );
-        d_ptr->m_pPerson = nullptr;
+        setContactMethod(ind->lastUsedContactMethod()); //INCORECT
     }
 
     update();

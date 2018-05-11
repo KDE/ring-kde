@@ -18,6 +18,7 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
+import Ring 1.0
 
 Rectangle {
     id: applicationWindow
@@ -151,17 +152,19 @@ Rectangle {
             var acc = frontPage.createRing.account
             acc.createProfile()
 
-            frontPage.profilePage.currentPerson = acc.profile
-            frontPage.profilePage.individual = acc.profile.individual
+            frontPage.profilePage.individual = acc.profile.rawIndividual
         }
         onAccountChanged: {
             var acc = frontPage.createRing.account
 
-            if (!acc)
+            if ((!acc) || cc.registrationType !=  Account.READY)
                 return
 
-            frontPage.profilePage.currentPerson = acc.profile
-            frontPage.profilePage.individual = acc.profile.individual
+            if (!acc.profile)
+                acc.createProfile()
+
+            //frontPage.profilePage.currentPerson = acc.profile
+            frontPage.profilePage.individual = acc.profile.rawIndividual
         }
     }
 
