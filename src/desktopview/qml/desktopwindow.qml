@@ -173,7 +173,7 @@ Kirigami.ApplicationWindow {
             id: testLoader
             width: globalDrawer.width
             Layout.preferredWidth: globalDrawer.width
-            active: globalDrawer.drawerOpen
+            active: globalDrawer.drawerOpen || globalDrawer.peeking
             sourceComponent: AccountList {
                 height: contentHeight
                 width: globalDrawer.width
