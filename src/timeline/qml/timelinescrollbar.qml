@@ -77,7 +77,6 @@ Item {
     }
 
     onDisplayChanged: {
-        console.log("DISPLAY CHANGED!", display)
         if (!display)
             hideTimer.running = true
 

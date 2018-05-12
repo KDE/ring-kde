@@ -170,10 +170,6 @@ Item {
                             anchors.fill: parent
                             onClicked: {
                                 dockBar.selectedItem = identifier
-
-                                // Show the sliding page
-                                if (topLevel.state == "mobile")
-                                    newHolder.show = true
                             }
                         }
 
@@ -197,17 +193,13 @@ Item {
             }
         }
 
-
-
         Component {
             id: timelineViewComponent
             PeersTimeline {
                 anchors.fill: parent
-                state: topLevel.state
+                state: ""
                 onIndividualSelected: {
                     mainPage.setIndividual(ind)
-                    if (topLevel.state == "mobile")
-                        newHolder.show = false
                 }
             }
         }
@@ -279,61 +271,7 @@ Item {
         source: parent
         anchors.fill: parent
         onContactMethodSelected: {
-            console.log("DSFDSF",cm)
             mainPage.setContactMethod(cm)
         }
     }
-
-    // Has both a desktop and mobile state
-    states: [
-        // In tablet mode, use 3 columns for the details
-        State {
-            name: ""
-        },
-        State {
-            name: "mobile"
-            ParentChange {
-                target: timelineViewComponent
-                parent: newHolder.container
-            }
-            ParentChange {
-                target: dialViewComponent
-                parent: newHolder.container
-            }
-            ParentChange {
-                target: contactViewComponent
-                parent: newHolder.container
-            }
-            ParentChange {
-                target: historyViewComponent
-                parent: newHolder.container
-            }
-            ParentChange {
-                target: bookmarkViewComponent
-                parent: newHolder.container
-            }
-            PropertyChanges {
-                target: timelineViewComponent
-                width: Math.min(335, root.width-22)
-                x: Math.min(335, root.width-22)
-            }
-
-            PropertyChanges {
-                target: dockBar
-                width: 32
-                selectedItem: ""
-            }
-
-            PropertyChanges {
-                target: dockHolder
-                width: 0
-            }
-
-            PropertyChanges {
-                target: topLevel
-                width: 32
-//                 visible: false
-            }
-        }
-    ]
 }

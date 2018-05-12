@@ -45,6 +45,71 @@ Kirigami.ApplicationWindow {
         colorGroup: SystemPalette.Inactive
     }
 
+    property var _regularActions: undefined
+    property var _mobileActions: undefined
+
+    // It's the only way to make it stateful
+    function regularActions() {
+        if (_regularActions != undefined)
+            return _regularActions
+
+        _regularActions = []
+
+        var view = [
+            "ActionCollection.showTimelineDockAction",
+            "ActionCollection.showDialDockAction",
+            "ActionCollection.showContactDockAction",
+            "ActionCollection.showHistoryDockAction",
+            "ActionCollection.showBookmarkDockAction"
+        ]
+
+        var actions = [
+            "ActionCollection.showWizard",
+            "ActionCollection.configureRing",
+            "ActionCollection.configureShortcut",
+            "ActionCollection.configureNotification",
+            "ActionCollection.quitAction"
+        ]
+
+        var viewCode = "import RingQmlWidgets 1.0\n QmlAction {text: \"View\" \n"
+        for (var i = 0; i < view.length; i++)
+            viewCode = viewCode + "QmlAction { action:"+view[i]+"} \n"
+        viewCode += "}"
+
+        _regularActions.push(Qt.createQmlObject(viewCode, root, "dynamicSnippet1"))
+
+        for (var i = 0; i < actions.length; i++) {
+            _regularActions.push(Qt.createQmlObject("import RingQmlWidgets 1.0; QmlAction {
+                action: "+actions[i]+"
+            }", root, "dynamicSnippet2"))
+        }
+
+        return _regularActions
+    }
+
+    function mobileActions() {
+        if (_mobileActions != undefined)
+            return _mobileActions
+
+        _mobileActions = []
+
+        var actions = [
+            "ActionCollection.showWizard",
+            "ActionCollection.configureRing",
+            "ActionCollection.configureShortcut",
+            "ActionCollection.configureNotification",
+            "ActionCollection.quitAction"
+        ]
+
+        var viewCode = "import RingQmlWidgets 1.0\n QmlAction {text: \""+i18n("Settings")+"\" \n"
+        for (var i = 0; i < actions.length; i++)
+            viewCode = viewCode + "QmlAction { action:"+actions[i]+"} \n"
+        viewCode += "}"
+
+        _mobileActions.push(Qt.createQmlObject(viewCode, root, "dynamicSnippet1"))
+
+        return _mobileActions
+    }
 
     //TODO use kirigami
     Rectangle {
@@ -128,56 +193,49 @@ Kirigami.ApplicationWindow {
         id: globalDrawer
         title: "Ring KDE client"
         titleIcon: "ring-kde"
-        actions: [
-            QmlAction {
-                text: "View"
-                QmlAction {
-                    action: ActionCollection.showTimelineDockAction
-                }
-                QmlAction {
-                    action: ActionCollection.showDialDockAction
-                }
-                QmlAction {
-                    action: ActionCollection.showContactDockAction
-                }
-                QmlAction {
-                    action: ActionCollection.showHistoryDockAction
-                }
-                QmlAction {
-                    action: ActionCollection.showBookmarkDockAction
-                }
-            },
-//             QmlAction {
-//                 action: ActionCollection.newContact
-//             },
-            QmlAction {
-                action: ActionCollection.showWizard
-            },
-            QmlAction {
-                action: ActionCollection.configureRing
-            },
-            QmlAction {
-                action: ActionCollection.configureShortcut
-            },
-            QmlAction {
-                action: ActionCollection.configureNotification
-            },
-            QmlAction {
-                action: ActionCollection.quitAction
+        bannerImageSource: ""
+        actions: regularActions()
+
+        Component {
+            id: accountsOnly
+            AccountList {
+                height: contentHeight
+                width: globalDrawer.width
+                enableAdd: true
             }
-        ]
+        }
+
+        Component {
+            id: timelineAndAccounts
+            ColumnLayout {
+                width: globalDrawer.width
+
+                PeersTimeline {
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+                    width: globalDrawer.width
+
+                    state: "mobile"
+                    onIndividualSelected: {
+                        mainPage.setIndividual(ind)
+                    }
+                }
+                AccountList {
+                    height: contentHeight
+                    Layout.fillWidth: true
+                    enableAdd: false
+                }
+            }
+        }
 
         // Yes, this is a Kirigami bug, the Item should *not* be needed, but
         // `content` cannot be resized after being created
         content: Loader {
-            id: testLoader
+            id: accountsLoader
             width: globalDrawer.width
             Layout.preferredWidth: globalDrawer.width
             active: globalDrawer.drawerOpen || globalDrawer.peeking
-            sourceComponent: AccountList {
-                height: contentHeight
-                width: globalDrawer.width
-            }
+            sourceComponent: accountsOnly
         }
         handleVisible: true
         drawerOpen: false
@@ -214,11 +272,18 @@ Kirigami.ApplicationWindow {
         anchors.fill: parent
         spacing: 0
 
-        DockBar {
+        Loader {
             id: dockBar
-            newHolder: newHolder
             Layout.fillHeight: true
-            Layout.maximumWidth: width
+            Layout.maximumWidth: item ? item.width : 0
+            Layout.minimumWidth: item ? item.width : 0
+            Layout.preferredWidth: item ? item.width : 0
+            visible: stateGroup.state != "mobile"
+            active: true
+            sourceComponent: DockBar {
+                height: parent.height
+                newHolder: newHolder
+            }
         }
 
         ColumnLayout {
@@ -269,8 +334,25 @@ Kirigami.ApplicationWindow {
             State {
                 name: ""
                 PropertyChanges {
+                    target: dockBar
+                    active: true
+                }
+                PropertyChanges {
                     target: contactHeader
                     isCompact: false
+                }
+                PropertyChanges {
+                    target: accountsLoader
+                    sourceComponent: accountsOnly
+                    Layout.preferredHeight: implicitHeight
+                    Layout.fillHeight: false
+                }
+                PropertyChanges {
+                    target: globalDrawer
+                    title: "Ring KDE client"
+                    titleIcon: "ring-kde"
+                    bannerImageSource: ""
+                    actions: regularActions()
                 }
             },
             State {
@@ -287,7 +369,20 @@ Kirigami.ApplicationWindow {
                 when: root.width < 500
                 PropertyChanges {
                     target: dockBar
-                    state: "mobile"
+                    active: false
+                }
+                PropertyChanges {
+                    target: accountsLoader
+                    sourceComponent: timelineAndAccounts
+                    Layout.preferredHeight: 999
+                    Layout.fillHeight: true
+                }
+                PropertyChanges {
+                    target: globalDrawer
+                    title: ""
+                    titleIcon: ""
+                    bannerImageSource: ""
+                    actions: mobileActions()
                 }
                 PropertyChanges {
                     target: mainPage

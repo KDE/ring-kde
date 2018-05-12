@@ -30,6 +30,8 @@ ListView {
     implicitHeight: contentHeight
     model: AccountModel
 
+    property bool enableAdd: true
+
     Component {
         id: accountErrorComponent
         RowLayout {
@@ -254,12 +256,13 @@ ListView {
 
     footer: OutlineButton {
         id: mainArea
-        height: fontMetrics.height * 3.5
+        height: enableAdd ? fontMetrics.height * 3.5 : 0
         expandedHeight: fontMetrics.height * 3.5
         sideMargin: 2
         width: parent.width
         label: i18n("Add an account")
         topPadding: 2
+        visible: enableAdd
         onClicked: {
             applicationWindow().globalDrawer.drawerOpen = false
             ActionCollection.showWizard.trigger()
