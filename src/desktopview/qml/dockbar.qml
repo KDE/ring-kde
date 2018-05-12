@@ -253,8 +253,8 @@ Item {
             width: Math.min(335, root.width-48)
             Layout.fillHeight: true
             visible: (
-                timelineView.active || dialView.active ||
-                contactView.active || bookmarkView.active || historyView.active
+                timelineViewComponent.active || dialViewComponent.active ||
+                contactViewComponent.active || bookmarkViewComponent.active || historyViewComponent.active
             )
 
             // This is a placeholder for the searchbox
@@ -293,27 +293,27 @@ Item {
         State {
             name: "mobile"
             ParentChange {
-                target: timelineView
+                target: timelineViewComponent
                 parent: newHolder.container
             }
             ParentChange {
-                target: dialView
+                target: dialViewComponent
                 parent: newHolder.container
             }
             ParentChange {
-                target: contactView
+                target: contactViewComponent
                 parent: newHolder.container
             }
             ParentChange {
-                target: historyView
+                target: historyViewComponent
                 parent: newHolder.container
             }
             ParentChange {
-                target: bookmarkView
+                target: bookmarkViewComponent
                 parent: newHolder.container
             }
             PropertyChanges {
-                target: timelineView
+                target: timelineViewComponent
                 width: Math.min(335, root.width-22)
                 x: Math.min(335, root.width-22)
             }

@@ -188,6 +188,10 @@ Kirigami.ScrollablePage {
                         height: implicitHeight
                         editing: contactViewPage.editing
 
+                        onEditingChanged: {
+                            console.log("Editing changed", editing)
+                        }
+
                         onChanged: {
                             isChanged = true
                         }
@@ -420,11 +424,11 @@ Kirigami.ScrollablePage {
             level: 2
         }
 
-        Item {
-            id: addressesHolder
-            height: addresses.contentHeight
-            width: parent.width
-        }
+//         Item {
+//             id: addressesHolder
+//             height: addresses.contentHeight
+//             width: parent.width
+//         }
     }
 
     onStateChanged: {
@@ -446,7 +450,7 @@ Kirigami.ScrollablePage {
         State {
             name: "tablet"
             when: (forcedState == "" ) && (contactViewPage.width >= 600 && contactViewPage.height <= (
-                statistics.implicitHeight + vCardForm.implicitHeight + 320) // 320 = advanced.height + 2*spacing
+                statistics.implicitHeight + 320) // 320 = advanced.height + 2*spacing
             )
             ParentChange {
                 target: advanced

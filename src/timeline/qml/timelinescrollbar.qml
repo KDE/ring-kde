@@ -93,10 +93,6 @@ Item {
         height: 65
         visible: scrollbar.display || hideTimer.running || stateGroup.state == "overlay"
 
-        onVisibleChanged: {
-            console.log("VISIBILITY CHANGED", visible)
-        }
-
         onYChanged: {
             if (!tmlList)
                 return

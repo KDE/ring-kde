@@ -45,8 +45,6 @@ Item {
         if (contactHeader)
             contactHeader.currentContactMethod = currentContactMethod
 
-        contactInfo.currentContactMethod = currentContactMethod
-
         if (currentContactMethod && currentContactMethod.person)
             personConn.target = currentContactMethod.person
 
