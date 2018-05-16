@@ -23,7 +23,7 @@ import org.kde.kirigami 2.2 as Kirigami
 import Ring 1.0
 
 Item {
-    property var recentView: null
+    property var searchView: null
     property real xPadding: 0
     property alias searchFocus: search.focus
     property alias labelWidth: findLabel.implicitWidth
@@ -129,21 +129,21 @@ Item {
             call.dialNumber = text
         }
         Keys.onDownPressed: {
-            recentView.currentIndex = (recentView.currentIndex == recentView.count - 1) ?
-                0 : recentView.currentIndex + 1
+            searchView.currentIndex = (searchView.currentIndex == searchView.count - 1) ?
+                0 : searchView.currentIndex + 1
         }
         Keys.onUpPressed: {
-            recentView.currentIndex = (recentView.currentIndex == 0) ?
-                recentView.count - 1 : recentView.currentIndex - 1
+            searchView.currentIndex = (searchView.currentIndex == 0) ?
+                searchView.count - 1 : searchView.currentIndex - 1
         }
         Keys.onReturnPressed: {
             if (searchStateGroup.state != "searchActive")
                 return
 
-            var cm = recentView.currentItem.contactMethod
+            var cm = searchView.currentItem.contactMethod
 
             // Display an error message when the selected element doesn't exist
-            if (!recentView.currentItem.isSelectable) {
+            if (!searchView.currentItem.isSelectable) {
                 displayNotFoundMessage()
                 return
             }

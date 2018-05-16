@@ -81,7 +81,7 @@ Item {
 
     SearchBox {
         id: searchBox
-        recentView: searchView
+        searchView: searchView
         width: topLevel.width
         xPadding: dockBar.width
         onContactMethodSelected: {

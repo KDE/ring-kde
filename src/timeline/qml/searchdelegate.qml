@@ -30,6 +30,7 @@ Item {
     property bool showPhoto: true
     property bool showControls: true
     property bool showSeparator: true
+    property bool isSelectable: selectable
     height: rows.implicitHeight + 10 //10 == 2*margins
 
     opacity: selectable ? 1 : 0.6
