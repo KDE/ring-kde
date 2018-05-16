@@ -398,7 +398,9 @@ int RingApplication::newInstance()
          QStringLiteral("wizardWelcomeOnly"), QVariant(!ConfigurationSkeleton::enableWizard())
       );
 
-      showWizard();
+      if (!AccountModel::instance().size())
+         showWizard();
+
       ConfigurationSkeleton::setEnableWizard(false);
       displayWizard = false;
       return 0;
