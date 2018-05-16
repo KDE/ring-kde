@@ -18,6 +18,7 @@
 #pragma once
 
 #include <QQuickItem>
+#include <QtCore/QAbstractItemModel>
 
 class MainPagePrivate;
 class ContactMethod;
@@ -43,6 +44,8 @@ public:
     Q_PROPERTY(QQuickItem* page READ page CONSTANT)
     Q_PROPERTY(QQuickItem* header READ header WRITE setHeader CONSTANT)
     Q_PROPERTY(bool mobile READ isMobile WRITE setMobile CONSTANT)
+    Q_PROPERTY(Individual* individual READ individual)
+    Q_PROPERTY(QModelIndex suggestedTimelineIndex READ suggestedTimelineIndex)
 
     Q_INVOKABLE explicit MainPage(QQuickItem* parent = nullptr);
     virtual ~MainPage();
@@ -53,6 +56,9 @@ public:
 
     QQuickItem* header() const;
     void setHeader(QQuickItem* item);
+
+    Individual* individual() const;
+    QModelIndex suggestedTimelineIndex() const;
 
     bool isMobile() const;
     void setMobile(bool v);
@@ -66,6 +72,9 @@ public Q_SLOTS:
     void setIndividual(Individual* ind);
     void setPerson(Person* p);
     void showVideo(Call* c);
+
+Q_SIGNALS:
+    void suggestSelection(Individual* individual, const QModelIndex& modelIndex);
 
 private:
     MainPagePrivate* d_ptr;

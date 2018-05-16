@@ -166,7 +166,7 @@ void QuickListView::setCurrentIndex(int index)
     if (!model())
         return;
 
-    selectionModel()->setCurrentIndex(
+    TreeView2::setCurrentIndex(
         model()->index(index, 0),
         QItemSelectionModel::ClearAndSelect
     );

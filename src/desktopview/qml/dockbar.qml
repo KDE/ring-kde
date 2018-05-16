@@ -32,6 +32,15 @@ Item {
 
     property var newHolder: null
 
+    function setCurrentIndex(index) {
+        if (dockLoader.sourceComponent != timelineViewComponent)
+            return
+
+        dockLoader.item.setCurrentIndex(index)
+    }
+
+    signal timelineSelected()
+
     RowLayout {
         id: dockLayout
         spacing: 0
@@ -262,6 +271,11 @@ Item {
                 sourceComponent: timelineViewComponent
                 Layout.fillWidth: true
                 Layout.fillHeight: true
+
+                onItemChanged: {
+                    if (item && sourceComponent == timelineViewComponent)
+                        timelineSelected()
+                }
             }
         }
     }

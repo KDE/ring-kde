@@ -87,8 +87,51 @@ MainPage::MainPage(QQuickItem* parent) :
 
     installEventFilter(this);
 
+    // Wait a bit, the timeline will change while it is loading, so before
+    // picking something at random, give it a chance to load some things.
     QTimer::singleShot(500, [this]() {
-        setIndividual(PeersTimelineModel::instance().mostRecentIndividual());
+        if (d_ptr->m_Invididual)
+            return;
+
+        auto i = PeersTimelineModel::instance().mostRecentIndividual();
+
+        // Select whatever is first (if any)
+        if ((!i) && PeersTimelineModel::instance().deduplicatedTimelineModel()->rowCount())
+            if (auto rawI = qvariant_cast<Individual*>(
+                PeersTimelineModel::instance().deduplicatedTimelineModel()->index(0,0).data((int)Ring::Role::Object)
+            ))
+                i = Individual::getIndividual(rawI);
+
+        // There is nothing yet, wait
+        if (!i) {
+            QMetaObject::Connection c;
+
+            c = connect(&PeersTimelineModel::instance(), &QAbstractItemModel::rowsInserted, this, [c, this]() {
+                if (d_ptr->m_Invididual) {
+                    disconnect(c);
+                    return;
+                }
+
+                if (auto rawI = qvariant_cast<Individual*>(
+                    PeersTimelineModel::instance().deduplicatedTimelineModel()->index(0,0).data((int)Ring::Role::Object)
+                )) {
+                    auto i = Individual::getIndividual(rawI);
+                    disconnect(c);
+                    setIndividual(i);
+                    const auto idx = PeersTimelineModel::instance().individualIndex(i);
+                    emit suggestSelection(rawI, idx);
+                }
+            });
+
+            return;
+        }
+
+        setIndividual(i);
+
+        if (i) {
+            const auto idx = PeersTimelineModel::instance().individualIndex(i);
+            emit suggestSelection(i.data(), idx);
+        }
     });
 
     d_ptr->m_DeduplicatedTimelineModel = PeersTimelineModel::instance().deduplicatedTimelineModel();
@@ -291,6 +334,26 @@ bool MainPage::isMobile() const
 void MainPage::setMobile(bool v)
 {
     d_ptr->m_pItem->setProperty("mobile", v);
+}
+
+Individual* MainPage::individual() const
+{
+    if (d_ptr->m_Invididual)
+        return qobject_cast<Individual*>(d_ptr->m_Invididual.data());
+
+    return nullptr;
+}
+
+QModelIndex MainPage::suggestedTimelineIndex() const
+{
+    if (d_ptr->m_Invididual)
+        return PeersTimelineModel::instance().individualIndex(
+            Individual::getIndividual(
+                qobject_cast<Individual*>(d_ptr->m_Invididual.data())
+            )
+        );
+
+    return {};
 }
 
 #include <mainpage.moc>

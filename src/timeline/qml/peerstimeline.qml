@@ -44,6 +44,10 @@ Rectangle {
     signal individualSelected(var ind)
     signal contextMenuRequested(var cm, int index)
 
+    function setCurrentIndex(index) {
+        recentView.setCurrentIndex(index)
+    }
+
     FontMetrics {
         id: fontMetrics
     }
@@ -65,17 +69,6 @@ Rectangle {
         objectName: "selectionMapper"
         onCurrentIndexChanged: {
             recentView.currentIndex = current.row
-        }
-    }
-
-    // Select the newest CM after half a second (assume it's fast enough to load
-    // the history)
-    Timer {
-        repeat: false
-        running: true
-        interval: 500
-        onTriggered: {
-            recentView.currentIndex = 0
         }
     }
 
@@ -146,7 +139,6 @@ Rectangle {
             clip: true
             anchors.fill: parent
             anchors.topMargin: AccountModel.hasAvailableAccounts ? 0 : accountError.height + 20
-//                 highlightMoveVelocity: Infinity //HACK
             delegate: contactDelegate
             section.delegate: sectionDelegate
             section.property: "formattedLastUsed" // indexedLastUsed

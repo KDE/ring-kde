@@ -284,6 +284,12 @@ Kirigami.ApplicationWindow {
             sourceComponent: DockBar {
                 height: parent.height
                 newHolder: newHolder
+                onTimelineSelected: {
+                    if (!mainPage.individual)
+                        return
+
+                    item.setCurrentIndex(mainPage.suggestedTimelineIndex)
+                }
             }
         }
 
@@ -318,6 +324,16 @@ Kirigami.ApplicationWindow {
                 header: contactHeader
                 Layout.fillHeight: true
                 Layout.fillWidth: true
+
+                onSuggestSelection: {
+                    var d = dockBar
+                    if (d.item) {
+                        console.log("Setting timeline index:", modelIndex, individual)
+                        d.item.setCurrentIndex(
+                            modelIndex
+                        )
+                    }
+                }
             }
         }
 
