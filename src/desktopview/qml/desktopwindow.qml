@@ -60,7 +60,8 @@ Kirigami.ApplicationWindow {
             "ActionCollection.showDialDockAction",
             "ActionCollection.showContactDockAction",
             "ActionCollection.showHistoryDockAction",
-            "ActionCollection.showBookmarkDockAction"
+            "ActionCollection.showBookmarkDockAction",
+            "ActionCollection.displayDialpadAction"
         ]
 
         var actions = [
