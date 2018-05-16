@@ -66,7 +66,7 @@
     </entry>
     <entry name="displayDialpad" type="Bool">
     	<label>Defines whether the dialpad is being shown by default</label>
-      <default>true</default>
+      <default>false</default>
     </entry>
     <entry name="displayAccountBox" type="Bool">
         <label>Defines whether the statusbar account combobox is being shown by default</label>
