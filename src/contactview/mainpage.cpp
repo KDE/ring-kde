@@ -112,14 +112,11 @@ MainPage::MainPage(QQuickItem* parent) :
                     return;
                 }
 
-                if (auto rawI = qvariant_cast<Individual*>(
-                    PeersTimelineModel::instance().deduplicatedTimelineModel()->index(0,0).data((int)Ring::Role::Object)
-                )) {
-                    auto i = Individual::getIndividual(rawI);
+                if (auto i = PeersTimelineModel::instance().mostRecentIndividual()) {
                     disconnect(c);
                     setIndividual(i);
                     const auto idx = PeersTimelineModel::instance().individualIndex(i);
-                    emit suggestSelection(rawI, idx);
+                    emit suggestSelection(i.data(), idx);
                 }
             });
 

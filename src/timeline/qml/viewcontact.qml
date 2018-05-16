@@ -129,7 +129,7 @@ Item {
         anchors.fill: parent
         z: 9999
         color: activePalette.base
-        visible: currentContactMethod == null || currentContactMethod.isSelf
+        visible: (!currentIndividual) && ((!currentContactMethod) || (currentContactMethod.isSelf))
     }
 
     ColumnLayout {
