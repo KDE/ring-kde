@@ -32,12 +32,13 @@ class QuickListViewItem;
  * from the previous QuickListViewItem in the list. It can also cross reference
  * into an external model to provide more flexibility.
  */
-struct QuickListViewSection
+struct QuickListViewSection final
 {
     explicit QuickListViewSection(
         QuickListViewItem* owner,
         const QVariant&    value
     );
+    ~QuickListViewSection();
 
     QuickListViewItem*    m_pOwner   {nullptr};
     QQuickItem*           m_pItem    {nullptr};
@@ -80,8 +81,6 @@ public:
     /// Geometry relative to the FlickableView::view()
     virtual QRectF geometry() const final override;
 
-
-private:
     QuickListViewPrivate* d() const;
 };
 
@@ -134,22 +133,8 @@ QuickListViewItem::~QuickListViewItem()
 QuickListView::~QuickListView()
 {
     // Delete the sections
-    auto sec = d_ptr->m_pFirstSection;
-    while(sec) {
-        auto sec2 = sec;
-
-        if (sec2->m_pItem)
-            delete sec2->m_pItem;
-
-        if (sec2->m_pContent)
-            delete sec2->m_pContent;
-
-        sec = sec->m_pNext;
-
-        Q_ASSERT(sec != sec2);
-
-        delete sec2;
-    }
+    while(auto sec = d_ptr->m_pFirstSection)
+        delete sec;
 
     if (d_ptr->m_pSections)
         delete d_ptr->m_pSections;
@@ -248,11 +233,22 @@ QuickListViewSection* QuickListViewPrivate::getSection(QuickListViewItem* i)
 
     const auto val = q_ptr->model()->data(i->index(), m_pSections->role());
 
-    if (i->m_pSection && i->m_pSection->m_Value == val)
+    if (i->m_pSection && i->m_pSection->m_Value == val) {
         return i->m_pSection;
+    }
 
     const auto prev = static_cast<QuickListViewItem*>(i->previous());
-    const auto next = static_cast<QuickListViewItem*>(i->next());
+    const auto next = static_cast<QuickListViewItem*>(i->next    ());
+
+    // Garbage collect or change the old section owner
+    if (i->m_pSection) {
+        if (--i->m_pSection->m_RefCount <= 0)
+            delete i->m_pSection;
+        else if (prev && next && prev->m_pSection && prev->m_pSection != i->m_pSection && next->m_pSection == i->m_pSection)
+            i->m_pSection->setOwner(next);
+        else if (prev->m_pSection != i->m_pSection)
+            Q_ASSERT(false); // There is a bug somewhere else
+    }
 
     // The section owner isn't currently loaded
     if ((!prev) && i->index().row() > 0) {
@@ -393,8 +389,14 @@ void QuickListViewSection::setOwner(QuickListViewItem* newParent)
     if (m_pOwner == newParent)
         return;
 
-    auto anchors = qvariant_cast<QObject*>(m_pOwner->m_pItem->property("anchors"));
-    anchors->setProperty("top", newParent->m_pItem->property("bottom"));
+    if (m_pOwner->m_pItem) {
+        auto anchors = qvariant_cast<QObject*>(m_pOwner->m_pItem->property("anchors"));
+        anchors->setProperty("top", newParent->m_pItem ?
+            newParent->m_pItem->property("bottom") : QVariant()
+        );
+    }
+    else
+        newParent->m_pItem->setY(0);
 
     m_pOwner = newParent;
 }
@@ -464,21 +466,6 @@ bool QuickListViewItem::flush()
 bool QuickListViewItem::remove()
 {
     if (m_pSection && --m_pSection->m_RefCount <= 0) {
-        if (m_pSection->m_pPrevious) {
-            Q_ASSERT(m_pSection->m_pPrevious != m_pSection->m_pNext);
-            m_pSection->m_pPrevious->m_pNext = m_pSection->m_pNext;
-        }
-
-        if (m_pSection->m_pNext)
-            m_pSection->m_pNext->m_pPrevious = m_pSection->m_pPrevious;
-
-        if (m_pSection == d()->m_pFirstSection)
-            d()->m_pFirstSection = m_pSection->m_pNext;
-
-        d()->m_IndexLoaded = false;
-
-        delete m_pSection->m_pItem;
-        delete m_pSection->m_pContent;
         delete m_pSection;
     }
 
@@ -493,6 +480,30 @@ bool QuickListViewItem::remove()
 QuickListViewSections::QuickListViewSections(QuickListView* parent) :
     QObject(parent), d_ptr(parent->d_ptr)
 {
+}
+
+QuickListViewSection::~QuickListViewSection()
+{
+    auto d_ptr = m_pOwner->d();
+
+    if (m_pPrevious) {
+        Q_ASSERT(m_pPrevious != m_pNext);
+        m_pPrevious->m_pNext = m_pNext;
+    }
+
+    if (m_pNext)
+        m_pNext->m_pPrevious = m_pPrevious;
+
+    if (this == d_ptr->m_pFirstSection)
+        d_ptr->m_pFirstSection = m_pNext;
+
+    d_ptr->m_IndexLoaded = false;
+
+    if (m_pItem)
+        delete m_pItem;
+
+    if (m_pContent)
+        delete m_pContent;
 }
 
 QuickListViewSections::~QuickListViewSections()
