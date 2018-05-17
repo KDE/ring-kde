@@ -50,6 +50,10 @@ struct QuickListViewSection
 
     // Mutator
     QQuickItem* item(QQmlComponent* component);
+
+    // Helpers
+    void reparentSection(QuickListViewItem* newParent, TreeView2* view);
+    void setOwner(QuickListViewItem* newOwner);
 };
 
 /**
@@ -261,6 +265,16 @@ QuickListViewSection* QuickListViewPrivate::getSection(QuickListViewItem* i)
         return prev->m_pSection;
     }
 
+    // If the item is inserted in front in multiple iterations, avoid creating
+    // new identical sections.
+    if (m_pFirstSection && i->index().row() == 0 && m_pFirstSection->m_Value == val) {
+        i->m_pSection = m_pFirstSection;
+        i->m_pSection->m_RefCount++;
+        m_pFirstSection->setOwner(i);
+
+        return m_pFirstSection;
+    }
+
     // Create a section
     i->m_pSection = new QuickListViewSection(i, val);
     Q_ASSERT(i->m_pSection->m_RefCount == 1);
@@ -281,8 +295,10 @@ QuickListViewSection* QuickListViewPrivate::getSection(QuickListViewItem* i)
         Q_ASSERT(i->m_pSection->m_pPrevious !=  i->m_pSection);
     }
 
-    m_pFirstSection = m_pFirstSection || (!prev) ?
-        m_pFirstSection : prev->m_pSection;
+    m_pFirstSection = m_pFirstSection ?
+        m_pFirstSection : i->m_pSection;
+
+    Q_ASSERT(m_pFirstSection);
 
     if (m_pSectionModel && !m_IndexLoaded)
         reloadSectionIndices();
@@ -364,6 +380,35 @@ bool QuickListViewItem::refresh()
 
     return true;
 }
+void QuickListViewSection::setOwner(QuickListViewItem* newParent)
+{
+    if (m_pOwner == newParent)
+        return;
+
+    auto anchors = qvariant_cast<QObject*>(m_pOwner->m_pItem->property("anchors"));
+    anchors->setProperty("top", newParent->m_pItem->property("bottom"));
+
+    m_pOwner = newParent;
+}
+
+void QuickListViewSection::reparentSection(QuickListViewItem* newParent, TreeView2* view)
+{
+    if (!m_pItem)
+        return;
+
+    if (newParent && newParent->m_pItem) {
+        auto anchors = qvariant_cast<QObject*>(m_pItem->property("anchors"));
+        anchors->setProperty("top", newParent->m_pItem->property("bottom"));
+
+        m_pItem->setParentItem(m_pOwner->view()->contentItem());
+    }
+    else {
+        m_pItem->setY(0);
+    }
+
+    if (!m_pItem->width())
+        m_pItem->setWidth(view->contentItem()->width());
+}
 
 bool QuickListViewItem::move()
 {
@@ -374,16 +419,7 @@ bool QuickListViewItem::move()
     if (d()->m_pSections)
         if (auto sec = d()->getSection(this)) {
             if (sec->m_pOwner == this && sec->m_pItem) {
-                if (prev && prev->m_pItem) {
-                    auto anchors = qvariant_cast<QObject*>(sec->m_pItem->property("anchors"));
-                    anchors->setProperty("top", prev->m_pItem->property("bottom"));
-                }
-                else {
-                    sec->m_pItem->setY(0);
-                }
-
-                if (!sec->m_pItem->width())
-                    sec->m_pItem->setWidth(view()->contentItem()->width());
+                sec->reparentSection(prev ? prev : nullptr, view());
 
                 prevItem = sec->m_pItem;
             }
