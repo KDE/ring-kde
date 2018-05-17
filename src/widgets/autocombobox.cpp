@@ -19,6 +19,7 @@
 
 #include <QtCore/QItemSelectionModel>
 #include <QtCore/QDebug>
+#include <QtGlobal>
 #include <QtCore/QAbstractProxyModel>
 
 AutoComboBox::AutoComboBox(QWidget* parent) : QComboBox(parent), m_pSelectionModel(nullptr)
@@ -32,6 +33,8 @@ AutoComboBox::~AutoComboBox()
 
 void AutoComboBox::bindToModel(QAbstractItemModel* m, QItemSelectionModel* s)
 {
+   Q_ASSERT(m);
+   Q_ASSERT(s);
    if (m_pSelectionModel)
       disconnect(m_pSelectionModel,&QItemSelectionModel::currentChanged,this,&AutoComboBox::slotModelSelectionChanged);
 

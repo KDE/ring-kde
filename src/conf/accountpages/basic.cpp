@@ -33,24 +33,27 @@ Pages::Basic::Basic(QWidget *parent) : PageBase(parent)
    connect(this,&PageBase::accountSet,[this]() {
       disconnect(m_CredConn );
 
-      m_pProtocol->bindToModel(account()->protocolModel(),account()->protocolModel()->selectionModel());
+      auto a = account();
+      Q_ASSERT(a);
+
+      m_pProtocol->bindToModel(a->protocolModel(),a->protocolModel()->selectionModel());
 
       m_pProfile->bindToModel(
          &ProfileModel::instance(),
-         ProfileModel::instance().getAccountSelectionModel(account())
+         ProfileModel::instance().getAccountSelectionModel(a)
       );
 
-      m_pBootstrapModel->setModel((account()->protocol() == Account::Protocol::RING)?
-         account()->bootstrapModel() : nullptr
+      m_pBootstrapModel->setModel((a->protocol() == Account::Protocol::RING)?
+         a->bootstrapModel() : nullptr
       );
 
       if (m_pBootstrapModel->horizontalHeader() && m_pBootstrapModel->model())
          m_pBootstrapModel->horizontalHeader()->setSectionResizeMode (0,QHeaderView::Stretch);
 
-      m_pBootstrapModel->setVisible(account()->roleData((int)Account::Role::HasCustomBootstrap).toBool());
+      m_pBootstrapModel->setVisible(a->roleData((int)Account::Role::HasCustomBootstrap).toBool());
 
 //       disconnect(this, &Pages::Basic::updateStatus); //TODO track previous account
-      connect(account(), &Account::stateChanged, this, &Pages::Basic::updateStatus);
+      connect(a, &Account::stateChanged, this, &Pages::Basic::updateStatus);
 
 /*      m_CredConn = connect(account()->credentialModel(), &CredentialModel::primaryCredentialChanged,[this](Credential::Type t, Credential* c) {
          if (t == Credential::Type::SIP) {
