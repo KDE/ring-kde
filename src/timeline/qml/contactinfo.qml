@@ -207,9 +207,9 @@ Kirigami.ScrollablePage {
                     PhoneNumbers {
                         id: phoneNumbers
                         anchors.fill: parent
-                        editing: contactViewPage.editing
                         model: contactViewPage.individual
                         buttonColor: contactViewPage.labelColor
+                        showAdd: contactViewPage.editing
                     }
 
                     background: Rectangle { color: activePalette.base }

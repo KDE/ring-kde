@@ -30,6 +30,7 @@ Item {
     property alias contentHeight: numbers.contentHeight
     property alias interactive: numbers.interactive
     property bool editing: (model && model.editRow) || !person
+    property bool showAdd: true
 
     clip: true
     signal personCreated(QtObject newPerson)
@@ -150,7 +151,7 @@ Item {
                 color: phoneNumbers.buttonColor
                 label: i18n("Add a phone number or GNU Ring identity")
                 topPadding: 2
-                visible: !numbers.model.editRow
+                visible: (!numbers.model.editRow) && phoneNumbers.showAdd
                 onClicked: {
                     if (phoneNumbers.model) {
                         contactBuilder.addEmptyPhoneNumber(phoneNumbers.person)
@@ -241,7 +242,7 @@ Item {
                         property var cmType: type
                         sourceComponent: editComponent
                         anchors.fill: parent
-                        anchors.rightMargin: 50
+                        anchors.rightMargin: 0
                         active: false
                     }
 
