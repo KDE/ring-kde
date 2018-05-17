@@ -21,19 +21,24 @@ import QtQuick.Layouts 1.0
 import Ring 1.0
 import RingQmlWidgets 1.0
 import org.kde.kirigami 2.2 as Kirigami
+ListView {
+    id: numbers
 
-Item {
-    id: phoneNumbers
     property color buttonColor: inactivePalette.text
     property alias model: numbers.model
     property QtObject person: null
-    property alias contentHeight: numbers.contentHeight
     property alias interactive: numbers.interactive
     property bool editing: (model && model.editRow) || !person
     property bool showAdd: true
-
-    clip: true
+    property real preferredHeight: numbers.contentHeight + (addButton && addButton.visible ? 0 : -addButton.height)
     signal personCreated(QtObject newPerson)
+
+    property var addButton: null
+
+    width: parent.width
+    anchors.margins: 3
+    height: preferredHeight
+    clip: true
 
     SystemPalette {
         id: activePalette
@@ -94,7 +99,7 @@ Item {
 
                     var accIdx = customAccount.checked ? numberAccount.index : -1
 
-                    var p = phoneNumbers.person ? phoneNumbers.person : phoneNumbers.model.person
+                    var p = numbers.person ? numbers.person : numbers.model.person
 
                     var cm = contactBuilder.updatePhoneNumber(obj,
                         p, newPhoneNumber.text, numbertype.index, accIdx
@@ -103,7 +108,7 @@ Item {
                     if (cm && cm.person) {
                         console.log("Setting the person", cm, cm.person)
                         person = cm.person
-                        //phoneNumbers.model = cm.person.individual
+                        //numbers.model = cm.person.individual
                     }
 
                     if (cm.person) {
@@ -133,167 +138,160 @@ Item {
 
     }
 
-    ColumnLayout {
-        anchors.fill: parent
+    footer: OutlineButton {
+        id: btn
+        height: fontMetrics.height * 3.5
+        expandedHeight: fontMetrics.height * 3.5
+        sideMargin: 2
+        width: parent.width
+        color: numbers.buttonColor
+        label: i18n("Add a phone number or GNU Ring identity")
+        topPadding: 2
+        visible: (!numbers.model.editRow) && numbers.showAdd
+        onClicked: {
+            if (numbers.model) {
+                contactBuilder.addEmptyPhoneNumber(numbers.person)
+                numbers.model.editRow = true
+                numbers.currentIndex = numbers.count - 1
+                numbers.currentItem.state = "edit"
+            }
+            else
+                console.log("No contact, not implemented")
+        }
 
-        ListView {
-            id: numbers
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            anchors.margins: 3
+        Component.onCompleted: {
+            numbers.addButton = btn
+        }
+    }
 
-            footer: OutlineButton {
-                id: mainArea
-                height: fontMetrics.height * 3.5
-                expandedHeight: fontMetrics.height * 3.5
-                sideMargin: 2
-                width: parent.width
-                color: phoneNumbers.buttonColor
-                label: i18n("Add a phone number or GNU Ring identity")
-                topPadding: 2
-                visible: (!numbers.model.editRow) && phoneNumbers.showAdd
-                onClicked: {
-                    if (phoneNumbers.model) {
-                        contactBuilder.addEmptyPhoneNumber(phoneNumbers.person)
-                        numbers.model.editRow = true
-                        numbers.currentIndex = numbers.count - 1
-                        numbers.currentItem.state = "edit"
-                    }
-                    else
-                        console.log("No contact, not implemented")
+    delegate: Kirigami.SwipeListItem {
+        height: readOnly.height
+        implicitHeight: readOnly.height
+
+        states: [
+            State {
+                name: ""
+            },
+            State {
+                name: "edit"
+                PropertyChanges {
+                    target: editorLoader
+                    editUri: uri
+
+                    active: true
+                }
+
+                PropertyChanges {
+                    target: readOnly
+                    visible: false
                 }
             }
+        ]
 
-            delegate: Kirigami.SwipeListItem {
-                height: readOnly.height
-                implicitHeight: readOnly.height
+        actions: [
+            Kirigami.Action {
+                iconName: "edit-delete"
+                text: i18n("Delete")
+                onTriggered: {
+                    // Cache the person to avoid the race condition where
+                    // the delegate is deleted before the end of the callback
+                    var p = numbers.model.person
+                    numbers.model.removePhoneNumber(object).
+                    if (p)
+                        p.save()
+                }
+            },
+            Kirigami.Action {
+                iconName: "document-edit"
+                text: i18n("Edit")
+                onTriggered: {
+                    state = "edit"
+                }
+            },
+            Kirigami.Action {
+                iconSource: "image://SymbolicColorizer/:/sharedassets/outline/call.svg"
+                text: i18n("Call")
+                visible: canCall
+                onTriggered: CallModel.dialingCall(object).performAction(Call.ACCEPT)
+            },
+            Kirigami.Action {
+                iconSource: "image://SymbolicColorizer/:/sharedassets/outline/camera.svg"
+                text: i18n("Video call")
+                visible: canVideoCall
+                onTriggered: CallModel.dialingCall(object).performAction(Call.ACCEPT)
+            },
+            Kirigami.Action {
+                iconSource: "image://SymbolicColorizer/:/sharedassets/outline/screen.svg"
+                text: i18n("Share screen")
+                visible: canVideoCall
+                onTriggered: CallModel.dialingCall(object).performAction(Call.ACCEPT)
+            }
+        ]
 
-                states: [
-                    State {
-                        name: ""
-                    },
-                    State {
-                        name: "edit"
-                        PropertyChanges {
-                            target: editorLoader
-                            editUri: uri
+        // Wrap in an extra Item to bypass Kirigami limitations regarding
+        // the number of elements
+        Item {
+            height: readOnly.height
+            implicitHeight: readOnly.height
 
-                            active: true
+            Loader {
+                id: editorLoader
+                property ContactMethod obj: object
+                property int idx: index
+                property string editUri: object ? object.uri : ""
+                property var cmType: type
+                sourceComponent: editComponent
+                anchors.fill: parent
+                anchors.rightMargin: 0
+                active: false
+            }
+
+            RowLayout {
+                id: readOnly
+                anchors.leftMargin: 10
+                anchors.fill: parent
+                height: columns.implicitHeight + 30 // 30 == 3*spacing
+                implicitHeight: columns.implicitHeight + 30
+                spacing: 10
+
+                PixmapWrapper {
+                    Layout.preferredHeight: 16
+                    Layout.preferredWidth: 16
+                    anchors.verticalCenter: parent.verticalCenter
+                    pixmap: decoration
+                }
+
+                ColumnLayout {
+                    id: columns
+                    Layout.fillWidth: true
+                    Row {
+                        Layout.fillWidth: true
+                        Text {
+                            id: dsfdsf
+                            text: display
+                            color: activePalette.text
                         }
-
-                        PropertyChanges {
-                            target: readOnly
-                            visible: false
+                        Text {
+                            text: "  ("+categoryName+")"
+                            color: inactivePalette.text
                         }
                     }
-                ]
 
-                actions: [
-                    Kirigami.Action {
-                        iconName: "edit-delete"
-                        text: i18n("Delete")
-                        onTriggered: {
-                            // Cache the person to avoid the race condition where
-                            // the delegate is deleted before the end of the callback
-                            var p = phoneNumbers.model.person
-                            phoneNumbers.model.removePhoneNumber(object).
-                            if (p)
-                                p.save()
-                        }
-                    },
-                    Kirigami.Action {
-                        iconName: "document-edit"
-                        text: i18n("Edit")
-                        onTriggered: {
-                            state = "edit"
-                        }
-                    },
-                    Kirigami.Action {
-                        iconSource: "image://SymbolicColorizer/:/sharedassets/outline/call.svg"
-                        text: i18n("Call")
-                        visible: canCall
-                        onTriggered: CallModel.dialingCall(object).performAction(Call.ACCEPT)
-                    },
-                    Kirigami.Action {
-                        iconSource: "image://SymbolicColorizer/:/sharedassets/outline/camera.svg"
-                        text: i18n("Video call")
-                        visible: canVideoCall
-                        onTriggered: CallModel.dialingCall(object).performAction(Call.ACCEPT)
-                    },
-                    Kirigami.Action {
-                        iconSource: "image://SymbolicColorizer/:/sharedassets/outline/screen.svg"
-                        text: i18n("Share screen")
-                        visible: canVideoCall
-                        onTriggered: CallModel.dialingCall(object).performAction(Call.ACCEPT)
+                    Text {
+                        text: lastUsed == undefined || lastUsed == "" ? i18n("Never used") :
+                            i18n("Used ")+totalCallCount+i18n(" time (Last used on: ") + formattedLastUsed + ")"
+                        color: inactivePalette.text
                     }
-                ]
+                }
 
-                // Wrap in an extra Item to bypass Kirigami limitations regarding
-                // the number of elements
                 Item {
-                    height: readOnly.height
-                    implicitHeight: readOnly.height
-
-                    Loader {
-                        id: editorLoader
-                        property ContactMethod obj: object
-                        property int idx: index
-                        property string editUri: object ? object.uri : ""
-                        property var cmType: type
-                        sourceComponent: editComponent
-                        anchors.fill: parent
-                        anchors.rightMargin: 0
-                        active: false
-                    }
-
-                    RowLayout {
-                        id: readOnly
-                        anchors.leftMargin: 10
-                        anchors.fill: parent
-                        height: columns.implicitHeight + 30 // 30 == 3*spacing
-                        implicitHeight: columns.implicitHeight + 30
-                        spacing: 10
-
-                        PixmapWrapper {
-                            Layout.preferredHeight: 16
-                            Layout.preferredWidth: 16
-                            anchors.verticalCenter: parent.verticalCenter
-                            pixmap: decoration
-                        }
-
-                        ColumnLayout {
-                            id: columns
-                            Layout.fillWidth: true
-                            Row {
-                                Layout.fillWidth: true
-                                Text {
-                                    id: dsfdsf
-                                    text: display
-                                    color: activePalette.text
-                                }
-                                Text {
-                                    text: "  ("+categoryName+")"
-                                    color: inactivePalette.text
-                                }
-                            }
-
-                            Text {
-                                text: lastUsed == undefined || lastUsed == "" ? i18n("Never used") :
-                                    i18n("Used ")+totalCallCount+i18n(" time (Last used on: ") + formattedLastUsed + ")"
-                                color: inactivePalette.text
-                            }
-                        }
-
-                        Item {
-                            Layout.preferredWidth: 5
-                        }
-                    }
+                    Layout.preferredWidth: 5
                 }
             }
         }
+    }
 
-        ContactBuilder {
-            id: contactBuilder
-        }
+    ContactBuilder {
+        id: contactBuilder
     }
 }
