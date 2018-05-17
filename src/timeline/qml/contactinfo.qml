@@ -137,6 +137,7 @@ Kirigami.ScrollablePage {
         ColumnLayout {
             id: tabbedContactInfo
             anchors.topMargin: contactViewPage.showImage ? 95 : 0
+            spacing: 0
 
             clip: true
             anchors.fill: parent
@@ -150,19 +151,11 @@ Kirigami.ScrollablePage {
                 }
 
                 TabButton {
-                    id: detailsButton
-                    text: i18n("Details")
-                }
-                TabButton {
                     text: i18n("Phone numbers")
                 }
 //                 TabButton {
 //                     text: i18n("Addresses")
 //                 }
-                TabButton {
-                    id: statButton
-                    text: i18n("Statistics")
-                }
             }
 
             SwipeView {
@@ -185,7 +178,7 @@ Kirigami.ScrollablePage {
 
                     VCardForm {
                         id: vCardForm
-                        height: implicitHeight
+                        height: preferredHeight
                         editing: contactViewPage.editing
 
                         onEditingChanged: {
@@ -206,7 +199,7 @@ Kirigami.ScrollablePage {
                     Layout.fillHeight: true
                     PhoneNumbers {
                         id: phoneNumbers
-                        anchors.fill: parent
+                        width: parent.width
                         model: contactViewPage.individual
                         buttonColor: contactViewPage.labelColor
                         showAdd: contactViewPage.editing
@@ -305,12 +298,13 @@ Kirigami.ScrollablePage {
         }
     }
 
-    Column {
+    ColumnLayout {
         id: phoneLayout
         visible: false
         anchors.left: parent.left
         anchors.top: parent.top
         width: parent.width
+        spacing: 10
 
         /**
          * When showing the profile or adding a contact, display the image at the top.
@@ -323,7 +317,7 @@ Kirigami.ScrollablePage {
 
             visible: showImage
             height: showImage ? 90 : 0
-            width: parent.width
+            Layout.fillWidth: true
 
             ContactPhoto {
                 id: photoRect
@@ -372,25 +366,29 @@ Kirigami.ScrollablePage {
             id: statisticHolder
             anchors.left: parent.left
             height: statistics.implicitHeight
-            width: parent.width
+            Layout.fillWidth: true
         }
 
-        Kirigami.BasicListItem {
-            id: viewHistory
-            label: i18n("View history")
-            icon: "view-history"
-            separatorVisible: true
-            onClicked: {
-                contactViewPage.selectHistory()
+        // Keep in columns to avoid spacing
+        ColumnLayout {
+            Layout.fillWidth: true
+            Kirigami.BasicListItem {
+                id: viewHistory
+                label: i18n("View history")
+                icon: "view-history"
+                separatorVisible: true
+                onClicked: {
+                    contactViewPage.selectHistory()
+                }
             }
-        }
 
-        Kirigami.BasicListItem {
-            id: openChat
-            label: i18n("Open chat")
-            icon: "dialog-messages"
-            onClicked: {
-                contactViewPage.selectChat()
+            Kirigami.BasicListItem {
+                id: openChat
+                label: i18n("Open chat")
+                icon: "dialog-messages"
+                onClicked: {
+                    contactViewPage.selectChat()
+                }
             }
         }
 
@@ -402,8 +400,11 @@ Kirigami.ScrollablePage {
 
         Item {
             id: contactHolder
-            height: vCardForm.implicitHeight
-            width: parent.width
+            height: vCardForm.preferredHeight
+            Layout.preferredHeight: height
+            Layout.maximumHeight: height
+            Layout.minimumHeight: height
+            Layout.fillWidth: true
         }
 
         Kirigami.Heading {
@@ -414,15 +415,18 @@ Kirigami.ScrollablePage {
 
         Item {
             id: phoneNumberHolder
-            height: phoneNumbers.contentHeight+ 48 // 48 == (+)
-            width: parent.width
+            height: phoneNumbers.preferredHeight
+            Layout.preferredHeight: height
+            Layout.maximumHeight: height
+            Layout.minimumHeight: height
+            Layout.fillWidth: true
         }
 
-        Kirigami.Heading {
-            text: i18n("Addresses")
-            color: contactViewPage.labelColor
-            level: 2
-        }
+//         Kirigami.Heading {
+//             text: i18n("Addresses")
+//             color: contactViewPage.labelColor
+//             level: 2
+//         }
 
 //         Item {
 //             id: addressesHolder
@@ -432,13 +436,8 @@ Kirigami.ScrollablePage {
     }
 
     onStateChanged: {
-        //FIXME this is zombie code, but needs work to remove
-        tabBar.currentIndex = 1
+        tabBar.currentIndex = 0
         sv.currentIndex = 1
-        detailsButton.visible = state == "phone"
-        statButton.visible = state == "phone"
-        detailsButton.width = state == "phone" ? detailsButton.implicitWidth : 0
-        statButton.width = state == "phone" ? statButton.implicitWidth : 0
     }
 
     /**
@@ -520,6 +519,7 @@ Kirigami.ScrollablePage {
                 target: phoneNumbers
                 anchors.fill: phoneNumbersPage
                 width: undefined
+                height: phoneNumbersPage.height
                 interactive: true
             }
             PropertyChanges {
@@ -663,6 +663,9 @@ Kirigami.ScrollablePage {
                 anchors.fill: undefined
                 width: contactViewPage.width
                 interactive: false
+                height: preferredHeight
+                x: 0
+                y: 0
             }
 
 //             PropertyChanges {

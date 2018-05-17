@@ -28,6 +28,7 @@ GridLayout {
     property var currentContactMethod: null
     property var currentPerson: null
     property bool editing: true
+    property real preferredHeight: implicitHeight
 
     signal changed()
 
@@ -152,7 +153,7 @@ GridLayout {
 //     }
 
     OutlineButton {
-        id: mainArea
+        id: addButton
         height: 54
         sideMargin: 2
         Layout.columnSpan: 2
