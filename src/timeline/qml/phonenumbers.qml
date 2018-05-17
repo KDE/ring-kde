@@ -66,7 +66,7 @@ Item {
 
             CheckBox {
                 id: customAccount
-                checked: obj.account && visible
+                checked: obj && obj.account && visible
                 visible: AccountModel.size > 1
             }
 
@@ -76,7 +76,7 @@ Item {
                 enabled: customAccount.checked
                 textRole: "display"
                 visible: AccountModel.size > 1
-                currentIndex: obj.account ? obj.account.index.row : 2
+                currentIndex: (obj && obj.account) ? obj.account.index.row : 2
                 onActivated: {
                 }
             }
@@ -123,7 +123,9 @@ Item {
                         numbers.model.editRow = false
 
                     numbers.currentIndex = idx
-                    numbers.currentItem.state = ""
+
+                    if (numbers.currentItem)
+                        numbers.currentItem.state = ""
                 }
             }
         }
