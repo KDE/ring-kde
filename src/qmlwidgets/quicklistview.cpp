@@ -252,6 +252,7 @@ QuickListViewSection* QuickListViewPrivate::getSection(QuickListViewItem* i)
         return i->m_pSection;
 
     const auto prev = static_cast<QuickListViewItem*>(i->previous());
+    const auto next = static_cast<QuickListViewItem*>(i->next());
 
     // The section owner isn't currently loaded
     if ((!prev) && i->index().row() > 0) {
@@ -271,8 +272,15 @@ QuickListViewSection* QuickListViewPrivate::getSection(QuickListViewItem* i)
         i->m_pSection = m_pFirstSection;
         i->m_pSection->m_RefCount++;
         m_pFirstSection->setOwner(i);
-
         return m_pFirstSection;
+    }
+
+    // If the next element has the same category but not the previous
+    if (next && next->m_pSection && next->m_pSection->m_Value == val) {
+        i->m_pSection = next->m_pSection;
+        i->m_pSection->m_RefCount++;
+        i->m_pSection->setOwner(i);
+        return i->m_pSection;
     }
 
     // Create a section
