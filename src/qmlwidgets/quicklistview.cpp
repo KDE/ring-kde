@@ -76,7 +76,9 @@ public:
     QQmlContext*          m_pContent {nullptr};
     QuickListViewSection* m_pSection {nullptr};
 
+    // Setters
     virtual void setSelected(bool s) final override;
+    QuickListViewSection* setSection(QuickListViewSection* s, const QVariant& val);
 
     /// Geometry relative to the FlickableView::view()
     virtual QRectF geometry() const final override;
@@ -220,6 +222,33 @@ QQuickItem* QuickListViewSection::item(QQmlComponent* component)
     return m_pItem;
 }
 
+QuickListViewSection* QuickListViewItem::setSection(QuickListViewSection* s, const QVariant& val)
+{
+    if ((!s) || s->m_Value != val)
+        return nullptr;
+
+    const auto p = static_cast<QuickListViewItem*>(previous());
+    const auto n = static_cast<QuickListViewItem*>(next    ());
+
+    // Garbage collect or change the old section owner
+    if (m_pSection) {
+        if (--m_pSection->m_RefCount <= 0)
+            delete m_pSection;
+        else if (p && n && p->m_pSection && p->m_pSection != m_pSection && n->m_pSection == m_pSection)
+            m_pSection->setOwner(n);
+        else if (p->m_pSection != m_pSection)
+            Q_ASSERT(false); // There is a bug somewhere else
+    }
+
+    m_pSection = s;
+    s->m_RefCount++;
+
+    if ((!p) || p->m_pSection != s)
+        s->setOwner(this);
+
+    return s;
+}
+
 /**
  * No lookup is performed, it is based on the previous entry and nothing else.
  *
@@ -233,51 +262,21 @@ QuickListViewSection* QuickListViewPrivate::getSection(QuickListViewItem* i)
 
     const auto val = q_ptr->model()->data(i->index(), m_pSections->role());
 
-    if (i->m_pSection && i->m_pSection->m_Value == val) {
+    if (i->m_pSection && i->m_pSection->m_Value == val)
         return i->m_pSection;
-    }
 
     const auto prev = static_cast<QuickListViewItem*>(i->previous());
     const auto next = static_cast<QuickListViewItem*>(i->next    ());
 
-    // Garbage collect or change the old section owner
-    if (i->m_pSection) {
-        if (--i->m_pSection->m_RefCount <= 0)
-            delete i->m_pSection;
-        else if (prev && next && prev->m_pSection && prev->m_pSection != i->m_pSection && next->m_pSection == i->m_pSection)
-            i->m_pSection->setOwner(next);
-        else if (prev->m_pSection != i->m_pSection)
-            Q_ASSERT(false); // There is a bug somewhere else
-    }
-
     // The section owner isn't currently loaded
-    if ((!prev) && i->index().row() > 0) {
+    if ((!prev) && i->index().row() > 0)
         Q_ASSERT(false); //TODO when GC is enabled, the assert is to make sure I don't forget
-    }
 
-    // Use the previous section
-    if (prev && prev->m_pSection && prev->m_pSection->m_Value == val) {
-        i->m_pSection = prev->m_pSection;
-        i->m_pSection->m_RefCount++;
-        return prev->m_pSection;
-    }
-
-    // If the item is inserted in front in multiple iterations, avoid creating
-    // new identical sections.
-    if (m_pFirstSection && i->index().row() == 0 && m_pFirstSection->m_Value == val) {
-        i->m_pSection = m_pFirstSection;
-        i->m_pSection->m_RefCount++;
-        m_pFirstSection->setOwner(i);
-        return m_pFirstSection;
-    }
-
-    // If the next element has the same category but not the previous
-    if (next && next->m_pSection && next->m_pSection->m_Value == val) {
-        i->m_pSection = next->m_pSection;
-        i->m_pSection->m_RefCount++;
-        i->m_pSection->setOwner(i);
-        return i->m_pSection;
-    }
+    // Check if the nearby sections are compatible
+    for (auto& s : {
+        prev ? prev->m_pSection : nullptr, m_pFirstSection, next ? next->m_pSection : nullptr
+    }) if (auto ret = i->setSection(s, val))
+            return ret;
 
     // Create a section
     i->m_pSection = new QuickListViewSection(i, val);
