@@ -19,6 +19,7 @@ import QtQuick 2.7
 import QtQuick.Layouts 1.0
 import Ring 1.0
 import RingQmlWidgets 1.0
+import ContactView 1.0
 import QtGraphicalEffects 1.0
 import Style 1.0
 import org.kde.kirigami 2.2 as Kirigami
@@ -29,6 +30,7 @@ Item {
 
     property color background
     property color foreground
+    property var cm: contactMethod
     signal clicked()
 
     height: bubble.height + 10
@@ -36,12 +38,13 @@ Item {
     RowLayout {
         anchors.fill: parent
 
-        PixmapWrapper {
+        ContactPhoto {
             width: 50
             height: 50
             visible: direction == 0
-            pixmap: decoration
-            themeFallback: "im-user"
+            drawEmptyOutline: false
+            tracked: false
+            contactMethod: chatMessage.cm
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 20
         }
@@ -101,11 +104,13 @@ Item {
             }
         }
 
-        PixmapWrapper {
+        ContactPhoto {
             width: 50
             height: 50
             visible: direction == 1
-            pixmap: decoration
+            drawEmptyOutline: false
+            tracked: false
+            contactMethod: chatMessage.cm
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 20
         }
