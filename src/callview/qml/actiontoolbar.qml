@@ -71,6 +71,14 @@ Rectangle {
         return "#CC222222"
     }
 
+    function selectLabelColor(action) {
+        if (action == UserActionModel.HANGUP || action == UserActionModel.ACCEPT)
+            return "white"
+
+        // Default
+        return activePalette.text
+    }
+
     Component {
         id: actionDelegate
 
@@ -104,7 +112,7 @@ Rectangle {
                         visible: false
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
-                        color: activePalette.text
+                        color: selectLabelColor(action)
                         font.bold: true
 
                         anchors.leftMargin: 10
