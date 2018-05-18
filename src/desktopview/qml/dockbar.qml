@@ -114,6 +114,7 @@ Item {
                                 width: dockBar.width - 3
                                 height: dockBar.width - 3
                                 rawIndividual: object
+                                defaultColor: "f2f2f2ff" //same as the SVG
                             }
                             onClicked: {
                                 var component = Qt.createComponent("PresenceSelector.qml")
