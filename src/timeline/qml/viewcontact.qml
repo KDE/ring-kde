@@ -189,6 +189,7 @@ Item {
                         showScrollbar: timelinePage.showScrollbar
                         timelineModel: viewContact.timelineModel
                         currentContactMethod: viewContact.currentContactMethod
+                        currentIndividual: viewContact.currentIndividual
                         anchors.fill: parent
                     }
                 }

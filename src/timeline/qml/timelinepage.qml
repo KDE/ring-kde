@@ -39,7 +39,10 @@ Rectangle {
     color: activePalette.base
 
     property var currentContactMethod: null
+    property var currentIndividual: null
     property var timelineModel: null
+
+    property bool canSendTexts: currentIndividual ? currentIndividual.canSendTexts : false
 
     onTimelineModelChanged: {
         if (!fixmeTimer.running)
@@ -172,7 +175,7 @@ Rectangle {
             id: chatBox
             Layout.fillWidth: true
             height: 90
-            visible: currentContactMethod ? currentContactMethod.canSendTexts == ContactMethod.AVAILABLE : false
+            visible: canSendTexts
             MessageBuilder {id: builder}
 
             textColor: activePalette.text
@@ -184,8 +187,16 @@ Rectangle {
     Connections {
         target: chatBox
         onSendMessage: {
-            builder.addPayload("text/plain", message)
-            builder.sendWidth(currentContactMethod)
+
+            if (currentIndividual && !currentContactMethod) {
+                currentContactMethod = currentIndividual.preferredContactMethod(Media.TEXT)
+                console.log("Can't send the message, this is a bug")
+            }
+
+            if (currentContactMethod) {
+                builder.addPayload("text/plain", message)
+                builder.sendWidth(currentContactMethod)
+            }
         }
     }
 }

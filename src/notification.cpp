@@ -246,6 +246,14 @@ void Notification::incomingCall(Call* call)
 
 void Notification::incomingText(Media::TextRecording* t, ContactMethod* cm)
 {
+   const auto direction = t->instantTextMessagingModel()->index(
+      t->instantTextMessagingModel()->rowCount()-1, 0
+   ).data((int)Media::TextRecording::Role::Direction);
+
+   if ((!direction.canConvert<Media::Media::Direction>()) ||
+     qvariant_cast<Media::Media::Direction>(direction) != Media::Media::Direction::IN)
+      return;
+
    if (t && !RingApplication::instance()->mayHaveFocus())
       (new IncomingTextNotification(cm, t))->sendEvent();
 }
