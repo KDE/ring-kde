@@ -149,10 +149,9 @@ Rectangle {
         onRegistrationCompleted: {
             stateGroup.state = "showProfile"
             footer.state = "finish"
-            var acc = frontPage.createRing.account
-            acc.createProfile()
+            account.createProfile()
 
-            frontPage.profilePage.individual = acc.profile.rawIndividual
+            frontPage.profilePage.individual = account.profile.rawIndividual
         }
         onAccountChanged: {
             var acc = frontPage.createRing.account

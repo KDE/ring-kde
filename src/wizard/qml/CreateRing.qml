@@ -30,7 +30,7 @@ Item {
 
     property var account: null
 
-    signal registrationCompleted()
+    signal registrationCompleted(QtObject account)
 
     width: Math.min(createForm.implicitWidth, parent.width - 20)
     height: createForm.implicitHeight
@@ -402,7 +402,7 @@ Item {
                 case 0: //SUCCESS
                     registrationStatus.text = i18n("Success")
                     busy = false
-                    createRing.registrationCompleted()
+                    createRing.registrationCompleted(account)
                     break
                 case 1: //WRONG_PASSWORD
                     registrationStatus.text = i18n("Password mismatch")
@@ -441,7 +441,7 @@ Item {
                     registrationTimeout.stop()
                     registrationIndicator.visible = false
                     busy = false
-                    createRing.registrationCompleted()
+                    createRing.registrationCompleted(account)
                 }
                 account = null
             }
