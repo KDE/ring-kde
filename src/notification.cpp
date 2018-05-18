@@ -34,6 +34,7 @@
 #include <numbercategory.h>
 #include <useractionmodel.h>
 #include <media/textrecording.h>
+#include <media/mimemessage.h>
 #include <media/recordingmodel.h>
 
 // Ring-KDE
@@ -216,7 +217,7 @@ Notification::Notification(QObject* parent) : QObject(parent)
 {
    connect(&CallModel::instance(), &CallModel::incomingCall, this, &Notification::incomingCall);
    connect(&AccountModel::instance(), &AccountModel::accountStateChanged, this, &Notification::accountStatus);
-   connect(&Media::RecordingModel::instance(), &Media::RecordingModel::newTextMessage, this, &Notification::incomingText);
+   connect(&Media::RecordingModel::instance(), &Media::RecordingModel::mimeMessageInserted, this, &Notification::incomingText);
 }
 
 Notification* Notification::instance()
@@ -244,14 +245,9 @@ void Notification::incomingCall(Call* call)
       (new IncomingCallNotification(call))->sendEvent();
 }
 
-void Notification::incomingText(Media::TextRecording* t, ContactMethod* cm)
+void Notification::incomingText(Media::MimeMessage* m, Media::TextRecording* t, ContactMethod* cm)
 {
-   const auto direction = t->instantTextMessagingModel()->index(
-      t->instantTextMessagingModel()->rowCount()-1, 0
-   ).data((int)Media::TextRecording::Role::Direction);
-
-   if ((!direction.canConvert<Media::Media::Direction>()) ||
-     qvariant_cast<Media::Media::Direction>(direction) != Media::Media::Direction::IN)
+   if (m->direction() == Media::Media::Direction::OUT)
       return;
 
    if (t && !RingApplication::instance()->mayHaveFocus())

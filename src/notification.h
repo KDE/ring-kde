@@ -25,6 +25,7 @@ class Call;
 class ContactMethod;
 namespace Media {
    class TextRecording;
+   class MimeMessage;
 }
 
 /**
@@ -42,7 +43,7 @@ public:
 
    void accountStatus(Account* a, const Account::RegistrationState state);
 
-   void incomingText(Media::TextRecording* t, ContactMethod* cm);
+   void incomingText(Media::MimeMessage* m, Media::TextRecording* t, ContactMethod* cm);
 
    void createContact();
 
