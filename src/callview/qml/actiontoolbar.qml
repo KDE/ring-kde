@@ -32,6 +32,16 @@ Rectangle {
 
     property var userActionModel: null
 
+    Timer {
+        id: hideLabel
+        running: false
+        repeat: false
+        interval: 5000
+        onTriggered: {
+            currentText.visible = false
+        }
+    }
+
     // Use a separate label. This allows to use only icons in the buttons,
     // this reducing the footprint and avoiding a second row.
     Rectangle {
@@ -135,6 +145,7 @@ Rectangle {
                             currentText.visible = true
                             currentTextText.text = display
                         }
+                        hideLabel.restart()
                     }
                 }
 
