@@ -16,7 +16,7 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
 import QtQuick 2.7
-import QtQuick.Controls 2.0
+import QtQuick.Controls 2.2
 import Ring 1.0
 import QtQuick.Layouts 1.0
 import QtGraphicalEffects 1.0
@@ -102,6 +102,22 @@ Rectangle {
         }
     }
 
+    Component {
+        id: pendingContactRequests
+        ViewContactRequests {
+            Component.onCompleted: {
+                implicitHeight = height
+                accountError.height = height
+            }
+        }
+    }
+
+    property bool displayNoAccount: AccountModel.size == 0
+    property bool displayDisabled: !AccountModel.hasEnabledAccounts
+    property bool displayNoRegAccounts: !AccountModel.hasAvailableAccounts
+    property bool displayContactRequests: AccountModel.incomingContactRequestModel.size > 0
+    property bool displayActionHeader: displayNoAccount || displayNoRegAccounts || displayDisabled || displayContactRequests
+
     Item {
         anchors.fill: parent
 
@@ -117,28 +133,25 @@ Rectangle {
 
         Loader {
             id: accountError
-            active: (
-                (!AccountModel.hasAvailableAccounts) ||
-                (!AccountModel.hasEnabledAccounts  ) ||
-                (AccountModel.size == 0)
-            )
+            active: displayActionHeader
 
             width: parent.width -20 - scrollBar.width
             x: 10
             y: 10
             height: item ? item.implicitHeight : 0
 
-            sourceComponent: (AccountModel.size == 0) ? noAccounts : (
-                (!AccountModel.hasEnabledAccounts) ? noEnabledAccounts :
-                noRegisteredAccounts
-            )
+            sourceComponent: displayNoAccount ? noAccounts : (
+                displayDisabled ? noEnabledAccounts : (
+                    displayNoRegAccounts ? noRegisteredAccounts :
+                        pendingContactRequests
+            ))
         }
 
         QuickListView {
             id: recentView
             clip: true
             anchors.fill: parent
-            anchors.topMargin: AccountModel.hasAvailableAccounts ? 0 : accountError.height + 20
+            anchors.topMargin: (!accountError.active) ? 0 : accountError.height + 20
             delegate: contactDelegate
             section.delegate: sectionDelegate
             section.property: "formattedLastUsed" // indexedLastUsed

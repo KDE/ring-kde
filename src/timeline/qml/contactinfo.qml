@@ -29,7 +29,8 @@ Kirigami.ScrollablePage {
     property string defaultName: ""
     property var individual: null
     property string forcedState: ""
-    property bool editing: true
+    property bool editable: true
+    property bool editing: editable
 
     signal changed()
 
@@ -114,7 +115,7 @@ Kirigami.ScrollablePage {
             iconName: "document-edit"
             visible: contactViewPage.state == "mobile"
             onTriggered: {
-                editing = !editing
+                editing = (!editing) && editable
             }
         }
     }
@@ -341,6 +342,9 @@ Kirigami.ScrollablePage {
                     anchors.fill: parent
                     z: 100
                     onClicked: {
+                        if (!contactViewPage.editing)
+                            return false
+
                         var component = Qt.createComponent("PhotoEditor.qml")
                         if (component.status == Component.Ready) {
                             var window    = component.createObject(contactViewPage)
@@ -524,7 +528,7 @@ Kirigami.ScrollablePage {
             }
             PropertyChanges {
                 target: contactViewPage
-                editing: true
+                editing: editable
             }
 
             AnchorChanges {
@@ -738,7 +742,7 @@ Kirigami.ScrollablePage {
                 topPadding: 0
                 leftPadding: 0
                 rightPadding: 0
-                editing: true
+                editing: editable
             }
 
             AnchorChanges {

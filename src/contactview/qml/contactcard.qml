@@ -24,8 +24,30 @@ import Ring 1.0
 import ContactView 1.0
 
 Item {
-    width: contactList.width
+    width: parent.width
     height: 56 + rowCount*(displayNameLabel.implicitHeight+4) + 10
+
+    property var selectionCallback: undefined
+    property var rightControls: undefined
+
+    Component.onCompleted: {
+        if (!rightControls)
+            return
+
+        var widget = rightControls.createObject(parent, {
+            "anchors.right" : parent.right,
+            "widget.anchors" : parent.verticalCenter,
+            "visible" : true
+
+        })
+        widget.anchors.right = parent.right
+        widget.anchors.verticalCenter = parent.verticalCenter
+        console.log("\n\nCREATE!!!")
+    }
+
+    // Support both ContactRequests and Person
+    property var personObj: (person != undefined) ? person : object
+
     Rectangle {
         anchors.margins: 5
         anchors.leftMargin: 10
@@ -47,7 +69,7 @@ Item {
                 ContactPhoto {
                     anchors.fill: parent
                     anchors.margins: 5
-                    person: object
+                    person: personObj
                 }
 
 //                 // Allow to set/remove bookmarks
@@ -98,14 +120,18 @@ Item {
         MouseArea {
             anchors.fill: parent
             onClicked: {
-                treeView.selectItem(modelIndex)
-                console.log(object)
-                if (objectType == 0)
-                    contactList.contactMethodSelected(
-                        object.lastUsedContactMethod
-                    )
-                if (objectType == 1)
-                    contactList.contactMethodSelected(object)
+                if (selectionCallback)
+                    selectionCallback(index, object)
+                else if (treeView != undefined) { //FIXME move elsewhere
+                    treeView.selectItem(modelIndex)
+                    console.log(object)
+                    if (objectType == 0)
+                        contactList.contactMethodSelected(
+                            object.lastUsedContactMethod
+                        )
+                    if (objectType == 1)
+                        contactList.contactMethodSelected(object)
+                }
             }
         }
     }

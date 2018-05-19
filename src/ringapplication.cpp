@@ -474,16 +474,17 @@ QQmlApplicationEngine* RingApplication::engine()
 
 //       qRegisterMetaType<IndividualPointer>("IndividualPointer");
 
-      QML_TYPE( Account                 )
-      QML_TYPE( const Account           )
-      QML_TYPE( Call                    )
-      QML_TYPE( Person                  )
-      QML_TYPE( Individual              )
-      QML_TYPE( ContactMethod           )
-      QML_TYPE( UserActionModel         )
-      QML_TYPE( IndividualTimelineModel )
-      QML_TYPE( RingDeviceModel         )
-      QML_TYPE( Event                   )
+      QML_TYPE( Account                    )
+      QML_TYPE( const Account              )
+      QML_TYPE( Call                       )
+      QML_TYPE( Person                     )
+      QML_TYPE( Individual                 )
+      QML_TYPE( ContactMethod              )
+      QML_TYPE( UserActionModel            )
+      QML_TYPE( IndividualTimelineModel    )
+      QML_TYPE( PendingContactRequestModel )
+      QML_TYPE( RingDeviceModel            )
+      QML_TYPE( Event                      )
 
       QML_TYPE( QAction)
 

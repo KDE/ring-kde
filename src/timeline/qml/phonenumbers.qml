@@ -147,7 +147,7 @@ ListView {
         color: numbers.buttonColor
         label: i18n("Add a phone number or GNU Ring identity")
         topPadding: 2
-        visible: (!numbers.model.editRow) && numbers.showAdd
+        visible: (numbers.model && !numbers.model.editRow) && numbers.showAdd
         onClicked: {
             if (numbers.model) {
                 contactBuilder.addEmptyPhoneNumber(numbers.person)
