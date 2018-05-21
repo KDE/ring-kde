@@ -44,7 +44,7 @@ class VisualTreeItem : public FlickableView::ModelIndexItem
     friend class TreeView2Private;
 public:
 
-    explicit VisualTreeItem() {}
+    explicit VisualTreeItem(FlickableView* p) : ModelIndexItem(p) {}
     virtual ~VisualTreeItem() {}
 
     enum class State {
@@ -58,11 +58,12 @@ public:
     };
 
     // Helpers
-    int                   depth   () const;
-    TreeView2*            view    () const;
-    QPersistentModelIndex index   () const;
-    VisualTreeItem*       previous() const;
-    VisualTreeItem*       next    () const;
+    virtual ModelIndexItem* up  () const override final;
+    virtual ModelIndexItem* down() const override final;
+
+    // Getters
+    virtual QPersistentModelIndex index   () const final;
+    virtual int depth() const final override;
 
     /// Allows to keep a reference while still being tracked by the state machine
     virtual QWeakPointer<ModelIndexItem> reference() const final override;

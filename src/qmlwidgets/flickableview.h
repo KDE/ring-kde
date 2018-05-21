@@ -56,6 +56,8 @@ public:
     public:
         virtual ~ModelIndexItem() {}
 
+        explicit ModelIndexItem(FlickableView* view);
+
         /// Geometry relative to the FlickableView::view()
         virtual QRectF geometry() const = 0;
 
@@ -67,6 +69,29 @@ public:
 
         /// Allow implementations to be notified when it becomes selected
         virtual void setSelected(bool) {}
+
+        /// The model index
+        virtual QPersistentModelIndex index() const = 0;
+
+        // Spacial navigation
+        virtual ModelIndexItem* up   () const { return nullptr ;}
+        virtual ModelIndexItem* down () const { return nullptr ;}
+        virtual ModelIndexItem* left () const { return nullptr ;}
+        virtual ModelIndexItem* right() const { return nullptr ;}
+
+        //TODO ::above() and ::firstBelow() and ::lastBelow()
+
+        /// The number of parent items
+        virtual int depth() const {return 0;}
+
+        /// Reference to the item own view
+        FlickableView* view() const;
+
+        /// Call to notify that the geometry changed (for the selection delegate)
+        void updateGeometry();
+
+    private:
+        FlickableView* m_pView;
     };
 
     Q_PROPERTY(QSharedPointer<QAbstractItemModel> model READ model WRITE setModel NOTIFY modelChanged)

@@ -32,7 +32,7 @@
 class QuickTreeViewItem : public VisualTreeItem
 {
 public:
-    explicit QuickTreeViewItem();
+    explicit QuickTreeViewItem(FlickableView* v);
     virtual ~QuickTreeViewItem();
 
     // Actions
@@ -77,10 +77,14 @@ QuickTreeView::~QuickTreeView()
 
 FlickableView::ModelIndexItem* QuickTreeView::createItem() const
 {
-    return new QuickTreeViewItem();
+    return new QuickTreeViewItem(
+        static_cast<FlickableView*>(
+            const_cast<QuickTreeView*>(this)
+        )
+    );
 }
 
-QuickTreeViewItem::QuickTreeViewItem() : VisualTreeItem()
+QuickTreeViewItem::QuickTreeViewItem(FlickableView* p) : VisualTreeItem(p)
 {
 }
 
@@ -144,10 +148,13 @@ bool QuickTreeViewItem::move()
         return false;
     }
 
+    const qreal oldHeight = m_pItem->height();
+    const qreal oldY = m_pItem->y();
+
     m_pItem->setWidth(view()->contentItem()->width());
 
-    auto nextElem = static_cast<QuickTreeViewItem*>(next());
-    auto prevElem = static_cast<QuickTreeViewItem*>(previous());
+    auto nextElem = static_cast<QuickTreeViewItem*>(down());
+    auto prevElem = static_cast<QuickTreeViewItem*>(up());
 
     // The root has been moved in the middle of the tree, find the new root
     //TODO maybe add a deterministic API instead of O(N) lookup
@@ -155,7 +162,7 @@ bool QuickTreeViewItem::move()
         m_IsHead = false;
 
         auto root = prevElem;
-        while (auto prev = root->previous())
+        while (auto prev = root->up())
             root = static_cast<QuickTreeViewItem*>(prev);
 
         root->move();
@@ -187,7 +194,7 @@ bool QuickTreeViewItem::move()
         anchors->setProperty("top", m_pItem->property("bottom"));
     }
 
-    view()->contentItem()->setHeight(10000); //FIXME
+    updateGeometry();
 
     return true;
 }
@@ -203,8 +210,8 @@ bool QuickTreeViewItem::remove()
     m_pItem->setParentItem(nullptr);
     m_pItem->setVisible(false);
 
-    auto nextElem = static_cast<QuickTreeViewItem*>(next());
-    auto prevElem = static_cast<QuickTreeViewItem*>(previous());
+    auto nextElem = static_cast<QuickTreeViewItem*>(down());
+    auto prevElem = static_cast<QuickTreeViewItem*>(up());
 
     if (nextElem) {
         if (m_IsHead) {

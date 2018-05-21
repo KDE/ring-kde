@@ -396,4 +396,24 @@ bool FlickableView::isEmpty() const
     return d_ptr->m_pModel ? !d_ptr->m_pModel->rowCount() : true;
 }
 
+FlickableView::ModelIndexItem::ModelIndexItem(FlickableView* v) : m_pView(v){}
+
+void FlickableView::ModelIndexItem::updateGeometry()
+{
+    const auto geo = geometry();
+
+    //TODO handle up/left/right too
+
+    if (!down())
+        view()->contentItem()->setHeight(geo.y()+geo.height());
+
+    if (view()->d_ptr->m_pSelectionModel && view()->d_ptr->m_pSelectionModel->currentIndex() == index())
+        view()->d_ptr->slotCurrentIndexChanged(index());
+}
+
+FlickableView* FlickableView::ModelIndexItem::view() const
+{
+    return m_pView;
+}
+
 #include <flickableview.moc>

@@ -53,7 +53,7 @@ struct QuickListViewSection final
     QQuickItem* item(QQmlComponent* component);
 
     // Helpers
-    void reparentSection(QuickListViewItem* newParent, TreeView2* view);
+    void reparentSection(QuickListViewItem* newParent, FlickableView* view);
     void setOwner(QuickListViewItem* newOwner);
 };
 
@@ -62,7 +62,7 @@ struct QuickListViewSection final
 class QuickListViewItem : public VisualTreeItem
 {
 public:
-    explicit QuickListViewItem();
+    explicit QuickListViewItem(FlickableView* v);
     virtual ~QuickListViewItem();
 
     // Actions
@@ -193,7 +193,11 @@ QuickListViewSections* QuickListView::section() const
 
 FlickableView::ModelIndexItem* QuickListView::createItem() const
 {
-    return new QuickListViewItem();
+    return new QuickListViewItem(
+        static_cast<FlickableView*>(
+            const_cast<QuickListView*>(this)
+        )
+    );
 }
 
 QuickListViewSection::QuickListViewSection(
@@ -227,8 +231,8 @@ QuickListViewSection* QuickListViewItem::setSection(QuickListViewSection* s, con
     if ((!s) || s->m_Value != val)
         return nullptr;
 
-    const auto p = static_cast<QuickListViewItem*>(previous());
-    const auto n = static_cast<QuickListViewItem*>(next    ());
+    const auto p = static_cast<QuickListViewItem*>(up  ());
+    const auto n = static_cast<QuickListViewItem*>(down());
 
     // Garbage collect or change the old section owner
     if (m_pSection) {
@@ -265,8 +269,8 @@ QuickListViewSection* QuickListViewPrivate::getSection(QuickListViewItem* i)
     if (i->m_pSection && i->m_pSection->m_Value == val)
         return i->m_pSection;
 
-    const auto prev = static_cast<QuickListViewItem*>(i->previous());
-    const auto next = static_cast<QuickListViewItem*>(i->next    ());
+    const auto prev = static_cast<QuickListViewItem*>(i->up  ());
+    const auto next = static_cast<QuickListViewItem*>(i->down());
 
     // The section owner isn't currently loaded
     if ((!prev) && i->index().row() > 0)
@@ -337,7 +341,7 @@ void QuickListViewPrivate::reloadSectionIndices() const
     m_IndexLoaded = m_pFirstSection != nullptr;
 }
 
-QuickListViewItem::QuickListViewItem() : VisualTreeItem()
+QuickListViewItem::QuickListViewItem(FlickableView* p) : VisualTreeItem(p)
 {
 }
 
@@ -400,7 +404,7 @@ void QuickListViewSection::setOwner(QuickListViewItem* newParent)
     m_pOwner = newParent;
 }
 
-void QuickListViewSection::reparentSection(QuickListViewItem* newParent, TreeView2* view)
+void QuickListViewSection::reparentSection(QuickListViewItem* newParent, FlickableView* view)
 {
     if (!m_pItem)
         return;
@@ -421,7 +425,7 @@ void QuickListViewSection::reparentSection(QuickListViewItem* newParent, TreeVie
 
 bool QuickListViewItem::move()
 {
-    const auto prev = static_cast<QuickListViewItem*>(previous());
+    const auto prev = static_cast<QuickListViewItem*>(up());
 
     const QQuickItem* prevItem = nullptr;
 
@@ -451,8 +455,7 @@ bool QuickListViewItem::move()
         anchors->setProperty("top", prevItem->property("bottom"));
     }
 
-    if (view()->contentItem()->height() < y+m_pItem->height())
-        view()->contentItem()->setHeight(y+m_pItem->height());
+    updateGeometry();
 
     return true;
 }
@@ -594,7 +597,7 @@ void QuickListViewPrivate::slotDataChanged(const QModelIndex& tl, const QModelIn
         if (outdated || (outdated = (tli->m_pSection != getSection(tli))))
             tli->move();
 
-    } while(tli != bri && (tli = static_cast<QuickListViewItem*>(tli->next())));
+    } while(tli != bri && (tli = static_cast<QuickListViewItem*>(tli->down())));
 }
 
 void QuickListViewItem::setSelected(bool s)

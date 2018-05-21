@@ -21,6 +21,8 @@
 
 #include <functional>
 
+#define V_ITEM(i) static_cast<VisualTreeItem*>(i)
+
 /*
  * Design:
  *
@@ -533,7 +535,7 @@ void TreeView2Private::_test_validateTree(TreeTraversalItems* p)
     }
 
     if (p->m_pParent == m_pRoot && m_pRoot->m_pFirstChild == p) {
-        Q_ASSERT(!p->m_pTreeItem->previous());
+        Q_ASSERT(!p->m_pTreeItem->up());
     }
 
     // First, let's check the linked list to avoid running more test on really
@@ -601,13 +603,16 @@ void TreeView2Private::_test_validateTree(TreeTraversalItems* p)
 
         // Test that there is no trivial duplicate TreeTraversalItems for the same index
         if(i.value()->m_pPrevious && i.value()->m_pPrevious->m_hLookup.isEmpty()) {
-            Q_ASSERT(i.value()->m_pTreeItem->previous()->m_pParent == i.value()->m_pPrevious);
-            Q_ASSERT(i.value()->m_pTreeItem->previous()->next()->m_pParent == i.value());
+            const auto prev = V_ITEM(i.value()->m_pTreeItem->up());
+            Q_ASSERT(prev->m_pParent == i.value()->m_pPrevious);
+
+            const auto next = V_ITEM(prev->down());
+            Q_ASSERT(next->m_pParent == i.value());
         }
 
         // Test the virtual linked list between the leafs and branches
-        if(auto next = i.value()->m_pTreeItem->next()) {
-            Q_ASSERT(next->previous() == i.value()->m_pTreeItem);
+        if(auto next = V_ITEM(i.value()->m_pTreeItem->down())) {
+            Q_ASSERT(next->up() == i.value()->m_pTreeItem);
             Q_ASSERT(next->m_pParent != i.value());
         }
         else {
@@ -617,8 +622,8 @@ void TreeView2Private::_test_validateTree(TreeTraversalItems* p)
             Q_ASSERT(i.value()->m_hLookup.isEmpty());
         }
 
-        if(auto prev = i.value()->m_pTreeItem->previous()) {
-            Q_ASSERT(prev->next() == i.value()->m_pTreeItem);
+        if(auto prev = V_ITEM(i.value()->m_pTreeItem->up())) {
+            Q_ASSERT(V_ITEM(prev->down()) == i.value()->m_pTreeItem);
             Q_ASSERT(prev->m_pParent != i.value());
         }
         else {
@@ -636,9 +641,9 @@ void TreeView2Private::_test_validateTree(TreeTraversalItems* p)
         VisualTreeItem* oldVI(nullptr);
 
         int count(0), count2(0);
-        for (auto i = m_pRoot->m_pFirstChild->m_pTreeItem; i; i = i->next()) {
-            Q_ASSERT((!oldVI) || i->previous());
-            Q_ASSERT(i->previous() == oldVI);
+        for (auto i = m_pRoot->m_pFirstChild->m_pTreeItem; i; i = V_ITEM(i->down())) {
+            Q_ASSERT((!oldVI) || i->up());
+            Q_ASSERT(i->up() == oldVI);
             oldVI = i;
             count++;
         }
@@ -649,9 +654,9 @@ void TreeView2Private::_test_validateTree(TreeTraversalItems* p)
         while (last && last->m_pLastChild)
             last = last->m_pLastChild;
 
-        for (auto i = last->m_pTreeItem; i; i = i->previous()) {
-            Q_ASSERT((!oldVI) || i->next());
-            Q_ASSERT(i->next() == oldVI);
+        for (auto i = last->m_pTreeItem; i; i = V_ITEM(i->up())) {
+            Q_ASSERT((!oldVI) || i->down());
+            Q_ASSERT(i->down() == oldVI);
             oldVI = i;
             count2++;
         }
@@ -681,7 +686,7 @@ void TreeView2Private::slotRowsInserted(const QModelIndex& parent, int first, in
 
     TreeTraversalItems *prev(nullptr);
 
-    //FIXME use previous()
+    //FIXME use up()
     if (first && pitem)
         prev = pitem->m_hLookup.value(q_ptr->model()->index(first-1, 0, parent));
 
@@ -708,14 +713,14 @@ void TreeView2Private::slotRowsInserted(const QModelIndex& parent, int first, in
         if ((!pitem->m_pFirstChild) || e->m_Index.row() <= pitem->m_pFirstChild->m_Index.row()) {
             Q_ASSERT(pitem != e);
             pitem->m_pFirstChild = e;
-            if (auto pe = e->m_pTreeItem->previous())
+            if (auto pe = V_ITEM(e->m_pTreeItem->up()))
                 pe->m_pParent->performAction(TreeTraversalItems::Action::MOVE);
         }
 
         if ((!pitem->m_pLastChild) || e->m_Index.row() > pitem->m_pLastChild->m_Index.row()) {
             Q_ASSERT(pitem != e);
             pitem->m_pLastChild = e;
-            if (auto ne = e->m_pTreeItem->next())
+            if (auto ne = V_ITEM(e->m_pTreeItem->down()))
                 ne->m_pParent->performAction(TreeTraversalItems::Action::MOVE);
         }
 
@@ -730,7 +735,7 @@ void TreeView2Private::slotRowsInserted(const QModelIndex& parent, int first, in
 
     Q_ASSERT(pitem->m_pLastChild);
 
-    //FIXME use next()
+    //FIXME use down()
     if (q_ptr->model()->rowCount(parent) > last) {
         if (auto i = pitem->m_hLookup.value(q_ptr->model()->index(last+1, 0, parent))) {
             i->m_pPrevious = prev;
@@ -763,7 +768,7 @@ void TreeView2Private::slotRowsRemoved(const QModelIndex& parent, int first, int
 
     TreeTraversalItems *prev(nullptr), *next(nullptr);
 
-    //FIXME use previous()
+    //FIXME use up()
     if (first && pitem)
         prev = pitem->m_hLookup.value(q_ptr->model()->index(first-1, 0, parent));
 
@@ -813,9 +818,9 @@ void TreeView2Private::createGap(VisualTreeItem* first, VisualTreeItem* last)
         last->m_pParent->m_pParent->m_pLastChild = first->m_pParent->m_pPrevious;
 
     Q_ASSERT((!first->m_pParent->m_pPrevious) ||
-        first->m_pParent->m_pPrevious->m_pTreeItem->next() != first);
+        first->m_pParent->m_pPrevious->m_pTreeItem->down() != first);
     Q_ASSERT((!last->m_pParent->m_pNext) ||
-        last->m_pParent->m_pNext->m_pTreeItem->previous() != last);
+        last->m_pParent->m_pNext->m_pTreeItem->up() != last);
 
     Q_ASSERT((!first) || first->m_pParent->m_pFirstChild || first->m_pParent->m_hLookup.isEmpty());
     Q_ASSERT((!last) || last->m_pParent->m_pFirstChild || last->m_pParent->m_hLookup.isEmpty());
@@ -912,9 +917,9 @@ void TreeView2Private::bridgeGap(TreeTraversalItems* first, TreeTraversalItems* 
     if (second)
         Q_ASSERT(second->m_pParent->m_pLastChild);
 
-//     if (first && second) { //Need to disable other asserts in next()
-//         Q_ASSERT(first->next() == second);
-//         Q_ASSERT(second->previous() == first);
+//     if (first && second) { //Need to disable other asserts in down()
+//         Q_ASSERT(first->down() == second);
+//         Q_ASSERT(second->up() == first);
 //     }
 }
 
@@ -941,8 +946,8 @@ void TreeView2Private::slotRowsMoved(const QModelIndex &parent, int start, int e
     Q_ASSERT(idxStart.isValid() && idxEnd.isValid());
 
     //FIXME once partial ranges are supported, this is no longer always valid
-    auto startVI = static_cast<VisualTreeItem*>(q_ptr->itemForIndex(idxStart));
-    auto endVI   = static_cast<VisualTreeItem*>(q_ptr->itemForIndex(idxEnd));
+    auto startVI = V_ITEM(q_ptr->itemForIndex(idxStart));
+    auto endVI   = V_ITEM(q_ptr->itemForIndex(idxEnd));
 
     if (end - start == 1)
         Q_ASSERT(startVI->m_pParent->m_pNext == endVI->m_pParent);
@@ -951,11 +956,11 @@ void TreeView2Private::slotRowsMoved(const QModelIndex &parent, int start, int e
     Q_ASSERT(startVI && endVI);
     Q_ASSERT(startVI->m_pParent->m_pParent == endVI->m_pParent->m_pParent);
 
-    auto oldPreviousVI = startVI->previous();
-    auto oldNextVI     = endVI->next();
+    auto oldPreviousVI = V_ITEM(startVI->up());
+    auto oldNextVI     = V_ITEM(endVI->down());
 
-    Q_ASSERT((!oldPreviousVI) || oldPreviousVI->next() == startVI);
-    Q_ASSERT((!oldNextVI) || oldNextVI->previous() == endVI);
+    Q_ASSERT((!oldPreviousVI) || oldPreviousVI->down() == startVI);
+    Q_ASSERT((!oldNextVI) || oldNextVI->up() == endVI);
 
     auto newNextIdx = q_ptr->model()->index(row, 0, destination);
 
@@ -977,24 +982,24 @@ void TreeView2Private::slotRowsMoved(const QModelIndex &parent, int start, int e
             par = par.parent();
         } while (par.isValid());
 
-        newNextVI = static_cast<VisualTreeItem*>(q_ptr->itemForIndex(newNextIdx));
+        newNextVI = V_ITEM(q_ptr->itemForIndex(newNextIdx));
     }
     else {
-        newNextVI = static_cast<VisualTreeItem*>(q_ptr->itemForIndex(newNextIdx));
-        newPrevVI = newNextVI ? newNextVI->previous() : nullptr;
+        newNextVI = V_ITEM(q_ptr->itemForIndex(newNextIdx));
+        newPrevVI = newNextVI ? V_ITEM(newNextVI->up()) : nullptr;
     }
 
     if (!row) {
-        auto otherI = static_cast<VisualTreeItem*>(q_ptr->itemForIndex(destination));
+        auto otherI = V_ITEM(q_ptr->itemForIndex(destination));
         Q_ASSERT((!newPrevVI) || otherI == newPrevVI);
     }
 
     // When there is no next element, then the parent has to be extracted manually
     if (!(newNextVI || newPrevVI)) {
         if (!row)
-            newPrevVI = static_cast<VisualTreeItem*>(q_ptr->itemForIndex(destination));
+            newPrevVI = V_ITEM(q_ptr->itemForIndex(destination));
         else {
-            newPrevVI = static_cast<VisualTreeItem*>(q_ptr->itemForIndex(
+            newPrevVI = V_ITEM(q_ptr->itemForIndex(
                 destination.model()->index(row-1, 0, destination)
             ));
         }
@@ -1006,7 +1011,7 @@ void TreeView2Private::slotRowsMoved(const QModelIndex &parent, int start, int e
     TreeTraversalItems* newParentTTI = nullptr;
     auto oldParentTTI = startVI->m_pParent->m_pParent;
 
-    if (auto parentVI = static_cast<VisualTreeItem*>(q_ptr->itemForIndex(destination)))
+    if (auto parentVI = V_ITEM(q_ptr->itemForIndex(destination)))
         newParentTTI = parentVI->m_pParent;
     else
         newParentTTI = m_pRoot;
@@ -1109,7 +1114,7 @@ void TreeView2Private::slotDataChanged(const QModelIndex& tl, const QModelIndex&
     //itemForIndex(const QModelIndex& idx) const final override;
     for (int i = tl.row(); i <= br.row(); i++) {
         const auto idx = q_ptr->model()->index(i, tl.column(), tl.parent());
-        if (auto item = static_cast<VisualTreeItem*>(q_ptr->itemForIndex(idx)))
+        if (auto item = V_ITEM(q_ptr->itemForIndex(idx)))
             item->performAction(VisualTreeItem::Action::UPDATE);
     }
 }
@@ -1148,11 +1153,6 @@ int VisualTreeItem::depth() const
     return m_pParent->m_Depth;
 }
 
-TreeView2* VisualTreeItem::view() const
-{
-    return m_pParent->d_ptr->q_ptr;
-}
-
 QPersistentModelIndex VisualTreeItem::index() const
 {
     return m_pParent->m_Index;
@@ -1163,7 +1163,7 @@ QPersistentModelIndex VisualTreeItem::index() const
  *
  * Returns the previous non-failed item.
  */
-VisualTreeItem* VisualTreeItem::previous() const
+FlickableView::ModelIndexItem* VisualTreeItem::up() const
 {
     Q_ASSERT(m_State == State::ACTIVE
         || m_State == State::BUFFER
@@ -1214,7 +1214,7 @@ sanitize:
     // check if some of their item failed to load. This is non-fatal in the
     // other Qt views, so it isn't fatal here either.
     if (ret && ret->m_pTreeItem->m_State == VisualTreeItem::State::FAILED)
-        return ret->m_pTreeItem->previous();
+        return ret->m_pTreeItem->up();
 
     return ret ? ret->m_pTreeItem : nullptr;
 }
@@ -1224,7 +1224,7 @@ sanitize:
  *
  * Returns the next non-failed item.
  */
-VisualTreeItem* VisualTreeItem::next() const
+FlickableView::ModelIndexItem* VisualTreeItem::down() const
 {
     Q_ASSERT(m_State == State::ACTIVE
         || m_State == State::BUFFER
@@ -1268,7 +1268,7 @@ sanitizeNext:
     // check if some of their item failed to load. This is non-fatal in the
     // other Qt views, so it isn't fatal here either.
     if (ret && ret->m_State == VisualTreeItem::State::FAILED)
-        return ret->next();
+        return ret->down();
 
     return ret;
 }
@@ -1319,7 +1319,7 @@ bool TreeTraversalItems::show()
 //     qDebug() << "SHOW";
 
     if (!m_pTreeItem) {
-        m_pTreeItem = static_cast<VisualTreeItem*>(d_ptr->q_ptr->createItem());
+        m_pTreeItem = V_ITEM(d_ptr->q_ptr->createItem());
         m_pTreeItem->m_pParent = this;
     }
 
@@ -1441,7 +1441,7 @@ bool TreeTraversalItems::index()
 //         m_pTreeItem->performAction(VisualTreeItem::Action::MOVE); //FIXME don't
 //
 //     if (oldGeo != m_pTreeItem->geometry())
-//         if (auto n = m_pTreeItem->next())
+//         if (auto n = m_pTreeItem->down())
 //             n->m_pParent->performAction(TreeTraversalItems::Action::MOVE);
 
 //     return true;
@@ -1492,3 +1492,4 @@ bool TreeView2Private::error()
 }
 
 #include <treeview2.moc>
+#undef V_ITEM
