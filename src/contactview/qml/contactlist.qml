@@ -129,6 +129,7 @@ Kirigami.Page {
             Component {
                 id: masterComponent
                 Loader {
+                    width: contactList.width
                     Component {
                         id: categoryComponent
                         Item {

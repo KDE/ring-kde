@@ -39,6 +39,7 @@
 #include <KDeclarative/KDeclarative>
 
 //LRC
+#include <itemdataroles.h>
 #include <callmodel.h>
 #include <accountmodel.h>
 #include <account.h>
@@ -430,6 +431,7 @@ void RingApplication::setStartPhone(bool value)
 }
 
 #define QML_TYPE(name) qmlRegisterUncreatableType<name>(AppName, 1,0, #name, #name "cannot be instanciated");
+#define QML_NS(name) qmlRegisterUncreatableMetaObject( name :: staticMetaObject, #name, 1, 0, #name, "Namespaces cannot be instanciated" );
 #define QML_CRTYPE(name) qmlRegisterType<name>(AppName, 1,0, #name);
 #define QML_SINGLETON(name) RingApplication::engine()->rootContext()->setContextProperty(QStringLiteral(#name), &name::instance());
 #define QML_SINGLETON2(name) RingApplication::engine()->rootContext()->setContextProperty(QStringLiteral(#name), name::instance());
@@ -492,6 +494,7 @@ QQmlApplicationEngine* RingApplication::engine()
       QML_CRTYPE( NumberCompletionModel       )
       QML_CRTYPE( QItemSelectionModel         )
 
+      QML_NS(Ring)
 
       e = new QQmlApplicationEngine(QGuiApplication::instance());
 

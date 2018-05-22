@@ -42,11 +42,10 @@ Item {
         })
         widget.anchors.right = parent.right
         widget.anchors.verticalCenter = parent.verticalCenter
-        console.log("\n\nCREATE!!!")
     }
 
     // Support both ContactRequests and Person
-    property var personObj: (person != undefined) ? person : object
+    property var personObj: objectType != Ring.Person ? person : object
 
     Rectangle {
         anchors.margins: 5
@@ -124,7 +123,6 @@ Item {
                     selectionCallback(index, object)
                 else if (treeView != undefined) { //FIXME move elsewhere
                     treeView.selectItem(modelIndex)
-                    console.log(object)
                     if (objectType == 0)
                         contactList.contactMethodSelected(
                             object.lastUsedContactMethod
