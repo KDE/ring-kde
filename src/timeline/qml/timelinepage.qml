@@ -31,6 +31,20 @@ Rectangle {
         chatBox.focusEdit()
     }
 
+    function setContactMethod() {
+        if (currentIndividual && !currentContactMethod) {
+            currentContactMethod = currentIndividual.preferredContactMethod(Media.TEXT)
+            console.log("Can't send the message, this is a bug")
+        }
+
+        return currentContactMethod
+    }
+
+    onCurrentIndividualChanged: {
+        currentContactMethod = null
+        setContactMethod()
+    }
+
     SystemPalette {
         id: activePalette
         colorGroup: SystemPalette.Active
@@ -177,23 +191,32 @@ Rectangle {
             height: 90
             visible: canSendTexts
             MessageBuilder {id: builder}
+            requireContactRequest: currentContactMethod &&
+                currentContactMethod.confirmationStatus == ContactMethod.UNCONFIRMED &&
+                currentContactMethod.confirmationStatus != ContactMethod.DISABLED
 
             textColor: activePalette.text
             backgroundColor: activePalette.window
             emojiColor: activePalette.highlight
+
+            onDisableContactRequests: {
+                if (timelinePage.setContactMethod()) {
+                    currentContactMethod.confirmationEnabled = false
+                }
+            }
         }
     }
 
     Connections {
         target: chatBox
         onSendMessage: {
+            timelinePage.setContactMethod()
 
-            if (currentIndividual && !currentContactMethod) {
-                currentContactMethod = currentIndividual.preferredContactMethod(Media.TEXT)
-                console.log("Can't send the message, this is a bug")
-            }
 
             if (currentContactMethod) {
+                if (currentContactMethod.account && currentContactMethod.confirmationStatus == ContactMethod.UNCONFIRMED)
+                    currentContactMethod.sendContactRequest()
+
                 builder.addPayload("text/plain", message)
                 builder.sendWidth(currentContactMethod)
             }

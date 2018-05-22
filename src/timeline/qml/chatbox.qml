@@ -26,6 +26,12 @@ Rectangle {
     property alias textColor: messageTextArea.color
     property alias backgroundColor: chatBox.color
     property var emojiColor: undefined
+    property bool requireContactRequest: false
+    property bool sendRequest: _sendRequestOverride && (
+        sendRequestLoader.active && sendRequestLoader.item && sendRequestLoader.item.sendRequests
+    )
+
+    property bool _sendRequestOverride: true
 
     function focusEdit() {
         messageTextArea.forceActiveFocus()
@@ -34,6 +40,7 @@ Rectangle {
     id: chatBox
 
     signal sendMessage(string message, string richMessage)
+    signal disableContactRequests()
 
     color: "blue"
 
@@ -162,53 +169,75 @@ Rectangle {
         }
     }
 
-    RowLayout {
-        id: textMessagePanel
+    ColumnLayout {
         anchors.fill: parent
 
-        TextArea {
-            id: messageTextArea
+        RowLayout {
+            id: textMessagePanel
 
             Layout.fillHeight: true
-            Layout.fillWidth:  true
-            textFormat: TextEdit.RichText
+            Layout.fillWidth : true
 
-            font.family: "Noto Color Emoji"
-            font.pixelSize : 18
+            TextArea {
+                id: messageTextArea
 
-            placeholderText: i18n("Write a message and press enter...")
+                Layout.fillHeight: true
+                Layout.fillWidth:  true
+                textFormat: TextEdit.RichText
 
-            Keys.onReturnPressed: {
-                var rawText  = getText(0, length)
-                var richText = getFormattedText(0, length)
+                font.family: "Noto Color Emoji"
+                font.pixelSize : 18
 
-                sendMessage(rawText, richText)
-            }
+                placeholderText: i18n("Write a message and press enter...")
 
-            persistentSelection: true
+                Keys.onReturnPressed: {
+                    var rawText  = getText(0, length)
+                    var richText = getFormattedText(0, length)
 
-            states: [
-                State {
-                    name: "focus"
-                    when: messageTextArea.cursorVisible
-                        || chatBox.state == "emoji"
-                        || emojis.visible == true
-                    PropertyChanges {
-                        target: emojiButton
-                        opacity: 1
-                        anchors.bottomMargin: 0
-                    }
+                    sendMessage(rawText, richText)
                 }
-            ]
-        }
-        Button {
-            text: "Send"
-            Layout.fillHeight: true
-            onClicked: {
-                var rawText  = messageTextArea.getText(0, messageTextArea.length)
-                var richText = messageTextArea.getFormattedText(0, messageTextArea.length)
 
-                sendMessage(rawText, richText)
+                persistentSelection: true
+
+                states: [
+                    State {
+                        name: "focus"
+                        when: messageTextArea.cursorVisible
+                            || chatBox.state == "emoji"
+                            || emojis.visible == true
+                        PropertyChanges {
+                            target: emojiButton
+                            opacity: 1
+                            anchors.bottomMargin: 0
+                        }
+                    }
+                ]
+            }
+            Button {
+                text: "Send"
+                Layout.fillHeight: true
+                onClicked: {
+                    var rawText  = messageTextArea.getText(0, messageTextArea.length)
+                    var richText = messageTextArea.getFormattedText(0, messageTextArea.length)
+
+                    sendMessage(rawText, richText)
+                }
+            }
+        }
+
+        Loader {
+            id: sendRequestLoader
+            height: active && item ? item.implicitHeight : 0
+            Layout.fillWidth: true
+            active: chatBox.requireContactRequest
+            Layout.minimumHeight: active && item ? item.implicitHeight : 0
+            Layout.maximumHeight: active && item ? item.implicitHeight : 0
+            sourceComponent: SendRequest {
+                width: sendRequestLoader.width
+                onDisableContactRequests: {
+                    chatBox.disableContactRequests()
+                    chatBox._sendRequestOverride = send
+                }
             }
         }
     }
