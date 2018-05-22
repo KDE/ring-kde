@@ -268,7 +268,10 @@ void FlickableView::applyRoles(QQmlContext* ctx, const QModelIndex& self) const
     ctx->setContextProperty(QStringLiteral("index"        ) , self.row()        );
     ctx->setContextProperty(QStringLiteral("rootIndex"    ) , self              );
     ctx->setContextProperty(QStringLiteral("rowCount"     ) , m->rowCount(self) );
-    ctx->setContextProperty(QStringLiteral("isCurrentItem") , false             );
+
+    const bool sel = d_ptr->m_pSelectionModel && d_ptr->m_pSelectionModel->currentIndex() == self;
+
+    ctx->setContextProperty(QStringLiteral("isCurrentItem") , sel );
 }
 
 QPair<QQuickItem*, QQmlContext*> FlickableView::loadDelegate(QQuickItem* parentI, QQmlContext* parentCtx, const QModelIndex& self) const
@@ -289,7 +292,7 @@ QPair<QQuickItem*, QQmlContext*> FlickableView::loadDelegate(QQuickItem* parentI
     // Create a context with all the tree roles
     auto ctx = new QQmlContext(pctx);
 
-    applyRoles(ctx, self);
+    applyRoles(pctx, self);
 
     // Create the delegate
     auto item = qobject_cast<QQuickItem *>(delegate()->create(ctx));
@@ -315,6 +318,7 @@ void FlickableViewPrivate::slotCurrentIndexChanged(const QModelIndex& idx)
 
     Q_EMIT q_ptr->currentIndexChanged(idx);
 
+
     if (m_pSelectedItem && !idx.isValid()) {
         delete m_pSelectedItem;
         m_pSelectedItem = nullptr;
@@ -324,7 +328,11 @@ void FlickableViewPrivate::slotCurrentIndexChanged(const QModelIndex& idx)
     if (!q_ptr->highlight())
         return;
 
-    auto elem = static_cast<FlickableView::ModelIndexItem*>(q_ptr->itemForIndex(idx));
+    auto elem = q_ptr->itemForIndex(idx);
+
+    // QItemSelectionModel::setCurrentIndex isn't protected against setting the item many time
+    if (m_pSelectedViewItem && elem == m_pSelectedViewItem.data())
+        return;
 
     // There is no need to waste effort if the element is not visible
     if ((!elem) || (!elem->isVisible())) {
@@ -352,10 +360,8 @@ void FlickableViewPrivate::slotCurrentIndexChanged(const QModelIndex& idx)
 
     elem->setSelected(true);
 
-    if (m_pSelectedViewItem) {
-        auto prev = static_cast<FlickableView::ModelIndexItem*>(m_pSelectedViewItem.data());
-        prev->setSelected(false);
-    }
+    if (m_pSelectedViewItem)
+        m_pSelectedViewItem.toStrongRef()->setSelected(false);
 
     // Use X/Y to allow behavior to perform the silly animation
     m_pSelectedItem->setY(
