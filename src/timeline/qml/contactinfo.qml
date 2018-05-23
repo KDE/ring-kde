@@ -330,7 +330,7 @@ Kirigami.ScrollablePage {
                 width: 90
                 defaultColor: contactViewPage.labelColor
 
-                rawIndividual: contactViewPage.individual
+                individual: contactViewPage.individual
 
                 function onNewPhoto(p) {
                     contactViewPage.cachedPhoto = p

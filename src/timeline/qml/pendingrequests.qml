@@ -35,7 +35,7 @@ Dialog {
     property int rowCount: AccountModel.incomingContactRequestModel.size
 
     function selectContactRequest(index, obj) {
-        contactInfo.individual = obj.peer.rawIndividual
+        contactInfo.individual = obj.peer.individual
     }
 
     Component {
@@ -44,7 +44,7 @@ Dialog {
             selectionCallback: selectContactRequest
             Component.onCompleted: {
                 if (index == contactRequestList.currentIndex)
-                    contactInfo.individual = object.peer.rawIndividual
+                    contactInfo.individual = object.peer.individual
             }
 
             Component {

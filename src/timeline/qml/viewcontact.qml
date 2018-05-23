@@ -31,6 +31,16 @@ Item {
     property var currentIndividual: null
     property var unsortedListView: null
 
+    function getDefaultCm() {
+        if (currentContactMethod)
+            return currentContactMethod
+
+        if (currentIndividual)
+            return currentIndividual.mainContactMethod
+
+        return null
+    }
+
     function showVideo() {
         avView.active = true
         if (state == "mobile")
@@ -218,30 +228,36 @@ Item {
                         anchors.fill: parent
                         call: avView.call
                         onCallWithAudio: {
-                            if (currentContactMethod.hasInitCall) {
+                            var cm = viewContact.getDefaultCm()
+
+                            if (cm && cm.hasInitCall) {
                                 contactHeader.selectVideo()
                                 return
                             }
 
-                            CallModel.dialingCall(currentContactMethod)
+                            CallModel.dialingCall(cm)
                                 .performAction(Call.ACCEPT)
                         }
                         onCallWithVideo: {
-                            if (currentContactMethod.hasInitCall) {
+                            var cm = viewContact.getDefaultCm()
+
+                            if (cm && cm.hasInitCall) {
                                 contactHeader.selectVideo()
                                 return
                             }
 
-                            CallModel.dialingCall(currentContactMethod)
+                            CallModel.dialingCall(cm)
                                 .performAction(Call.ACCEPT)
                         }
                         onCallWithScreen: {
-                            if (currentContactMethod.hasInitCall) {
+                            var cm = viewContact.getDefaultCm()
+
+                            if (cm && cm.hasInitCall) {
                                 contactHeader.selectVideo()
                                 return
                             }
 
-                            CallModel.dialingCall(currentContactMethod)
+                            CallModel.dialingCall(cm)
                                 .performAction(Call.ACCEPT)
                         }
                     }

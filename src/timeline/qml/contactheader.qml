@@ -45,13 +45,13 @@ Rectangle {
     onCurrentIndividualChanged: {
         if (!currentIndividual) {
             primaryName.text = i18n("N/A")
-            contactPhoto.rawIndividual = null
+            contactPhoto.individual = null
             return
         }
 
         primaryName.text = currentIndividual ? currentIndividual.bestName : i18n("N/A")
 
-        contactPhoto.rawIndividual = currentIndividual
+        contactPhoto.individual = currentIndividual
         bookmarkSwitch.source = (currentIndividual && currentIndividual.hasBookmarks) ?
             "icons/bookmarked.svg" : "icons/not_bookmarked.svg"
     }
@@ -78,7 +78,7 @@ Rectangle {
         onChanged: {
             primaryName.text = currentIndividual.bestName
 
-            contactPhoto.rawIndividual = currentIndividual
+            contactPhoto.individual = currentIndividual
 
             bookmarkSwitch.source = (currentIndividual && currentIndividual.hasBookmarks) ?
                 "icons/bookmarked.svg" : "icons/not_bookmarked.svg"

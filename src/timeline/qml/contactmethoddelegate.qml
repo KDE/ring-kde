@@ -111,7 +111,7 @@ Item {
                     ContactPhoto {
                         anchors.margins: 3
                         anchors.fill: parent
-                        rawIndividual: object
+                        individual: object
                         drawEmptyOutline: false
                     }
                 }

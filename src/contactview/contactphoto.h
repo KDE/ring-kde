@@ -37,8 +37,7 @@ class ContactPhoto : public QQuickPaintedItem
 public:
     Q_PROPERTY(ContactMethod* contactMethod READ contactMethod WRITE setContactMethod)
     Q_PROPERTY(Person* person READ person WRITE setPerson)
-    Q_PROPERTY(QSharedPointer<Individual> individual READ individual WRITE setIndividual)
-    Q_PROPERTY(Individual* rawIndividual READ rawIndividual WRITE setRawIndividual)
+    Q_PROPERTY(Individual* individual READ individual WRITE setIndividual)
     Q_PROPERTY(bool hasPhoto READ hasPhoto NOTIFY hasPhotoChanged)
     Q_PROPERTY(bool displayEmpty READ displayEmpty WRITE setDisplayEmpty)
     Q_PROPERTY(bool drawEmptyOutline READ drawEmptyOutline WRITE setDrawEmptyOutline)
@@ -57,11 +56,8 @@ public:
     Person* person() const;
     void setPerson(Person* p);
 
-    QSharedPointer<Individual> individual() const;
-    void setIndividual(QSharedPointer<Individual> ind);
-
-    Individual* rawIndividual() const;
-    void setRawIndividual(Individual* ind);
+    Individual* individual() const;
+    void setIndividual(Individual* ind);
 
     bool hasPhoto() const;
 

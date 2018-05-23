@@ -151,7 +151,7 @@ Rectangle {
             footer.state = "finish"
             account.createProfile()
 
-            frontPage.profilePage.individual = account.profile.rawIndividual
+            frontPage.profilePage.individual = account.profile.individual
         }
         onAccountChanged: {
             var acc = frontPage.createRing.account
@@ -163,7 +163,7 @@ Rectangle {
                 acc.createProfile()
 
             //frontPage.profilePage.currentPerson = acc.profile
-            frontPage.profilePage.individual = acc.profile.rawIndividual
+            frontPage.profilePage.individual = acc.profile.individual
         }
     }
 

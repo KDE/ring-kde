@@ -68,7 +68,6 @@ protected:
 
 public Q_SLOTS:
     void setContactMethod(ContactMethod* cm);
-    void setIndividual(const QSharedPointer<Individual>& ind);
     void setIndividual(Individual* ind);
     void setPerson(Person* p);
     void showVideo(Call* c);

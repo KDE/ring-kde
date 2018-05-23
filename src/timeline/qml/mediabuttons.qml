@@ -61,7 +61,7 @@ Row {
 
     AvailabilityTracker {
         id: availabilityTracker
-        rawIndividual: currentIndividual
+        individual: currentIndividual
     }
 
     Button {

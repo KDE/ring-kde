@@ -55,7 +55,7 @@ class MainPagePrivate : public QObject {
     Q_OBJECT
 public:
     QSharedPointer<QAbstractItemModel> m_CallsModel;
-    QSharedPointer<QAbstractItemModel> m_Invididual;
+    Individual* m_Invididual {nullptr};
     QSharedPointer<QAbstractItemModel> m_TimelineModel;
     QSharedPointer<QAbstractItemModel> m_DeduplicatedTimelineModel;
     QQuickItem* m_pItem   {nullptr};
@@ -100,7 +100,7 @@ MainPage::MainPage(QQuickItem* parent) :
             if (auto rawI = qvariant_cast<Individual*>(
                 PeersTimelineModel::instance().deduplicatedTimelineModel()->index(0,0).data((int)Ring::Role::Object)
             ))
-                i = Individual::getIndividual(rawI);
+                i = rawI;
 
         // There is nothing yet, wait
         if (!i) {
@@ -116,7 +116,7 @@ MainPage::MainPage(QQuickItem* parent) :
                     disconnect(c);
                     setIndividual(i);
                     const auto idx = PeersTimelineModel::instance().individualIndex(i);
-                    emit suggestSelection(i.data(), idx);
+                    emit suggestSelection(i, idx);
                 }
             });
 
@@ -127,7 +127,7 @@ MainPage::MainPage(QQuickItem* parent) :
 
         if (i) {
             const auto idx = PeersTimelineModel::instance().individualIndex(i);
-            emit suggestSelection(i.data(), idx);
+            emit suggestSelection(i, idx);
         }
     });
 
@@ -137,7 +137,7 @@ MainPage::MainPage(QQuickItem* parent) :
 MainPage::~MainPage()
 {
     d_ptr->m_TimelineModel.clear();
-    d_ptr->m_Invididual.clear();
+    d_ptr->m_Invididual = nullptr;
     d_ptr->m_CallsModel.clear();
     d_ptr->m_DeduplicatedTimelineModel.clear();
 
@@ -160,11 +160,6 @@ bool MainPage::eventFilter(QObject *obj, QEvent *event)
 
 void MainPage::setIndividual(Individual* ind)
 {
-    setIndividual(Individual::getIndividual(ind));
-}
-
-void MainPage::setIndividual(const QSharedPointer<Individual>& ind)
-{
     if (!ind)
         return;
 
@@ -178,7 +173,7 @@ void MainPage::setIndividual(const QSharedPointer<Individual>& ind)
     ));
 
     d_ptr->m_pItem->setProperty( "currentIndividual", QVariant::fromValue(
-        ind.data()
+        ind
     ));
 
     d_ptr->m_pItem->setProperty( "timelineModel", QVariant::fromValue(d_ptr->m_TimelineModel));
@@ -193,7 +188,7 @@ void MainPage::setContactMethod(ContactMethod* cm)
     cm = PhoneDirectoryModel::instance().fromTemporary(cm);
 
     // Keep a reference for 5 minutes to avoid double free from QML
-    for (auto ptr : {d_ptr->m_Invididual, d_ptr->m_CallsModel, d_ptr->m_TimelineModel})
+    for (auto ptr : {d_ptr->m_CallsModel, d_ptr->m_TimelineModel})
         if (ptr) {
             auto t = new QTimer(this);
             t->setInterval(5 * 60 * 1000);
@@ -205,7 +200,6 @@ void MainPage::setContactMethod(ContactMethod* cm)
             d_ptr->m_lTimers << t;
         }
 
-
     // Keep a strong reference because QML wont
     d_ptr->m_Invididual = cm->individual();
     d_ptr->m_CallsModel = cm->individual()->eventAggregate()->unsortedListView();
@@ -215,7 +209,7 @@ void MainPage::setContactMethod(ContactMethod* cm)
 
     d_ptr->m_pItem->setProperty( "currentContactMethod", QVariant::fromValue(cm));
     d_ptr->m_pItem->setProperty( "currentIndividual", QVariant::fromValue(
-        cm->individual().data()
+        cm->individual()
     ));
     d_ptr->m_pItem->setProperty( "timelineModel", QVariant::fromValue(d_ptr->m_TimelineModel));
     d_ptr->m_pItem->setProperty( "unsortedListView", QVariant::fromValue(d_ptr->m_CallsModel));
@@ -228,7 +222,7 @@ void MainPage::setPerson(Person* p)
 
     d_ptr->m_pItem->setProperty( "currentPerson", QVariant::fromValue(p));
     d_ptr->m_pItem->setProperty( "currentIndividual", QVariant::fromValue(
-        ind.data()
+        ind
     ));
 
     d_ptr->m_CallsModel = ind->eventAggregate()->unsortedListView();
@@ -336,7 +330,7 @@ void MainPage::setMobile(bool v)
 Individual* MainPage::individual() const
 {
     if (d_ptr->m_Invididual)
-        return qobject_cast<Individual*>(d_ptr->m_Invididual.data());
+        return qobject_cast<Individual*>(d_ptr->m_Invididual);
 
     return nullptr;
 }
@@ -345,9 +339,7 @@ QModelIndex MainPage::suggestedTimelineIndex() const
 {
     if (d_ptr->m_Invididual)
         return PeersTimelineModel::instance().individualIndex(
-            Individual::getIndividual(
-                qobject_cast<Individual*>(d_ptr->m_Invididual.data())
-            )
+            qobject_cast<Individual*>(d_ptr->m_Invididual)
         );
 
     return {};

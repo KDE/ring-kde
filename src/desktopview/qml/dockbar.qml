@@ -113,7 +113,7 @@ Item {
                                 anchors.centerIn: parent
                                 width: dockBar.width - 3
                                 height: dockBar.width - 3
-                                rawIndividual: object
+                                individual: object
                                 defaultColor: "f2f2f2ff" //same as the SVG
                             }
                             onClicked: {

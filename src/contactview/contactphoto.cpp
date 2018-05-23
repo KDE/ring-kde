@@ -226,7 +226,7 @@ void ContactPhoto::setPerson(Person* p)
     emit hasPhotoChanged();
 }
 
-QSharedPointer<Individual> ContactPhoto::individual() const
+Individual* ContactPhoto::individual() const
 {
     if (d_ptr->m_pPerson)
         return d_ptr->m_pPerson->individual();
@@ -240,7 +240,7 @@ QSharedPointer<Individual> ContactPhoto::individual() const
     return {};
 }
 
-void ContactPhoto::setIndividual(QSharedPointer<Individual> ind)
+void ContactPhoto::setIndividual(Individual* ind)
 {
     if (!ind) {
         d_ptr->m_pPerson = nullptr;
@@ -257,25 +257,6 @@ void ContactPhoto::setIndividual(QSharedPointer<Individual> ind)
     update();
     emit hasPhotoChanged();
     emit changed();
-}
-
-Individual* ContactPhoto::rawIndividual() const
-{
-    if (d_ptr->m_pPerson)
-        return d_ptr->m_pPerson->individual().data();
-
-    if (d_ptr->m_pCurrentPerson)
-        return d_ptr->m_pCurrentPerson->individual().data();
-
-    if (d_ptr->m_pContactMethod)
-        return d_ptr->m_pContactMethod->individual().data();
-
-    return {};
-}
-
-void ContactPhoto::setRawIndividual(Individual* ind)
-{
-    setIndividual(Individual::getIndividual(ind));
 }
 
 void ContactPhotoPrivate::slotPhotoChanged()

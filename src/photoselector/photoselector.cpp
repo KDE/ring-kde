@@ -98,7 +98,7 @@ void PhotoSelector::setToPerson(Person* p)
     }
 }
 
-void PhotoSelector::setToIndividual(QSharedPointer<Individual> ind)
+void PhotoSelector::setToIndividual(Individual* ind)
 {
     if (ind->person()) {
         setToPerson(ind->person());

@@ -32,7 +32,7 @@ Rectangle {
 
     AvailabilityTracker {
         id: availabilityTracker
-        rawIndividual: currentIndividual
+        individual: currentIndividual
     }
 
     border.width: 1

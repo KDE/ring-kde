@@ -68,7 +68,7 @@ void DlgProfiles::loadPerson(Person* profile)
 {
    auto item = rootObject();
    m_Lock = true;
-   item->setProperty("individual", QVariant::fromValue(profile->individual().data()));
+   item->setProperty("individual", QVariant::fromValue(profile->individual()));
    item->setProperty("showStat", false);
    item->setProperty("showImage", true);
    item->setProperty("showSave", false);
@@ -81,7 +81,7 @@ bool DlgProfiles::saveToPerson(Person* p)
    auto item = rootObject();
 
    if (p)
-      item->setProperty("individual", QVariant::fromValue(p->individual().data()));
+      item->setProperty("individual", QVariant::fromValue(p->individual()));
 
    QMetaObject::invokeMethod(item, "save");
    m_Lock = false;

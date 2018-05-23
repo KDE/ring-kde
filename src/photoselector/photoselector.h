@@ -52,7 +52,7 @@ public:
     Q_INVOKABLE QString selectFile(const QString& defaultPath = {});
 
     Q_INVOKABLE void setToPerson(Person* p);
-    Q_INVOKABLE void setToIndividual(QSharedPointer<Individual> ind);
+    Q_INVOKABLE void setToIndividual(Individual* ind);
     Q_INVOKABLE void setToContactMethod(ContactMethod* p);
 
     QString path() const;

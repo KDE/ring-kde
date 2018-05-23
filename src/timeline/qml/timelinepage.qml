@@ -34,7 +34,9 @@ Rectangle {
     function setContactMethod() {
         if (currentIndividual && !currentContactMethod) {
             currentContactMethod = currentIndividual.preferredContactMethod(Media.TEXT)
-            console.log("Can't send the message, this is a bug")
+
+            if (!currentContactMethod)
+                console.log("Cannot find a valid ContactMethod for", currentIndividual)
         }
 
         return currentContactMethod
