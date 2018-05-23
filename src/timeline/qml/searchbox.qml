@@ -23,6 +23,8 @@ import org.kde.kirigami 2.2 as Kirigami
 import Ring 1.0
 
 Item {
+    id: searchBox
+
     property var searchView: null
     property real xPadding: 0
     property alias searchFocus: search.focus
@@ -34,6 +36,8 @@ Item {
     function hide() {
         search.text = ""
         search.focus = false
+        if (CallModel.hasDialingCall)
+            CallModel.dialingCall().performAction(Call.REFUSE)
     }
 
     FontMetrics {
@@ -156,13 +160,11 @@ Item {
             contactMethodSelected(cm)
         }
         Keys.onEscapePressed: {
-            search.text = ""
-            search.focus = false
+            searchBox.hide()
         }
-
         Keys.onPressed: {
             if (event.key == Qt.Key_Backspace && search.text == "")
-                search.focus = false
+                searchBox.hide()
         }
     }
 }
