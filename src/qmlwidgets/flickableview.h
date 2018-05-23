@@ -91,7 +91,7 @@ public:
         void updateGeometry();
 
     private:
-        FlickableView* m_pView;
+        FlickableView* m_pView {nullptr};
     };
 
     Q_PROPERTY(QSharedPointer<QAbstractItemModel> model READ model WRITE setModel NOTIFY modelChanged)

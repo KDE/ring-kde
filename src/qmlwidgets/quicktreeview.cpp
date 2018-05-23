@@ -78,9 +78,7 @@ QuickTreeView::~QuickTreeView()
 FlickableView::ModelIndexItem* QuickTreeView::createItem() const
 {
     return new QuickTreeViewItem(
-        static_cast<FlickableView*>(
-            const_cast<QuickTreeView*>(this)
-        )
+        const_cast<QuickTreeView*>(this)
     );
 }
 

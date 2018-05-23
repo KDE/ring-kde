@@ -125,6 +125,11 @@ QuickListView::QuickListView(QQuickItem* parent) : TreeView2(parent),
 
 QuickListViewItem::~QuickListViewItem()
 {
+    // If this item is the section owner, assert before crashing
+    if (m_pSection && m_pSection->m_pOwner == this) {
+        Q_ASSERT(false);
+    }
+
     if (m_pItem)
         delete m_pItem;
 
@@ -194,9 +199,7 @@ QuickListViewSections* QuickListView::section() const
 FlickableView::ModelIndexItem* QuickListView::createItem() const
 {
     return new QuickListViewItem(
-        static_cast<FlickableView*>(
-            const_cast<QuickListView*>(this)
-        )
+        const_cast<QuickListView*>(this)
     );
 }
 
@@ -469,6 +472,17 @@ bool QuickListViewItem::remove()
 {
     if (m_pSection && --m_pSection->m_RefCount <= 0) {
         delete m_pSection;
+    }
+    else if (m_pSection && m_pSection->m_pOwner == this) {
+        // Reparent the section
+        if (auto n = static_cast<QuickListViewItem*>(down())) {
+            if (n->m_pSection == m_pSection)
+                m_pSection->m_pOwner = n;
+            else
+                Q_ASSERT(false);
+        }
+        else
+            Q_ASSERT(false);
     }
 
     m_pSection = nullptr;
