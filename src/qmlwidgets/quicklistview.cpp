@@ -428,16 +428,35 @@ void QuickListViewSection::reparentSection(QuickListViewItem* newParent, Flickab
 
 bool QuickListViewItem::move()
 {
-    const auto prev = static_cast<QuickListViewItem*>(up());
+    auto prev = static_cast<QuickListViewItem*>(up());
 
     const QQuickItem* prevItem = nullptr;
 
     if (d()->m_pSections)
         if (auto sec = d()->getSection(this)) {
-            if (sec->m_pOwner == this && sec->m_pItem) {
+            if (sec->m_pOwner == this) {
+                while (prev && prev->m_pSection == sec)
+                    prev = static_cast<QuickListViewItem*>(prev->up());
+
                 sec->reparentSection(prev ? prev : nullptr, view());
 
-                prevItem = sec->m_pItem;
+                if (sec->m_pItem)
+                    prevItem = sec->m_pItem;
+
+                // Change the owner
+                /*if (!(m_pSection == sec && m_pSection->m_RefCount == 1)) {
+                    if (prev && prev->m_pSection == sec)
+                        prev->m_pSection->m_pOwner = prev;
+                    else if (auto d = static_cast<QuickListViewItem*>(down())) {
+                        if (d->m_pSection == sec)
+                            d->m_pSection->m_pOwner = d;
+                        else
+                            Q_ASSERT(false);
+                    }
+                    else {
+                        Q_ASSERT(false);
+                    }
+                }*/
             }
         }
 
@@ -478,11 +497,11 @@ bool QuickListViewItem::remove()
         if (auto n = static_cast<QuickListViewItem*>(down())) {
             if (n->m_pSection == m_pSection)
                 m_pSection->m_pOwner = n;
-            else
-                Q_ASSERT(false);
+            /*else
+                Q_ASSERT(false);*/
         }
-        else
-            Q_ASSERT(false);
+        /*else
+            Q_ASSERT(false);*/
     }
 
     m_pSection = nullptr;
