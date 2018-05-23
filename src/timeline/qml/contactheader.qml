@@ -124,10 +124,22 @@ Rectangle {
             Rectangle {
                 anchors.fill: parent
                 border.width: 1
-                border.color: activePalette.text
+                border.color: Kirigami.Theme.disabledTextColor
                 radius: 5
-                color: "transparent"
-                visible: mouseArea.containsMouse || (!contactPhoto.hasPhoto)
+
+                // Make sure the "add photo" text is readable
+                color: (mouseArea.containsMouse && contactPhoto.hasPhoto) ?
+                    Kirigami.Theme.backgroundColor : "transparent"
+
+                opacity: (mouseArea.containsMouse || (!contactPhoto.hasPhoto)) ? 1 : 0
+
+                Behavior on opacity {
+                    NumberAnimation {duration: 100; easing.type: Easing.OutQuad}
+                }
+
+                Behavior on color {
+                    ColorAnimation {duration: 100}
+                }
 
                 Text {
                     text: i18n("Add\nPhoto")
