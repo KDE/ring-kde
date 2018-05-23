@@ -49,6 +49,8 @@ struct QuickListViewSection final
     QuickListViewSection* m_pPrevious{nullptr};
     QuickListViewSection* m_pNext    {nullptr};
 
+    QuickListViewPrivate* d_ptr {nullptr};
+
     // Mutator
     QQuickItem* item(QQmlComponent* component);
 
@@ -210,6 +212,7 @@ QuickListViewSection::QuickListViewSection(
 {
     m_pOwner = owner;
     m_Value  = value;
+    d_ptr    = owner->d();
 
     m_pContent = new QQmlContext(owner->view()->rootContext());
     m_pContent->setContextProperty("section", value);
@@ -519,7 +522,6 @@ QuickListViewSections::QuickListViewSections(QuickListView* parent) :
 
 QuickListViewSection::~QuickListViewSection()
 {
-    auto d_ptr = m_pOwner->d();
 
     if (m_pPrevious) {
         Q_ASSERT(m_pPrevious != m_pNext);
