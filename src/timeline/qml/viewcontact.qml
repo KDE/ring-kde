@@ -72,7 +72,7 @@ Item {
             personConn.target = currentIndividual.person
 
         if (currentIndividual != null)
-            avView.call = CallModel.firstActiveCall(currentIndividual)
+            avView.call = currentIndividual.firstActiveCall
     }
 
     onCurrentPageChanged: {
