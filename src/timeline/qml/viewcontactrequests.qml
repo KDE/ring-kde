@@ -80,13 +80,7 @@ Rectangle {
             MouseArea {
                 anchors.fill: parent
                 onClicked: {
-                    var component = Qt.createComponent("PendingRequests.qml")
-                    if (component.status == Component.Ready) {
-                        var window = component.createObject(applicationWindow().contentItem)
-                        window.open()
-                    }
-                    else
-                        console.log("ERROR", component.status, component.errorString())
+                    applicationWindow().showContactRequests()
                 }
             }
         }

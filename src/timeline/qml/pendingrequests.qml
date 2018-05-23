@@ -30,7 +30,8 @@ Dialog {
     width: applicationWindow().contentItem.width * 0.66
     height: applicationWindow().contentItem.height * 0.66
 
-    standardButtons: Dialog.Close
+    // As on Qt 5.9.5, QML crashes on a double free when Close is used
+    standardButtons: Dialog.NoButton
 
     property int rowCount: AccountModel.incomingContactRequestModel.size
 
@@ -56,6 +57,8 @@ Dialog {
                         text: i18n("Accept")
                         onClicked: {
                             object.accept()
+                            if (AccountModel.incomingContactRequestModel.size == 0)
+                                dialog.close()
                         }
                     }
                     Button {
@@ -111,6 +114,18 @@ Dialog {
             editable: false
             forcedState: "profile"
             defaultName: ""
+        }
+
+        RowLayout {
+            Item {
+                Layout.fillWidth: true
+            }
+            Button {
+                text: i18n("Close")
+                onClicked: {
+                    dialog.close()
+                }
+            }
         }
     }
 }

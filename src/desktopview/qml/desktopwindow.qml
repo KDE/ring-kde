@@ -35,6 +35,16 @@ Kirigami.ApplicationWindow {
         wizardLoader.active     = true
     }
 
+    function showContactRequests() {
+        var component = Qt.createComponent("PendingRequests.qml")
+        if (component.status == Component.Ready) {
+            var window = component.createObject(applicationWindow().contentItem)
+            window.open()
+        }
+        else
+            console.log("ERROR", component.status, component.errorString())
+    }
+
     SystemPalette {
         id: activePalette
         colorGroup: SystemPalette.Active
