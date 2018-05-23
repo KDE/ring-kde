@@ -58,6 +58,13 @@ QPixmap SymbolicColorizerPrivate::paintSvg(const QString &id, QSize *size, const
     if (!r)
         m_hRenderers[id] = r = new QSvgRenderer(id);
 
+    if (!r->isValid()) {
+        qWarning() << "Could not colorise" << id;
+        m_hRenderers.remove(id);
+        delete r;
+        return {};
+    }
+
     // Always honor the original aspect ratio
     const qreal aspectRatio = r->defaultSize().width()/r->defaultSize().height();
     const bool hOrW = r->defaultSize().width() >= r->defaultSize().height();
