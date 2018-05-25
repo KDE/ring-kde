@@ -40,5 +40,6 @@
         <file>./outline/warning.svg</file>
         <file>./outline/qrcode.svg</file>
         <file>./outline/web.svg</file>
+        <file>./outline/close.svg</file>
     </qresource>
 </RCC>

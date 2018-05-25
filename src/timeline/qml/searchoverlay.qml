@@ -120,6 +120,7 @@ Item {
                 label: i18n("Close")
                 height: 24
                 alignment: Qt.AlignRight
+                icon: "image://SymbolicColorizer/:/sharedassets/outline/close.svg"
                 onClicked: {
                     searchBox.hide()
                 }

@@ -52,6 +52,22 @@ Rectangle {
         }
     }
 
+    OutlineButton {
+        id: closeButton
+        label: i18n("Close")
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.margins: 3
+        height: 24
+        visible: false
+        z: 100
+        alignment: Qt.AlignRight
+        icon: "image://SymbolicColorizer/:/sharedassets/outline/close.svg"
+        onClicked: {
+            object.performAction(Call.REFUSE)
+        }
+    }
+
     RowLayout {
         id: content
         spacing: 10
@@ -247,6 +263,10 @@ Rectangle {
                     opacity: 1
                     height: Math.min(4, count)*(3*fontMetrics.height+10) + 10
                 }
+                PropertyChanges {
+                    target: closeButton
+                    visible: false
+                }
             },
             State {
                 name: "error"
@@ -268,6 +288,11 @@ Rectangle {
                     color: "#33ff0000"
                     border.width: 1
                     border.color: "#55ff0000"
+                }
+
+                PropertyChanges {
+                    target: closeButton
+                    visible: true
                 }
             },
             State {
@@ -294,6 +319,11 @@ Rectangle {
                     border.width: 1
                     border.color: "#55ff0000"
                 }
+
+                PropertyChanges {
+                    target: closeButton
+                    visible: true
+                }
             },
             State {
                 name: "incoming"
@@ -307,6 +337,10 @@ Rectangle {
                 PropertyChanges {
                     target: rigningAnimation
                     active: true
+                }
+                PropertyChanges {
+                    target: closeButton
+                    visible: false
                 }
             }
         ]
