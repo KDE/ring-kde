@@ -18,40 +18,39 @@
 import QtQuick 2.0
 import Ring 1.0
 
+/*
+ * This module display a 5 seconds message before the call is removed.
+ *
+ * It is intended to prevent the case where the call "just disappear" because
+ * it cut or the peer hung up unexpectedly. This way, the user isn't confused
+ * as what just happened.
+ */
 Column {
     property QtObject call: null
+    property bool start: false
 
-    Item {
-        width: 1
-        height: 5
-    }
+    spacing: 6
 
-    Image {
-        height: 22
-        fillMode: Image.PreserveAspectFit
-        width: parent.width
-        sourceSize.width: 32
-        sourceSize.height: 32
-        horizontalAlignment: Image.AlignHCenter
-        source: "image://SymbolicColorizer/:/sharedassets/phone_dark/missed_incoming.svg"
-        opacity: 0.5
-    }
-
-    Item {
-        height: 3
+    Component.onCompleted: {
+        start = true
     }
 
     Text {
-        horizontalAlignment: Text.AlignHCenter
-        text: i18n("<center><b>Missed call</b></center> <br />from: ")+ display + "<br /><br />"+formattedDate
-        color: activePalette.text
+        text: i18n("The call finished normally")
+        color: selected ? activePalette.highlightedText : activePalette.text
         wrapMode: Text.WordWrap
-        width: parent.width
+        anchors.horizontalCenter: parent.horizontalCenter
+        font.bold: true
     }
 
-    Item {
-        width: 1
-        height: 5
-    }
+    Rectangle {
+        height: 6
+        radius: 99
+        width: start ? 0 : parent.width
+        color: selected ? activePalette.highlightedText : activePalette.text
 
+        Behavior on width {
+            NumberAnimation {duration: 5000}
+        }
+    }
 }

@@ -11,5 +11,6 @@
         <file alias="MissedCall.qml">qml/missedcall.qml</file>
         <file alias="OutgoingCall.qml">qml/outgoingcall.qml</file>
         <file alias="IncomingCall.qml">qml/incomingcall.qml</file>
+        <file alias="FinishedCall.qml">qml/finishedcall.qml</file>
     </qresource>
 </RCC>

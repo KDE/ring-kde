@@ -231,6 +231,20 @@ Rectangle {
     }
 
     Loader {
+        id: finishedMessage
+        anchors.top: content.bottom
+        active: false
+        width: parent.width
+        height: active ? item.implicitHeight : 0
+        sourceComponent: Component {
+            FinishedCall {
+                call: object
+                width: parent.width
+            }
+        }
+    }
+
+    Loader {
         id: missedMessage
         active: false
         width: parent.width
@@ -371,6 +385,24 @@ Rectangle {
                 PropertyChanges {
                     target: closeButton
                     visible: false
+                }
+            },
+            State {
+                name: "finished"
+                when: object.state == Call.OVER
+
+                PropertyChanges {
+                    target: callDelegateItem
+                    height: finishedMessage.height + content.implicitHeight
+                }
+
+                PropertyChanges {
+                    target: finishedMessage
+                    active: true
+                }
+                PropertyChanges {
+                    target: closeButton
+                    visible: true
                 }
             }
         ]
