@@ -102,14 +102,6 @@ Rectangle {
         }
     }
 
-    Text {
-        id: lengthLabel
-        text: length
-        color: callDelegateItem.selected ?
-            inactivePalette.highlightedText : inactivePalette.text
-        anchors.right: parent.right
-    }
-
     DropArea {
         anchors.fill: parent
         keys: ["text/ring.call.id", "text/plain"]
@@ -245,6 +237,20 @@ Rectangle {
     }
 
     Loader {
+        id: currentMessage
+        anchors.top: content.bottom
+        active: false
+        width: parent.width
+        height: active ? item.implicitHeight : 0
+        sourceComponent: Component {
+            CurrentCall {
+                call: object
+                width: parent.width
+            }
+        }
+    }
+
+    Loader {
         id: missedMessage
         active: false
         width: parent.width
@@ -305,11 +311,6 @@ Rectangle {
                 }
 
                 PropertyChanges {
-                    target: lengthLabel
-                    visible: false
-                }
-
-                PropertyChanges {
                     target: callDelegateItem
                     color: "#33ff0000"
                     border.width: 1
@@ -331,10 +332,6 @@ Rectangle {
                 }
                 PropertyChanges {
                     target: content
-                    visible: false
-                }
-                PropertyChanges {
-                    target: lengthLabel
                     visible: false
                 }
 
@@ -403,6 +400,24 @@ Rectangle {
                 PropertyChanges {
                     target: closeButton
                     visible: true
+                }
+            },
+            State {
+                name: "current"
+                when: object.lifeCycleState == Call.PROGRESS
+
+                PropertyChanges {
+                    target: callDelegateItem
+                    height: currentMessage.height + content.implicitHeight
+                }
+
+                PropertyChanges {
+                    target: currentMessage
+                    active: true
+                }
+                PropertyChanges {
+                    target: closeButton
+                    visible: false
                 }
             }
         ]
