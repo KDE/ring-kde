@@ -140,6 +140,13 @@ FocusScope {
         }
     }
 
+    Connections {
+        target: CallModel
+        onCallAttentionRequest: {
+            CallModel.selectedCall = call
+        }
+    }
+
     Component.onCompleted: {
         dialView.forceActiveFocus()
     }
