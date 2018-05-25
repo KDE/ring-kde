@@ -156,6 +156,7 @@ Item {
         id: placeholderMessage
         z: -99
         anchors.fill: parent
+        bottomMargin: actionToolbar.visible ? actionToolbar.height : 0
     }
 
     // Hide both toolbars when the mouse isn't moving

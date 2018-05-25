@@ -23,6 +23,7 @@ Rectangle {
     property QtObject call: null;
     property string   mode: "PREVIEW"
     property alias toubleshooting: troubleshootDispatcher
+    property real bottomMargin: 0
 
     id: placeholderMessage
     color: "black"
@@ -70,6 +71,10 @@ Rectangle {
         anchors.bottom: parent.bottom
         anchors.margins: 5
         visible: false
+        anchors.bottomMargin: bottomMargin > 0 ? bottomMargin : undefined
+        transitions: Transition {
+            AnchorAnimation { duration: 300 }
+        }
     }
 
     Rectangle {

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2017 by Bluesystems                                     *
+ *   Copyright (C) 2017-2018 by Bluesystems                                     *
  *   Author : Emmanuel Lepage Vallee <elv1313@gmail.com>                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,6 +18,7 @@
 import QtQuick 2.7
 import QtQuick.Layouts 1.0
 import Ring 1.0
+import org.kde.kirigami 2.2 as Kirigami
 
 Item {
     property QtObject call: null
@@ -29,24 +30,43 @@ Item {
         id: circle
         Rectangle {
             border.width: 1
-            border.color: "white"
-            color: circleColor
+            border.color: "#dddddd"
+            color: "black"
             radius: 99
             height: 20
             width: 20
+
+
+            Rectangle {
+                color: circleColor
+                radius: 99
+
+                height: 10
+                width: 10
+
+                Behavior on color {
+                    ColorAnimation {duration: 300}
+                }
+
+                anchors.centerIn: parent
+            }
+
             Text {
-                anchors.right: parent.horizontalCenter
                 color: "white"
                 text: label
+                font.pointSize: fontSize
                 transformOrigin: Item.Left
+                y : -Math.sin(Math.PI/4)*implicitWidth - parent.height
+                x : -(Math.cos(Math.PI/4)*implicitWidth) / 2 - parent.height/2
+
+                Behavior on font.pointSize {
+                    NumberAnimation {duration: 150}
+                }
+
                 transform: Rotation {
                     origin.x: 0
                     origin.y: height/2
                     angle: 45
-                }
-                Component.onCompleted: {
-                    // 13: parent.height/2 + 3pt margin
-                    y = -Math.sin(Math.PI/4)*width - 13
                 }
             }
         }
@@ -56,22 +76,9 @@ Item {
         id: backgroundBar
         anchors.verticalCenter: parent.verticalCenter
         width: parent.width
-        height: 7
+        height: 2
         radius: 99
-        border.width: 1
-        border.color: "white"
-        color: "gray"
-    }
-
-    Rectangle {
-        id: progress
-        anchors.verticalCenter: parent.verticalCenter
-        width: 0
-        height: 7
-        radius: 99
-        border.width: 1
-        border.color: "white"
-        color: "green"
+        color: "#dddddd"
     }
 
     RowLayout {
@@ -82,8 +89,9 @@ Item {
         }
         Loader {
             id: initCircle
-            property string label: "Dialing"
-            property string circleColor: "green"
+            property string label: i18n("Dialing")
+            property string circleColor: "#dddddd"
+            property real fontSize: Kirigami.Theme.defaultFont.pointSize*1.2
             sourceComponent: circle
             Layout.maximumWidth: 20
             Layout.maximumHeight: 20
@@ -93,8 +101,9 @@ Item {
         }
         Loader {
             id: searchCircle
-            property string label: "Searching"
-            property string circleColor: "green"
+            property string label: i18n("Searching")
+            property string circleColor: "#dddddd"
+            property real fontSize: Kirigami.Theme.defaultFont.pointSize*1.2
             sourceComponent: circle
             Layout.maximumWidth: 20
             Layout.maximumHeight: 20
@@ -104,8 +113,9 @@ Item {
         }
         Loader {
             id: ringCircle
-            property string label: "Ringing"
-            property string circleColor: "green"
+            property string label: i18n("Ringing")
+            property string circleColor: "#dddddd"
+            property real fontSize: Kirigami.Theme.defaultFont.pointSize*1.2
             sourceComponent: circle
             Layout.maximumWidth: 20
             Layout.maximumHeight: 20
@@ -114,8 +124,9 @@ Item {
             Layout.fillWidth: true
         }
         Loader {
-            property string label: "Starting"
-            property string circleColor: "green"
+            property string label: i18n("Starting")
+            property string circleColor: "#dddddd"
+            property real fontSize: Kirigami.Theme.defaultFont.pointSize*1.2
             sourceComponent: circle
             Layout.maximumWidth: 20
             Layout.maximumHeight: 20
@@ -141,15 +152,27 @@ Item {
 
         states: [
             State {
+                name: ""
+                PropertyChanges {
+                    target: initCircle
+                    fontSize: Kirigami.Theme.defaultFont.pointSize*1.2
+                }
+                PropertyChanges {
+                    target: searchCircle
+                    fontSize: Kirigami.Theme.defaultFont.pointSize*1.2
+                }
+                PropertyChanges {
+                    target: ringCircle
+                    fontSize: Kirigami.Theme.defaultFont.pointSize*1.2
+                }
+            },
+            State {
                 name: "INITIALIZATION"
                 when: call == null ||  call.state == 14
                 PropertyChanges {
-                    target: progress
-                    width: backgroundBar.width * (0/3)
-                }
-                PropertyChanges {
                     target: initCircle
-                    circleColor: "red"
+                    circleColor: "#298223"
+                    fontSize: Kirigami.Theme.defaultFont.pointSize*1.6
                 }
             },
             State {
@@ -157,12 +180,13 @@ Item {
                 when: call && call.state == Call.CONNECTED
                 extend: "INITIALIZATION"
                 PropertyChanges {
-                    target: progress
-                    width: backgroundBar.width * (1/3)
+                    target: searchCircle
+                    circleColor: "#298223"
+                    fontSize: Kirigami.Theme.defaultFont.pointSize*1.6
                 }
                 PropertyChanges {
-                    target: searchCircle
-                    circleColor: "red"
+                    target: initCircle
+                    fontSize: Kirigami.Theme.defaultFont.pointSize*1.2
                 }
             },
             State {
@@ -170,12 +194,17 @@ Item {
                 extend: "CONNECTED"
                 when: call && (call.state == Call.RINGING || call.state == 1 /*Call.INCOMING*/)
                 PropertyChanges {
-                    target: progress
-                    width: backgroundBar.width * (2/3)
+                    target: ringCircle
+                    circleColor: "#298223"
+                    fontSize: Kirigami.Theme.defaultFont.pointSize*1.6
                 }
                 PropertyChanges {
-                    target: ringCircle
-                    circleColor: "red"
+                    target: initCircle
+                    fontSize: Kirigami.Theme.defaultFont.pointSize*1.2
+                }
+                PropertyChanges {
+                    target: searchCircle
+                    fontSize: Kirigami.Theme.defaultFont.pointSize*1.2
                 }
             }
         ]
