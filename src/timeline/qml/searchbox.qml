@@ -129,8 +129,11 @@ Item {
             // Cache the text to avoid a binding loop when the dialing call
             // is created for the first time
             var text = search.text
-            var call = CallModel.dialingCall()
-            call.dialNumber = text
+
+            if (CallModel.hasDialingCall || text != "") {
+                var call = CallModel.dialingCall()
+                call.dialNumber = text
+            }
         }
         Keys.onDownPressed: {
             searchView.currentIndex = (searchView.currentIndex == searchView.count - 1) ?
