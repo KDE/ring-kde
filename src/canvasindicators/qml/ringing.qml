@@ -33,6 +33,7 @@ Rectangle {
         height: parent.height
         sourceSize.width: parent.height
         sourceSize.height: parent.height
+        smooth: true
         source: "image://RingingImageProvider/ringing/0"
     }
 

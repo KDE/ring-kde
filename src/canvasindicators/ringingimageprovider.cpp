@@ -68,9 +68,10 @@ struct RingingTipData final
             QSvgRenderer r(content);
 
             QPainter p2;
+            m_pPhonePix[i].fill(Qt::transparent);
             p2.begin(&m_pPhonePix[i]);
             p2.setCompositionMode(QPainter::CompositionMode_Clear);
-            p2.fillRect(m_Rect[i], QBrush(Qt::white));
+            p2.fillRect(m_Rect[i], QBrush(Qt::black));
             p2.setCompositionMode(QPainter::CompositionMode_SourceOver);
             r.render(&p2, m_Rect[i]);
             p2.end();
@@ -81,6 +82,7 @@ struct RingingTipData final
     QPixmap toPixmap(int count, const QSize& size) {
         Q_UNUSED(count)
         QPixmap pxm(135, 120);
+        pxm.fill(Qt::transparent);
 
         QPainter p(&pxm);
 
@@ -99,7 +101,9 @@ struct RingingTipData final
         };
 
         // For now only black background is used
+        p.setCompositionMode(QPainter::CompositionMode_Clear);
         p.fillRect(0,0,135,120, Qt::black);
+        p.setCompositionMode(QPainter::CompositionMode_SourceOver);
 
         for (int i = 0; i < 4; i++) {
             p.setOpacity(opacity[i]);
@@ -129,6 +133,7 @@ struct InitTipDataPrivate final {
     QPixmap toPixmap(int count, const QSize& size) {
         Q_UNUSED(count)
         QPixmap pxm(size.width(), size.width());
+        pxm.fill(Qt::transparent);
 
         QPainter p(&pxm);
         p.setCompositionMode(QPainter::CompositionMode_Clear);
@@ -182,8 +187,16 @@ QPixmap RingingImageProvider::requestPixmap(const QString &id, QSize *size, cons
     const int count = conf[1].toInt();
 
     if (conf[0] == QLatin1String("ringing")) {
-        if (!d_ptr->m_pRing)
+        if (!d_ptr->m_pRing) {
             d_ptr->m_pRing = new RingingTipData(d_ptr);
+
+            for (int i =0 ; i < 4; i++) {
+                QPainter p(&d_ptr->m_pRing->m_pPhonePix[i]);
+                //p.setCompositionMode(QPainter::CompositionMode_Clear);
+                p.fillRect(0,0,pxm.width(), pxm.height(), QBrush(Qt::red));
+            }
+        }
+
         pxm = d_ptr->m_pRing->toPixmap(count, finalSize);
     }
     else if (conf[0] == QLatin1String("init")) {
@@ -204,7 +217,7 @@ QByteArray RingingImageProviderPrivate::loadSvg(const QString& path) const
     file.open(QIODevice::ReadOnly | QIODevice::Text);
 
     QByteArray content = file.readAll();
-    content.replace("BACKGROUD_COLOR_ROLE",brightOrDarkBase()?"#000000":"#ffffff");
+    content.replace("BACKGROUD_COLOR_ROLE","#ffffff");
     content.replace("BASE_ROLE_COLOR",QGuiApplication::palette().base().color().name().toLatin1());
     file.close();
 

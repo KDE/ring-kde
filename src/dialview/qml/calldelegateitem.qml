@@ -217,6 +217,20 @@ Rectangle {
     }
 
     Loader {
+        id: outgoingMessage
+        anchors.top: content.bottom
+        active: false
+        width: parent.width
+        height: active ? item.implicitHeight : 0
+        sourceComponent: Component {
+            OutgoingCall {
+                call: object
+                width: parent.width
+            }
+        }
+    }
+
+    Loader {
         id: missedMessage
         active: false
         width: parent.width
@@ -235,13 +249,11 @@ Rectangle {
         width: parent.width
         height: active ? 32 : 0
         anchors.top: content.bottom
+        anchors.horizontalCenter: parent.horizontalCenter
         sourceComponent: Component {
-            Ringing {
-                height: 32
-                width: 32
-                anchors.horizontalCenter: parent.horizontalCenter
-                running: true
-                visible: true
+            IncomingCall {
+                //call: object
+                width: parent.width
             }
         }
     }
@@ -331,11 +343,29 @@ Rectangle {
 
                 PropertyChanges {
                     target: callDelegateItem
-                    height: rigningAnimation.height + content.implicitHeight
+                    height: rigningAnimation.height + content.implicitHeight + 3
                 }
 
                 PropertyChanges {
                     target: rigningAnimation
+                    active: true
+                }
+                PropertyChanges {
+                    target: closeButton
+                    visible: false
+                }
+            },
+            State {
+                name: "outgoing"
+                when: object.lifeCycleState == Call.INITIALIZATION && object.direction == 1/*OUTGOING*/
+
+                PropertyChanges {
+                    target: callDelegateItem
+                    height: outgoingMessage.height + content.implicitHeight
+                }
+
+                PropertyChanges {
+                    target: outgoingMessage
                     active: true
                 }
                 PropertyChanges {
