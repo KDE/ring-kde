@@ -54,7 +54,7 @@ Item {
                     color:  activePalette.highlight
                     radius: 999
                     border.width: 0
-                    border.color: activePalette.text
+                    border.color: activePalette.highlightedText
 
                     Behavior on border.width {
                         NumberAnimation { duration: 200 }
@@ -62,7 +62,7 @@ Item {
 
                     Rectangle {
                         id: overlay
-                        color: activePalette.text
+                        color: activePalette.highlightedText
                         opacity: 0
                         anchors.fill: parent
                         radius: 999
@@ -157,7 +157,6 @@ Item {
                                 }
                                 PropertyChanges {
                                     target: key
-                                    border.color: activePalette.text
                                     border.width: 2
                                 }
                             },

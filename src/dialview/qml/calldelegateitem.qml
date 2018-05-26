@@ -20,11 +20,13 @@ import QtQuick.Layouts 1.0
 import Ring 1.0
 import RingQmlWidgets 1.0
 import org.kde.kirigami 2.2 as Kirigami
+import ContactView 1.0
 
 Rectangle {
     id: callDelegateItem
     anchors.margins: 2
     radius: 5
+    border.width: 0
     color: selected ? activePalette.highlight: "transparent"
 
     height: content.implicitHeight + 20 + errorMessage.height
@@ -73,10 +75,13 @@ Rectangle {
         spacing: 10
         width: parent.width - 4
 
-        PixmapWrapper {
-            pixmap: decoration
+        ContactPhoto {
+            contactMethod: object.peerContactMethod
             height:40
             width:40
+            drawEmptyOutline: false
+            defaultColor:callDelegateItem.selected ?
+                activePalette.highlightedText : activePalette.text
             anchors.verticalCenter: parent.verticalCenter
         }
 
@@ -157,6 +162,7 @@ Rectangle {
 
         sourceComponent: Component {
             ListView {
+                clip: true
                 anchors.fill: parent
                 anchors.margins: 10
                 spacing: 10
@@ -173,20 +179,15 @@ Rectangle {
                     clip: true
                     CompletionDelegate {
                         id: searchDelegate
-                        textColor: parent.selected ?
-                            activePalette.highlight : activePalette.highlightedText
-                        altTextColor: parent.selected ?
-                            activePalette.highlight : activePalette.highlightedText
                         showPhoto: false
                         showControls: false
                         showSeparator: false
-                        height: 3*fontMetrics.height
                         labelHeight: fontMetrics.height
                     }
                 }
 
                 onCountChanged: {
-                    completionLoader.height = Math.min(4, count)*(3*fontMetrics.height+10)
+                    completionLoader.height = Math.min(4, count)*(3*fontMetrics.height+12)
                     callDelegateItem.height = content.implicitHeight +
                         Math.min(4, count)*(3*fontMetrics.height+10) + 10
                 }
@@ -282,10 +283,20 @@ Rectangle {
         id: stateGroup
         states: [
             State {
+                name: ""
+
+                PropertyChanges {
+                    target: callDelegateItem
+                    border.width: 0
+                }
+
+            },
+            State {
                 name: "dialing"
                 when: selected && object.state == Call.DIALING
                 PropertyChanges {
                     target: callDelegateItem
+                    border.width: 0
                     height: content.implicitHeight +
                         Math.min(4, count)*(3*fontMetrics.height+10) + 10
                 }
@@ -354,6 +365,7 @@ Rectangle {
 
                 PropertyChanges {
                     target: callDelegateItem
+                    border.width: 0
                     height: rigningAnimation.height + content.implicitHeight + 3
                 }
 
@@ -372,6 +384,7 @@ Rectangle {
 
                 PropertyChanges {
                     target: callDelegateItem
+                    border.width: 0
                     height: outgoingMessage.height + content.implicitHeight
                 }
 
@@ -390,6 +403,7 @@ Rectangle {
 
                 PropertyChanges {
                     target: callDelegateItem
+                    border.width: 0
                     height: finishedMessage.height + content.implicitHeight
                 }
 
@@ -408,6 +422,7 @@ Rectangle {
 
                 PropertyChanges {
                     target: callDelegateItem
+                    border.width: 0
                     height: currentMessage.height + content.implicitHeight
                 }
 

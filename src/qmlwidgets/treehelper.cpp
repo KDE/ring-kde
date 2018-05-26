@@ -205,6 +205,16 @@ bool TreeHelper::selectNext()
     return currentListIndex() != -1;
 }
 
+bool TreeHelper::clearSelection() const
+{
+    if (!d_ptr->m_pSelectionModel)
+        return false;
+
+    d_ptr->m_pSelectionModel->setCurrentIndex({}, QItemSelectionModel::ClearAndSelect);
+
+    return true;
+}
+
 bool TreeHelper::selectPrevious()
 {
     if (!d_ptr->m_pSelectionModel)

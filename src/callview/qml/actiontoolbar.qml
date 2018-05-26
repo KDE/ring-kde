@@ -86,7 +86,7 @@ Rectangle {
             return "white"
 
         // Default
-        return activePalette.text
+        return "white"
     }
 
     Component {
@@ -166,6 +166,7 @@ Rectangle {
                             PropertyChanges {
                                 target: background
                                 radius: 99
+                                anchors.margins: 0
                             }
                             PropertyChanges {
                                 target: mainArea
@@ -182,6 +183,7 @@ Rectangle {
                             PropertyChanges {
                                 target: background
                                 radius: 5
+                                anchors.margins: 2
                             }
                             PropertyChanges {
                                 target: mainArea
@@ -198,6 +200,7 @@ Rectangle {
                             PropertyChanges {
                                 target: background
                                 radius: 5
+                                anchors.margins: 2
                             }
                             PropertyChanges {
                                 target: mainArea

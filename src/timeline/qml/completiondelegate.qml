@@ -24,24 +24,23 @@ import RingQmlWidgets 1.0
 Item {
     id: componentItem
 
+    height: content.implicitHeight
+
     property bool showAccount: AccountModel.hasAmbiguousAccounts
     property bool showPhoto: true
     property bool showControls: true
     property bool showSeparator: true
-    property var  textColor: ListView.isCurrentItem ?
-                        activePalette.highlightedText : activePalette.text
-    property var  altTextColor: ListView.isCurrentItem ?
-                        activePalette.highlightedText : inactivePalette.text
+
+    property var  textColor: selected ?
+        activePalette.highlight : activePalette.highlightedText
+
+    property var  altTextColor: selected ?
+        activePalette.highlight : activePalette.highlightedText
+
+    property var baseColor: selected ?
+        activePalette.highlightedText : activePalette.highlight
 
     width: parent.width
-    height: getHeight()
-
-    function getHeight() {
-        var rowCount = 2 + (showAccount ? 2 : 1) + (supportsRegistry ? 1 : 0)
-        var controlHeight = (showControls && temporary) ? buttonHeight : 0
-
-        return rowCount*(fontMetrics.height+2) + 16 + controlHeight
-    }
 
     property QtObject contactMethod: object
     property double buttonHeight: 30
@@ -53,8 +52,10 @@ Item {
     }
 
     RowLayout {
+        id: content
         anchors.margins: 3
         anchors.fill: parent
+        spacing: 0
         PixmapWrapper {
             visible: componentItem.showPhoto
             height:  Math.min(46, 4*componentItem.labelHeight + 12)
@@ -100,114 +101,38 @@ Item {
                     color: textColor
                 }
             }
-            RowLayout {
-                Layout.fillWidth: true
-                Text {
-                    color: nameStatus == NumberCompletionModel.SUCCESS ?
-                        "green"  : (nameStatus == NumberCompletionModel.IN_PROGRESS ?
-                        "yellow" :
-                        "red")
-                    visible: supportsRegistry
-                    text: nameStatusString
-                }
-                Item {
-                    Layout.fillWidth: true
-                }
-                Rectangle {
-                    color: activePalette.highlight
-                    radius: 99
-                    height: componentItem.labelHeight + 4
-                    visible: componentItem.showAccount && accountAlias != ""
-                    width: accTextMetrics.width + 32
-                    Text {
-                        id: accountAliasText
-                        anchors.centerIn: parent
-                        anchors.leftMargin: 16
-                        anchors.rightMargin: 16
-                        text: accountAlias
-                        color: activePalette.highlightedText
-                    }
-                }
-            }
-            Loader {
-                active:  componentItem.showControls && temporary
-                visible: componentItem.showControls && temporary
-                height:  componentItem.buttonHeight
-                Layout.preferredHeight: componentItem.buttonHeight
-                Layout.fillWidth: true
 
-                sourceComponent: RowLayout {
+            Loader {
+                active: componentItem.showAccount && accountAlias != ""
+                Layout.fillWidth: true
+                Layout.preferredHeight: active ? componentItem.labelHeight + 14 : 0
+                Layout.minimumHeight: active ? componentItem.labelHeight +  14 : 0
+                sourceComponent: Item {
                     anchors.fill: parent
                     Rectangle {
-                        id: contactRequestButton
+                        color: textColor
+                        radius: 99
+                        implicitHeight: componentItem.labelHeight + 4
+                        height: implicitHeight
+                        width: accTextMetrics.width + height
+
+                        anchors.top: parent.top
+                        anchors.topMargin: 3
+                        anchors.right: parent.right
                         anchors.margins: 3
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        color: "transparent"
-                        radius: 5
-                        border.width: 1
-                        border.color: textColor
-                        opacity: 0.8
-                        Behavior on color {
-                            ColorAnimation {duration:100}
-                        }
+
                         Text {
+                            id: accountAliasText
                             anchors.centerIn: parent
-                            text: "Send request"
-                            color: textColor
-                        }
-                        MouseArea {
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            onContainsMouseChanged: {
-                                contactRequestButton.color = containsMouse ? "#55ffffff" : "transparent"
-                            }
-                        }
-                    }
-                    Rectangle {
-                        id: callButton
-                        anchors.margins: 3
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        color: "transparent"
-                        radius: 5
-                        border.width: 1
-                        border.color: textColor
-                        opacity: 0.8
-                        Behavior on color {
-                            ColorAnimation {duration:100}
-                        }
-                        Text {
-                            anchors.centerIn: parent
-                            text: "Call"
-                            color: textColor
-                        }
-                        MouseArea {
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            onContainsMouseChanged: {
-                                callButton.color = containsMouse ? "#55ffffff" : "transparent"
-                            }
+                            anchors.leftMargin: 16
+                            anchors.rightMargin: 16
+                            text: accountAlias
+                            color: baseColor
                         }
                     }
                 }
             }
-            Item {
-                Layout.fillHeight: true
-            }
         }
-    }
-
-
-    Rectangle {
-        visible: componentItem.showSeparator
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 3
-        width: parent.width
-        height: 1
-        color: ListView.isCurrentItem ?
-                        activePalette.highlightedText : inactivePalette.text
-        opacity: 0.7
     }
 
     MouseArea {

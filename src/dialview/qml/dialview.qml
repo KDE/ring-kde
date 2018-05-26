@@ -71,6 +71,8 @@ FocusScope {
         if (call.state == Call.DIALING && completionSelection.selectPrevious())
             return
 
+        completionSelection.clearSelection()
+
         var idx = CallModel.getIndex(call)
 
         if (!idx.valid)
@@ -92,6 +94,8 @@ FocusScope {
         if (call.state == Call.DIALING && completionSelection.selectNext())
             return
 
+        completionSelection.clearSelection()
+
         var idx = CallModel.getIndex(call)
 
         if (!idx.valid)
@@ -107,6 +111,21 @@ FocusScope {
         CallModel.selectedCall = nextCall
 
         dialView.selectCall(nextCall)
+    }
+
+    function performCall() {
+        var call = CallModel.selectedCall
+
+        if (!call) {
+            call = CallModel.dialingCall()
+            CallModel.selectedCall = call
+        }
+
+        // Apply the auto completion
+        if (call.state == Call.DIALING && CompletionModel.selectedContactMethod)
+            call.peerContactMethod = CompletionModel.selectedContactMethod
+
+        call.performAction(Call.ACCEPT)
     }
 
     Keys.onPressed: {
@@ -132,7 +151,7 @@ FocusScope {
                 break;
             case Qt.Key_Return:
             case Qt.Key_Enter:
-                call.performAction(Call.ACCEPT)
+                performCall()
                 break
             default:
                 call.appendText(event.text)
