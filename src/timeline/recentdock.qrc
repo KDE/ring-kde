@@ -37,6 +37,7 @@
         <file alias="ViewContactRequests.qml">qml/viewcontactrequests.qml</file>
         <file alias="NoAccount.qml">qml/noaccount.qml</file>
         <file alias="FirstRun.qml">qml/firstrun.qml</file>
+        <file alias="SearchTip.qml">qml/searchtip.qml</file>
         <file alias="SearchBox.qml">qml/searchbox.qml</file>
         <file alias="SearchOverlay.qml">qml/searchoverlay.qml</file>
         <file alias="Style/Style.qml">qml/Style/Style.qml</file>

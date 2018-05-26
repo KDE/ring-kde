@@ -17,11 +17,13 @@
  **************************************************************************/
 import QtQuick 2.7
 
-Rectangle {
-   Text {
-       anchors.fill: parent
-       color: activePalette.text
-       wrapMode: Text.WordWrap
-       text: welcomeMessage
-   }
+Loader {
+    clip: true
+    sourceComponent: Text {
+        anchors.fill: parent
+        color: activePalette.text
+        textFormat: Text.RichText
+        wrapMode: Text.WordWrap
+        text: welcomeMessage
+    }
 }

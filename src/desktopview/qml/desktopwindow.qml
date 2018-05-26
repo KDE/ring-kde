@@ -29,6 +29,8 @@ Kirigami.ApplicationWindow {
     width: 1024
     height: 768
 
+    property bool displayHelp: true
+
     function showWizard() {
         globalDrawer.drawerOpen = false
         wizardLoader.visible    = true
@@ -277,6 +279,13 @@ Kirigami.ApplicationWindow {
     QActionBinder {
         id: binder
         actionCollection: ActionCollection.kactionCollection
+    }
+
+    Item {
+        id: desktopOverlay //TODO Qt5.10, use QQC2.Overlay
+        anchors.fill: parent
+        visible: false
+        z: 1
     }
 
     RowLayout {

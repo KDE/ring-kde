@@ -31,6 +31,11 @@ Item {
     property bool active: searchBox.searchFocus
     property alias currentIndex: searchView.currentIndex
 
+    // Try to quit the welcome mode and never get back to it.
+    // There is many binding loops and signal being emitted preventing this
+    // from working cleanly.
+    property int _firstRunShown: 0 //HACK
+
     signal contactMethodSelected(var cm)
     signal displayNotFoundMessage()
 
@@ -52,6 +57,17 @@ Item {
             parent.width,
             parent.height
         )
+    }
+
+    Timer {
+        id: buggyTimer
+        repeat: false
+        running: false
+        interval: 0
+        onTriggered: {
+            burryOverlay.visible = false
+            _firstRunShown = 3
+        }
     }
 
     Item {
@@ -79,6 +95,15 @@ Item {
         }
     }
 
+    FirstRun {
+        id: firstRun
+        visible: active
+        active: searchStateGroup.state == "firstSearch"
+        anchors.left: parent.left
+        anchors.right: parent.right
+        height: parent.height* 0.4
+    }
+
     SearchBox {
         id: searchBox
         searchView: searchView
@@ -97,7 +122,7 @@ Item {
         width: parent.width - searchBox.labelWidth
         anchors.right: parent.right
         clip: true
-        active: seachOverlay.active
+        active: seachOverlay.active && searchStateGroup.state != "firstSearch"
         sourceComponent: RowLayout {
 
             Behavior on x {
@@ -205,13 +230,14 @@ Item {
     }
 
     // Display some tips and help to new users
-    Loader {
-        active: seachOverlay.active && !filterList.active //TODO add a variable to never show again
-        y: 100
-        sourceComponent: Text {
-            color: "red"
-            text: "explain the 'card' and 'sources'"
-        }
+    SearchTip {
+        active: seachOverlay.active
+            && (!filterList.active)
+            && searchStateGroup.state != "firstSearch"
+            && displayHelp
+        anchors.top: searchBox.bottom
+        anchors.topMargin: 15
+        width: parent.width
     }
 
     FindPeers {
@@ -271,10 +297,51 @@ Item {
     // Search
     StateGroup {
         id: searchStateGroup
+
+        //HACK I have no clue either why it keep re-displaying the overlay
+        onStateChanged: {
+            if (state == "firstSearch" && _firstRunShown == 0)
+                _firstRunShown = 1
+            else if (_firstRunShown == 1) {
+                _firstRunShown = 2
+                buggyTimer.running = true
+            }
+        }
+
         states: [
             State {
+                name: ""
+                when: (!searchBox.searchFocus) && (!PeersTimelineModel.empty)
+
+                PropertyChanges {
+                    target:  seachOverlay
+                    anchors.fill: parent
+                }
+
+                PropertyChanges {
+                    target:  searchView
+                    visible: false
+                }
+
+                PropertyChanges {
+                    target:  burryOverlay
+                    visible: false
+                    opacity: 0
+                }
+
+                PropertyChanges {
+                    target: desktopOverlay
+                    visible: false
+                }
+            },
+            State {
                 name: "searchActive"
-                when: seachOverlay.active
+                when: seachOverlay.active && (!PeersTimelineModel.empty)
+
+                PropertyChanges {
+                    target:  seachOverlay
+                    anchors.fill: parent
+                }
 
                 PropertyChanges {
                     target:  searchView
@@ -286,9 +353,44 @@ Item {
                     visible: true
                     opacity: 1
                 }
+
                 PropertyChanges {
                     target:  effectSource
                     sourceRect: Qt.rect(0, 0, parent.width, parent.height)
+                }
+
+                PropertyChanges {
+                    target: desktopOverlay
+                    visible: false
+                }
+            },
+            State {
+                name: "firstSearch"
+                extend: "searchActive"
+                when: _firstRunShown < 2 && PeersTimelineModel.empty
+                PropertyChanges {
+                    target:  seachOverlay
+                    anchors.fill: undefined
+                    width: applicationWindow().contentItem.width
+                    height: applicationWindow().contentItem.height
+                }
+
+                ParentChange {
+                    target: seachOverlay
+                    parent: desktopOverlay
+                }
+
+                PropertyChanges {
+                    target: searchBox
+                    y: firstRun.height + 10
+                    width: seachOverlay.width*0.9
+                    x: seachOverlay.width*0.05
+                    searchFocus: true
+                }
+
+                PropertyChanges {
+                    target: desktopOverlay
+                    visible: true
                 }
             }
         ]

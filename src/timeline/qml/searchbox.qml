@@ -144,7 +144,7 @@ Item {
                 searchView.count - 1 : searchView.currentIndex - 1
         }
         Keys.onReturnPressed: {
-            if (searchStateGroup.state != "searchActive")
+            if (searchStateGroup.state == "")
                 return
 
             var cm = searchView.currentItem.contactMethod

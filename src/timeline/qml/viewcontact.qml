@@ -123,25 +123,6 @@ Item {
         }
     }
 
-    Timer {
-        repeat: false
-        running: true
-        interval: 500
-        onTriggered: {
-            if (PeersTimelineModel.rowCount() > 0) {
-                firstRun.visible = false
-            }
-        }
-    }
-
-    FirstRun {
-        id: firstRun
-        anchors.fill: parent
-        z: 9999
-        color: activePalette.base
-        visible: (!currentIndividual) && ((!currentContactMethod) || (currentContactMethod.isSelf))
-    }
-
     ColumnLayout {
         id: columnLayout
         anchors.fill: parent
