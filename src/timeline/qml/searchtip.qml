@@ -84,7 +84,7 @@ Loader {
                     textFormat: Text.RichText
                     wrapMode: Text.WordWrap
                     horizontalAlignment: Text.AlignJustify
-                    text: i18n("The search results come from 4 different sources. It first look in the <b style=\"color:#be3411;\">history</b>, the <b style=\"color:#cfa02a;\">bookmarks</b> and the <b style=\"color:#14883b;\">contacts</b>. If there is no perfect match it then query the <b style=\"color:#2c53bd;\">registered name database.</b>. The source of the result is indicated using a colored circle on the left side of the result. Note that accessing the registered name database requires sending the search string to the server.")
+                    text: i18n("The search results come from 4 different sources. It first look in the <b style=\"color:#be3411;\">history</b>, the <b style=\"color:#cfa02a;\">bookmarks</b> and the <b style=\"color:#14883b;\">contacts</b>. If there is no perfect match it then query the <b style=\"color:#2c53bd;\">registered name database</b>. The source of the result is indicated using a colored circle on the left side of the result. Note that accessing the registered name database requires sending the search string to the server.")
                 }
             }
         }
