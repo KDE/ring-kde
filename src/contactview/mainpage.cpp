@@ -185,6 +185,7 @@ void MainPage::setContactMethod(ContactMethod* cm)
     if ((!cm) || (!d_ptr->m_pItem))
         return;
 
+
     cm = PhoneDirectoryModel::instance().fromTemporary(cm);
 
     // Keep a reference for 5 minutes to avoid double free from QML
@@ -204,6 +205,8 @@ void MainPage::setContactMethod(ContactMethod* cm)
     d_ptr->m_Invididual = cm->individual();
     d_ptr->m_CallsModel = cm->individual()->eventAggregate()->unsortedListView();
     Q_ASSERT(d_ptr->m_CallsModel);
+
+    PeersTimelineModel::instance().whiteList(d_ptr->m_Invididual);
 
     d_ptr->m_TimelineModel = cm->individual()->timelineModel();
 

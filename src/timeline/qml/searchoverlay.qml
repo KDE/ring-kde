@@ -31,10 +31,18 @@ Item {
     property bool active: searchBox.searchFocus
     property alias currentIndex: searchView.currentIndex
 
+    function _get_default_run() {
+        return PeersTimelineModel.empty ? 0 : 3
+    }
+
     // Try to quit the welcome mode and never get back to it.
     // There is many binding loops and signal being emitted preventing this
     // from working cleanly.
-    property int _firstRunShown: 0 //HACK
+    //
+    // 0: The timeline is empty and search has focus
+    // 1: Typing, the timeline will get it's first hit when the name service returns
+    // 2: The search is empty again, hide i1
+    property int _firstRunShown: _get_default_run() //HACK
 
     signal contactMethodSelected(var cm)
     signal displayNotFoundMessage()
@@ -65,7 +73,6 @@ Item {
         running: false
         interval: 0
         onTriggered: {
-            burryOverlay.visible = false
             _firstRunShown = 3
         }
     }
@@ -112,6 +119,13 @@ Item {
         onContactMethodSelected: {
             searchBox.hide()
             seachOverlay.contactMethodSelected(cm)
+        }
+
+        onEmptyChanged: {
+            if (empty && _firstRunShown == 1) {
+                _firstRunShown = 2
+                buggyTimer.running = true
+            }
         }
     }
 
@@ -294,24 +308,38 @@ Item {
         notFoundMessage.opacity = 1
     }
 
+    Connections {
+        target: applicationWindow()
+        onWizardVisible: {
+            if (wizardVisible && _firstRunShown == 1)
+                _firstRunShown = 0
+        }
+    }
+
     // Search
     StateGroup {
         id: searchStateGroup
 
         //HACK I have no clue either why it keep re-displaying the overlay
         onStateChanged: {
-            if (state == "firstSearch" && _firstRunShown == 0)
-                _firstRunShown = 1
-            else if (_firstRunShown == 1) {
-                _firstRunShown = 2
-                buggyTimer.running = true
+            if (wizardVisible) {
+                _firstRunShown = 0
+                return
             }
+            if (state == "firstSearch" && _firstRunShown < 2)
+                _firstRunShown = 1
+
         }
 
         states: [
             State {
                 name: ""
                 when: (!searchBox.searchFocus) && (!PeersTimelineModel.empty)
+
+                ParentChange {
+                    target: seachOverlay
+                    parent: topLevel
+                }
 
                 PropertyChanges {
                     target:  seachOverlay
@@ -336,11 +364,13 @@ Item {
             },
             State {
                 name: "searchActive"
-                when: seachOverlay.active && (!PeersTimelineModel.empty)
+                when: seachOverlay.active && (!PeersTimelineModel.empty) && _firstRunShown > 2
 
                 PropertyChanges {
                     target:  seachOverlay
                     anchors.fill: parent
+                    width: undefined
+                    height: undefined
                 }
 
                 PropertyChanges {
@@ -367,7 +397,9 @@ Item {
             State {
                 name: "firstSearch"
                 extend: "searchActive"
-                when: _firstRunShown < 2 && PeersTimelineModel.empty
+                when:  (!wizardVisible) && _firstRunShown < 2 && (
+                    PeersTimelineModel.empty || !searchBox.empty
+                )
                 PropertyChanges {
                     target:  seachOverlay
                     anchors.fill: undefined

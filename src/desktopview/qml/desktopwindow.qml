@@ -30,8 +30,10 @@ Kirigami.ApplicationWindow {
     height: 768
 
     property bool displayHelp: true
+    property bool wizardVisible: false
 
     function showWizard() {
+        wizardVisible = true
         globalDrawer.drawerOpen = false
         wizardLoader.visible    = true
         wizardLoader.active     = true
@@ -272,6 +274,7 @@ Kirigami.ApplicationWindow {
                     wizardLoader.visible = false
                     wizardLoader.active = false
                 }
+                wizardVisible = visible
             }
         }
     }

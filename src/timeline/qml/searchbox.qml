@@ -25,6 +25,7 @@ import Ring 1.0
 Item {
     id: searchBox
 
+    property bool empty: search.text == ""
     property var searchView: null
     property real xPadding: 0
     property alias searchFocus: search.focus
