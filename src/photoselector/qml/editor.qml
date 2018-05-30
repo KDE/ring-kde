@@ -33,13 +33,14 @@ Dialog {
     modal: true
 
     visible: true
-    width: 500
-    height: 400
+    width:  Math.min(applicationWindow().width , 500)
+    height: Math.min(applicationWindow().height, 400)
     standardButtons: Dialog.Ok | Dialog.Cancel
     closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
 
-    x: (applicationWindow().width / 2 - width/2) /2 //BUG WTF!
-    y: applicationWindow().height / 2 - height/2
+    parent: applicationWindow().contentItem
+    x: applicationWindow().contentItem.width / 2 - width/2
+    y: applicationWindow().contentItem.height / 2 - height/2
 
     PhotoSelector {
         id: selector
