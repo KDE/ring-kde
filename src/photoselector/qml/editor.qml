@@ -170,9 +170,13 @@ Dialog {
         }
 
         RowLayout {
+            Layout.fillWidth: true
+            Item {
+                height: 1
+                Layout.fillWidth: true
+            }
             Button {
                 text: i18n("From file")
-                Layout.fillWidth: true
                 onClicked: {
                     videoWidget.visible = false
                     fromFile.visible = true
@@ -181,7 +185,6 @@ Dialog {
             }
             Button {
                 text: i18n("From camera")
-                Layout.fillWidth: true
                 onClicked: {
                     videoWidget.visible = true
                     fromFile.visible = false
@@ -199,13 +202,16 @@ Dialog {
             }
             Button {
                 text: i18n("Clear")
-                Layout.fillWidth: true
                 onClicked: {
                     videoWidget.visible = false
                     fromFile.visible = false
                     fromFile.source = ""
                     selector.clear()
                 }
+            }
+            Item {
+                height: 1
+                Layout.fillWidth: true
             }
         }
 
