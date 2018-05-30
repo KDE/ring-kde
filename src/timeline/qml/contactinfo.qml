@@ -76,31 +76,6 @@ Kirigami.ScrollablePage {
         isChanged = true
     }
 
-    function getLastContacted() {
-        if (!individual)
-            return
-
-        var d = individual.lastUsedTime == 0 ? i18n("Never") :
-            new Date(individual.lastUsedTime * 1000).toLocaleString()
-
-        return i18n("<b>Last contacted on:</b> ") + individual.formattedLastUsedTime
-    }
-
-    function getTotalCall() {
-        if (!individual)
-            return
-
-        return i18n("<b>Called:</b> ") + individual.callCount +
-            " (" + (Math.floor(individual.totalSpentTime/60)) + " minutes) [?]"
-    }
-
-    function getTotalText() {
-        if (!individual)
-            return
-
-        return  i18n("<b>Texted:</b> ") + individual.textMessageCount
-    }
-
     SystemPalette {
         id: activePalette
         colorGroup: SystemPalette.Active
@@ -230,41 +205,12 @@ Kirigami.ScrollablePage {
                     Layout.fillHeight: true
                     background: Rectangle { color: activePalette.base }
                     id: tabbedContactInfoPage4
-                    ColumnLayout {
+                    Statistics {
                         id: statistics
-
-                        visible: showStat
                         Layout.fillWidth: true
-                        Rectangle {
-                            color: activePalette.text
-                            height: 1
-                            Layout.fillWidth: true
-                        }
-
-                        Label {
-                            id: lastContactedTime
-                            color: contactViewPage.labelColor ? contactViewPage.labelColor : activePalette.text
-                            text: individual ? getLastContacted() : ""
-                        }
-
-                        Label {
-                            id: totalCall
-                            color: contactViewPage.labelColor ? contactViewPage.labelColor : activePalette.text
-                            text: individual ? getTotalCall() : ""
-                        }
-
-                        Label {
-                            id: totalText
-                            color: contactViewPage.labelColor ? contactViewPage.labelColor : activePalette.text
-                            text: individual ? getTotalText() : ""
-                        }
-
-                        Rectangle {
-                            color: contactViewPage.state == "mobile" ? "transparent" : activePalette.text
-                            height: 1
-                            Layout.fillWidth: true
-                            Layout.fillHeight: contactViewPage.state == "mobile"
-                        }
+                        visible: showStat
+                        individual: contactViewPage.individual
+                        labelColor: contactViewPage.labelColor
                     }
                 }
 

@@ -7,5 +7,6 @@
         <file alias="BookmarkCard.qml">qml/bookmarkcard.qml</file>
         <file alias="MediaAvailability.qml">qml/mediaavailability.qml</file>
         <file alias="VCardForm.qml">qml/vcardform.qml</file>
+        <file alias="Statistics.qml">qml/statistics.qml</file>
     </qresource>
 </RCC>
