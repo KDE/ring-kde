@@ -8,5 +8,6 @@
         <file alias="MediaAvailability.qml">qml/mediaavailability.qml</file>
         <file alias="VCardForm.qml">qml/vcardform.qml</file>
         <file alias="Statistics.qml">qml/statistics.qml</file>
+        <file alias="NewContactDialog.qml">qml/newcontactdialog.qml</file>
     </qresource>
 </RCC>

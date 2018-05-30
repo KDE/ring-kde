@@ -64,6 +64,9 @@ Person* ContactBuilder::from(Individual* ind)
 
     auto p = ind->buildPerson();
     p->setCollection(col);
+    col->editor<Person>()->addExisting(p);
+
+    Q_ASSERT(ind->person() == p);
 
     return p;
 }
@@ -73,6 +76,20 @@ Person* ContactBuilder::from(ContactMethod* cm)
     if (cm && cm->contact())
         return cm->contact();
 
+    auto p = fromScratch();
+
+    if (cm) {
+        cm->setPerson(p);
+        p->individual()->addPhoneNumber(cm);
+    }
+
+    qDebug() << "New contact successfully added";
+
+    return p;
+}
+
+Person* ContactBuilder::fromScratch()
+{
     auto cols = PersonModel::instance().enabledCollections(
         CollectionInterface::SupportedFeatures::ADD |
         CollectionInterface::SupportedFeatures::EDIT|
@@ -88,15 +105,7 @@ Person* ContactBuilder::from(ContactMethod* cm)
 
     auto p = new Person();
     p->setCollection(col); //TODO have a selection widget again
-
-    if (cm) {
-        cm->setPerson(p);
-        p->individual()->addPhoneNumber(cm);
-    }
-
     col->editor<Person>()->addExisting(p);
-
-    qDebug() << "New contact successfully added";
 
     return p;
 }

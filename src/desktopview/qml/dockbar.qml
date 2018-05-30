@@ -226,8 +226,8 @@ Item {
             id: contactViewComponent
             ContactList {
                 anchors.fill: parent
-                onContactMethodSelected: {
-                    mainPage.setContactMethod(cm)
+                onIndividualSelected: {
+                    mainPage.setIndividual(ind)
                 }
             }
         }

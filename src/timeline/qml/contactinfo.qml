@@ -61,6 +61,10 @@ Kirigami.ScrollablePage {
         if (!person)
             person = contactBuilder.from(individual)
 
+
+        if (!vCardForm.currentPerson)
+            vCardForm.currentPerson = person
+
         vCardForm.syncDetails(person)
 
         if (contactViewPage.cachedPhoto != undefined)
@@ -268,6 +272,7 @@ Kirigami.ScrollablePage {
 
             visible: showImage
             height: showImage ? 90 : 0
+            implicitHeight: showImage ? 90 : 0
             Layout.fillWidth: true
 
             ContactPhoto {

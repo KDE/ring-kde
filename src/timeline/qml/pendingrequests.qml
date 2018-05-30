@@ -35,7 +35,7 @@ Dialog {
 
     property int rowCount: AccountModel.incomingContactRequestModel.size
 
-    function selectContactRequest(index, obj) {
+    function selectContactRequest(index, obj, modelIndex) {
         contactInfo.individual = obj.peer.individual
     }
 

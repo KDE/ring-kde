@@ -26,14 +26,25 @@ import org.kde.kirigami 2.2 as Kirigami
 Kirigami.Page {
     id: contactList
     signal contactMethodSelected(var cm)
+    signal individualSelected(var ind)
 
     leftPadding: 0
     topPadding: 0
     bottomPadding: 0
     rightPadding: 0
 
-    mainAction: QmlAction {
-        action: ActionCollection.newContact
+    function selectContact(index, object, modelIndex) {
+        treeView.selectItem(modelIndex)
+        contactList.individualSelected(
+            object.individual
+        )
+    }
+
+    mainAction: Kirigami.Action {
+        iconName: "list-add"
+        onTriggered: {
+            addNewContact()
+        }
     }
 
     SystemPalette {
@@ -59,7 +70,6 @@ Kirigami.Page {
             height: 32
             width: parent.width
             model: ContactCategoryModel
-            anchors.top: search.bottom
             orientation: ListView.Horizontal
             delegate: MouseArea {
                 height: 32
@@ -154,7 +164,7 @@ Kirigami.Page {
                     Component {
                         id: contactComponent
                         ContactCard {
-
+                            selectionCallback: selectContact
                         }
                     }
 

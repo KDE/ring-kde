@@ -49,6 +49,16 @@ Kirigami.ApplicationWindow {
             console.log("ERROR", component.status, component.errorString())
     }
 
+    function addNewContact() {
+        var component = Qt.createComponent("NewContactDialog.qml")
+        if (component.status == Component.Ready) {
+            var window = component.createObject(applicationWindow().contentItem)
+            window.open()
+        }
+        else
+            console.log("ERROR", component.status, component.errorString())
+    }
+
     SystemPalette {
         id: activePalette
         colorGroup: SystemPalette.Active

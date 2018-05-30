@@ -120,7 +120,7 @@ Item {
             anchors.fill: parent
             onClicked: {
                 if (selectionCallback)
-                    selectionCallback(index, object)
+                    selectionCallback(index, object, modelIndex)
                 else if (treeView != undefined) { //FIXME move elsewhere
                     treeView.selectItem(modelIndex)
                     if (objectType == 0)

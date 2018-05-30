@@ -69,11 +69,6 @@ GridLayout {
             return
 
         currentPerson = currentContactMethod.person
-
-        // Stats
-        lastContactedTime.text = getLastContacted()
-        totalCall.text         = getTotalCall()
-        totalText.text         = getTotalText()
     }
 
     onCurrentPersonChanged: {

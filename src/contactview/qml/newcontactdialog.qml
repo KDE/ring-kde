@@ -15,37 +15,38 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#pragma once
+import QtQuick 2.7
+import org.kde.kirigami 2.2 as Kirigami
+import QtQuick.Controls 2.2
+import RingQmlWidgets 1.0
 
-#include <QtCore/QObject>
+Dialog {
+    standardButtons: Dialog.Save | Dialog.Cancel
 
-class ContactMethod;
-class Person;
-class Account;
-class Individual;
+    parent: applicationWindow().contentItem
+    x: applicationWindow().contentItem.width / 2 - width/2
+    y: applicationWindow().contentItem.height / 2 - height/2
 
-class ContactBuilderPrivate;
+    width: applicationWindow().contentItem.width * 0.85
+    height: applicationWindow().contentItem.height * 0.85
 
-class ContactBuilder : public QObject
-{
-    Q_OBJECT
+    ContactBuilder {
+        id: contactBuilder
+    }
 
-public:
-    explicit ContactBuilder(QObject* parent = nullptr);
-    virtual ~ContactBuilder();
+    onAccepted: {
+        contactInfo.individual = contactBuilder.fromScratch().individual
+        contactInfo.save()
+    }
 
-    Q_INVOKABLE Person* from(ContactMethod* cm);
-    Q_INVOKABLE Person* from(Individual* cm);
+    onRejected: {}
 
-    Q_INVOKABLE Person* fromScratch();
-
-    Q_INVOKABLE ContactMethod* updatePhoneNumber(ContactMethod* cm, Person* p, const QString& number, int categoryIndex, int accountIdx);
-
-    Q_INVOKABLE void addEmptyPhoneNumber(Person* p);
-    Q_INVOKABLE void acceptEmptyPhoneNumber(Person* p);
-    Q_INVOKABLE void rejectEmptyPhoneNumber(Person* p);
-
-private:
-    ContactBuilderPrivate* d_ptr;
-    Q_DECLARE_PRIVATE(ContactBuilder)
-};
+    ContactInfo {
+        id: contactInfo
+        anchors.fill: parent
+        showStat: false
+        showSave: false
+        showImage: true
+        forcedState: "profile"
+    }
+}
