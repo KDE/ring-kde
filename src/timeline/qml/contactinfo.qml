@@ -112,9 +112,13 @@ Kirigami.ScrollablePage {
 
     actions {
         main: Kirigami.Action {
-            iconName: "document-edit"
+            iconName: editing ? "document-save" : "document-edit"
             visible: contactViewPage.state == "mobile"
             onTriggered: {
+                if (editing && isChanged) {
+                    console.log("Saving!")
+                    contactViewPage.save()
+                }
                 editing = (!editing) && editable
             }
         }
