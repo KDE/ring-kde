@@ -411,7 +411,9 @@ void FlickableView::ModelIndexItem::updateGeometry()
     //TODO handle up/left/right too
 
     if (!down())
-        view()->contentItem()->setHeight(geo.y()+geo.height());
+        view()->contentItem()->setHeight(std::max(
+            geo.y()+geo.height(), view()->height()
+        ));
 
     if (view()->d_ptr->m_pSelectionModel && view()->d_ptr->m_pSelectionModel->currentIndex() == index())
         view()->d_ptr->slotCurrentIndexChanged(index());
