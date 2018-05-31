@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2017 by Bluesystems                                     *
+ *   Copyright (C) 2018 by Bluesystems                                     *
  *   Author : Emmanuel Lepage Vallee <elv1313@gmail.com>                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -15,18 +15,17 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#include "desktopviewplugin.h"
-
-#include <QtCore/QDebug>
-#include <QQmlEngine>
-
-#include "dockmodel.h"
 #include "tipmodel.h"
 
-#include <qrc_desktopview.cpp>
+#include "../klib/kcfg_settings.h"
 
-void DesktopView::registerTypes(const char *uri)
+bool TipModel::showSearchTip() const
 {
-    qmlRegisterType<DockModel>(uri, 1, 0, "DockModel");
-    qmlRegisterType<TipModel>(uri, 1, 0, "TipModel");
+    return ConfigurationSkeleton::displaySearchTip();
+}
+
+void TipModel::setShowSearchTip(bool v)
+{
+    ConfigurationSkeleton::setDisplaySearchTip(v);
+    emit changed();
 }

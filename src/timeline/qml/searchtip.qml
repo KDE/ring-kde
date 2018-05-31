@@ -22,6 +22,7 @@ Loader {
     id: loader
     height: 200// item ? item.height : 0
     opacity: 0.7
+    active: displayTips.showSearchTip
     sourceComponent: Item {
         height: outline.height + 20
         anchors.left: loader.left
@@ -30,7 +31,7 @@ Loader {
         MouseArea {
             anchors.fill: parent
             onClicked: {
-                displayHelp = false
+                displayTips.showSearchTip = false
             }
         }
 

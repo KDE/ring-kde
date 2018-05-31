@@ -16,6 +16,7 @@ SET(desktopview_LIB_SRCS
     ${desktopview_LIB_SRCS}
     desktopviewplugin.cpp
     dockmodel.cpp
+    tipmodel.cpp
 )
 
 QT5_ADD_RESOURCES(desktopview_LIB_SRCS
@@ -25,8 +26,13 @@ QT5_ADD_RESOURCES(desktopview_LIB_SRCS
 ADD_LIBRARY( desktopview STATIC ${desktopview_LIB_SRCS} )
 
 target_link_libraries( desktopview
-   Qt5::Core
-   Qt5::Gui
-   Qt5::Quick
-   Qt5::QuickControls2
+    libkring
+
+    Qt5::Core
+    Qt5::Gui
+    Qt5::Quick
+    Qt5::QuickControls2
+    KF5::ConfigCore
+    KF5::ConfigGui
+    KF5::ConfigWidgets
 )

@@ -248,7 +248,7 @@ Item {
         active: seachOverlay.active
             && (!filterList.active)
             && searchStateGroup.state != "firstSearch"
-            && displayHelp
+            && displayTips.showSearchTip
         anchors.top: searchBox.bottom
         anchors.topMargin: 15
         width: parent.width

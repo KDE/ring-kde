@@ -22,6 +22,7 @@ import QtQuick.Layouts 1.0
 import QtQuick.Controls 2.0 as Controls
 import org.kde.kirigami 2.2 as Kirigami
 import ContactView 1.0
+import DesktopView 1.0
 
 Kirigami.ApplicationWindow {
     id: root
@@ -29,8 +30,11 @@ Kirigami.ApplicationWindow {
     width: 1024
     height: 768
 
-    property bool displayHelp: true
     property bool wizardVisible: false
+
+    TipModel {
+        id: displayTips
+    }
 
     function showWizard() {
         wizardVisible = true
