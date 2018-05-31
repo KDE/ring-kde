@@ -386,6 +386,7 @@ QVariant ContactPhoto::defaultColor() const
 void ContactPhoto::setDefaultColor(const QVariant& color)
 {
     d_ptr->m_DefaultColor = color;
+    update();
 }
 
 #include <contactphoto.moc>

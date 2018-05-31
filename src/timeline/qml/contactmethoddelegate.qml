@@ -112,6 +112,8 @@ Item {
                         anchors.margins: 3
                         anchors.fill: parent
                         individual: object
+                        defaultColor: isCurrentItem ?
+                            activePalette.highlightedText : activePalette.text
                         drawEmptyOutline: false
                     }
                 }
