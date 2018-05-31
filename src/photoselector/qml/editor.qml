@@ -18,6 +18,7 @@
 import QtQuick 2.7
 import QtQuick.Layouts 1.0
 import QtQuick.Controls 2.2
+import RingQmlWidgets 1.0
 
 import PhotoSelectorPlugin 1.0
 
@@ -58,7 +59,17 @@ Dialog {
             Label {
                 anchors.centerIn: parent
                 text: i18n("Either select a file or take a selfie")
-                z: -2
+                z: -4
+                visible: !existingPhoto.hasPixmap
+            }
+
+            PixmapWrapper {
+                id: existingPhoto
+                anchors.centerIn: parent
+                pixmap: person ? person.photo : undefined
+                z: -3
+                width: 128
+                height: 128
             }
 
             Rectangle {
@@ -207,6 +218,7 @@ Dialog {
                     fromFile.visible = false
                     fromFile.source = ""
                     selector.clear()
+                    existingPhoto.pixmap = undefined
                 }
             }
             Item {

@@ -31,6 +31,7 @@ void PixmapWrapper::setPixmap(const QVariant& var)
     m_pixmap = qvariant_cast<QPixmap>(var);
     m_icon   = qvariant_cast<QIcon  >(var);
     update();
+    emit changed();
 }
 
 void PixmapWrapper::paint(QPainter *painter)
@@ -75,4 +76,11 @@ void PixmapWrapper::setThemeFallback(const QString& s)
     m_themeFallback = s;
     m_fallbackIcon = {};
     update();
+    emit changed();
+}
+
+bool PixmapWrapper::hasPixmap() const
+{
+    qDebug() << m_fallbackIcon.isNull() << m_pixmap.isNull() << m_icon.isNull();
+    return !(m_fallbackIcon.isNull() && m_pixmap.isNull() && m_icon.isNull());
 }
