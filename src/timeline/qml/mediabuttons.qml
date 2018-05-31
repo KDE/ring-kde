@@ -83,8 +83,11 @@ Row {
                     return
                 }
 
-                CallModel.dialingCall(cm)
-                    .performAction(Call.ACCEPT)
+                var call = CallModel.dialingCall(cm)
+
+                call.removeMedia(Media.VIDEO)
+
+                call.performAction(Call.ACCEPT)
             })
         }
 
