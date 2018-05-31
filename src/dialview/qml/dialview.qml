@@ -128,7 +128,8 @@ FocusScope {
         call.performAction(Call.ACCEPT)
     }
 
-    Keys.onPressed: {
+
+    function getCall() {
         var call = CallModel.selectedCall
 
         if (!call) {
@@ -136,24 +137,34 @@ FocusScope {
             CallModel.selectedCall = call
         }
 
+        return call
+    }
+
+    Keys.onPressed: {
         switch (event.key) {
             case Qt.Key_Up:
-                selectPrevious(call)
+                selectPrevious(getCall())
                 break
             case Qt.Key_Down:
-                selectNext(call)
+                selectNext(getCall())
                 break
             case Qt.Key_Escape:
-                call.performAction(Call.REFUSE)
+                getCall().performAction(Call.REFUSE)
                 break
             case Qt.Key_Backspace:
-                call.backspaceItemText()
+                getCall().backspaceItemText()
                 break;
             case Qt.Key_Return:
             case Qt.Key_Enter:
                 performCall()
                 break
             default:
+                // Prevent "control" from creating a dialing call
+                if (event.text == "")
+                    return
+
+                var call = getCall()
+
                 call.appendText(event.text)
                 call.playDTMF(event.text)
         }
