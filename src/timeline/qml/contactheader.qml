@@ -173,16 +173,28 @@ Rectangle {
         anchors.leftMargin: 5
         height: 16
         width: 16
-        source: (currentContactMethod && currentContactMethod.bookmarked) ?
+        source: (currentIndividual && currentIndividual.hasBookmarks) ?
             "icons/bookmarked.svg" : "icons/not_bookmarked.svg"
         z: 100
         MouseArea {
             anchors.fill: parent
             onClicked: {
                 mouse.accepted = true
-                currentContactMethod.bookmarked = !currentContactMethod.bookmarked
-                bookmarkSwitch.source = currentContactMethod.bookmarked ?
-                    "icons/bookmarked.svg" : "icons/not_bookmarked.svg"
+
+                if (currentContactMethod) {
+                    currentContactMethod.bookmarked = !currentContactMethod.bookmarked
+                    return
+                }
+
+                var cm = currentIndividual.firstBookmark
+
+                if (!cm)
+                    cm = currentIndividual.lastUsedContactMethod
+
+                if (cm)
+                    cm.bookmarked = !cm.bookmarked
+
+                console.log(currentIndividual.hasBookmarks, cm.bookmarked)
             }
         }
     }

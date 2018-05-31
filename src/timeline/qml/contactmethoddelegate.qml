@@ -187,9 +187,13 @@ Item {
                 anchors.fill: parent
                 onClicked: {
                     mouse.accepted = true
-                    isBookmarked = !isBookmarked
-                    bookmarkSwitch.source = isBookmarked ?
-                        "icons/bookmarked.svg" : "icons/not_bookmarked.svg"
+                    var cm = object.firstBookmark
+
+                    if (!cm)
+                        cm = object.lastUsedContactMethod
+
+                    if (cm)
+                        cm.bookmarked = !cm.bookmarked
                 }
             }
         }

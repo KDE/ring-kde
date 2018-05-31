@@ -63,7 +63,7 @@ Item {
                 Text {
                     Layout.fillWidth: true
                     color: inactivePalette.text
-                    text: uri
+                    text: number
                 }
 
                 Item {

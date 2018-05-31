@@ -70,28 +70,6 @@ Item {
                     anchors.margins: 5
                     person: personObj
                 }
-
-//                 // Allow to set/remove bookmarks
-//                 Image {
-//                     id: bookmarkSwitch
-//                     anchors.top: parent.top
-//                     anchors.right: parent.right
-//                     anchors.rightMargin: 1
-//                     anchors.topMargin: 3
-//                     height: 16
-//                     width: 16
-//                     source: isBookmarked ? "icons/bookmarked.svg" : "icons/not_bookmarked.svg"
-//                     z: 100
-//                     MouseArea {
-//                         anchors.fill: parent
-//                         onClicked: {
-//                             mouse.accepted = true
-//                             isBookmarked = !isBookmarked
-//                             bookmarkSwitch.source = isBookmarked ?
-//                                 "icons/bookmarked.svg" : "icons/not_bookmarked.svg"
-//                         }
-//                     }
-//                 }
             }
 
             ColumnLayout {
@@ -106,9 +84,9 @@ Item {
                 }
                 Text {
                     Layout.fillWidth: true
-                    visible: rowCount == 0
+                    visible: !individual.hasPhoneNumbers
                     color: inactivePalette.text
-                    text: "TODO"
+                    text: i18n("There is no way to reach this contact")
                 }
                 Item {
                     Layout.fillHeight: true
