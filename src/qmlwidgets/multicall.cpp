@@ -127,3 +127,18 @@ void MultiCall::paint(QPainter *painter)
     }
 
 }
+
+int MultiCall::count() const
+{
+    if (!d_ptr->m_Index.model())
+        return 0;
+
+    return d_ptr->m_Index.model()->rowCount(d_ptr->m_Index);
+}
+
+void MultiCall::setCount(int c)
+{
+    setHeight(d_ptr->getHeight());
+    setImplicitHeight(height());
+    update();
+}

@@ -33,11 +33,15 @@ class MultiCall : public QQuickPaintedItem
     Q_OBJECT
 public:
     Q_PROPERTY(QPersistentModelIndex modelIndex READ modelIndex WRITE setModelIndex)
+    Q_PROPERTY(int count READ count WRITE setCount);
 
     Q_PROPERTY(bool skipChildren READ skipChildren CONSTANT)
 
     explicit MultiCall(QQuickItem* parent = nullptr);
     virtual ~MultiCall();
+
+    int count() const;
+    void setCount(int count);
 
     void setModelIndex(const QPersistentModelIndex& idx);
     QPersistentModelIndex modelIndex() const;

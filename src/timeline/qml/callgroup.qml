@@ -35,6 +35,7 @@ ColumnLayout {
         Layout.fillWidth: true
         width: textGroupDelegate.width
         modelIndex: rootIndex
+        count: callCount
     }
 
     Item {
