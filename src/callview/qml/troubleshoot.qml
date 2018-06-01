@@ -69,7 +69,7 @@ Rectangle {
         Text {
             Layout.fillWidth: true
             text: troubleshootDispatcher.headerText
-            color: activePalette.text
+            color: "white"
             wrapMode: Text.WordWrap
             width: parent.width
             horizontalAlignment: Text.AlignHCenter
@@ -80,7 +80,7 @@ Rectangle {
             Rectangle {
                 color: "transparent"
                 border.width: 1
-                border.color: activePalette.text
+                border.color: "white"
                 height: buttonText.implicitHeight + 15
                 width: content.width
                 radius: 5
@@ -91,7 +91,7 @@ Rectangle {
                 Text {
                     id: buttonText
                     anchors.centerIn: parent
-                    color: activePalette.text
+                    color: "white"
                     text: display
                 }
 
@@ -118,7 +118,7 @@ Rectangle {
         Rectangle {
             color: "transparent"
             border.width: 1
-            border.color: activePalette.text
+            border.color: "white"
             height: buttonText.implicitHeight + 15
             width: content.width
             radius: 5
@@ -130,7 +130,7 @@ Rectangle {
             Text {
                 id: buttonText
                 anchors.centerIn: parent
-                color: activePalette.text
+                color: "white"
                 text: i18n("Dismiss")
             }
 
