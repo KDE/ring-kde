@@ -33,15 +33,23 @@ Dialog {
     signal done()
     modal: true
 
+    property bool isGlobal: applicationWindow != undefined && (
+        typeof(applicationWindow) == "function"
+    )
+
     visible: true
-    width:  Math.min(applicationWindow().width , 500)
-    height: Math.min(applicationWindow().height, 400)
+    width:  Math.min(isGlobal ? applicationWindow().width  : 500, 500)
+    height: Math.min(isGlobal ? applicationWindow().height : 400, 400)
     standardButtons: Dialog.Ok | Dialog.Cancel
     closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
 
-    parent: applicationWindow().contentItem
-    x: applicationWindow().contentItem.width / 2 - width/2
-    y: applicationWindow().contentItem.height / 2 - height/2
+    parent: isGlobal ? applicationWindow().contentItem : parent
+    x: isGlobal ?
+        (applicationWindow().contentItem.width / 2 - width/2) :
+        (parent.width / 2 - width/2)
+    y: isGlobal ?
+        (applicationWindow().height / 2 - height/2) :
+        (parent.height / 2 - height/2)
 
     PhotoSelector {
         id: selector
