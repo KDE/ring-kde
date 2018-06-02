@@ -1098,6 +1098,16 @@ void TreeView2Private::slotRowsMoved2(const QModelIndex &parent, int start, int 
 
 void TreeView2Private::slotDataChanged(const QModelIndex& tl, const QModelIndex& br)
 {
+    if (tl.model() && tl.model() != q_ptr->model()) {
+        Q_ASSERT(false);
+        return;
+    }
+
+    if (br.model() && br.model() != q_ptr->model()) {
+        Q_ASSERT(false);
+        return;
+    }
+
     if ((!tl.isValid()) || (!br.isValid()))
         return;
 
