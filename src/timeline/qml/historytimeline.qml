@@ -50,74 +50,20 @@ Kirigami.Page {
         color: activePalette.base
         anchors.fill: parent
 
-        ListModel {
-            id: sortingModel
-            ListElement {
-                name: "By name"
-            }
-            ListElement {
-                name: "By date"
-            }
-        }
-
-
-        Row {
-            id: sorting
-            anchors.top: search.bottom
-            anchors.horizontalCenter: parent.horizontalCenter
-            height: 32
-
-            Repeater {
-                model: sortingModel
-
-                delegate: MouseArea {
-                    height: 32
-                    width: content.implicitWidth + 10
-                    Text {
-                        id: content
-                        text: name
-                        color:activePalette.text
-                        font.bold: true
-                        anchors.centerIn: parent
-                    }
-                    onClicked: {
-                    }
-                }
-
-//                 highlightFollowsCurrentItem: true
-
-    //             highlight: Item {
-    //                 height: 32
-    //                 width: 15
-    //                 Rectangle {
-    //                     height: 4
-    //                     color:activePalette.highlight
-    //                     width:15
-    //                     y: parent.height/2 + fontMetrics.height/2 + 3
-    //                     anchors.horizontalCenter: parent.horizontalCenter
-    //                 }
-    //             }
-
-//                 onCurrentIndexChanged: {
-//                     helper.selectIndex(currentIndex)
-//                 }
-            }
-        }
-
-
-        QuickTreeView {
+        ListView {
             id: treeView
-            anchors.top: sorting.bottom
-            anchors.bottom: parent.bottom
+            anchors.fill: parent
             width: parent.width
 
             function selectItem(index) {
                 treeView.currentIndex = index
             }
 
-            rawModel: CategorizedBookmarkModel
-            delegate: masterComponent
-            sortingEnabled: true
+            model: EventModel
+            delegate: Text {
+                text: display
+            }
+//             sortingEnabled: true
 
             highlight: Item {
                 Rectangle {
@@ -130,40 +76,40 @@ Kirigami.Page {
                 }
             }
 
-            Component {
-                id: masterComponent
-                Loader {
-                    Component {
-                        id: categoryComponent
-                        Item {
-                            height: catName.implicitHeight + 3
-                            width: bookmarkList.width
-                            Text {
-                                anchors.topMargin: 3
-                                id: catName
-                                text: display
-                                color: inactivePalette.text
-                            }
-
-                            Rectangle {
-                                height: 1
-                                width: parent.width
-                                color: inactivePalette.text
-                                anchors.top: parent.top
-                            }
-                        }
-                    }
-
-                    Component {
-                        id: contactComponent
-                        BookmarkCard {
-                            width: treeView.width
-                        }
-                    }
-
-                    sourceComponent: objectType ? contactComponent : categoryComponent
-                }
-            }
+//             Component {
+//                 id: masterComponent
+//                 Loader {
+//                     Component {
+//                         id: categoryComponent
+//                         Item {
+//                             height: catName.implicitHeight + 3
+//                             width: bookmarkList.width
+//                             Text {
+//                                 anchors.topMargin: 3
+//                                 id: catName
+//                                 text: display
+//                                 color: inactivePalette.text
+//                             }
+//
+//                             Rectangle {
+//                                 height: 1
+//                                 width: parent.width
+//                                 color: inactivePalette.text
+//                                 anchors.top: parent.top
+//                             }
+//                         }
+//                     }
+//
+//                     Component {
+//                         id: contactComponent
+//                         BookmarkCard {
+//                             width: treeView.width
+//                         }
+//                     }
+//
+//                     sourceComponent: objectType ? contactComponent : categoryComponent
+//                 }
+//             }
         }
     }
 }

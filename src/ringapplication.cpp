@@ -41,6 +41,7 @@
 //LRC
 #include <itemdataroles.h>
 #include <callmodel.h>
+#include <eventmodel.h>
 #include <accountmodel.h>
 #include <account.h>
 #include <individual.h>
@@ -517,6 +518,7 @@ QQmlApplicationEngine* RingApplication::engine()
          QML_SINGLETON( RecentFileModel          );
          QML_SINGLETON( ProfileModel             );
          QML_SINGLETON( PresenceStatusModel      );
+         QML_SINGLETON( EventModel               );
 
          QML_SINGLETON2( ActionCollection        );
 

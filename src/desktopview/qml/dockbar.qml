@@ -242,7 +242,7 @@ Item {
         }
         Component {
             id: historyViewComponent
-            ContactList {
+            HistoryTimeline {
                 anchors.fill: parent
                 onContactMethodSelected: {
                     mainPage.setContactMethod(cm)
