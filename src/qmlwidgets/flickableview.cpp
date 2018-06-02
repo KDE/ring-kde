@@ -331,8 +331,15 @@ void FlickableViewPrivate::slotCurrentIndexChanged(const QModelIndex& idx)
     auto elem = q_ptr->itemForIndex(idx);
 
     // QItemSelectionModel::setCurrentIndex isn't protected against setting the item many time
-    if (m_pSelectedViewItem && elem == m_pSelectedViewItem.data())
+    if (m_pSelectedViewItem && elem == m_pSelectedViewItem.data()) {
+        // But it may have moved
+        const auto geo = elem->geometry();
+        m_pSelectedItem->setWidth(geo.width());
+        m_pSelectedItem->setHeight(geo.height());
+        m_pSelectedItem->setY(geo.y());
+
         return;
+    }
 
     // There is no need to waste effort if the element is not visible
     if ((!elem) || (!elem->isVisible())) {
