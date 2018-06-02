@@ -85,11 +85,6 @@ Rectangle {
         }
     }
 
-    PersistentCallControls {
-        anchors.top: parent.top
-        anchors.horizontalCenter: parent.horizontalCenter
-    }
-
     // Wrap the photo as AnchorChanges are unreliable for margins
     Item {
         id: photo

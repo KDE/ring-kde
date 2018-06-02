@@ -69,10 +69,21 @@ Row {
         implicitWidth: label.implicitWidth + 20
         visible: availabilityTracker.canCall
 
-        checkable: currentIndividual && currentIndividual.firstActiveCall != null
-        checked: currentIndividual && currentIndividual.firstActiveCall
+        checkable: checked
+        checked: availabilityTracker.audioCallControlState == AvailabilityTracker.CHECKED
 
         onClicked: {
+            focus = false
+
+            if (checked)
+                return
+
+            // Do not create a new call, just switch the media
+            if (currentIndividual && currentIndividual.firstActiveCall) {
+                contactHeader.selectVideo()
+                currentIndividual.firstActiveCall.sourceModel.switchTo(0)
+                return
+            }
 
             getContactMethod(function(cm) {
                 if (!cm)
@@ -89,6 +100,7 @@ Row {
 
                 call.performAction(Call.ACCEPT)
             })
+
         }
 
         Row {
@@ -120,11 +132,22 @@ Row {
 
         visible: availabilityTracker.canVideoCall
 
-        checkable: currentIndividual && currentIndividual.firstActiveCall
-        checked: currentIndividual && currentIndividual.firstActiveCall
-            && currentIndividual.firstActiveCall.videoRenderer
+        checkable: checked
+        checked: availabilityTracker.videoCallControlState == AvailabilityTracker.CHECKED
 
         onClicked: {
+            focus = false
+
+            if (checked)
+                return
+
+            // Do not create a new call, just switch the media
+            if (currentIndividual && currentIndividual.firstActiveCall) {
+                contactHeader.selectVideo()
+                currentIndividual.firstActiveCall.sourceModel.switchTo(3)
+                return
+            }
+
             getContactMethod(function(cm) {
                 if (!cm)
                     return
@@ -166,13 +189,24 @@ Row {
     Button {
         id: button3
         implicitWidth: label3.implicitWidth + 20
-        checkable: currentIndividual && currentIndividual.firstActiveCall
-        checked: currentIndividual && currentIndividual.firstActiveCall != null
-            && currentIndividual.firstActiveCall.videoRenderer != null
+        checkable: checked
+        checked: availabilityTracker.screenSharingControlState == AvailabilityTracker.CHECKED
 
         visible: availabilityTracker.canVideoCall
 
         onClicked: {
+            focus = false
+
+            if (checked)
+                return
+
+            // Do not create a new call, just switch the media
+            if (currentIndividual && currentIndividual.firstActiveCall) {
+                contactHeader.selectVideo()
+                currentIndividual.firstActiveCall.sourceModel.switchTo(1)
+                return
+            }
+
             getContactMethod(function(cm) {
                 if (!cm)
                     return
@@ -243,5 +277,24 @@ Row {
                 text: "   " + i18n("Chat")
             }
         }
+
+    Button {
+        id: button5
+        implicitWidth: label4.implicitWidth + 20
+        text: i18n("Hang up")
+
+        visible: availabilityTracker.hangUpControlState == AvailabilityTracker.NORMAL
+
+        onClicked: {
+            if (currentIndividual == null) return
+
+            var c = currentIndividual.firstActiveCall
+
+            if (!c)
+                return
+
+            c.performAction(Call.REFUSE)
+        }
+    }
     }
 }

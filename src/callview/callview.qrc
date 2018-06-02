@@ -1,7 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file alias="CallView.qml">qml/callview.qml</file>
-        <file alias="PersistentCallControls.qml">qml/persistentcallcontrols.qml</file>
         <file alias="VideoWidget.qml">qml/videowidget.qml</file>
         <file alias="ActionToolbar.qml">qml/actiontoolbar.qml</file>
         <file alias="VideoControlToolbar.qml">qml/videocontroltoolbar.qml</file>
