@@ -422,11 +422,33 @@ void QuickListViewSection::reparentSection(QuickListViewItem* newParent, Flickab
         m_pItem->setParentItem(m_pOwner->view()->contentItem());
     }
     else {
+        auto anchors = qvariant_cast<QObject*>(m_pItem->property("anchors"));
+        anchors->setProperty("top", {});
         m_pItem->setY(0);
     }
 
     if (!m_pItem->width())
         m_pItem->setWidth(view->contentItem()->width());
+
+    // Update the chain //FIXME crashes
+    /*if (newParent && newParent->m_pSection && newParent->m_pSection->m_pNext != this) {
+        Q_ASSERT(newParent->m_pSection != this);
+        Q_ASSERT(newParent->m_pSection->m_pNext != this);
+        Q_ASSERT(newParent->m_pSection->m_pNext->m_pPrevious != this);
+        m_pNext = newParent->m_pSection->m_pNext;
+        newParent->m_pSection->m_pNext = this;
+        m_pPrevious = newParent->m_pSection;
+        if (m_pNext) {
+            m_pNext->m_pPrevious = this;
+            Q_ASSERT(m_pNext != this);
+        }
+        Q_ASSERT(m_pPrevious != this);
+    }
+    else if (!newParent) {
+        m_pPrevious = nullptr;
+        m_pNext = d_ptr->m_pFirstSection;
+        d_ptr->m_pFirstSection = this;
+    }*/
 }
 
 bool QuickListViewItem::move()
@@ -437,11 +459,19 @@ bool QuickListViewItem::move()
 
     if (d()->m_pSections)
         if (auto sec = d()->getSection(this)) {
+            // The item is no longer the first in the section
             if (sec->m_pOwner == this) {
-                while (prev && prev->m_pSection == sec)
-                    prev = static_cast<QuickListViewItem*>(prev->up());
 
-                sec->reparentSection(prev ? prev : nullptr, view());
+                QuickListViewItem* newOwner = nullptr;
+                while (prev && prev->m_pSection == sec) {
+                    newOwner = prev;
+                    prev = static_cast<QuickListViewItem*>(prev->up());
+                }
+
+                if (newOwner)
+                    sec->setOwner(newOwner);
+
+                sec->reparentSection(prev, view());
 
                 if (sec->m_pItem)
                     prevItem = sec->m_pItem;
@@ -450,9 +480,12 @@ bool QuickListViewItem::move()
                 /*if (!(m_pSection == sec && m_pSection->m_RefCount == 1)) {
                     if (prev && prev->m_pSection == sec)
                         prev->m_pSection->m_pOwner = prev;
-                    else if (auto d = static_cast<QuickListViewItem*>(down())) {
-                        if (d->m_pSection == sec)
-                            d->m_pSection->m_pOwner = d;
+                    else if (auto d = static_cast<QuickListViewItem*>(prev ? prev->down() : down())) {
+                        Q_ASSERT(static_cast<QuickListViewItem*>(d->up())->m_pSection == prev->m_pSection);
+                        if (d->m_pSection == sec) {
+                            //d->m_pSection->m_pOwner = d;
+                            d->m_pSection->setOwner(d);
+                        }
                         else
                             Q_ASSERT(false);
                     }
