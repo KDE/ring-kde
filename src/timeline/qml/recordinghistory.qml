@@ -16,111 +16,301 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
 import QtQuick 2.7
+import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
-import QtQml.Models 2.2
-import org.kde.kirigami 2.2 as Kirigami
 import Ring 1.0
 
-Rectangle {
-    id: recordingHistory
-    property var currentContactMethod: null
-    property var selectedElement : Undefined
+import RingQmlWidgets 1.0
+
+HierarchyView {
+    id: chatView
+    clip: true
+
+    property var treeHelper: _treeHelper
 
     SystemPalette {
         id: activePalette
         colorGroup: SystemPalette.Active
     }
 
-    SystemPalette {
-        id: inactivePalette
-        colorGroup: SystemPalette.Disabled
+    TreeHelper {
+        id: _treeHelper
     }
 
-    color: activePalette.base
-
-//     onCurrentContactMethodChanged: currentContactMethod ?
-//         recordingList.model = currentContactMethod.callsModel : null
-
+    // Display something when the chat is empty
+    Text {
+        color: activePalette.text
+        text: i18n("There is nothing yet, enter a message below or place a call using the buttons\nfound in the header")
+        anchors.centerIn: parent
+        visible: chatView.empty
+        horizontalAlignment: Text.AlignHCenter
+    }
 
     Component {
-        id: recordingListDelegate
-        CategoryHeader {}
-    }
+        id: messageDelegate
+        Loader {
+            id: chatLoader
 
-    ColumnLayout {
-        anchors.fill: parent
+            // Create a delegate for each type
+            Component {
+                id: sectionDelegate
+                Item {
+                    height: content.implicitHeight + 10
+                    width: parent.width
 
-        AudioPlayer {
-            Layout.fillWidth: true
-        }
+                    Rectangle {
+                        width: 1
+                        color: inactivePalette.text
+                        height: parent.height
+                        x: 10
+                    }
 
-        ScrollablePage {
-            id: scrollView
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            flickableItem.interactive: true
-            clip: true
+                    Rectangle {
+                        radius: 99
+                        color: activePalette.base
+                        border.width: 1
+                        border.color: inactivePalette.text
+                        width: 16
+                        height: 16
+                        y: 10
+                        x: 3 // (16 - 10) / 2
 
-            Column {
-                width: parent.width
+                        Rectangle {
+                            id: demandsAttention
+                            radius: 99
+                            color: inactivePalette.text
+                            anchors.centerIn: parent
+                            height: 8
+                            width: 8
+                        }
+                    }
 
-                Repeater {
-                    model: RecordingModel
+                    Rectangle {
+                        border.color: inactivePalette.text
+                        border.width: 1
+                        anchors.fill: parent
 
-                    ColumnLayout {
+                        anchors.topMargin: 5
+                        anchors.bottomMargin: 5
+                        anchors.leftMargin: 30
+                        anchors.rightMargin: 40
+
+                        color: "transparent"
+                        radius: 10
+
                         ColumnLayout {
-                            Rectangle {
-                                width: scrollView.width;
-                                height: 1;
-                                color: inactivePalette.text
+                            id: content
+                            anchors.fill: parent
+
+                            Row {
+                                Layout.preferredHeight: 2*fontMetrics.height
+                                Image {
+                                    height: parent.height
+                                    width: parent.height
+                                    asynchronous: true
+                                    anchors.margins: 6
+                                    source: "image://icon/dialog-messages"
+                                }
+                                Text {
+                                    height: parent.height
+                                    text: formattedDate
+
+                                    leftPadding: 10
+
+                                    verticalAlignment: Text.AlignVCenter
+                                    color: ListView.isCurrentItem ?
+                                        activePalette.highlightedText : inactivePalette.text
+                                }
                             }
-                            Text {
-                                text: display
+
+                            Rectangle {
                                 color: inactivePalette.text
+                                height:1
+                                Layout.preferredHeight: 1
+                                Layout.fillWidth: true
+                            }
+
+                            Text {
+                                Layout.fillWidth: true
+                                text: incomingEntryCount + i18n(" incoming messages")
+
+                                Layout.preferredHeight: 2*fontMetrics.height
+                                leftPadding: 10
+
+                                verticalAlignment: Text.AlignVCenter
+                                color: ListView.isCurrentItem ?
+                                    activePalette.highlightedText : inactivePalette.text
+                            }
+
+                            Text {
+                                Layout.fillWidth: true
+                                text: outgoingEntryCount + i18n(" outgoing messages")
+
+                                Layout.preferredHeight: 2*fontMetrics.height
+                                leftPadding: 10
+
+                                verticalAlignment: Text.AlignVCenter
+                                color: ListView.isCurrentItem ?
+                                    activePalette.highlightedText : inactivePalette.text
+                            }
+
+                            Item {
+                                Layout.fillHeight: true
                             }
                         }
-                        Repeater {
-                            id: childrenView
+                    }
 
-                            model: VisualDataModel {
-                                id: childrenVisualDataModel
-                                model: RecordingModel
-                                Component.onCompleted: {
-                                    childrenView.model.rootIndex = childrenView.model.modelIndex(index)
-                                }
-                                delegate: Rectangle {
-                                    id: recordingItem
-                                    height: 30
-                                    width: scrollView.width;
-                                    anchors.leftMargin: 5
-                                    color: "transparent"
-                                    Text {
-                                        text: display ? display : "N/A"
-                                        color: activePalette.text
-                                    }
-                                    MouseArea {
-                                        anchors.fill: parent
-                                        onClicked: {
-                                            // Update the visual selection
-                                            color = activePalette.highlight
-                                            if (recordingHistory.selectedElement && recordingHistory.selectedElement != recordingItem) {
-                                                recordingHistory.selectedElement.color = "transparent"
-                                            }
-                                            recordingHistory.selectedElement = recordingItem
-
-                                            // Update the model selection
-                                            RecordingModel.selectionModel.setCurrentIndex(
-                                                childrenView.model.modelIndex(index),
-                                                ItemSelectionModel.ClearAndSelect
-                                            )
-                                        }
-                                    }
-                                }
-                            }
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: {
+                            treeView.currentIndex = index
                         }
                     }
                 }
             }
+
+            Component {
+                id: snapshotGroupDelegate
+                Snapshots {
+                    width: chatView.width
+                    onViewImage: {
+                        chatView.slideshow.active = true
+                        chatView.slideshow.model = model
+                        chatView.slideshow.source = path
+                    }
+                }
+            }
+
+            Component {
+                id: callDelegate
+                Item {
+                    height: content.implicitHeight + 10
+                    width: parent.width
+
+                    Rectangle {
+                        width: 1
+                        color: inactivePalette.text
+                        height: parent.height
+                        x: 10
+                    }
+
+                    Rectangle {
+                        radius: 99
+                        color: activePalette.base
+                        border.width: 1
+                        border.color: inactivePalette.text
+                        width: 16
+                        height: 16
+                        y: 10
+                        x: 3 // (16 - 10) / 2
+
+                        Rectangle {
+                            id: demandsAttention
+                            radius: 99
+                            color: inactivePalette.text
+                            anchors.centerIn: parent
+                            height: 8
+                            width: 8
+                        }
+                    }
+
+                    Rectangle {
+                        border.color: inactivePalette.text
+                        border.width: 1
+                        anchors.fill: parent
+
+                        anchors.topMargin: 5
+                        anchors.bottomMargin: 5
+                        anchors.leftMargin: 30
+                        anchors.rightMargin: 40
+
+                        color: "transparent"
+                        radius: 10
+
+                        ColumnLayout {
+                            id: content
+                            anchors.fill: parent
+
+                            Row {
+                                Layout.preferredHeight: 2*fontMetrics.height
+                                Image {
+                                    height: parent.height
+                                    width: parent.height
+                                    asynchronous: true
+                                    anchors.margins: 6
+                                    source: "image://icon/call-start"
+                                }
+                                Text {
+                                    height: parent.height
+                                    text: formattedDate
+
+                                    leftPadding: 10
+
+                                    verticalAlignment: Text.AlignVCenter
+                                    color: ListView.isCurrentItem ?
+                                        activePalette.highlightedText : inactivePalette.text
+                                }
+                            }
+
+                            Rectangle {
+                                color: inactivePalette.text
+                                height:1
+                                Layout.preferredHeight: 1
+                                Layout.fillWidth: true
+                            }
+
+                            MultiCall {
+                                width: chatView.width - 90
+                                modelIndex: rootIndex
+                                count: callCount
+                            }
+
+                            Item {
+                                Layout.fillHeight: true
+                            }
+                        }
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: {
+                            treeView.currentIndex = index
+                        }
+                    }
+                }
+            }
+
+            Component {
+                id: categoryDelegate
+                Item {
+                    height: rect.height
+                    PeersTimelineCategories {
+                        id: rect
+                        property var section: display
+                        property var recentDate: formattedDate
+                        Component.onCompleted: {
+                            console.log("\n\nDDD", formattedDate)
+                        }
+                    }
+                }
+            }
+
+            // Some elements don't have delegates because they are handled
+            // by their parent delegates
+            function selectDelegate() {
+                if (nodeType == IndividualTimelineModel.TIME_CATEGORY)
+                    return categoryDelegate
+
+                if (nodeType == IndividualTimelineModel.SECTION_DELIMITER)
+                    return sectionDelegate
+
+                if (nodeType == IndividualTimelineModel.CALL_GROUP)
+                    return callDelegate
+            }
+
+            sourceComponent: selectDelegate()
         }
     }
+
+    delegate: messageDelegate
 }

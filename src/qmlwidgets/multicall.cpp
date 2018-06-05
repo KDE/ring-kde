@@ -54,6 +54,7 @@ MultiCall::MultiCall(QQuickItem* parent) :
     }
 
     setHeight(1); //Otherwise it will be treated as dead code
+    setImplicitHeight(1); //Otherwise it will be treated as dead code
 }
 
 MultiCall::~MultiCall()
@@ -67,6 +68,7 @@ void MultiCall::setModelIndex(const QPersistentModelIndex& idx)
 
     //TODO support HiDPI
     setHeight(d_ptr->getHeight());
+    setImplicitHeight(d_ptr->getHeight());
     update();
 }
 
@@ -87,6 +89,7 @@ int MultiCallPrivate::getHeight() const
         return 1;
 
     const int rc = m_Index.model()->rowCount(m_Index);
+
     return 32*((rc*32)/w + ((rc*32)%w ? 1 : 0));
 }
 
@@ -102,8 +105,8 @@ void MultiCall::paint(QPainter *painter)
     const int h  = d_ptr->getHeight();
 
     if (h > height() + 1 || h < height() - 1) {
-        setHeight(h + 200);
-        update();
+//         setHeight(h + 200);
+//         update();
         return;
     }
 

@@ -254,8 +254,11 @@ Item {
                     asynchronous: true
                     active: false
                     sourceComponent: CallHistory {
+                        showScrollbar: timelinePage.showScrollbar
+                        timelineModel: viewContact.timelineModel
+                        currentContactMethod: viewContact.currentContactMethod
+                        currentIndividual: viewContact.currentIndividual
                         anchors.fill: parent
-                        unsortedListView: viewContact.unsortedListView
                     }
                 }
             }
