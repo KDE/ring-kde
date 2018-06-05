@@ -22,6 +22,7 @@
 class ContactMethod;
 class Person;
 class Individual;
+class Event;
 
 class ContactPhotoPrivate;
 
@@ -38,6 +39,7 @@ public:
     Q_PROPERTY(ContactMethod* contactMethod READ contactMethod WRITE setContactMethod)
     Q_PROPERTY(Person* person READ person WRITE setPerson)
     Q_PROPERTY(Individual* individual READ individual WRITE setIndividual)
+    Q_PROPERTY(Event* event READ event WRITE setEvent)
     Q_PROPERTY(bool hasPhoto READ hasPhoto NOTIFY hasPhotoChanged)
     Q_PROPERTY(bool displayEmpty READ displayEmpty WRITE setDisplayEmpty)
     Q_PROPERTY(bool drawEmptyOutline READ drawEmptyOutline WRITE setDrawEmptyOutline)
@@ -58,6 +60,9 @@ public:
 
     Individual* individual() const;
     void setIndividual(Individual* ind);
+
+    Event* event() const;
+    void setEvent(Event* e);
 
     bool hasPhoto() const;
 

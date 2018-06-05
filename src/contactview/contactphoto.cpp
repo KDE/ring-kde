@@ -39,6 +39,7 @@ public:
     bool m_DisplayEmpty {true};
     bool m_DrawEmptyOutline {true};
     QVariant m_DefaultColor {};
+    QSharedPointer<Event> m_pEvent {nullptr};
 
     enum class TrackingStatus {
         AUTO     = 0,
@@ -387,6 +388,16 @@ void ContactPhoto::setDefaultColor(const QVariant& color)
 {
     d_ptr->m_DefaultColor = color;
     update();
+}
+
+Event* ContactPhoto::event() const
+{
+    return d_ptr->m_pEvent ? d_ptr->m_pEvent.data() : nullptr;
+}
+
+void ContactPhoto::setEvent(Event* e)
+{
+    d_ptr->m_pEvent = e->ref();
 }
 
 #include <contactphoto.moc>

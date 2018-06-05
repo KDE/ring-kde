@@ -112,7 +112,7 @@ void MultiCall::paint(QPainter *painter)
     for (int i = 0; i < rc; i++) {
         const auto cidx = d_ptr->m_Index.model()->index(i, 0, d_ptr->m_Index);
 
-        if (const auto event = qvariant_cast<QSharedPointer<Event>>(cidx.data((int)Ring::Role::Object))) {
+        if (const auto event = qvariant_cast<Event*>(cidx.data((int)Ring::Role::Object))) {
             const int col = (i/perRow) * 32;
             const int row = (i%perRow) * 32;
 

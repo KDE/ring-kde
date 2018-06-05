@@ -21,6 +21,7 @@ import QtQuick.Controls 2.0
 import QtQml.Models 2.2
 import RingQmlWidgets 1.0
 import Ring 1.0
+import ContactView 1.0
 import org.kde.kirigami 2.2 as Kirigami
 
 Kirigami.Page {
@@ -54,62 +55,145 @@ Kirigami.Page {
             id: treeView
             anchors.fill: parent
             width: parent.width
-
-            function selectItem(index) {
-                treeView.currentIndex = index
-            }
+            highlightFollowsCurrentItem: true
 
             model: EventModel
-            delegate: Text {
-                text: display
+
+
+            section.property: "formattedLastUsed"
+            section.criteria: ViewSection.FullString
+            section.delegate: Text {
+                color: inactivePalette.text
+                text: section
             }
-//             sortingEnabled: true
 
             highlight: Item {
+
+                anchors.topMargin: 5
+                anchors.bottomMargin: 5
+                anchors.leftMargin: 30
+                anchors.rightMargin: 40
+
                 Rectangle {
                     anchors.fill: parent
-                    anchors.margins: 5
-                    anchors.leftMargin: 10
-                    anchors.rightMargin: 10
-                    radius: 5
+                    anchors.topMargin: 5
+                    anchors.bottomMargin: 5
+                    anchors.leftMargin: 30
+                    anchors.rightMargin: 40
+                    radius: 10
                     color: activePalette.highlight
                 }
             }
 
-//             Component {
-//                 id: masterComponent
-//                 Loader {
-//                     Component {
-//                         id: categoryComponent
-//                         Item {
-//                             height: catName.implicitHeight + 3
-//                             width: bookmarkList.width
-//                             Text {
-//                                 anchors.topMargin: 3
-//                                 id: catName
-//                                 text: display
-//                                 color: inactivePalette.text
-//                             }
-//
-//                             Rectangle {
-//                                 height: 1
-//                                 width: parent.width
-//                                 color: inactivePalette.text
-//                                 anchors.top: parent.top
-//                             }
-//                         }
-//                     }
-//
-//                     Component {
-//                         id: contactComponent
-//                         BookmarkCard {
-//                             width: treeView.width
-//                         }
-//                     }
-//
-//                     sourceComponent: objectType ? contactComponent : categoryComponent
-//                 }
-//             }
+            delegate: Item {
+                height: 5*fontMetrics.height + 13
+                width: parent.width
+
+                Rectangle {
+                    width: 1
+                    color: inactivePalette.text
+                    height: parent.height
+                    x: 10
+                }
+
+                Rectangle {
+                    radius: 99
+                    color: activePalette.base
+                    border.width: 1
+                    border.color: inactivePalette.text
+                    width: 16
+                    height: 16
+                    y: 10
+                    x: 3 // (16 - 10) / 2
+
+                    Rectangle {
+                        id: demandsAttention
+                        radius: 99
+                        color: inactivePalette.text
+                        anchors.centerIn: parent
+                        height: 8
+                        width: 8
+                    }
+                }
+
+                Rectangle {
+                    border.color: inactivePalette.text
+                    border.width: 1
+                    anchors.fill: parent
+
+                    anchors.topMargin: 5
+                    anchors.bottomMargin: 5
+                    anchors.leftMargin: 30
+                    anchors.rightMargin: 40
+
+                    color: "transparent"
+                    radius: 10
+
+                    ColumnLayout {
+                        anchors.fill: parent
+                        RowLayout {
+                            Layout.fillWidth: true
+                            height: 3*fontMetrics.height
+
+                            Item {
+                                anchors.margins: 4
+
+                                height: parent.height
+                                width:  parent.height
+
+                                ContactPhoto {
+                                    anchors.margins: 3
+                                    anchors.fill: parent
+                                    event: object
+                                    defaultColor: ListView.isCurrentItem ?
+                                        activePalette.highlightedText : activePalette.text
+                                    drawEmptyOutline: false
+                                }
+                            }
+
+                            Text {
+                                text: bestName
+                                clip: true
+                                font.bold : true
+                                Layout.fillWidth: true
+                                anchors.verticalCenter: parent.verticalCenter
+                                color: ListView.isCurrentItem ?
+                                    activePalette.highlightedText : activePalette.text
+                            }
+                        }
+
+                        Rectangle {
+                            color: inactivePalette.text
+                            height:1
+                            Layout.fillWidth: true
+                        }
+
+                        Text {
+                            Layout.fillWidth: true
+                            text: formattedDate
+
+                            height: 2*fontMetrics.height
+                            leftPadding: 10
+
+                            verticalAlignment: Text.AlignVCenter
+                            color: ListView.isCurrentItem ?
+                                activePalette.highlightedText : inactivePalette.text
+                        }
+
+                        Item {
+                            Layout.fillHeight: true
+                        }
+                    }
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        treeView.currentIndex = index
+                    }
+                }
+            }
+//             sortingEnabled: true
         }
     }
 }
