@@ -229,6 +229,17 @@ Q_ASSERT(action_configureRing );
    action_showDialDock          ->setChecked( ConfigurationSkeleton::displayDialDock     () );
    action_show_menu             ->setChecked( ConfigurationSkeleton::displayMenu         () );
 
+#define BIND_KCFG(action, setter) connect(action, &QAction::triggered,[](bool v) {\
+   ConfigurationSkeleton:: setter(v);\
+});
+
+   BIND_KCFG(action_showHistoryDock , setDisplayHistoryDock )
+   BIND_KCFG(action_showContactDock , setDisplayContactDock )
+   BIND_KCFG(action_showBookmarkDock, setDisplayBookmarkDock)
+   BIND_KCFG(action_showDialDock    , setDisplayDialDock    )
+   BIND_KCFG(action_showTimelineDock, setDisplayRecentDock  )
+
+#undef BIND_KCFG
 
    //Bind actions to the useractionmodel
    UserActionModel* uam = CallModel::instance().userActionModel();
