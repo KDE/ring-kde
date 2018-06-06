@@ -122,7 +122,7 @@ Item {
         }
 
         onEmptyChanged: {
-            if (empty && _firstRunShown == 1) {
+            if ((!PeersTimelineModel.empty) && empty && _firstRunShown == 1) {
                 _firstRunShown = 2
                 buggyTimer.running = true
             }
@@ -364,7 +364,9 @@ Item {
             },
             State {
                 name: "searchActive"
-                when: seachOverlay.active && (!PeersTimelineModel.empty) && _firstRunShown > 2
+                when: seachOverlay.active
+                    && (!PeersTimelineModel.empty)
+                    && _firstRunShown > 2
 
                 PropertyChanges {
                     target:  seachOverlay
