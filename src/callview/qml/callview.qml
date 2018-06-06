@@ -16,6 +16,7 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
 import QtQuick 2.7
+import QtQuick.Layouts 1.0
 import Ring 1.0
 
 Item {
@@ -130,6 +131,11 @@ Item {
         Behavior on anchors.bottomMargin {
             NumberAnimation {duration: 150}
         }
+    }
+
+    RecordingIcon {
+        anchors.right: videoDock.right
+        anchors.top: controlToolbar.bottom
     }
 
     DeviceSetting {

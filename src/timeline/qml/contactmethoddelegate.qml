@@ -224,16 +224,6 @@ Item {
             }
         }
 
-        //FIXME temporary polling until all the objects are correctly in sync
-        Timer {
-            interval: 5000
-            running: true
-            repeat: true
-            onTriggered: {
-                isRecordingBox.visible = isRecording != undefined ? isRecording : false //FIXME
-            }
-        }
-
         MouseArea {
             anchors.fill: parent
             acceptedButtons: Qt.LeftButton | Qt.RightButton

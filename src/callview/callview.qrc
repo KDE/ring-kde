@@ -12,5 +12,6 @@
         <file alias="Streaming.qml">qml/streaming.qml</file>
         <file alias="CMSelector.qml">qml/cmselector.qml</file>
         <file alias="Troubleshoot.qml">qml/troubleshoot.qml</file>
+        <file alias="RecordingIcon.qml">qml/recordingicon.qml</file>
     </qresource>
 </RCC>
