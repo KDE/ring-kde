@@ -66,6 +66,7 @@
 #include <media/textrecording.h>
 #include <media/availabilitytracker.h>
 #include <media/media.h>
+#include <video/renderer.h>
 #include <libcard/historyimporter.h>
 #include <troubleshoot/dispatcher.h>
 
@@ -536,6 +537,7 @@ QQmlApplicationEngine* RingApplication::engine()
          { using namespace Video;
             QML_SINGLETON( PreviewManager        );
             QML_TYPE     ( SourceModel           );
+            QML_TYPE     ( Renderer              );
          }
 
          { using namespace Troubleshoot;

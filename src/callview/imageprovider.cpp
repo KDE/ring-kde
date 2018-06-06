@@ -27,12 +27,23 @@
 #include <callmodel.h>
 #include <video/previewmanager.h>
 
-struct FrameBuffer final {
+class FrameBuffer final : public QObject
+{
+    Q_OBJECT
+public:
+    int          m_Skip       {   3   };
+    char*        m_pFrameCopy {nullptr};
+    uint         m_FrameSize  {   0   };
+    Video::Frame m_Frame;
+
+    Video::Renderer* renderer() const;
+    void setRenderer(Video::Renderer* r);
+
+private:
     Video::Renderer* m_pRenderer {nullptr};
-    int              m_Skip {3};
-    char*            m_pFrameCopy {nullptr};
-    uint             m_FrameSize {0};
-    Video::Frame     m_Frame;
+
+private Q_SLOTS:
+    void slotFinish();
 };
 
 class ImageProviderPrivate final : public QObject
@@ -142,14 +153,14 @@ QImage ImageProvider::requestImage(const QString &id, QSize *size, const QSize &
         d_ptr->m_hActiveRenderers["preview"] :
         d_ptr->m_hActiveRenderers["peer"];
 
-    if (fb) {
+    if (fb && fb->renderer()) {
 
         //To give a bit of history about why this code is weird, it used to have another copy buffer
         //but this was removed and replaced with a flip buffer in libQt, there is some leftover
         //code that need to be cleaned
-        Video::Frame frm = fb->m_pRenderer->currentFrame();
+        Video::Frame frm = fb->renderer()->currentFrame();
 
-        QMutexLocker l2(fb->m_pRenderer->mutex());
+        QMutexLocker l2(fb->renderer()->mutex());
         // Repaint the old frame if there is no new ones
         if (frm.size) {
             fb->m_Frame = std::move(frm);
@@ -170,7 +181,7 @@ QImage ImageProvider::requestImage(const QString &id, QSize *size, const QSize &
             memcpy(fb->m_pFrameCopy, fb->m_Frame.ptr, fb->m_FrameSize);
         }
 
-        QSize res = fb->m_pRenderer->size();
+        QSize res = fb->renderer()->size();
 
         if (size)
             *size = res;
@@ -196,7 +207,7 @@ void ImageProviderPrivate::addRenderer(Call* c, Video::Renderer* renderer)
     }
 
     auto fb = new FrameBuffer;
-    fb->m_pRenderer = renderer;
+    fb->setRenderer(renderer);
     m_hActiveRenderers["peer"] = fb;
 }
 
@@ -216,7 +227,7 @@ void ImageProviderPrivate::previewStarted(Video::Renderer* r)
 {
     QMutexLocker locker(&m_FrameReader);
     if (m_hActiveRenderers.contains("preview") && m_hActiveRenderers["preview"]) {
-        if (m_hActiveRenderers["preview"]->m_pRenderer == r)
+        if (m_hActiveRenderers["preview"]->renderer() == r)
             return;
 
         qWarning() << "The preview renderer already exists";
@@ -225,7 +236,7 @@ void ImageProviderPrivate::previewStarted(Video::Renderer* r)
     }
 
     auto fb = new FrameBuffer;
-    fb->m_pRenderer = r;
+    fb->setRenderer(r);
     m_hActiveRenderers["preview"] = fb;
 }
 
@@ -239,6 +250,33 @@ void ImageProviderPrivate::previewStopped(Video::Renderer* r)
         m_hActiveRenderers.remove("preview");
     }
 
+}
+
+Video::Renderer* FrameBuffer::renderer() const
+{
+    return m_pRenderer;
+}
+
+void FrameBuffer::setRenderer(Video::Renderer* r)
+{
+    if (r == m_pRenderer)
+        return;
+
+    if (m_pRenderer)
+        disconnect(m_pRenderer, &QObject::destroyed, this, &FrameBuffer::slotFinish);
+
+    m_pRenderer = r;
+
+    if (r)
+        connect(m_pRenderer, &QObject::destroyed, this, &FrameBuffer::slotFinish);
+}
+
+void FrameBuffer::slotFinish()
+{
+    if (m_pRenderer != sender())
+        return;
+
+    m_pRenderer = nullptr;
 }
 
 #include <imageprovider.moc>

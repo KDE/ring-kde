@@ -29,15 +29,23 @@ Item {
     width: 640
 
     // C++ bindings
-    property alias  rendererName   : videoWidget.rendererName
-    property bool   displayPreview : false
-    property string mode           : "PREVIEW"
-    property bool   previewRunning : false
-    property alias  peerRunning    : videoWidget.started
-    property QtObject    call           : null
+    property alias    rendererName   : videoWidget.rendererName
+    property bool     displayPreview : false
+    property string   mode           : "PREVIEW"
+    property bool     previewRunning : false
+    property alias    peerRunning    : videoWidget.started
+    property QtObject call           : null
+    property QtObject renderer       : call ? call.renderer : null
 
     property bool previewVisible: mode != "PREVIEW" &&
         call && PreviewManager.previewing
+
+    Connections {
+        target: renderer
+        onDestroyed: {
+            videoWidget.started = false
+        }
+    }
 
     // Let the animations finish before
     Timer {
