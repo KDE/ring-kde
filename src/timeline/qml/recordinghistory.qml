@@ -288,9 +288,6 @@ HierarchyView {
                         id: rect
                         property var section: display
                         property var recentDate: formattedDate
-                        Component.onCompleted: {
-                            console.log("\n\nDDD", formattedDate)
-                        }
                     }
                 }
             }
