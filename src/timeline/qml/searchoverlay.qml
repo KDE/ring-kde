@@ -148,7 +148,7 @@ Item {
             }
 
             OutlineButton {
-                label: i18n("Scan a QR Code")
+                label: "  "+i18n("Scan a QR Code")
                 height: 24
                 alignment: Qt.AlignRight
                 Layout.maximumWidth: width
@@ -156,7 +156,7 @@ Item {
             }
 
             OutlineButton {
-                label: i18n("Close")
+                label: "  "+i18n("Close")
                 height: 24
                 alignment: Qt.AlignRight
                 icon: "image://SymbolicColorizer/:/sharedassets/outline/close.svg"
