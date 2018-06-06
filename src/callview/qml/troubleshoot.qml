@@ -63,7 +63,7 @@ Rectangle {
             sourceSize.width: 32
             sourceSize.height: 32
             horizontalAlignment: Image.AlignHCenter
-            source: "image://SymbolicColorizer/:/sharedassets/outline/warning.svg"
+            source: "image://SymbolicColorizer/?color=#eeeeee;:/sharedassets/outline/warning.svg"
         }
 
         Text {
