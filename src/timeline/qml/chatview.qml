@@ -138,7 +138,10 @@ HierarchyView {
                 if (nodeType == IndividualTimelineModel.SECTION_DELIMITER)
                     return sectionDelegate
 
-                if (nodeType == IndividualTimelineModel.CALL_GROUP)
+                if (
+                    nodeType == IndividualTimelineModel.CALL_GROUP ||
+                    nodeType == IndividualTimelineModel.RECORDINGS
+                )
                     return callDelegate
             }
 

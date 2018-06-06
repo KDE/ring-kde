@@ -63,6 +63,7 @@
 #include <individualtimelinemodel.h>
 #include <video/previewmanager.h>
 #include <media/recording.h>
+#include <media/avrecording.h>
 #include <media/textrecording.h>
 #include <media/availabilitytracker.h>
 #include <media/media.h>
@@ -531,6 +532,7 @@ QQmlApplicationEngine* RingApplication::engine()
             QML_SINGLETON( RecordingModel        );
             QML_TYPE     ( Recording             );
             QML_TYPE     ( TextRecording         );
+            QML_TYPE     ( AVRecording           );
             QML_CRTYPE   ( AvailabilityTracker   );
          }
 

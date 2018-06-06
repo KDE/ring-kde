@@ -292,6 +292,98 @@ HierarchyView {
                 }
             }
 
+            Component {
+                id: recordingDelegate
+                Item {
+                    height: content.implicitHeight + 10
+                    width: parent.width
+
+                    Rectangle {
+                        width: 1
+                        color: inactivePalette.text
+                        height: parent.height
+                        x: 10
+                    }
+
+                    Rectangle {
+                        radius: 99
+                        color: activePalette.base
+                        border.width: 1
+                        border.color: inactivePalette.text
+                        width: 16
+                        height: 16
+                        y: 10
+                        x: 3 // (16 - 10) / 2
+
+                        Rectangle {
+                            id: demandsAttention
+                            radius: 99
+                            color: inactivePalette.text
+                            anchors.centerIn: parent
+                            height: 8
+                            width: 8
+                        }
+                    }
+
+                    Rectangle {
+                        id: box
+                        border.color: inactivePalette.text
+                        border.width: 1
+                        anchors.fill: parent
+
+                        anchors.topMargin: 5
+                        anchors.bottomMargin: 5
+                        anchors.leftMargin: 30
+                        anchors.rightMargin: 40
+
+                        color: "transparent"
+                        radius: 10
+
+                        ColumnLayout {
+                            id: content
+                            anchors.fill: parent
+
+                            Row {
+                                Layout.preferredHeight: 2*fontMetrics.height
+                                Image {
+                                    height: parent.height
+                                    width: parent.height
+                                    asynchronous: true
+                                    anchors.margins: 6
+                                    source: "image://icon/media-record"
+                                }
+                                Text {
+                                    height: parent.height
+                                    text: formattedDate
+
+                                    leftPadding: 10
+
+                                    verticalAlignment: Text.AlignVCenter
+                                    color: ListView.isCurrentItem ?
+                                        activePalette.highlightedText : inactivePalette.text
+                                }
+                            }
+
+                            Rectangle {
+                                color: inactivePalette.text
+                                height:1
+                                Layout.preferredHeight: 1
+                                Layout.fillWidth: true
+                            }
+
+                            AudioPlayer {
+                                id: rect
+                                Layout.minimumWidth: box.width - 10
+                            }
+
+                            Item {
+                                Layout.fillHeight: true
+                            }
+                        }
+                    }
+                }
+            }
+
             // Some elements don't have delegates because they are handled
             // by their parent delegates
             function selectDelegate() {
@@ -303,6 +395,9 @@ HierarchyView {
 
                 if (nodeType == IndividualTimelineModel.CALL_GROUP)
                     return callDelegate
+
+                if (nodeType == IndividualTimelineModel.RECORDINGS)
+                    return recordingDelegate
             }
 
             sourceComponent: selectDelegate()

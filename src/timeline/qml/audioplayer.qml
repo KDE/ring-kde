@@ -24,42 +24,43 @@ Item {
     property QtObject recording: audioRecording
 
     id: audioPlayer
-    height: 30
-    state: "disabled"
+    height: content.implicitHeight
 
     RowLayout {
-        anchors.fill: parent
+        id: content
+        width: parent.width
+        state: "disabled"
 
         Controls2.Button {
             id: reset
             text: "⏮" // "⏸" ⏹ ⏮ ⏭
-            width:30
             Layout.fillHeight: true
             Layout.preferredWidth: 30
+            Layout.maximumWidth: 30
             enabled: false
         }
         Controls2.Button {
             id: playPause
             text: "▶"
-            width:30
             Layout.fillHeight: true
             Layout.preferredWidth: 30
+            Layout.maximumWidth: 30
             enabled: false
 
             onClicked: {
-                if (!recording.isCurrent) return
+                if (!audioRecording.isCurrent) return
 
                 if (stateGroup.state == "enabled")
-                    recording.play()
+                    audioRecording.play()
                 else if(stateGroup.state == "playing")
-                    recording.pause()
+                    audioRecording.pause()
             }
         }
         Controls2.Slider {
             id: progress
             from: 0
-            value: recording.position
-            to: recording.duration
+            value: audioRecording.position
+            to: audioRecording.duration
             Layout.fillWidth: true
             Layout.fillHeight: true
             enabled: false
@@ -68,8 +69,8 @@ Item {
         Controls2.Button {
             id: end
             text: "⏭"
-            width:30
             Layout.preferredWidth: 30
+            Layout.maximumWidth: 30
             Layout.fillHeight: true
             enabled: false
         }
@@ -77,13 +78,13 @@ Item {
 
     Rectangle {
         id: selectOverlay
-        color: "black"
+        color: inactivePalette.base
         opacity: 0.5
         anchors.fill: parent
         Text {
             anchors.centerIn: parent
-            text: "Click to play"
-            color: "white"
+            text: i18n("Click to play")
+            color: inactivePalette.text
         }
         MouseArea {
             anchors.fill: parent
