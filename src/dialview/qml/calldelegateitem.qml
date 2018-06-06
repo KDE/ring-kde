@@ -32,6 +32,11 @@ Rectangle {
     height: content.implicitHeight + 20 + errorMessage.height
     property bool selected: object == CallModel.selectedCall
 
+    property bool skipSelect: errorMessage.active || missedMessage.active
+
+    property var labelColor: callDelegateItem.selected && !skipSelect ?
+        activePalette.highlightedText : activePalette.text
+
     Drag.active: mouseArea.drag.active
     Drag.dragType: Drag.Automatic
     Drag.onDragStarted: {
@@ -56,7 +61,7 @@ Rectangle {
 
     OutlineButton {
         id: closeButton
-        label: i18n("Close")
+        label: "  "+i18n("Close")
         anchors.right: parent.right
         anchors.top: parent.top
         anchors.margins: 3
@@ -64,7 +69,14 @@ Rectangle {
         visible: false
         z: 100
         alignment: Qt.AlignRight
-        icon: "image://SymbolicColorizer/:/sharedassets/outline/close.svg"
+
+        property string colString: selected && !skipSelect ?
+            activePalette.highlightedText.toString(16) :
+                activePalette.text.toString(16)
+
+        color: colString
+
+        icon: "image://SymbolicColorizer/?color="+colString+";:/sharedassets/outline/close.svg"
         onClicked: {
             object.performAction(Call.REFUSE)
         }
@@ -80,8 +92,7 @@ Rectangle {
             height:40
             width:40
             drawEmptyOutline: false
-            defaultColor:callDelegateItem.selected ?
-                activePalette.highlightedText : activePalette.text
+            defaultColor: labelColor
             anchors.verticalCenter: parent.verticalCenter
         }
 
@@ -92,8 +103,7 @@ Rectangle {
                 text: display
                 width: parent.width
                 wrapMode: Text.WrapAnywhere
-                color: callDelegateItem.selected ?
-                    activePalette.highlightedText : activePalette.text
+                color: labelColor
                 font.bold: true
             }
 
@@ -101,8 +111,7 @@ Rectangle {
                 text: model.number
                 width: parent.width
                 wrapMode: Text.WrapAnywhere
-                color: callDelegateItem.selected ?
-                    activePalette.highlightedText : activePalette.text
+                color: labelColor
             }
         }
     }
@@ -204,7 +213,7 @@ Rectangle {
         sourceComponent: Component {
             CallError {
                 call: object
-                width: parent.width
+                width: errorMessage.width
             }
         }
     }
@@ -218,7 +227,7 @@ Rectangle {
         sourceComponent: Component {
             OutgoingCall {
                 call: object
-                width: parent.width
+                width: outgoingMessage.width
             }
         }
     }
@@ -232,7 +241,7 @@ Rectangle {
         sourceComponent: Component {
             FinishedCall {
                 call: object
-                width: parent.width
+                width: finishedMessage.width
             }
         }
     }
@@ -246,7 +255,7 @@ Rectangle {
         sourceComponent: Component {
             CurrentCall {
                 call: object
-                width: parent.width
+                width: currentMessage.width
             }
         }
     }
@@ -259,7 +268,7 @@ Rectangle {
         sourceComponent: Component {
             MissedCall {
                 call: object
-                width: parent.width
+                width: missedMessage.width
             }
         }
     }
@@ -274,7 +283,7 @@ Rectangle {
         sourceComponent: Component {
             IncomingCall {
                 //call: object
-                width: parent.width
+                width: rigningAnimation.width
             }
         }
     }

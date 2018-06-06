@@ -26,7 +26,7 @@ Column {
 
     Text {
         text: call.toHumanStateName
-        color: activePalette.text
+        color: selected ? activePalette.highlightedText : activePalette.text
         wrapMode: Text.WordWrap
         font.bold: true
         anchors.horizontalCenter: parent.horizontalCenter
@@ -36,7 +36,7 @@ Column {
         call: outgoingCall.call
         displayLabels: false
         width: parent.width*0.66
-        outlineColor: activePalette.text
+        outlineColor: selected ? activePalette.highlightedText : activePalette.text
         anchors.horizontalCenter: parent.horizontalCenter
         backgroundColor: selected ? activePalette.highlight : activePalette.base
     }

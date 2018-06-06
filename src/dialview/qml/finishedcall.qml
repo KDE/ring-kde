@@ -46,11 +46,17 @@ Column {
     Rectangle {
         height: 6
         radius: 99
-        width: start ? 0 : parent.width
-        color: selected ? activePalette.highlightedText : activePalette.text
+        x: 4
+        width: start ? 0 : parent.width - 8
+        color: selected ? activePalette.highlightedText : activePalette.highlight
 
         Behavior on width {
             NumberAnimation {duration: 5000}
         }
+    }
+
+    Item {
+        height: 0.1
+        width: parent.width
     }
 }
