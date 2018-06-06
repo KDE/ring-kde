@@ -267,9 +267,14 @@ ListView {
                     Row {
                         Layout.fillWidth: true
                         Text {
-                            id: dsfdsf
                             text: display
                             color: activePalette.text
+                        }
+                        Text {
+                            visible: object.registeredName == display
+                            text: "✔"
+                            color: Kirigami.Theme.positiveTextColor
+                            font.bold: true
                         }
                         Text {
                             text: "  ("+categoryName+")"
