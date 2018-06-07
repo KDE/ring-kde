@@ -307,6 +307,11 @@ QPair<QQuickItem*, QQmlContext*> FlickableView::loadDelegate(QQuickItem* parentI
     // Resize the container
     container->setHeight(item->height());
 
+    // Make sure it can be resized dynamically
+    connect(item, &QQuickItem::heightChanged, container, [container, item](){
+        container->setHeight(item->height());
+    });
+
     return {container, pctx};
 }
 
