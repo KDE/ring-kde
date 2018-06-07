@@ -431,6 +431,36 @@ void TreeView2::geometryChanged(const QRectF& newGeometry, const QRectF& oldGeom
     contentItem()->setWidth(newGeometry.width());
 }
 
+void TreeView2::reloadChildren(const QModelIndex& index) const
+{
+    if (auto i = static_cast<VisualTreeItem*>(itemForIndex(index))) {
+        const auto p = i->m_pParent;
+
+        if (!p)
+            return;
+
+        auto c = p->m_pFirstChild;
+
+        while (c && c != p->m_pLastChild) {
+            if (c->m_pTreeItem) {
+                c->m_pTreeItem->performAction( VisualTreeItem::Action::UPDATE );
+                c->m_pTreeItem->performAction( VisualTreeItem::Action::MOVE   );
+            }
+            c = c->m_pNext;
+        }
+    }
+}
+
+QQuickItem* TreeView2::parentTreeItem(const QModelIndex& index) const
+{
+    if (auto i = static_cast<VisualTreeItem*>(itemForIndex(index))) {
+        if (i->m_pParent && i->m_pParent->m_pParent && i->m_pParent->m_pParent->m_pTreeItem)
+            return i->m_pParent->m_pParent->m_pTreeItem->item();
+    }
+
+    return nullptr;
+}
+
 /// Return true if the indices affect the current view
 bool TreeView2Private::isActive(const QModelIndex& parent, int first, int last)
 {

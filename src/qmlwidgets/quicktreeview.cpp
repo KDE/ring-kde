@@ -45,6 +45,12 @@ public:
     virtual void setSelected(bool s) final override;
     virtual QRectF geometry() const final override;
 
+    virtual QQuickItem* item() const final override {
+        return qvariant_cast<QQuickItem*>(
+            m_pItem->property("content")
+        );
+    }
+
 private:
     QQuickItem* m_pItem     {nullptr};
     QQmlContext* m_pContent {nullptr};

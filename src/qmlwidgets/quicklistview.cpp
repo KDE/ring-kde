@@ -85,6 +85,12 @@ public:
     /// Geometry relative to the FlickableView::view()
     virtual QRectF geometry() const final override;
 
+    virtual QQuickItem* item() const final override {
+        return qvariant_cast<QQuickItem*>(
+            m_pItem->property("content")
+        );
+    }
+
     QuickListViewPrivate* d() const;
 };
 

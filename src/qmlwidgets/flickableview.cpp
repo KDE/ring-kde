@@ -211,7 +211,7 @@ void FlickableView::refresh()
     if (!d_ptr->m_pEngine) {
         d_ptr->m_pEngine = rootContext()->engine();
         d_ptr->m_pComponent = new QQmlComponent(d_ptr->m_pEngine);
-        d_ptr->m_pComponent->setData("import QtQuick 2.4; Item {}", {});
+        d_ptr->m_pComponent->setData("import QtQuick 2.4; Item {property QtObject content: null;}", {});
     }
 }
 
@@ -311,6 +311,8 @@ QPair<QQuickItem*, QQmlContext*> FlickableView::loadDelegate(QQuickItem* parentI
     connect(item, &QQuickItem::heightChanged, container, [container, item](){
         container->setHeight(item->height());
     });
+
+    container->setProperty("content", QVariant::fromValue(item));
 
     return {container, pctx};
 }

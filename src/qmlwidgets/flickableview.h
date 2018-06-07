@@ -87,6 +87,8 @@ public:
         /// Reference to the item own view
         FlickableView* view() const;
 
+        virtual QQuickItem* item() const { return nullptr; }
+
         /// Call to notify that the geometry changed (for the selection delegate)
         void updateGeometry();
 

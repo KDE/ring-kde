@@ -181,6 +181,18 @@ public:
     RecyclingMode recyclingMode() const;
     void setRecyclingMode(RecyclingMode mode);
 
+    /**
+     * If some changes on the QML side require moving elements. It's the
+     * equivalent of calling dataChanged on every direct children index of
+     * `index`.
+     */
+    Q_INVOKABLE void reloadChildren(const QModelIndex& index) const;
+
+    /**
+     * Get the parent tree QQuickItem for a given index
+     */
+    Q_INVOKABLE QQuickItem* parentTreeItem(const QModelIndex& index) const;
+
 protected:
     virtual void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry) override;
 
