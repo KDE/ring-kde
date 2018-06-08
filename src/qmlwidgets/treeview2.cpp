@@ -316,6 +316,10 @@ void TreeView2::setModel(QSharedPointer<QAbstractItemModel> m)
             &TreeView2Private::slotDataChanged);
     }
 
+    d_ptr->m_hMapper.clear();
+    delete d_ptr->m_pRoot;
+    d_ptr->m_pRoot = new TreeTraversalItems(nullptr, d_ptr);
+
     FlickableView::setModel(m);
 
     if (!m)
