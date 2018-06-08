@@ -121,7 +121,7 @@ QuickTreeView {
 
                                     verticalAlignment: Text.AlignVCenter
                                     color: ListView.isCurrentItem ?
-                                        activePalette.highlightedText : inactivePalette.text
+                                        activePalette.highlightedText : activePalette.text
                                 }
                             }
 
@@ -141,7 +141,7 @@ QuickTreeView {
 
                                 verticalAlignment: Text.AlignVCenter
                                 color: ListView.isCurrentItem ?
-                                    activePalette.highlightedText : inactivePalette.text
+                                    activePalette.highlightedText : activePalette.text
                             }
 
                             Text {
@@ -153,7 +153,7 @@ QuickTreeView {
 
                                 verticalAlignment: Text.AlignVCenter
                                 color: ListView.isCurrentItem ?
-                                    activePalette.highlightedText : inactivePalette.text
+                                    activePalette.highlightedText : activePalette.text
                             }
 
                             Item {
@@ -242,7 +242,7 @@ QuickTreeView {
 
                                     verticalAlignment: Text.AlignVCenter
                                     color: ListView.isCurrentItem ?
-                                        activePalette.highlightedText : inactivePalette.text
+                                        activePalette.highlightedText : activePalette.text
                                 }
                             }
 
@@ -375,7 +375,7 @@ QuickTreeView {
 
                                     verticalAlignment: Text.AlignVCenter
                                     color: ListView.isCurrentItem ?
-                                        activePalette.highlightedText : inactivePalette.text
+                                        activePalette.highlightedText : activePalette.text
                                 }
                             }
 

@@ -134,27 +134,14 @@ GridLayout {
         }
     }
 
-//     Label {
-//         id: organizationLabel
-//         text: i18n("Organization:")
-//         color: labelColor ? labelColor : activePalette.text
+//     OutlineButton {
+//         id: addButton
+//         height: 54
+//         sideMargin: 2
+//         Layout.columnSpan: 2
+//         width: formattedName.width + label.width + 30
+//         label: i18n("Add a field")
+//         topPadding: 2
+//         visible: mainInfo.editing
 //     }
-//     TextField {
-//         id: organization
-//         readOnly: !mainInfo.editing
-//         onTextChanged: {
-//             mainInfo.changed()
-//         }
-//     }
-
-    OutlineButton {
-        id: addButton
-        height: 54
-        sideMargin: 2
-        Layout.columnSpan: 2
-        width: formattedName.width + label.width + 30
-        label: i18n("Add a field")
-        topPadding: 2
-        visible: mainInfo.editing
-    }
 }

@@ -25,11 +25,6 @@ RowLayout {
 
     property real lineWidth: Math.min(50, (width - label.implicitWidth)/2)
 
-    SystemPalette {
-        id: inactivePalette
-        colorGroup: SystemPalette.Disabled
-    }
-
     Rectangle {
         height: 1
         Layout.preferredWidth: 50

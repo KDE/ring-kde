@@ -70,7 +70,7 @@ Kirigami.ApplicationWindow {
 
     SystemPalette {
         id: inactivePalette
-        colorGroup: SystemPalette.Inactive
+        colorGroup: SystemPalette.Disabled
     }
 
     property var _regularActions: undefined

@@ -84,6 +84,7 @@ Kirigami.ScrollablePage {
         id: activePalette
         colorGroup: SystemPalette.Active
     }
+
     SystemPalette {
         id: inactivePalette
         colorGroup: SystemPalette.Inactive
