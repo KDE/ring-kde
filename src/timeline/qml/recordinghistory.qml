@@ -22,7 +22,7 @@ import Ring 1.0
 
 import RingQmlWidgets 1.0
 
-HierarchyView {
+QuickTreeView {
     id: chatView
     clip: true
 
@@ -50,6 +50,8 @@ HierarchyView {
         id: messageDelegate
         Loader {
             id: chatLoader
+
+            property bool showDetailed: false
 
             // Create a delegate for each type
             Component {
@@ -170,22 +172,14 @@ HierarchyView {
             }
 
             Component {
-                id: snapshotGroupDelegate
-                Snapshots {
-                    width: chatView.width
-                    onViewImage: {
-                        chatView.slideshow.active = true
-                        chatView.slideshow.model = model
-                        chatView.slideshow.source = path
-                    }
-                }
-            }
-
-            Component {
                 id: callDelegate
                 Item {
                     height: content.implicitHeight + 10
                     width: parent.width
+
+                    Behavior on height {
+                        NumberAnimation {duration: 200;  easing.type: Easing.OutQuad}
+                    }
 
                     Rectangle {
                         width: 1
@@ -263,18 +257,15 @@ HierarchyView {
                                 width: chatView.width - 90
                                 modelIndex: rootIndex
                                 count: callCount
-                            }
 
-                            Item {
-                                Layout.fillHeight: true
+                                MouseArea {
+                                    anchors.fill: parent
+                                    onClicked: {
+                                        chatLoader.showDetailed = true
+                                        chatView.reloadChildren(rootIndex)
+                                    }
+                                }
                             }
-                        }
-                    }
-
-                    MouseArea {
-                        anchors.fill: parent
-                        onClicked: {
-                            treeView.currentIndex = index
                         }
                     }
                 }
@@ -288,6 +279,30 @@ HierarchyView {
                         id: rect
                         property var section: display
                         property var recentDate: formattedDate
+                    }
+                }
+            }
+
+            Component {
+                id: singleCallDelegate
+
+                RowLayout {
+                    width: parent.width
+
+                    Text {
+                        text: formattedDate
+                        color: activePalette.text
+                        Layout.fillWidth: true
+                    }
+
+                    Item {
+                        height: 1
+                        Layout.fillWidth: true
+                    }
+
+                    Text {
+                        text: length
+                        color: inactivePalette.text
                     }
                 }
             }
@@ -398,6 +413,13 @@ HierarchyView {
 
                 if (nodeType == IndividualTimelineModel.RECORDINGS)
                     return recordingDelegate
+
+                if (nodeType == IndividualTimelineModel.CALL_GROUP)
+                    return callDelegate
+
+                if (nodeType == IndividualTimelineModel.CALL
+                  && chatView.parentTreeItem(rootIndex).showDetailed)
+                    return singleCallDelegate
             }
 
             sourceComponent: selectDelegate()
