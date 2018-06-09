@@ -24,11 +24,82 @@ import ContactView 1.0
 import RingQmlWidgets 1.0
 import PhotoSelectorPlugin 1.0
 
-Row {
+Grid {
     //TODO Qt5.10 deps: use native icons
 
     spacing: 5
     leftPadding: 5
+    rows: 1
+
+    // Favor being on one row, but allow 2 rows too
+    property real preferredWidth: (button.visible ? button.implicitWidth : 0)
+        + (button2.visible ? button2.implicitWidth : 0)
+        + (button3.visible ? button3.implicitWidth : 0)
+        + (button4.visible ? button4.implicitWidth : 0)
+
+    property real minimumWidth: (button3.visible ? button3.implicitWidth : 0)
+        + (button4.visible ? button4.implicitWidth : 0)
+
+    property real maximumButtonWidth: button3.implicitWidth
+
+
+    states: [
+        State {
+            name: "2rows"
+            when: rows == 2
+
+            PropertyChanges {
+                target: button
+                width: maximumButtonWidth
+            }
+
+            PropertyChanges {
+                target: button2
+                width: maximumButtonWidth
+            }
+
+            PropertyChanges {
+                target: button3
+                width: maximumButtonWidth
+            }
+
+            PropertyChanges {
+                target: button4
+                width: maximumButtonWidth
+            }
+        },
+        State {
+            name: ""
+            when: rows == 1
+
+            PropertyChanges {
+                target: button
+                width: undefined
+            }
+
+            PropertyChanges {
+                target: button2
+                width: undefined
+            }
+
+            PropertyChanges {
+                target: button3
+                width: undefined
+            }
+
+            PropertyChanges {
+                target: button4
+                width: undefined
+            }
+        }
+    ]
+
+    onWidthChanged: {
+        if (rows == 1 && width < preferredWidth)
+            rows = 2
+        else if (rows == 2 && width >= preferredWidth)
+            rows = 1
+    }
 
     function getContactMethod(callback) {
 

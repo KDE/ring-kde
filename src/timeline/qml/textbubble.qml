@@ -35,6 +35,15 @@ Item {
 
     height: bubble.height + 10
 
+    function getFactor() {
+        return (height > (chatMessage.width*0.5)) ? 0.9 : 0.7
+    }
+
+    // Prevent a binding loop. the "current" height isn't required anyway
+    onWidthChanged: {
+        bubble.maximumWidth = chatMessage.width*getFactor()
+    }
+
     RowLayout {
         anchors.fill: parent
 
@@ -66,7 +75,6 @@ Item {
                 color: background
 
                 text: display != undefined ? display : "N/A"
-                maximumWidth: chatMessage.width*((height > (chatMessage.width*0.5)) ? 0.9 : 0.7)
                 height: Math.max(50, label.implicitHeight + dateLabel.implicitHeight + 5)
 
                 Text {
