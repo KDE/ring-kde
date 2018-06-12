@@ -22,10 +22,12 @@ import RingQmlWidgets 1.0
 import ContactView 1.0
 // import org.kde.kirigami 2.0 as Kirigami
 
-Item {
+MouseArea {
     id: componentItem
     width: parent != undefined ? parent.width : undefined
     height: computeHeight()
+    acceptedButtons: Qt.LeftButton | Qt.RightButton
+    hoverEnabled: true
 
     property bool hasMessage: hasActiveCall || unreadTextMessageCount > 0 || isRecording || hasActiveVideo
 
@@ -45,6 +47,15 @@ Item {
             return unreadTextMessageCount + " new messages"
 
         return ""
+    }
+
+    onClicked: {
+        if (mouse.button == Qt.LeftButton) {
+            recentView.currentIndex = modelIndex.row
+            individualSelected(object)
+        }
+        else if (mouse.button == Qt.RightButton)
+            contextMenuRequested(object.lastUsedContactMethod, modelIndex.row)
     }
 
     Rectangle {
@@ -75,6 +86,7 @@ Item {
     }
 
     Rectangle {
+        id: outline
         border.color: inactivePalette.text
         border.width: 1
         anchors.fill: parent
@@ -83,7 +95,6 @@ Item {
         anchors.bottomMargin: 5
         anchors.leftMargin: 30
         anchors.rightMargin: 40
-
 
         color: "transparent"
         radius: 10
@@ -154,17 +165,109 @@ Item {
                 visible: componentItem.hasMessage
             }
 
-            Text {
+            Loader {
+                id: messageLoader
+                active: true
                 Layout.fillWidth: true
-                visible: componentItem.hasMessage
-                text: thirdRowMessage()
+                Layout.minimumHeight: contentHeight2 * 2
+                Layout.maximumHeight: contentHeight2 * 2
+                property real contentHeight2: 10
 
-                height: 2*fontMetrics.height
-                leftPadding: 10
+                sourceComponent: MouseArea {
+                    id: markAsRead
+                    z: 101
+                    anchors.fill: messageLoader
 
-                verticalAlignment: Text.AlignVCenter
-                color: isCurrentItem ?
-                    activePalette.highlightedText : inactivePalette.text
+                    Component.onCompleted: {
+                        messageLoader.contentHeight2 = unreadLabel.implicitHeight
+                    }
+
+                    Text {
+                        id: unreadLabel
+                        Layout.fillWidth: true
+                        visible: componentItem.hasMessage
+                        text: thirdRowMessage()
+                        anchors.verticalCenter: parent.verticalCenter
+
+                        height: 2*fontMetrics.height
+                        leftPadding: 10
+
+                        verticalAlignment: Text.AlignVCenter
+                        color: isCurrentItem ?
+                            activePalette.highlightedText : inactivePalette.text
+
+                        onImplicitHeightChanged: {
+                            messageLoader.contentHeight2 = implicitHeight
+                        }
+                    }
+
+                    onClicked: {
+                        if (object)
+                            object.markAsRead()
+
+                        mouse.accepted = true
+                    }
+
+                    Rectangle {
+                        id: button
+                        anchors.leftMargin: 7
+                        anchors.rightMargin: 7
+                        anchors.bottomMargin: 7
+                        color: "transparent"
+                        visible: false
+                        radius: 5
+                        anchors.fill: parent
+                        border.width: 1
+                        border.color: outline.border.color
+
+                        Text {
+                            text: i18n("Mark as read")
+                            color: isCurrentItem ?
+                                activePalette.highlightedText : activePalette.text
+                            font.bold: true
+                            anchors.centerIn: parent
+                        }
+                    }
+
+                    states: [
+                        State {
+                            name: ""
+                            PropertyChanges {
+                                target: button
+                                visible: false
+                            }
+                        },
+                        State {
+                            name: "hover"
+                            when: messageLoader.state == "hover"
+                            PropertyChanges {
+                                target: button
+                                visible: true
+                                color: isCurrentItem ?
+                                    activePalette.highlight : activePalette.base
+                            }
+                        }
+                    ]
+                }
+
+                states: [
+                    State {
+                        name: ""
+                    },
+                    State {
+                        name: "show"
+                        when: componentItem.hasMessage && !componentItem.containsMouse
+                        PropertyChanges {
+                            target: messageLoader
+                            active: true
+                        }
+                    },
+                    State {
+                        name: "hover"
+                        extend: "show"
+                        when:  componentItem.hasMessage && componentItem.containsMouse
+                    }
+                ]
             }
 
             Item {
@@ -221,20 +324,6 @@ Item {
                     anchors.horizontalCenter: parent.horizontalCenter
                     source: "image://icon/media-record"
                 }
-            }
-        }
-
-        MouseArea {
-            anchors.fill: parent
-            acceptedButtons: Qt.LeftButton | Qt.RightButton
-            z: 99
-            onClicked: {
-                if (mouse.button == Qt.LeftButton) {
-                    recentView.currentIndex = modelIndex.row
-                    individualSelected(object)
-                }
-                else if (mouse.button == Qt.RightButton)
-                    contextMenuRequested(object.lastUsedContactMethod, modelIndex.row)
             }
         }
 
