@@ -24,9 +24,13 @@ class TipModel : public QObject
     Q_OBJECT
 public:
     Q_PROPERTY(bool showSearchTip READ showSearchTip WRITE setShowSearchTip NOTIFY changed)
+    Q_PROPERTY(bool showFirstTip  READ showFirstTip  WRITE setShowFirstTip  NOTIFY changed)
 
     bool showSearchTip() const;
     void setShowSearchTip(bool v);
+
+    bool showFirstTip() const;
+    void setShowFirstTip(bool v);
 
 Q_SIGNALS:
     void changed();

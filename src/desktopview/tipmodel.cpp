@@ -29,3 +29,14 @@ void TipModel::setShowSearchTip(bool v)
     ConfigurationSkeleton::setDisplaySearchTip(v);
     emit changed();
 }
+
+bool TipModel::showFirstTip() const
+{
+    return ConfigurationSkeleton::displayFirstTip();
+}
+
+void TipModel::setShowFirstTip(bool v)
+{
+    ConfigurationSkeleton::setDisplayFirstTip(v);
+    emit changed();
+}

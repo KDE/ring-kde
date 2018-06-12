@@ -32,7 +32,7 @@ Item {
     property alias currentIndex: searchView.currentIndex
 
     function _get_default_run() {
-        return PeersTimelineModel.empty ? 0 : 3
+        return PeersTimelineModel.empty && displayTips.showFirstTip ? 0 : 3
     }
 
     // Try to quit the welcome mode and never get back to it.
@@ -149,6 +149,7 @@ Item {
 
             OutlineButton {
                 label: "  "+i18n("Scan a QR Code")
+                visible: false //Not implemented
                 height: 24
                 alignment: Qt.AlignRight
                 Layout.maximumWidth: width
@@ -316,6 +317,23 @@ Item {
         }
     }
 
+    CheckBox {
+        z: 199999999
+        anchors.bottom: parent.bottom
+        anchors.right: parent.right
+        anchors.margins: 10
+        text: i18n("Hide and do not show again")
+        checked: false
+        checkable: true
+        visible: displayTips.showFirstTip && searchStateGroup.state == "firstSearch"
+        onCheckStateChanged: {
+            searchBox.searchFocus    = false
+            displayTips.showFirstTip = false
+            _firstRunShown = 2
+            buggyTimer.running = true
+        }
+    }
+
     // Search
     StateGroup {
         id: searchStateGroup
@@ -334,7 +352,9 @@ Item {
         states: [
             State {
                 name: ""
-                when: (!searchBox.searchFocus) && (!PeersTimelineModel.empty)
+                when: (!searchBox.searchFocus) && (
+                    (!PeersTimelineModel.empty) || (!displayTips.showFirstTip)
+                )
 
                 ParentChange {
                     target: seachOverlay
@@ -365,8 +385,9 @@ Item {
             State {
                 name: "searchActive"
                 when: seachOverlay.active
-                    && (!PeersTimelineModel.empty)
-                    && _firstRunShown > 2
+                    && (
+                        (!PeersTimelineModel.empty) || (!displayTips.showFirstTip)
+                    ) && _firstRunShown > 2
 
                 PropertyChanges {
                     target:  seachOverlay
@@ -401,7 +422,7 @@ Item {
                 extend: "searchActive"
                 when:  (!wizardVisible) && _firstRunShown < 2 && (
                     PeersTimelineModel.empty || !searchBox.empty
-                )
+                ) && displayTips.showFirstTip
                 PropertyChanges {
                     target:  seachOverlay
                     anchors.fill: undefined

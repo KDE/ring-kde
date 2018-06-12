@@ -91,6 +91,9 @@
     <entry name="displaySearchTip" type="Bool">
       <default>true</default>
     </entry>
+    <entry name="displayFirstTip" type="Bool">
+      <default>true</default>
+    </entry>
    <entry name="historySortMode" type="Int">
       <label>Define sorting order for history list</label>
     </entry>
