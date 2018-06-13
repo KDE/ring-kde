@@ -29,6 +29,9 @@ GridLayout {
     property var currentPerson: null
     property bool editing: true
     property real preferredHeight: implicitHeight
+    property var individual: null
+
+    property alias name: formattedName.text
 
     signal changed()
 
@@ -83,6 +86,18 @@ GridLayout {
 //         organization.text = currentPerson ?
 //             currentPerson.organization : ""
 
+    }
+
+    onIndividualChanged: {
+        console.log("\n\n\nINDI", individual.bestName)
+        if (formattedName.text == "" && individual)
+            formattedName.text = individual.bestName
+    }
+
+    Component.onCompleted:  {
+        console.log("\n\n\nINDI", individual.bestName)
+        if (formattedName.text == "" && individual)
+            formattedName.text = individual.bestName
     }
 
     Label {

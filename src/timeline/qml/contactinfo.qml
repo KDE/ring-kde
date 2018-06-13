@@ -59,7 +59,7 @@ Kirigami.ScrollablePage {
         var person = individual.person
 
         if (!person)
-            person = contactBuilder.from(individual)
+            person = contactBuilder.from(individual, vCardForm.name)
 
 
         if (!vCardForm.currentPerson)
@@ -106,6 +106,8 @@ Kirigami.ScrollablePage {
 
     onIndividualChanged: {
         vCardForm.currentPerson = individual ? individual.person : null
+        vCardForm.individual = individual
+
         isChanged = false
     }
 

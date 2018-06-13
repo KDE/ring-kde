@@ -41,7 +41,7 @@ ContactBuilder::~ContactBuilder()
     delete d_ptr;
 }
 
-Person* ContactBuilder::from(Individual* ind)
+Person* ContactBuilder::from(Individual* ind, const QString& name)
 {
     if (!ind)
         return nullptr;
@@ -65,6 +65,9 @@ Person* ContactBuilder::from(Individual* ind)
     auto p = ind->buildPerson();
     p->setCollection(col);
     col->editor<Person>()->addExisting(p);
+
+    if (!name.isEmpty())
+        p->setFormattedName(name);
 
     Q_ASSERT(ind->person() == p);
 

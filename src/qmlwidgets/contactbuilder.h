@@ -35,7 +35,7 @@ public:
     virtual ~ContactBuilder();
 
     Q_INVOKABLE Person* from(ContactMethod* cm);
-    Q_INVOKABLE Person* from(Individual* cm);
+    Q_INVOKABLE Person* from(Individual* cm, const QString& name = "");
 
     Q_INVOKABLE Person* fromScratch();
 
