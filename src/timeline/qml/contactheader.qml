@@ -238,7 +238,7 @@ Rectangle {
     states: [
         State {
             name: ""
-            when: (!isCompact) && (!isMobile)
+            when: (!isCompact) && (!isMobile) && (currentIndividual)
 
             PropertyChanges {
                 target: contactHeader
@@ -293,6 +293,23 @@ Rectangle {
                 anchors.verticalCenter: contactHeader.verticalCenter
             }
 
+        },
+        State {
+            name: "empty"
+            extend: ""
+            when: (!currentIndividual)
+            PropertyChanges {
+                target: separator
+                visible: false
+            }
+            PropertyChanges {
+                target: contactPhoto
+                visible: false
+            }
+            PropertyChanges {
+                target: bookmarkSwitch
+                visible: false
+            }
         },
         State {
             name: "compact"
