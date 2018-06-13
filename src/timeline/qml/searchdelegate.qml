@@ -58,7 +58,7 @@ Item {
         anchors.leftMargin: 10
         anchors.rightMargin: 10
         border.width: 1
-        border.color: inactivePalette.text
+        border.color: activePalette.text
         color: "transparent"
         anchors.fill: parent
         radius: 5
@@ -117,12 +117,12 @@ Item {
                 id: uriSeparator
                 height: 1
                 Layout.fillWidth: true
-                color: inactivePalette.text
+                color: activePalette.text
             }
 
             Text {
                 Layout.fillWidth: true
-                color: inactivePalette.text
+                color: activePalette.text
                 text: "  "+uri
                 height: implicitHeight * 2
 
@@ -153,7 +153,7 @@ Item {
                 visible: accountAlias != ""
                 height: 1
                 Layout.fillWidth: true
-                color: inactivePalette.text
+                color: activePalette.text
             }
 
             Rectangle {
