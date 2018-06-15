@@ -123,7 +123,7 @@ Item {
             Text {
                 Layout.fillWidth: true
                 color: activePalette.text
-                text: "  "+uri
+                text: "  "+(registeredName == "" ? uri : registeredName)
                 height: implicitHeight * 2
 
                 BusyIndicator {

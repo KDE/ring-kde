@@ -97,7 +97,7 @@ Item {
                 }
                 Text {
                     Layout.fillWidth: true
-                    text: uri
+                    text: registeredName == "" ? uri : registeredName
                     color: textColor
                 }
             }
