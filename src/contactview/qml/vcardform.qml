@@ -89,13 +89,11 @@ GridLayout {
     }
 
     onIndividualChanged: {
-        console.log("\n\n\nINDI", individual.bestName)
         if (formattedName.text == "" && individual)
             formattedName.text = individual.bestName
     }
 
     Component.onCompleted:  {
-        console.log("\n\n\nINDI", individual.bestName)
         if (formattedName.text == "" && individual)
             formattedName.text = individual.bestName
     }
