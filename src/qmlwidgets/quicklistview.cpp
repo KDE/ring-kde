@@ -389,6 +389,11 @@ bool QuickListViewItem::attach()
     m_pContent->setContextProperty("isCurrentItem", false);
     m_pContent->setContextProperty("modelIndex", index());
 
+    // When the item resizes itself
+    QObject::connect(m_pItem, &QQuickItem::heightChanged, m_pItem, [this](){
+        updateGeometry();
+    });
+
     return move();
 }
 
