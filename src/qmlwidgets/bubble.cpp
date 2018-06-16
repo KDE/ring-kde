@@ -118,6 +118,7 @@ QColor Bubble::color() const
 void Bubble::setColor(const QColor& c)
 {
     d_ptr->m_Color = c;
+    update();
 }
 
 qreal Bubble::maximumWidth() const
@@ -129,6 +130,7 @@ void Bubble::setMaximumWidth(qreal value)
 {
     d_ptr->m_MaximumWidth = value;
     slotWindowChanged(window());
+    update();
 }
 
 QString Bubble::text() const
@@ -140,6 +142,7 @@ void Bubble::setText(const QString& c)
 {
     d_ptr->m_Text = c;
     slotWindowChanged(window());
+    update();
 }
 
 QFont& Bubble::font() const
@@ -153,6 +156,7 @@ void Bubble::setFont(const QFont& f)
     d_ptr->m_FontMetrics = QFontMetricsF(f);
     slotWindowChanged(nullptr);
     emit fontChanged(d_ptr->m_Font);
+    update();
 }
 
 void Bubble::slotWindowChanged(QQuickWindow *w)
