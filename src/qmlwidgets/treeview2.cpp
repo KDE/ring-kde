@@ -314,7 +314,10 @@ void TreeView2::setModel(QSharedPointer<QAbstractItemModel> m)
             &TreeView2Private::slotRowsMoved2);
         disconnect(oldM.data(), &QAbstractItemModel::dataChanged, d_ptr,
             &TreeView2Private::slotDataChanged);
+
+        d_ptr->slotRowsRemoved({}, 0, oldM->rowCount()-1);
     }
+
 
     d_ptr->m_hMapper.clear();
     delete d_ptr->m_pRoot;
@@ -630,8 +633,8 @@ void TreeView2Private::_test_validateTree(TreeTraversalItems* p)
         Q_ASSERT(i.value()->m_pTreeItem->m_State != VisualTreeItem::State::FAILED);
 
         // Test the indices
-        Q_ASSERT(i.key().internalPointer() == i.value()->m_Index.internalPointer());
-        Q_ASSERT((p->m_Index.isValid()) || p->m_Index.internalPointer() != i.key().internalPointer());
+        Q_ASSERT(p == m_pRoot || i.key().internalPointer() == i.value()->m_Index.internalPointer());
+        Q_ASSERT(p == m_pRoot || (p->m_Index.isValid()) || p->m_Index.internalPointer() != i.key().internalPointer());
         //Q_ASSERT(old == i.value() || old->m_Index.row() > i.key().row()); //FIXME
         //Q_ASSERT(newest == i.value() || newest->m_Index.row() < i.key().row()); //FIXME
 
@@ -727,6 +730,7 @@ void TreeView2Private::slotRowsInserted(const QModelIndex& parent, int first, in
     //FIXME support smaller ranges
     for (int i = first; i <= last; i++) {
         auto idx = q_ptr->model()->index(i, 0, parent);
+        Q_ASSERT(idx.isValid());
         Q_ASSERT(idx.parent() != idx);
         Q_ASSERT(idx.model() == q_ptr->model());
 

@@ -203,6 +203,10 @@ QModelIndex FlickableView::currentIndex() const
 
 void FlickableView::setCurrentIndex(const QModelIndex& index, QItemSelectionModel::SelectionFlags f)
 {
+    Q_ASSERT(model() == index.model() || !index.isValid());
+    if (!model())
+        return;
+
     selectionModel()->setCurrentIndex(index, f);
 }
 

@@ -252,7 +252,7 @@ QuickListViewSection* QuickListViewItem::setSection(QuickListViewSection* s, con
             delete m_pSection;
         else if (p && n && p->m_pSection && p->m_pSection != m_pSection && n->m_pSection == m_pSection)
             m_pSection->setOwner(n);
-        else if (p->m_pSection != m_pSection)
+        else if (p && p->m_pSection != m_pSection)
             Q_ASSERT(false); // There is a bug somewhere else
     }
 
