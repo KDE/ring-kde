@@ -285,7 +285,7 @@ QuickListViewSection* QuickListViewPrivate::getSection(QuickListViewItem* i)
     const auto next = static_cast<QuickListViewItem*>(i->down());
 
     // The section owner isn't currently loaded
-    if ((!prev) && i->index().row() > 0)
+    if ((!prev) && i->row() > 0)
         Q_ASSERT(false); //TODO when GC is enabled, the assert is to make sure I don't forget
 
     // Check if the nearby sections are compatible
@@ -404,13 +404,22 @@ bool QuickListViewItem::refresh()
 
     return true;
 }
+
 void QuickListViewSection::setOwner(QuickListViewItem* newParent)
 {
     if (m_pOwner == newParent)
         return;
 
     if (m_pOwner->m_pItem) {
+        // Prevent a loop while moving
+        auto otherAnchors = qvariant_cast<QObject*>(newParent->m_pItem->property("anchors"));
         auto anchors = qvariant_cast<QObject*>(m_pOwner->m_pItem->property("anchors"));
+        if (otherAnchors && otherAnchors->property("top") == m_pOwner->m_pItem->property("bottom")) {
+            anchors->setProperty("top", {});
+            otherAnchors->setProperty("top", {});
+            otherAnchors->setProperty("y", {});
+        }
+
         anchors->setProperty("top", newParent->m_pItem ?
             newParent->m_pItem->property("bottom") : QVariant()
         );
@@ -479,9 +488,12 @@ bool QuickListViewItem::move()
                     prev = static_cast<QuickListViewItem*>(prev->up());
                 }
 
-                if (newOwner)
-                    sec->setOwner(newOwner);
+                if (newOwner) {
+                    if (newOwner == static_cast<QuickListViewItem*>(up()))
+                        prev = newOwner;
 
+                    sec->setOwner(newOwner);
+                }
                 sec->reparentSection(prev, view());
 
                 if (sec->m_pItem)
@@ -505,9 +517,15 @@ bool QuickListViewItem::move()
                     }
                 }*/
             }
+            else if (sec->m_pOwner->row() > row()) { //TODO remove once correctly implemented
+                //HACK to force reparenting when the elements move up
+                sec->setOwner(this);
+                sec->reparentSection(prev, view());
+                prevItem = sec->m_pItem;
+            }
         }
 
-    const qreal y = d()->m_DepthChart.first()*index().row();
+    const qreal y = d()->m_DepthChart.first()*row();
 
     if (m_pItem->width() != view()->contentItem()->width())
         m_pItem->setWidth(view()->contentItem()->width());
@@ -520,8 +538,23 @@ bool QuickListViewItem::move()
     if (!prevItem)
         m_pItem->setY(y);
     else {
+        // Row can be 0 if there is a section
+        Q_ASSERT(row() || (!prev) || (!prev->m_pItem));
+
+        // Prevent loops when swapping 2 items
+        auto otherAnchors = qvariant_cast<QObject*>(prevItem->property("anchors"));
         auto anchors = qvariant_cast<QObject*>(m_pItem->property("anchors"));
-        anchors->setProperty("top", prevItem->property("bottom"));
+
+        if (otherAnchors && otherAnchors->property("top") == m_pItem->property("bottom")) {
+            anchors->setProperty("top", {});
+            otherAnchors->setProperty("top", {});
+            otherAnchors->setProperty("y", {});
+        }
+
+        // Avoid creating too many race conditions
+        if (anchors->property("top") != prevItem->property("bottom"))
+            anchors->setProperty("top", prevItem->property("bottom"));
+
     }
 
     updateGeometry();
@@ -659,7 +692,7 @@ void QuickListViewPrivate::slotCurrentIndexChanged(const QModelIndex& index)
 // Make sure the section stay in sync with the content
 void QuickListViewPrivate::slotDataChanged(const QModelIndex& tl, const QModelIndex& br)
 {
-    if (!m_pSections)
+    if ((!m_pSections) || (!tl.isValid()) || (!br.isValid()))
         return;
 
     auto tli = static_cast<QuickListViewItem*>(q_ptr->itemForIndex(tl));

@@ -78,6 +78,8 @@ public:
         virtual ModelIndexItem* down () const { return nullptr ;}
         virtual ModelIndexItem* left () const { return nullptr ;}
         virtual ModelIndexItem* right() const { return nullptr ;}
+        virtual int row   () const { return index().row   () ;}
+        virtual int column() const { return index().column() ;}
 
         //TODO ::above() and ::firstBelow() and ::lastBelow()
 

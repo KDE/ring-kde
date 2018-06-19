@@ -60,6 +60,8 @@ public:
     // Helpers
     virtual ModelIndexItem* up  () const override final;
     virtual ModelIndexItem* down() const override final;
+    virtual int row   () const override final;
+    virtual int column() const override final;
 
     // Getters
     virtual QPersistentModelIndex index   () const final;
@@ -95,6 +97,8 @@ private:
     State m_State {State::POOLED};
     TreeTraversalItems* m_pParent {nullptr};
     mutable QSharedPointer<VisualTreeItem> m_pSelf;
+    int m_MoveToRow    {-1};
+    int m_MoveToColumn {-1};
 
     static const State  m_fStateMap    [7][7];
     static const StateF m_fStateMachine[7][7];

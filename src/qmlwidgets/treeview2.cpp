@@ -231,6 +231,11 @@ public:
     void bridgeGap(VisualTreeItem* first, VisualTreeItem* second, bool insert = false);
     void createGap(VisualTreeItem* first, VisualTreeItem* last  );
 
+    void setTemporaryIndices(const QModelIndex &parent, int start, int end,
+                             const QModelIndex &destination, int row);
+    void resetTemporaryIndices(const QModelIndex &parent, int start, int end,
+                               const QModelIndex &destination, int row);
+
     // Tests
     void _test_validateTree(TreeTraversalItems* p);
 
@@ -961,6 +966,62 @@ void TreeView2Private::bridgeGap(TreeTraversalItems* first, TreeTraversalItems* 
 //     }
 }
 
+void TreeView2Private::setTemporaryIndices(const QModelIndex &parent, int start, int end,
+                                     const QModelIndex &destination, int row)
+{
+    //FIXME list only
+    // Before moving them, set a temporary now/col value because it wont be set
+    // on the index until before slotRowsMoved2 is called (but after this
+    // method returns //TODO do not use the hashmap, it is already known
+    if (parent == destination) {
+        const auto pitem = parent.isValid() ? m_hMapper.value(parent) : m_pRoot;
+        for (int i = start; i <= end; i++) {
+            auto idx = q_ptr->model()->index(i, 0, parent);
+
+            auto elem = pitem->m_hLookup.value(idx);
+            Q_ASSERT(elem);
+
+            qDebug() << "\nSETTING" << start << end << row << (row + (i - start)) << elem->m_pTreeItem->index().row();
+            elem->m_pTreeItem->m_MoveToRow = row + (i - start);
+        }
+
+        for (int i = row; i <= row + (end - start); i++) {
+            auto idx = q_ptr->model()->index(i, 0, parent);
+
+            auto elem = pitem->m_hLookup.value(idx);
+            Q_ASSERT(elem);
+
+            qDebug() << "\nSETTIN2" << start << end << row << (row + (end - start) + 1) << elem->m_pTreeItem->index().row();
+            elem->m_pTreeItem->m_MoveToRow = row + (end - start) + 1;
+        }
+    }
+}
+
+void TreeView2Private::resetTemporaryIndices(const QModelIndex &parent, int start, int end,
+                                     const QModelIndex &destination, int row)
+{
+    //FIXME list only
+    // Before moving them, set a temporary now/col value because it wont be set
+    // on the index until before slotRowsMoved2 is called (but after this
+    // method returns //TODO do not use the hashmap, it is already known
+    if (parent == destination) {
+        const auto pitem = parent.isValid() ? m_hMapper.value(parent) : m_pRoot;
+        for (int i = start; i <= end; i++) {
+            auto idx = q_ptr->model()->index(i, 0, parent);
+            auto elem = pitem->m_hLookup.value(idx);
+            Q_ASSERT(elem);
+            elem->m_pTreeItem->m_MoveToRow = -1;
+        }
+
+        for (int i = row; i <= row + (end - start); i++) {
+            auto idx = q_ptr->model()->index(i, 0, parent);
+            auto elem = pitem->m_hLookup.value(idx);
+            Q_ASSERT(elem);
+            elem->m_pTreeItem->m_MoveToRow = -1;
+        }
+    }
+}
+
 void TreeView2Private::slotRowsMoved(const QModelIndex &parent, int start, int end,
                                      const QModelIndex &destination, int row)
 {
@@ -974,6 +1035,10 @@ void TreeView2Private::slotRowsMoved(const QModelIndex &parent, int start, int e
     // Whatever has to be done only affect a part that's not currently tracked.
     if ((!isActive(parent, start, end)) && !isActive(destination, row, row+(end-start)))
         return;
+
+    setTemporaryIndices(parent, start, end, destination, row);
+
+    //TODO also support trees
 
     // As the actual view is implemented as a daisy chained list, only moving
     // the edges is necessary for the TreeTraversalItems. Each VisualTreeItem
@@ -1121,15 +1186,18 @@ void TreeView2Private::slotRowsMoved(const QModelIndex &parent, int start, int e
 //     Q_ASSERT((!oldPreviousVI) || (!oldPreviousVI->m_pParent->m_pNext) ||
 //         oldPreviousVI->m_pParent->m_pNext == (oldNextVI ? oldNextVI->m_pParent : nullptr));
 
+
     // Move everything
     //TODO move it more efficient
     m_pRoot->performAction(TreeTraversalItems::Action::MOVE);
 
+    resetTemporaryIndices(parent, start, end, destination, row);
 }
 
 void TreeView2Private::slotRowsMoved2(const QModelIndex &parent, int start, int end,
                                      const QModelIndex &destination, int row)
 {
+
     // The test would fail if it was in aboutToBeMoved
     _test_validateTree(m_pRoot);
 }
@@ -1319,6 +1387,17 @@ sanitizeNext:
         return ret->down();
 
     return ret;
+}
+
+
+int VisualTreeItem::row() const
+{
+    return m_MoveToRow == -1 ? index().row() : m_MoveToRow;
+}
+
+int VisualTreeItem::column() const
+{
+    return m_MoveToColumn == -1 ? index().column() : m_MoveToColumn;
 }
 
 bool VisualTreeItem::nothing()
