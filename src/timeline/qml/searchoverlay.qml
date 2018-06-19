@@ -30,19 +30,7 @@ Item {
     property var source: null
     property bool active: searchBox.searchFocus
     property alias currentIndex: searchView.currentIndex
-
-    function _get_default_run() {
-        return PeersTimelineModel.empty && displayTips.showFirstTip ? 0 : 3
-    }
-
-    // Try to quit the welcome mode and never get back to it.
-    // There is many binding loops and signal being emitted preventing this
-    // from working cleanly.
-    //
-    // 0: The timeline is empty and search has focus
-    // 1: Typing, the timeline will get it's first hit when the name service returns
-    // 2: The search is empty again, hide i1
-    property int _firstRunShown: _get_default_run() //HACK
+    property bool delayed: false
 
     signal contactMethodSelected(var cm)
     signal displayNotFoundMessage()
@@ -70,10 +58,10 @@ Item {
     Timer {
         id: buggyTimer
         repeat: false
-        running: false
+        running: true
         interval: 0
         onTriggered: {
-            _firstRunShown = 3
+            delayed = true
         }
     }
 
@@ -116,13 +104,6 @@ Item {
         searchView: searchView
         width: topLevel.width
         xPadding: dockBar.width
-
-        onEmptyChanged: {
-            if ((!PeersTimelineModel.empty) && empty && _firstRunShown == 1) {
-                _firstRunShown = 2
-                buggyTimer.running = true
-            }
-        }
     }
 
     // The close and QR CODE buttons
@@ -158,7 +139,7 @@ Item {
                 alignment: Qt.AlignRight
                 icon: "image://SymbolicColorizer/:/sharedassets/outline/close.svg"
                 onClicked: {
-                    searchBox.hide()
+                    hide()
                 }
             }
 
@@ -305,14 +286,6 @@ Item {
         notFoundMessage.opacity = 1
     }
 
-    Connections {
-        target: applicationWindow()
-        onWizardVisible: {
-            if (wizardVisible && _firstRunShown == 1)
-                _firstRunShown = 0
-        }
-    }
-
     CheckBox {
         z: 199999999
         anchors.bottom: parent.bottom
@@ -325,8 +298,6 @@ Item {
         onCheckStateChanged: {
             searchBox.searchFocus    = false
             displayTips.showFirstTip = false
-            _firstRunShown = 2
-            buggyTimer.running = true
         }
     }
 
@@ -334,23 +305,12 @@ Item {
     StateGroup {
         id: searchStateGroup
 
-        //HACK I have no clue either why it keep re-displaying the overlay
-        onStateChanged: {
-            if (wizardVisible) {
-                _firstRunShown = 0
-                return
-            }
-            if (state == "firstSearch" && _firstRunShown < 2)
-                _firstRunShown = 1
-
-        }
-
         states: [
             State {
                 name: ""
-                when: (!searchBox.searchFocus) && (
+                when: ((!wizardVisible) && (!seachOverlay.active) && (
                     (!PeersTimelineModel.empty) || (!displayTips.showFirstTip)
-                )
+                )) || (!delayed)
 
                 ParentChange {
                     target: seachOverlay
@@ -380,10 +340,10 @@ Item {
             },
             State {
                 name: "searchActive"
-                when: seachOverlay.active
+                when: delayed && (!wizardVisible) && seachOverlay.active
                     && (
                         (!PeersTimelineModel.empty) || (!displayTips.showFirstTip)
-                    ) && _firstRunShown > 2
+                    )
 
                 PropertyChanges {
                     target:  seachOverlay
@@ -416,7 +376,7 @@ Item {
             State {
                 name: "firstSearch"
                 extend: "searchActive"
-                when:  (!wizardVisible) && _firstRunShown < 2 && (
+                when: delayed && (!wizardVisible) && (
                     PeersTimelineModel.empty || !searchBox.empty
                 ) && displayTips.showFirstTip
                 PropertyChanges {
