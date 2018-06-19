@@ -32,8 +32,6 @@ Item {
     property alias labelWidth: findLabel.implicitWidth
     height: (search.focus ? textMetric.height*3 : textMetric.height*1.5) + 6
 
-    signal contactMethodSelected(var cm)
-
     function hide() {
         search.text = ""
         search.focus = false
@@ -162,6 +160,7 @@ Item {
             cm = PhoneDirectoryModel.fromTemporary(cm)
 
             contactMethodSelected(cm)
+            searchBox.hide()
         }
         Keys.onEscapePressed: {
             searchBox.hide()

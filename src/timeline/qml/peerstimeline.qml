@@ -62,16 +62,6 @@ Rectangle {
         PeersTimelineCategories {}
     }
 
-    // To allow multiple places to set the contact method without knowing
-    // it's index, use a selectionModel
-    PeersTimelineSelectionModel {
-        id: selectionMapper
-        objectName: "selectionMapper"
-        onCurrentIndexChanged: {
-            recentView.currentIndex = current.row
-        }
-    }
-
     Component {
         id: noRegisteredAccounts
         AccountError {
@@ -172,7 +162,7 @@ Rectangle {
                     color: activePalette.highlight
                 }
             }
-            model: PeersTimelineModel.deduplicatedTimelineModel
+            rawModel: PeersTimelineModel
 
             onCountChanged: {
                 scrollBar.visible = count*50 > recentDock.height
@@ -197,7 +187,7 @@ Rectangle {
             onWidthChanged: {
                 burryOverlay.width = scrollBar.fullWidth + 15
             }
-            visible: PeersTimelineModel.deduplicatedTimelineModel.count*50 > recentDock.height
+            visible: PeersTimelineModel.count*50 > recentDock.height
 
             onPositionChanged: {
                 recentView.contentY = (recentView.contentHeight-recentView.height)*scrollBar.position

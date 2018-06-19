@@ -493,9 +493,8 @@ QQmlApplicationEngine* RingApplication::engine()
 
       QML_TYPE( QAction)
 
-      QML_CRTYPE( PeersTimelineSelectionModel )
-      QML_CRTYPE( NumberCompletionModel       )
-      QML_CRTYPE( QItemSelectionModel         )
+      QML_CRTYPE( NumberCompletionModel )
+      QML_CRTYPE( QItemSelectionModel   )
 
       QML_NS(Ring)
 

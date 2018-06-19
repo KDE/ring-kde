@@ -57,7 +57,6 @@ public:
     QSharedPointer<QAbstractItemModel> m_CallsModel;
     Individual* m_Invididual {nullptr};
     QSharedPointer<QAbstractItemModel> m_TimelineModel;
-    QSharedPointer<QAbstractItemModel> m_DeduplicatedTimelineModel;
     QQuickItem* m_pItem   {nullptr};
     QQuickItem* m_pHeader {nullptr};
 
@@ -96,9 +95,9 @@ MainPage::MainPage(QQuickItem* parent) :
         auto i = PeersTimelineModel::instance().mostRecentIndividual();
 
         // Select whatever is first (if any)
-        if ((!i) && PeersTimelineModel::instance().deduplicatedTimelineModel()->rowCount())
+        if ((!i) && PeersTimelineModel::instance().rowCount())
             if (auto rawI = qvariant_cast<Individual*>(
-                PeersTimelineModel::instance().deduplicatedTimelineModel()->index(0,0).data((int)Ring::Role::Object)
+                PeersTimelineModel::instance().index(0,0).data((int)Ring::Role::Object)
             ))
                 i = rawI;
 
@@ -130,8 +129,6 @@ MainPage::MainPage(QQuickItem* parent) :
             emit suggestSelection(i, idx);
         }
     });
-
-    d_ptr->m_DeduplicatedTimelineModel = PeersTimelineModel::instance().deduplicatedTimelineModel();
 }
 
 MainPage::~MainPage()
@@ -139,7 +136,6 @@ MainPage::~MainPage()
     d_ptr->m_TimelineModel.clear();
     d_ptr->m_Invididual = nullptr;
     d_ptr->m_CallsModel.clear();
-    d_ptr->m_DeduplicatedTimelineModel.clear();
 
     // Release the shared pointer reference from the timer.
     for (auto t : qAsConst(d_ptr->m_lTimers)) {
@@ -205,8 +201,6 @@ void MainPage::setContactMethod(ContactMethod* cm)
     d_ptr->m_Invididual = cm->individual();
     d_ptr->m_CallsModel = cm->individual()->eventAggregate()->unsortedListView();
     Q_ASSERT(d_ptr->m_CallsModel);
-
-    PeersTimelineModel::instance().whiteList(d_ptr->m_Invididual);
 
     d_ptr->m_TimelineModel = cm->individual()->timelineModel();
 

@@ -116,10 +116,6 @@ Item {
         searchView: searchView
         width: topLevel.width
         xPadding: dockBar.width
-        onContactMethodSelected: {
-            searchBox.hide()
-            seachOverlay.contactMethodSelected(cm)
-        }
 
         onEmptyChanged: {
             if ((!PeersTimelineModel.empty) && empty && _firstRunShown == 1) {
