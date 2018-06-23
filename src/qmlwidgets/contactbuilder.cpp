@@ -113,7 +113,7 @@ Person* ContactBuilder::fromScratch()
     return p;
 }
 
-ContactMethod* ContactBuilder::updatePhoneNumber(ContactMethod* cm, Person* p, const QString& number, int categoryIndex, int accountIdx)
+ContactMethod* ContactBuilder::updatePhoneNumber(ContactMethod* cm, Individual* ind, Person* p, const QString& number, int categoryIndex, int accountIdx)
 {
     auto catIndex = NumberCategoryModel::instance().index(categoryIndex, 0);
 
@@ -133,7 +133,10 @@ ContactMethod* ContactBuilder::updatePhoneNumber(ContactMethod* cm, Person* p, c
     );
 
     // Create a person and add the CM to the phone numbers
-    if (!cm) {
+    if ((!cm) && ind) {
+        ind->addPhoneNumber(number, a, catIndex.data().toString());
+    }
+    else if (!cm) {
         newCM = PhoneDirectoryModel::instance().getNumber(
             number, a, catIndex.data().toString()
         );

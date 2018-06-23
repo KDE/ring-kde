@@ -39,7 +39,7 @@ public:
 
     Q_INVOKABLE Person* fromScratch();
 
-    Q_INVOKABLE ContactMethod* updatePhoneNumber(ContactMethod* cm, Person* p, const QString& number, int categoryIndex, int accountIdx);
+    Q_INVOKABLE ContactMethod* updatePhoneNumber(ContactMethod* cm, Individual* ind, Person* p, const QString& number, int categoryIndex, int accountIdx);
 
     Q_INVOKABLE void addEmptyPhoneNumber(Person* p);
     Q_INVOKABLE void acceptEmptyPhoneNumber(Person* p);

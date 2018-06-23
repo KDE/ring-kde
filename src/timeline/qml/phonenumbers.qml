@@ -102,6 +102,7 @@ ListView {
                     var p = numbers.person ? numbers.person : numbers.model.person
 
                     var cm = contactBuilder.updatePhoneNumber(obj,
+                        contactViewPage.individual,
                         p, newPhoneNumber.text, numbertype.index, accIdx
                     )
 
@@ -196,7 +197,9 @@ ListView {
                     // Cache the person to avoid the race condition where
                     // the delegate is deleted before the end of the callback
                     var p = numbers.model.person
-                    numbers.model.removePhoneNumber(object).
+
+                    numbers.model.removePhoneNumber(object)
+
                     if (p)
                         p.save()
                 }
