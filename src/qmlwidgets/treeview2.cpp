@@ -751,11 +751,16 @@ void TreeView2Private::slotRowsInserted(const QModelIndex& parent, int first, in
         if (prev)
             bridgeGap(prev, e, true);
 
+        // This is required before ::ATTACH because otherwise ::down() wont work
+        if ((!pitem->m_pFirstChild) || e->m_Index.row() <= pitem->m_pFirstChild->m_Index.row()) {
+            e->m_pNext = pitem->m_pFirstChild;
+            pitem->m_pFirstChild = e;
+        }
+
         e->performAction(TreeTraversalItems::Action::ATTACH);
 
         if ((!pitem->m_pFirstChild) || e->m_Index.row() <= pitem->m_pFirstChild->m_Index.row()) {
             Q_ASSERT(pitem != e);
-            pitem->m_pFirstChild = e;
             if (auto pe = V_ITEM(e->m_pTreeItem->up()))
                 pe->m_pParent->performAction(TreeTraversalItems::Action::MOVE);
         }
