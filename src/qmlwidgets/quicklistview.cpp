@@ -411,9 +411,13 @@ void QuickListViewSection::setOwner(QuickListViewItem* newParent)
         return;
 
     if (m_pOwner->m_pItem) {
-        // Prevent a loop while moving
         auto otherAnchors = qvariant_cast<QObject*>(newParent->m_pItem->property("anchors"));
         auto anchors = qvariant_cast<QObject*>(m_pOwner->m_pItem->property("anchors"));
+
+        const auto newPrevious = static_cast<QuickListViewItem*>(m_pOwner->up());
+        Q_ASSERT(newPrevious != m_pOwner);
+
+        // Prevent a loop while moving
         if (otherAnchors && otherAnchors->property("top") == m_pOwner->m_pItem->property("bottom")) {
             anchors->setProperty("top", {});
             otherAnchors->setProperty("top", {});
@@ -423,6 +427,12 @@ void QuickListViewSection::setOwner(QuickListViewItem* newParent)
         anchors->setProperty("top", newParent->m_pItem ?
             newParent->m_pItem->property("bottom") : QVariant()
         );
+
+        // Set the old owner new anchors
+        if (newPrevious && newPrevious->m_pItem)
+            anchors->setProperty("top", newPrevious->m_pItem->property("bottom"));
+
+        otherAnchors->setProperty("top", m_pItem->property("bottom"));
     }
     else
         newParent->m_pItem->setY(0);
@@ -499,23 +509,6 @@ bool QuickListViewItem::move()
                 if (sec->m_pItem)
                     prevItem = sec->m_pItem;
 
-                // Change the owner
-                /*if (!(m_pSection == sec && m_pSection->m_RefCount == 1)) {
-                    if (prev && prev->m_pSection == sec)
-                        prev->m_pSection->m_pOwner = prev;
-                    else if (auto d = static_cast<QuickListViewItem*>(prev ? prev->down() : down())) {
-                        Q_ASSERT(static_cast<QuickListViewItem*>(d->up())->m_pSection == prev->m_pSection);
-                        if (d->m_pSection == sec) {
-                            //d->m_pSection->m_pOwner = d;
-                            d->m_pSection->setOwner(d);
-                        }
-                        else
-                            Q_ASSERT(false);
-                    }
-                    else {
-                        Q_ASSERT(false);
-                    }
-                }*/
             }
             else if (sec->m_pOwner->row() > row()) { //TODO remove once correctly implemented
                 //HACK to force reparenting when the elements move up
@@ -524,6 +517,9 @@ bool QuickListViewItem::move()
                 prevItem = sec->m_pItem;
             }
         }
+
+    // Reset the "real" previous element
+    prev = static_cast<QuickListViewItem*>(up());
 
     const qreal y = d()->m_DepthChart.first()*row();
 
