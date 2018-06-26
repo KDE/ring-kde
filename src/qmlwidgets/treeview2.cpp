@@ -1542,9 +1542,13 @@ bool TreeTraversalItems::refresh()
     //
 //     qDebug() << "REFRESH";
 
-    for (auto i = m_hLookup.constBegin(); i != m_hLookup.constEnd(); i++) {
-        Q_ASSERT(i.value() != this);
-        i.value()->performAction(TreeTraversalItems::Action::UPDATE);
+    for (auto i = m_pFirstChild; i; i = i->m_pNext) {
+        Q_ASSERT(i);
+        Q_ASSERT(i != this);
+        i->performAction(TreeTraversalItems::Action::UPDATE);
+
+        if (i == m_pLastChild)
+            break;
     }
 
     return true;
@@ -1555,9 +1559,13 @@ bool TreeTraversalItems::index()
     //TODO remove this implementation and use the one below
 
     // Propagate
-    for (auto i = m_hLookup.constBegin(); i != m_hLookup.constEnd(); i++) {
-        Q_ASSERT(i.value() != this);
-        i.value()->performAction(TreeTraversalItems::Action::MOVE);
+    for (auto i = m_pFirstChild; i; i = i->m_pNext) {
+        Q_ASSERT(i);
+        Q_ASSERT(i != this);
+        i->performAction(TreeTraversalItems::Action::MOVE);
+
+        if (i == m_pLastChild)
+            break;
     }
 
     if (m_pTreeItem)
