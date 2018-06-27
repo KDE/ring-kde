@@ -254,10 +254,7 @@ Item {
             id: dockHolder
             width: Math.min(335, root.width-48)
             Layout.fillHeight: true
-            visible: (
-                timelineViewComponent.active || dialViewComponent.active ||
-                contactViewComponent.active || bookmarkViewComponent.active || historyViewComponent.active
-            )
+            visible: true
 
             // This is a placeholder for the searchbox
             Item {

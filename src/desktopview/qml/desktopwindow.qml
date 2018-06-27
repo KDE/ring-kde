@@ -342,8 +342,8 @@ Kirigami.ApplicationWindow {
                 Layout.minimumHeight: height
 
                 onCachedPhotoChanged: {
-                    if (contactInfo != undefined)
-                        contactInfo.cachedPhoto = contactHeader.cachedPhoto
+//                     if (contactInfo != undefined)
+//                         contactInfo.cachedPhoto = contactHeader.cachedPhoto
                 }
 
                 onSelectChat: {
