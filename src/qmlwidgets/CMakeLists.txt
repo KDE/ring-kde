@@ -69,6 +69,7 @@ SET( libqmlwidgets_LIB_SRCS
     qmlaction.cpp
     qactionbinder.cpp
     symboliccolorizer.cpp
+    flickablescrollbar.cpp
 )
 
 QT5_ADD_RESOURCES(libqmlwidgets_LIB_SRCS

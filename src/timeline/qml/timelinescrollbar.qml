@@ -22,18 +22,18 @@ import Ring 1.0
 import RingQmlWidgets 1.0
 import org.kde.kirigami 2.2 as Kirigami
 
-Item {
+FlickableScrollBar {
     id: scrollbar
     property var    tmlList: null
     property alias  fullWidth: timelineOverlay.width
-    property alias  handleHeight: timelineOverlay.height
-    property double position: 0
     property alias  model: timelineOverlay.tlModel
     property bool   bottomUp: false
     property bool   display: true
     property alias  hideTimeout: hideTimer.interval
 
     property bool overlayVisible: false
+
+    visible: handleVisible
 
     // This isn't correct at all, but close enough for now
     function getSectionHeight(height, total, section, index, activeCategoryCount) {
@@ -49,14 +49,9 @@ Item {
     }
 
     onPositionChanged: {
-        var curPos = handle.y/(scrollbar.height - handle.height)
-        var newY   = (scrollbar.height - handle.height)*position
-
-        // Prevent infinite loops
-        if (Math.abs(curPos - position) < 0.01)
-            return
-
-        handle.y = newY
+        if (!mouseArea.drag.active) {
+            handle.y = position
+        }
     }
 
     SystemPalette {
@@ -79,9 +74,6 @@ Item {
     onDisplayChanged: {
         if (!display)
             hideTimer.running = true
-
-//         else
-//             handle.visible = true
     }
 
     Rectangle {
@@ -89,19 +81,19 @@ Item {
         radius: 99
         color: inactivePalette.text
         width: parent.width
-        height: 65
+        height: scrollbar.handleHeight
         visible: scrollbar.display || hideTimer.running || stateGroup.state == "overlay"
 
         onYChanged: {
             if (!tmlList)
                 return
 
+            if (mouseArea.drag.active)
+                scrollbar.position = y
+
             // Keep a reference as this function is racy
             var oldItem = tmlList.currentItem
             var relH    = scrollbar.height - height
-
-            // Move the list
-            scrollbar.position = y/relH
 
             // Highlight the current index
             var point = bottomUp ? y + height : y
@@ -223,6 +215,7 @@ Item {
     }
 
     MouseArea {
+        id: mouseArea
         anchors.fill: parent
         hoverEnabled: true
         onEntered: overlayVisible = true
@@ -231,7 +224,7 @@ Item {
         drag.target: handle
         drag.axis: Drag.YAxis
         drag.minimumY: 0
-        drag.maximumY: scrollbar.height - handle.height
+        drag.maximumY: scrollbar.height - handleHeight
 
         drag.onActiveChanged: {
             overlayVisible = drag.active

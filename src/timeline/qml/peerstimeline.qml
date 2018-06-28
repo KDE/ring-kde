@@ -146,6 +146,7 @@ Rectangle {
             section.delegate: sectionDelegate
             section.property: "formattedLastUsed" // indexedLastUsed
             section.model: PeersTimelineModel.timelineSummaryModel
+
             highlight: Item {
 
                 anchors.topMargin: 5
@@ -162,16 +163,8 @@ Rectangle {
                     color: activePalette.highlight
                 }
             }
+
             rawModel: PeersTimelineModel
-
-            onCountChanged: {
-                scrollBar.visible = count*50 > recentDock.height
-                scrollBar.handleHeight = recentDock.height * (recentDock.height/(count*50))
-            }
-
-            onHeightChanged: {
-                scrollBar.handleHeight = recentDock.height * (recentDock.height/(count*50))
-            }
         }
 
         TimelineScrollbar {
@@ -183,14 +176,10 @@ Rectangle {
             model: PeersTimelineModel.timelineSummaryModel
             z: 100
             display: recentView.moving || recentDock.state == ""
+            view: recentView
 
             onWidthChanged: {
                 burryOverlay.width = scrollBar.fullWidth + 15
-            }
-            visible: PeersTimelineModel.count*50 > recentDock.height
-
-            onPositionChanged: {
-                recentView.contentY = (recentView.contentHeight-recentView.height)*scrollBar.position
             }
         }
 
@@ -240,37 +229,6 @@ Rectangle {
                 opacity: 0.75
             }
         }
-    }
-
-    /*Rectangle {
-        color: "red"
-        anchors.bottom: parent.bottom
-        anchors.left: parent.left
-        anchors.right: parent.right
-        height: 200
-
-        Component {
-            id: contactRequestDelegate
-            Text {
-                height: 40
-                text: display
-            }
-        }
-
-        ListView {
-            anchors.fill: parent
-            model: AccountModel.incomingContactRequestModel
-            delegate: contactRequestDelegate
-            Component.onCompleted: {
-                console.log("\n\n\nCOMPLETED!!!!", AccountModel.incomingContactRequestModel
-                    , AccountModel.incomingContactRequestModel.rowCount()
-                )
-            }
-        }
-    }*/
-
-    onHeightChanged: {
-        scrollBar.handleHeight = recentDock.height * (recentDock.height/(recentView.count*50))
     }
 
     // Timeline scrollbar

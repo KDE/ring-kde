@@ -152,6 +152,8 @@ QQuickItem* SimpleFlickable::contentItem()
         d_ptr->m_pContainer->setWidth(width ());
         engine->setObjectOwnership(d_ptr->m_pContainer, QQmlEngine::CppOwnership);
         d_ptr->m_pContainer->setParentItem(this);
+
+        emit contentHeightChanged(height());
     }
 
     return d_ptr->m_pContainer;
@@ -173,6 +175,9 @@ void SimpleFlickable::setCurrentY(qreal y)
     // Do not allow out of bound scroll
     y = std::fmax(y, 0);
     y = std::fmin(y, d_ptr->m_pContainer->height() - height());
+
+    if (d_ptr->m_pContainer->y() == -y)
+        return;
 
     d_ptr->m_pContainer->setY(-y);
 
@@ -287,6 +292,8 @@ void SimpleFlickable::geometryChanged(const QRectF& newGeometry, const QRectF& o
     if (d_ptr->m_pContainer) {
         d_ptr->m_pContainer->setWidth(std::max(newGeometry.width(), d_ptr->m_pContainer->width()));
         d_ptr->m_pContainer->setHeight(std::max(newGeometry.height(), d_ptr->m_pContainer->height()));
+
+        emit contentHeightChanged(d_ptr->m_pContainer->height());
     }
 
     //TODO prevent out of scope

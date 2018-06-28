@@ -117,12 +117,6 @@ Rectangle {
                             chatView.model = timelinePage.timelineModel
                         }
                     }
-
-                    onPercentageChanged: {
-                        chatScrollView.lock = true
-                        scrollbar.position = percent
-                        chatScrollView.lock = false
-                    }
                 }
 
                 // It needs to be here due to z-index conflicts between
@@ -169,16 +163,10 @@ Rectangle {
                 Layout.preferredWidth: 10
                 display: chatView.moving || timelinePage.showScrollbar
                 model: timelinePage.timelineModel
+                view: chatView
 
                 onWidthChanged: {
                     burryOverlay.width = scrollbar.fullWidth + 15
-                }
-
-                onPositionChanged: {
-                    if (chatScrollView.lock)
-                        return;
-
-                    chatView.contentY = (chatView.contentHeight-chatView.height)*scrollbar.position
                 }
 
                 onOverlayVisibleChanged: {

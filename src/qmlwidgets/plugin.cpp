@@ -34,6 +34,7 @@
 #include "timelinedots.h"
 #include "qmlaction.h"
 #include "qactionbinder.h"
+#include "flickablescrollbar.h"
 
 #include "qrc_qmlwidgets.cpp"
 
@@ -56,6 +57,7 @@ void RingQmlWidgets::registerTypes(const char *uri)
     qmlRegisterType<TimelineDots>(uri, 1, 0, "TimelineDots");
     qmlRegisterType<QmlAction>(uri, 1, 0, "QmlAction");
     qmlRegisterType<QActionBinder>(uri, 1, 0, "QActionBinder");
+    qmlRegisterType<FlickableScrollBar>(uri, 1, 0, "FlickableScrollBar");
     qmlRegisterType(QStringLiteral("qrc:/OutlineButton.qml"), uri, 1, 0, "OutlineButton");
 
     qmlRegisterUncreatableType<QuickListViewSections>("Ring", 1,0,
