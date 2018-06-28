@@ -284,6 +284,7 @@ Item {
         anchors.fill: parent
         onContactMethodSelected: {
             mainPage.setContactMethod(cm)
+            setCurrentIndex(PeersTimelineModel.individualIndex(cm.individual))
         }
     }
 }

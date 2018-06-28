@@ -986,7 +986,6 @@ void TreeView2Private::setTemporaryIndices(const QModelIndex &parent, int start,
             auto elem = pitem->m_hLookup.value(idx);
             Q_ASSERT(elem);
 
-            qDebug() << "\nSETTING" << start << end << row << (row + (i - start)) << elem->m_pTreeItem->index().row();
             elem->m_pTreeItem->m_MoveToRow = row + (i - start);
         }
 
@@ -996,7 +995,6 @@ void TreeView2Private::setTemporaryIndices(const QModelIndex &parent, int start,
             auto elem = pitem->m_hLookup.value(idx);
             Q_ASSERT(elem);
 
-            qDebug() << "\nSETTIN2" << start << end << row << (row + (end - start) + 1) << elem->m_pTreeItem->index().row();
             elem->m_pTreeItem->m_MoveToRow = row + (end - start) + 1;
         }
     }

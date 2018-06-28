@@ -324,7 +324,7 @@ QPair<QQuickItem*, QQmlContext*> FlickableView::loadDelegate(QQuickItem* parentI
 
 void FlickableViewPrivate::slotCurrentIndexChanged(const QModelIndex& idx)
 {
-    if ((!idx.isValid()) && !m_pSelectedItem)
+    if ((!idx.isValid()))
         return;
 
     Q_EMIT q_ptr->currentIndexChanged(idx);
