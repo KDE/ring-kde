@@ -17,6 +17,9 @@
  **************************************************************************/
 #include "account.h"
 
+//Qt
+#include <QtCore/QTimer>
+
 //KDE
 #include <KLocalizedString>
 
@@ -43,6 +46,10 @@ Pages::Account::Account(QWidget *parent) : PageBase(parent)
    //Remove Wizard
    m_pPages->removeTab(m_pPages->count()-1);
 
+   // Don't ask
+   QTimer::singleShot(0, [this]() {
+      m_pPages->setCurrentIndex(0);
+   });
 }
 
 void Pages::Account::setEngine(QQmlEngine* e)
