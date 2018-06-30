@@ -31,6 +31,8 @@ GridLayout {
     property real preferredHeight: implicitHeight
     property var individual: null
 
+    property bool hasTarget: individual || currentContactMethod || currentPerson
+
     property alias name: formattedName.text
 
     signal changed()
@@ -105,7 +107,7 @@ GridLayout {
     }
     TextField {
         id: formattedName
-        readOnly: !mainInfo.editing
+        readOnly: hasTarget && !mainInfo.editing
         onTextChanged: {
             mainInfo.changed()
         }
@@ -117,7 +119,7 @@ GridLayout {
     }
     TextField {
         id: firstName
-        readOnly: !mainInfo.editing
+        readOnly: hasTarget && !mainInfo.editing
         onTextChanged: {
             mainInfo.changed()
         }
@@ -129,7 +131,7 @@ GridLayout {
     }
     TextField {
         id: lastName
-        readOnly: !mainInfo.editing
+        readOnly: hasTarget && !mainInfo.editing
         onTextChanged: {
             mainInfo.changed()
         }
@@ -141,7 +143,7 @@ GridLayout {
     }
     TextField {
         id: email
-        readOnly: !mainInfo.editing
+        readOnly: hasTarget && !mainInfo.editing
         onTextChanged: {
             mainInfo.changed()
         }

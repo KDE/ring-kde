@@ -227,10 +227,40 @@ Kirigami.ApplicationWindow {
 
         Component {
             id: accountsOnly
-            AccountList {
-                height: contentHeight
-                width: globalDrawer.width
-                enableAdd: true
+            ColumnLayout {
+                anchors.fill: drawerContainer
+
+                Item {
+                    width: globalDrawer.width
+
+                    // Layouts in Layouts **** up QML, so make sure the result
+                    // is what's expected by removing all ambiguities. Otherwise
+                    // it's randomly corrupted
+                    Layout.preferredHeight: drawerContainer.height
+                        - accounts.contentHeight
+                    Layout.maximumHeight: drawerContainer.height
+                        - accounts.contentHeight
+                    Layout.minimumHeight: drawerContainer.height
+                        - accounts.contentHeight
+                    height: drawerContainer.height
+                        - accounts.contentHeight
+                    implicitHeight: drawerContainer.height
+                        - accounts.contentHeight
+
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+                }
+
+                AccountList {
+                    id: accounts
+                    height: contentHeight
+                    Layout.minimumHeight: contentHeight
+                    Layout.preferredHeight: contentHeight
+                    Layout.maximumHeight: contentHeight
+                    Layout.fillWidth: true
+                    Layout.fillHeight: false
+                    enableAdd: true
+                }
             }
         }
 
@@ -238,6 +268,7 @@ Kirigami.ApplicationWindow {
             id: timelineAndAccounts
             ColumnLayout {
                 width: globalDrawer.width
+                anchors.fill: drawerContainer
 
                 PeersTimeline {
                     Layout.fillHeight: true
@@ -259,12 +290,25 @@ Kirigami.ApplicationWindow {
 
         // Yes, this is a Kirigami bug, the Item should *not* be needed, but
         // `content` cannot be resized after being created
-        content: Loader {
-            id: accountsLoader
+        content: Item {
+            id: drawerContainer
+
+            // The drawer is a QtQuick.Layout, it uses implicitHeight even if
+            // Layout.fillHeight is set to device the "winner" that will take
+            // the space. Make sure this is the loader.
+            implicitHeight: 99999
+            Layout.fillHeight: true
+            Layout.fillWidth: true
             width: globalDrawer.width
-            Layout.preferredWidth: globalDrawer.width
-            active: globalDrawer.drawerOpen || globalDrawer.peeking
-            sourceComponent: accountsOnly
+
+            Loader {
+                id: accountsLoader
+                anchors.fill: parent
+                width: globalDrawer.width
+                Layout.preferredWidth: globalDrawer.width
+                active: globalDrawer.drawerOpen || globalDrawer.peeking
+                sourceComponent: accountsOnly
+            }
         }
         handleVisible: true
         drawerOpen: false
@@ -398,8 +442,6 @@ Kirigami.ApplicationWindow {
                 PropertyChanges {
                     target: accountsLoader
                     sourceComponent: accountsOnly
-                    Layout.preferredHeight: implicitHeight
-                    Layout.fillHeight: false
                 }
                 PropertyChanges {
                     target: globalDrawer
@@ -428,14 +470,13 @@ Kirigami.ApplicationWindow {
                 PropertyChanges {
                     target: accountsLoader
                     sourceComponent: timelineAndAccounts
-                    Layout.preferredHeight: 999
-                    Layout.fillHeight: true
                 }
                 PropertyChanges {
                     target: globalDrawer
-                    title: ""
-                    titleIcon: ""
-                    bannerImageSource: ""
+//FIXME buggy
+//                     title: ""
+//                     titleIcon: ""
+//                     bannerImageSource: ""
                     actions: mobileActions()
                 }
                 PropertyChanges {

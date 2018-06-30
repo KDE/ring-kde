@@ -26,9 +26,14 @@ import org.kde.kirigami 2.2 as Kirigami
 ListView {
     id: accountList
     interactive: false
-    height: contentHeight
-    implicitHeight: contentHeight
+    height: totalHeight
+    implicitHeight: totalHeight
     model: AccountModel
+
+    property real totalHeight: footerItem + contentHeight + headerItem + 10
+
+    property real footerItem: 0
+    property real headerItem: 0
 
     property bool enableAdd: true
 
@@ -252,6 +257,14 @@ ListView {
     header: Kirigami.Heading {
         level: 2
         text: i18n("Accounts")
+
+        Component.onCompleted: {
+            headerItem = Math.max(height, implicitHeight)
+        }
+
+        onHeightChanged: {
+            headerItem = Math.max(height, implicitHeight)
+        }
     }
 
     footer: OutlineButton {
@@ -266,6 +279,14 @@ ListView {
         onClicked: {
             applicationWindow().globalDrawer.drawerOpen = false
             ActionCollection.showWizard.trigger()
+        }
+
+        Component.onCompleted: {
+            footerItem = Math.max(height, implicitHeight)
+        }
+
+        onHeightChanged: {
+            footerItem = Math.max(height, implicitHeight)
         }
     }
 }

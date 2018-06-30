@@ -216,7 +216,9 @@ Rectangle {
         anchors.left: separator.right
         anchors.leftMargin: 5
         anchors.rightMargin: 5
-        width: parent.width > (x+preferredWidth) ? preferredWidth : (minimumWidth)
+        width: parent.width > (x+preferredWidth) ? preferredWidth : (
+            parent.width >= (x+minimumWidth -10) ? minimumWidth : iconifiedWidth
+        )
     }
 
     Item {

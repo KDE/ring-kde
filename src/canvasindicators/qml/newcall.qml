@@ -34,6 +34,7 @@ ColumnLayout {
             border.color: "#333333"
             border.width: 1
             radius: 5
+            visible: currentIndividual
             Text {
                 text: label
                 anchors.centerIn: parent
@@ -43,7 +44,6 @@ ColumnLayout {
                 anchors.fill: parent
                 hoverEnabled: true
                 onContainsMouseChanged: {
-                    console.log("mouse event", containsMouse)
                     bg.color = containsMouse ? "#444444" : "#222222"
                 }
                 onClicked: {
@@ -61,18 +61,21 @@ ColumnLayout {
         width: 300
         Layout.fillWidth: true
         property string label: "Start a video call"
+        visible: availabilityTracker.canVideoCall
         sourceComponent: button
     }
     Loader {
         width: 300
         Layout.fillWidth: true
         property string label: "Start an audio call"
+        visible: availabilityTracker.canCall
         sourceComponent: button
     }
     Loader {
         width: 300
         Layout.fillWidth: true
         property string label: "Start screen sharing"
+        visible: availabilityTracker.canVideoCall
         sourceComponent: button
     }
 }

@@ -21,6 +21,7 @@ import QtQuick.Controls 2.0
 import QtQml.Models 2.2
 import RingQmlWidgets 1.0
 import Ring 1.0
+import QtGraphicalEffects 1.0
 import org.kde.kirigami 2.2 as Kirigami
 
 Kirigami.Page {
@@ -198,6 +199,83 @@ Kirigami.Page {
 
                     sourceComponent: selectDelegate()
                 }
+            }
+        }
+
+
+
+        // It needs to be here due to z-index conflicts between
+        // chatScrollView and timelinePage
+        Item {
+            id: burryOverlay
+            z: 2
+            visible: false
+            opacity: 0
+            anchors.right: parent.right
+            anchors.top: parent.top
+            anchors.rightMargin: - 15
+            width: scrollbar.fullWidth + 15
+            height: chatView.height
+            clip: true
+
+            Behavior on opacity {
+                NumberAnimation {duration: 300; easing.type: Easing.InQuad}
+            }
+
+            Repeater {
+                anchors.fill: parent
+                model: 5
+                FastBlur {
+                    anchors.fill: parent
+                    source: effectSource
+                    radius: 30
+                }
+            }
+
+            Rectangle {
+                anchors.fill: parent
+                color: activePalette.base
+                opacity: 0.75
+            }
+        }
+
+        // Add a blurry background
+        ShaderEffectSource {
+            id: effectSource
+            visible: false
+
+            sourceItem: chatView
+            anchors.right: timelinePage.right
+            anchors.top: timelinePage.top
+            width: scrollbar.fullWidth + 15
+            height: chatView.height
+
+            sourceRect: Qt.rect(
+                burryOverlay.x,
+                burryOverlay.y,
+                burryOverlay.width,
+                burryOverlay.height
+            )
+        }
+
+        TimelineScrollbar {
+            id: scrollbar
+            z: 1000
+            width: 10
+            height: parent.height
+            anchors.right: parent.right
+            display: treeView.moving
+            model: CategorizedBookmarkModel
+            view: treeView
+
+            onWidthChanged: {
+                burryOverlay.width = scrollbar.fullWidth + 15
+            }
+
+            onOverlayVisibleChanged: {
+                burryOverlay.visible = overlayVisible
+                burryOverlay.opacity = overlayVisible ? 1 : 0
+                effectSource.visible = overlayVisible
             }
         }
     }

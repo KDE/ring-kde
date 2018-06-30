@@ -97,6 +97,11 @@ Item {
         currentPage = ""
     }
 
+    AvailabilityTracker {
+        id: availabilityTracker
+        individual: currentIndividual
+    }
+
     Connections {
         target: currentContactMethod
         onContactChanged: {

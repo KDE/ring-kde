@@ -25,28 +25,41 @@ import RingQmlWidgets 1.0
 import PhotoSelectorPlugin 1.0
 
 Grid {
+    id: container
     //TODO Qt5.10 deps: use native icons
 
     spacing: 5
     leftPadding: 5
     rows: 1
 
+    property real button1IW: button.visible  ? button.implicitWidth  + 5 : 0
+    property real button2IW: button2.visible ? button2.implicitWidth + 5 : 0
+    property real button3IW: button3.visible ? button3.implicitWidth + 5 : 0
+    property real button4IW: button4.visible ? button4.implicitWidth + 5 : 0
+
     // Favor being on one row, but allow 2 rows too
-    property real preferredWidth: (button.visible ? button.implicitWidth : 0)
-        + (button2.visible ? button2.implicitWidth : 0)
-        + (button3.visible ? button3.implicitWidth : 0)
-        + (button4.visible ? button4.implicitWidth : 0)
+    property real preferredWidth: Math.max(preferredWidth,
+        button1IW + button2IW + button3IW + button4IW
+    )
 
-    property real minimumWidth: (button3.visible ? button3.implicitWidth : 0)
-        + (button4.visible ? button4.implicitWidth : 0)
 
-    property real maximumButtonWidth: button3.implicitWidth
+    property real minimumWidth: (button3.visible ? maximumButtonWidth * 2 : 0) + 15
+
+    property real iconifiedWidth: 4*button.implicitHeight + 20
+
+    property real maximumButtonWidth: Math.max(maximumButtonWidth, button3.implicitWidth)
 
 
     states: [
         State {
+            extend: ""
             name: "2rows"
-            when: rows == 2
+            when: width > iconifiedWidth && width <= minimumWidth
+
+            PropertyChanges {
+                target: container
+                rows: 2
+            }
 
             PropertyChanges {
                 target: button
@@ -70,7 +83,32 @@ Grid {
         },
         State {
             name: ""
-            when: rows == 1
+            when: width > minimumWidth
+
+            PropertyChanges {
+                target: container
+                rows: 1
+            }
+
+            PropertyChanges {
+                target: textLabel1
+                visible: true
+            }
+
+            PropertyChanges {
+                target: textLabel2
+                visible: true
+            }
+
+            PropertyChanges {
+                target: textLabel3
+                visible: true
+            }
+
+            PropertyChanges {
+                target: textLabel4
+                visible: true
+            }
 
             PropertyChanges {
                 target: button
@@ -91,15 +129,38 @@ Grid {
                 target: button4
                 width: undefined
             }
+        },
+        State {
+            name: "iconified"
+            extend: ""
+            when: width <= iconifiedWidth
+
+            PropertyChanges {
+                target: container
+                rows: 1
+            }
+
+            PropertyChanges {
+                target: textLabel1
+                visible: false
+            }
+
+            PropertyChanges {
+                target: textLabel2
+                visible: false
+            }
+
+            PropertyChanges {
+                target: textLabel3
+                visible: false
+            }
+
+            PropertyChanges {
+                target: textLabel4
+                visible: false
+            }
         }
     ]
-
-    onWidthChanged: {
-        if (rows == 1 && width < preferredWidth)
-            rows = 2
-        else if (rows == 2 && width >= preferredWidth)
-            rows = 1
-    }
 
     function getContactMethod(callback) {
 
@@ -188,6 +249,7 @@ Grid {
             }
 
             Text {
+                id: textLabel1
                 anchors.margins: 5
                 height: parent.height
                 verticalAlignment: Text.AlignVCenter
@@ -248,6 +310,7 @@ Grid {
             }
 
             Text {
+                id: textLabel2
                 anchors.margins: 5
                 height: parent.height
                 verticalAlignment: Text.AlignVCenter
@@ -306,6 +369,7 @@ Grid {
             }
 
             Text {
+                id: textLabel3
                 anchors.margins: 5
                 color: activePalette.text
                 height: parent.height
@@ -341,6 +405,7 @@ Grid {
             }
 
             Text {
+                id: textLabel4
                 anchors.margins: 5
                 height: parent.height
                 verticalAlignment: Text.AlignVCenter

@@ -20,6 +20,7 @@ import QtQuick.Layouts 1.0
 import QtQuick.Controls 2.0
 import QtQml.Models 2.2
 import RingQmlWidgets 1.0
+import QtGraphicalEffects 1.0
 import Ring 1.0
 import org.kde.kirigami 2.2 as Kirigami
 
@@ -50,66 +51,9 @@ Kirigami.Page {
         color: activePalette.base
         anchors.fill: parent
 
-        ListModel {
-            id: sortingModel
-            ListElement {
-                name: "By name"
-            }
-            ListElement {
-                name: "By date"
-            }
-        }
-
-
-        Row {
-            id: sorting
-            anchors.top: search.bottom
-            anchors.horizontalCenter: parent.horizontalCenter
-            height: 32
-
-            Repeater {
-                model: sortingModel
-
-                delegate: MouseArea {
-                    height: 32
-                    width: content.implicitWidth + 10
-                    Text {
-                        id: content
-                        text: name
-                        color:activePalette.text
-                        font.bold: true
-                        anchors.centerIn: parent
-                    }
-                    onClicked: {
-                    }
-                }
-
-//                 highlightFollowsCurrentItem: true
-
-    //             highlight: Item {
-    //                 height: 32
-    //                 width: 15
-    //                 Rectangle {
-    //                     height: 4
-    //                     color:activePalette.highlight
-    //                     width:15
-    //                     y: parent.height/2 + fontMetrics.height/2 + 3
-    //                     anchors.horizontalCenter: parent.horizontalCenter
-    //                 }
-    //             }
-
-//                 onCurrentIndexChanged: {
-//                     helper.selectIndex(currentIndex)
-//                 }
-            }
-        }
-
-
         QuickTreeView {
             id: treeView
-            anchors.top: sorting.bottom
-            anchors.bottom: parent.bottom
-            width: parent.width
+            anchors.fill: parent
 
             function selectItem(index) {
                 treeView.currentIndex = index
@@ -163,6 +107,81 @@ Kirigami.Page {
 
                     sourceComponent: objectType ? contactComponent : categoryComponent
                 }
+            }
+        }
+
+        // It needs to be here due to z-index conflicts between
+        // chatScrollView and timelinePage
+        Item {
+            id: burryOverlay
+            z: 2
+            visible: false
+            opacity: 0
+            anchors.right: parent.right
+            anchors.top: parent.top
+            anchors.rightMargin: - 15
+            width: scrollbar.fullWidth + 15
+            height: chatView.height
+            clip: true
+
+            Behavior on opacity {
+                NumberAnimation {duration: 300; easing.type: Easing.InQuad}
+            }
+
+            Repeater {
+                anchors.fill: parent
+                model: 5
+                FastBlur {
+                    anchors.fill: parent
+                    source: effectSource
+                    radius: 30
+                }
+            }
+
+            Rectangle {
+                anchors.fill: parent
+                color: activePalette.base
+                opacity: 0.75
+            }
+        }
+
+        // Add a blurry background
+        ShaderEffectSource {
+            id: effectSource
+            visible: false
+
+            sourceItem: chatView
+            anchors.right: timelinePage.right
+            anchors.top: timelinePage.top
+            width: scrollbar.fullWidth + 15
+            height: chatView.height
+
+            sourceRect: Qt.rect(
+                burryOverlay.x,
+                burryOverlay.y,
+                burryOverlay.width,
+                burryOverlay.height
+            )
+        }
+
+        TimelineScrollbar {
+            id: scrollbar
+            z: 1000
+            width: 10
+            height: parent.height
+            anchors.right: parent.right
+            display: treeView.moving
+            model: CategorizedBookmarkModel
+            view: treeView
+
+            onWidthChanged: {
+                burryOverlay.width = scrollbar.fullWidth + 15
+            }
+
+            onOverlayVisibleChanged: {
+                burryOverlay.visible = overlayVisible
+                burryOverlay.opacity = overlayVisible ? 1 : 0
+                effectSource.visible = overlayVisible
             }
         }
     }
