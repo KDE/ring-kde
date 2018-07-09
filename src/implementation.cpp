@@ -285,6 +285,7 @@ bool KDEActionExtender::warnDeleteCall(Call* c)
 Person* KDEActionExtender::selectPerson(FlagPack<SelectPersonHint> hints, const QVariant& hintVar) const
 {
    Q_UNUSED(hints)
+   Q_UNUSED(hintVar)
 
 //    ContactMethod* cm = nullptr;
 

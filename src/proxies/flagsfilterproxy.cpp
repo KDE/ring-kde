@@ -21,7 +21,7 @@ class FlagsFilterProxyPrivate final
 {
 public:
    bool m_IsRecursive   { false                                    };
-   int  m_RetainedFlags { Qt::ItemIsEnabled | Qt::ItemIsSelectable };
+   uint m_RetainedFlags { Qt::ItemIsEnabled | Qt::ItemIsSelectable };
 };
 
 FlagsFilterProxy::FlagsFilterProxy(QObject* parent) : QSortFilterProxyModel(parent),

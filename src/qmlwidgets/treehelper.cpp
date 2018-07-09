@@ -127,6 +127,8 @@ QVariant TreeHelper::mimeData(const QModelIndex& parent, int row) const
 
 bool TreeHelper::dropMimeData(const QVariant& dragEvent, const QModelIndex& parent, int row)
 {
+    Q_UNUSED(row)
+    Q_UNUSED(parent)
     auto obj = qvariant_cast<QObject*>(dragEvent);
 
     if (!obj)
@@ -137,11 +139,11 @@ bool TreeHelper::dropMimeData(const QVariant& dragEvent, const QModelIndex& pare
 
     const QStringList formats = obj->property("formats").toStringList();
 
-    QMimeData* md = new QMimeData();
+    //QMimeData* md = new QMimeData();
 
-    for (const auto& mime : qAsConst(formats)) {
+    //for (const auto& mime : qAsConst(formats)) {
         //stupid unexported qmimedata
-    }
+    //}
 
     return false;
 }

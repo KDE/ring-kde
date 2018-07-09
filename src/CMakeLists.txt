@@ -61,6 +61,7 @@ ADD_DEFINITIONS(
    -Wsizeof-pointer-memaccess
    #-Wuseless-cast
    -Wvarargs
+   -Werror
 )
 
 #Add more warnings for compilers that support it. I used this command:

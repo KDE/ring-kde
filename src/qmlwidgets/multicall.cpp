@@ -141,6 +141,7 @@ int MultiCall::count() const
 
 void MultiCall::setCount(int c)
 {
+    Q_UNUSED(c)
     setHeight(d_ptr->getHeight());
     setImplicitHeight(height());
     update();

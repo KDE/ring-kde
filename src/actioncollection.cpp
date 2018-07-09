@@ -368,6 +368,7 @@ Q_ASSERT(action_configureRing );
 
 void ActionCollection::setupPhoneAction(PhoneWindow* mw)
 {
+   Q_UNUSED(mw)
    //FIXME DROP QTWIDGET
 //    connect(action_displayAccountCbb      , &QAction::toggled   , mw         , &PhoneWindow::displayAccountCbb            );
 //    connect(action_displayVolumeControls  , &QAction::toggled   , mw->view() , &View::displayVolumeControls              );
@@ -499,6 +500,7 @@ void ActionCollection::slotClose()
 
 void ActionCollection::slotShowMenubar(bool s)
 {
+   Q_UNUSED(s)
 //    RingApplication::instance()->timelineWindow()->showMenu(s);
 }
 

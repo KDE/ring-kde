@@ -169,14 +169,8 @@ ContactMethod* ContactBuilder::updatePhoneNumber(ContactMethod* cm, Individual* 
         );
         p->individual()->addPhoneNumber(newCM);
     }
-    else if (wasTemporary) {
+    else if (wasTemporary)
         p->individual()->addPhoneNumber(newCM);
-
-        const auto lastRow = p->individual()->index(
-            p->individual()->rowCount()-1, 0
-        );
-
-    }
     else {
         auto newCM2 = PhoneDirectoryModel::instance().getNumber(
             number, p, newCM->account(), catIndex.data().toString()
@@ -200,7 +194,7 @@ void ContactBuilder::addEmptyPhoneNumber(Person* p)
         return;
 
     const auto idx = p->individual()->index(p->individual()->rowCount(), 0);
-    const bool ret = p->individual()->setData(idx, QString(), Qt::DisplayRole);
+    p->individual()->setData(idx, QString(), Qt::DisplayRole);
 }
 
 void ContactBuilder::acceptEmptyPhoneNumber(Person* p)

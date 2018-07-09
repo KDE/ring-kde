@@ -121,14 +121,14 @@ struct TreeTraversalItems
     bool performAction(Action);
 
     bool nothing();
-    bool error  () __attribute__ ((noreturn));
+    bool error  ();
     bool show   ();
     bool hide   ();
     bool attach ();
     bool detach ();
     bool refresh();
     bool index  ();
-    bool destroy() __attribute__ ((noreturn));
+    bool destroy();
 
     //TODO use a btree, not an hash
     QHash<QPersistentModelIndex, TreeTraversalItems*> m_hLookup;
@@ -523,6 +523,7 @@ TreeTraversalItems* TreeView2Private::addChildren(TreeTraversalItems* parent, co
 /// Make sure all elements exists all the way to the root
 void TreeView2Private::initTree(const QModelIndex& parent)
 {
+    Q_UNUSED(parent);
     //
 }
 
@@ -814,13 +815,14 @@ void TreeView2Private::slotRowsRemoved(const QModelIndex& parent, int first, int
 
     auto pitem = parent.isValid() ? m_hMapper.value(parent) : m_pRoot;
 
-    TreeTraversalItems *prev(nullptr), *next(nullptr);
+    //TODO make sure the state machine support them
+    //TreeTraversalItems *prev(nullptr), *next(nullptr);
 
     //FIXME use up()
-    if (first && pitem)
-        prev = pitem->m_hLookup.value(q_ptr->model()->index(first-1, 0, parent));
+    //if (first && pitem)
+    //    prev = pitem->m_hLookup.value(q_ptr->model()->index(first-1, 0, parent));
 
-    next = pitem->m_hLookup.value(q_ptr->model()->index(last+1, 0, parent));
+    //next = pitem->m_hLookup.value(q_ptr->model()->index(last+1, 0, parent));
 
     //FIXME support smaller ranges
     for (int i = first; i <= last; i++) {
@@ -1200,6 +1202,11 @@ void TreeView2Private::slotRowsMoved(const QModelIndex &parent, int start, int e
 void TreeView2Private::slotRowsMoved2(const QModelIndex &parent, int start, int end,
                                      const QModelIndex &destination, int row)
 {
+    Q_UNUSED(parent)
+    Q_UNUSED(start)
+    Q_UNUSED(end)
+    Q_UNUSED(destination)
+    Q_UNUSED(row)
 
     // The test would fail if it was in aboutToBeMoved
     _test_validateTree(m_pRoot);
@@ -1408,10 +1415,13 @@ bool VisualTreeItem::nothing()
     return true;
 }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wsuggest-attribute=noreturn"
 bool VisualTreeItem::error()
 {
     Q_ASSERT(false);
 }
+#pragma GCC diagnostic pop
 
 bool VisualTreeItem::destroy()
 {
@@ -1439,10 +1449,15 @@ bool TreeTraversalItems::performAction(Action a)
 bool TreeTraversalItems::nothing()
 { return true; }
 
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wsuggest-attribute=noreturn"
 bool TreeTraversalItems::error()
 {
     Q_ASSERT(false);
+    return false;
 }
+#pragma GCC diagnostic pop
 
 bool TreeTraversalItems::show()
 {

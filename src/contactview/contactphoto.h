@@ -61,7 +61,12 @@ public:
     Individual* individual() const;
     void setIndividual(Individual* ind);
 
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Woverloaded-virtual"
     Event* event() const;
+#pragma GCC diagnostic pop
+
     void setEvent(Event* e);
 
     bool hasPhoto() const;

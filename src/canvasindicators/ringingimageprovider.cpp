@@ -80,6 +80,7 @@ struct RingingTipData final
     };
 
     QPixmap toPixmap(int count, const QSize& size) {
+        Q_UNUSED(size)
         Q_UNUSED(count)
         QPixmap pxm(135, 120);
         pxm.fill(Qt::transparent);
@@ -141,7 +142,7 @@ struct InitTipDataPrivate final {
         p.setCompositionMode(QPainter::CompositionMode_SourceOver);
 
         p.fillRect(QRect{0,0,size.width(),size.width()},Qt::transparent);
-        m_Render->render(&p, {0,0,size.width(),size.width()});
+        m_Render->render(&p, {0,0, (float) size.width(), (float) size.width()});
 
         return pxm;
     }

@@ -273,6 +273,8 @@ FlickableView::ModelIndexItem* HierarchyView::createItem() const
 
 FlickableView::ModelIndexItem* HierarchyView::itemForIndex(const QModelIndex& idx) const
 {
+    Q_UNUSED(idx)
+    //TODO
     return nullptr;
 }
 

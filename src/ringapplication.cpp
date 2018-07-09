@@ -314,9 +314,7 @@ void RingApplication::initCollections()
    // Load the old phone call history and port it to the newer calendar events format.
    if (QFile::exists(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1Char('/') +"history.ini")) {
       auto histo = CategorizedHistoryModel::instance().addCollection<LocalHistoryCollection>(LoadOptions::FORCE_ENABLED);
-      HistoryImporter::importHistory(histo, [](const QVector<Calendar*>&) {
-         Q_ASSERT(false);
-      });
+      HistoryImporter::importHistory(histo);
       histo->clear();
    }
 

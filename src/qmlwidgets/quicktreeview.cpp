@@ -152,9 +152,6 @@ bool QuickTreeViewItem::move()
         return false;
     }
 
-    const qreal oldHeight = m_pItem->height();
-    const qreal oldY = m_pItem->y();
-
     m_pItem->setWidth(view()->contentItem()->width());
 
     auto nextElem = static_cast<QuickTreeViewItem*>(down());

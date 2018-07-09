@@ -334,12 +334,16 @@ bool SimpleFlickablePrivate::nothing(QMouseEvent*)
     return false;
 }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wsuggest-attribute=noreturn"
 bool SimpleFlickablePrivate::error(QMouseEvent*)
 {
     qWarning() << "simpleFlickable: Invalid state change";
+
     Q_ASSERT(false);
     return false;
 }
+#pragma GCC diagnostic pop
 
 bool SimpleFlickablePrivate::stop(QMouseEvent* event)
 {

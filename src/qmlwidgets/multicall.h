@@ -33,7 +33,7 @@ class MultiCall : public QQuickPaintedItem
     Q_OBJECT
 public:
     Q_PROPERTY(QPersistentModelIndex modelIndex READ modelIndex WRITE setModelIndex)
-    Q_PROPERTY(int count READ count WRITE setCount);
+    Q_PROPERTY(int count READ count WRITE setCount)
 
     Q_PROPERTY(bool skipChildren READ skipChildren CONSTANT)
 

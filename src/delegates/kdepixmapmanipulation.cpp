@@ -231,6 +231,7 @@ QVariant KDEPixmapManipulation::userActionIcon(const UserActionElement& state) c
       case UserActionModel::Action::COPY_CONTACT:
          return QIcon::fromTheme(QStringLiteral("edit-copy"));
       case UserActionModel::Action::TOGGLE_VIDEO:
+      case UserActionModel::Action::MARK_AS_CONSUMED:
       case UserActionModel::Action::COUNT__:
          break;
    };
@@ -388,6 +389,8 @@ QVariant KDEPixmapManipulation::decorationRole(const QModelIndex& index)
       case Ring::ObjectType::Media          : //TODO
       case Ring::ObjectType::Certificate    :
       case Ring::ObjectType::ContactRequest :
+      case Ring::ObjectType::Event :
+      case Ring::ObjectType::Individual :
       case Ring::ObjectType::COUNT__        :
          break;
    }

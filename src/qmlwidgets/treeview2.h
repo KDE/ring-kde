@@ -64,7 +64,7 @@ public:
     virtual int column() const override final;
 
     // Getters
-    virtual QPersistentModelIndex index   () const final;
+    virtual QPersistentModelIndex index   () const override final;
     virtual int depth() const final override;
 
     /// Allows to keep a reference while still being tracked by the state machine
@@ -106,8 +106,8 @@ private:
     bool performAction(Action);
 
     bool nothing();
-    bool error  () __attribute__ ((noreturn));
-    bool destroy() __attribute__ ((noreturn));
+    bool error  ();
+    bool destroy();
 };
 
 /**

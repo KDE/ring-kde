@@ -147,6 +147,7 @@ void VideoWidget3::setCall(Call* c)
 
 void VideoWidget3::addRenderer(Call* call, Video::Renderer* renderer)
 {
+    Q_UNUSED(call)
     if (d_ptr->m_Mode != Mode::CONVERSATION)
         return;
 
@@ -160,6 +161,7 @@ void VideoWidget3::addRenderer(Call* call, Video::Renderer* renderer)
 
 void VideoWidget3::removeRenderer(Call* call, Video::Renderer* renderer)
 {
+    Q_UNUSED(call)
     if (d_ptr->m_Mode != Mode::CONVERSATION)
         return;
 

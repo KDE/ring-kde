@@ -51,6 +51,8 @@ void ContextListView::contextMenuEvent(QContextMenuEvent* e)
          case Ring::ObjectType::Media          :
          case Ring::ObjectType::Certificate    :
          case Ring::ObjectType::ContactRequest :
+         case Ring::ObjectType::Event          :
+         case Ring::ObjectType::Individual     :
          case Ring::ObjectType::COUNT__        :
             break;
       }
