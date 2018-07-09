@@ -40,7 +40,7 @@ struct TreeTraversalItems; //FIXME remove
 class VisualTreeItem : public FlickableView::ModelIndexItem
 {
     friend class TreeView2;
-    friend class TreeTraversalItems;
+    friend struct TreeTraversalItems;
     friend class TreeView2Private;
 public:
 
@@ -128,7 +128,7 @@ private:
 class TreeView2 : public FlickableView
 {
     Q_OBJECT
-    friend class TreeTraversalItems;
+    friend struct TreeTraversalItems;
     friend class VisualTreeItem;
 public:
     /// Assume each hierarchy level have the same height (for performance)

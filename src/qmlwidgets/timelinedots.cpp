@@ -42,7 +42,7 @@ void TimelineDots::paint(QPainter *painter)
         pen = QPen(pal.brush(QPalette::ColorGroup::Active, QPalette::ColorRole::Text).color(), 1.5);
 
         auto bg = pen.color();
-        bg.setAlpha(0.1);
+        bg.setAlphaF(0.1);
         brush = QBrush( bg, Qt::SolidPattern);
 
         init = true;
@@ -54,10 +54,10 @@ void TimelineDots::paint(QPainter *painter)
 
     // Draw the spine
     painter->drawLine(
-        width()/2.0,
-        0.0,
-        width()/2.0,
-        height()
+        (int) width()/2.0,
+        (int) 0.0,
+        (int) width()/2.0,
+        (int) height()
     );
 
     // The logic behind the dot spacing is that the "biggest" dots fit and still

@@ -54,7 +54,6 @@ public:
 private:
     QQuickItem* m_pItem     {nullptr};
     QQmlContext* m_pContent {nullptr};
-    TreeViewPage* m_pPage   {nullptr};
     bool m_IsHead           { false };
 
     QuickTreeViewPrivate* d() const;

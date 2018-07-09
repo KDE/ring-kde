@@ -106,7 +106,7 @@ Pages::Security::Security(QWidget *parent) : PageBase(parent)
    });
 
    for (const QAbstractItemView* v : {lrcfg_knownCertificateModel, lrcfg_bannedCertificatesModel, lrcfg_allowedCertificatesModel}) {
-      connect(v, &QAbstractItemView::doubleClicked, this, [this](const QModelIndex& idx) {
+      connect(v, &QAbstractItemView::doubleClicked, this, [](const QModelIndex& idx) {
          CertificateViewer* c = new CertificateViewer(idx);
          c->show();
       });

@@ -98,7 +98,7 @@ int DockModel::rowCount( const QModelIndex& parent) const
 QHash<int,QByteArray> DockModel::roleNames() const
 {
     static QHash<int, QByteArray> roles = QAbstractItemModel::roleNames();
-    static std::atomic_flag initRoles {ATOMIC_FLAG_INIT};
+    static std::atomic_flag initRoles = ATOMIC_FLAG_INIT;
 
     if (!initRoles.test_and_set()) {
         roles[Roles::ActiveCount] = QByteArray( "activeCount" );

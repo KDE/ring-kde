@@ -61,7 +61,6 @@ ADD_DEFINITIONS(
    -Wsizeof-pointer-memaccess
    #-Wuseless-cast
    -Wvarargs
-   -Werror
 )
 
 #Add more warnings for compilers that support it. I used this command:
@@ -132,7 +131,7 @@ IF (CMAKE_COMPILER_IS_GNUCC)
 #       ADD_DEFINITIONS( -DENABLE_IGNORE_NULL=true )
    ENDIF()
 ELSE()
-   ADD_DEFINITIONS(-Wno-unknown-pragmas)
+   ADD_DEFINITIONS(-Wno-unknown-pragmas -Wno-unknown-warning-option)
 ENDIF()
 
 ADD_DEFINITIONS("-std=c++0x")

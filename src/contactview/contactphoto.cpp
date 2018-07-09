@@ -114,7 +114,7 @@ void ContactPhoto::paint(QPainter *painter)
 
 
     if (p && hasPhoto()) {
-        painter->drawEllipse(1.5, 1.5, s-1.5, s-1.5);
+        painter->drawEllipse(QRectF {1.5, 1.5, s-1.5, s-1.5});
 
         painter->setClipPath(imageClip);
 
@@ -137,7 +137,7 @@ void ContactPhoto::paint(QPainter *painter)
     }
     else if (d_ptr->m_DisplayEmpty) {
         if (d_ptr->m_DrawEmptyOutline)
-            painter->drawEllipse(1.5, 1.5, s-1.5, s-1.5);
+            painter->drawEllipse(QRectF {1.5, 1.5, s-1.5, s-1.5});
 
         painter->setClipPath(imageClip);
 

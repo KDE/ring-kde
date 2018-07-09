@@ -62,7 +62,7 @@ void MenuModelView::drill(QAbstractItemModel* model, QItemSelectionModel* s, con
          connect(action, &QObject::destroyed, [conn]() {disconnect(conn);});
       }
 
-      connect(action, &QAction::triggered, this, [action,pidx,s,this](bool) {
+      connect(action, &QAction::triggered, this, [pidx,s,this](bool) {
          if (pidx.isValid()) {
             s->setCurrentIndex(pidx, QItemSelectionModel::ClearAndSelect);
             emit itemClicked(pidx);

@@ -444,7 +444,7 @@ constexpr static const char AppName[]= "Ring";
 QQmlApplicationEngine* RingApplication::engine()
 {
    static QQmlApplicationEngine* e = nullptr;
-   static std::atomic_flag engineInit {ATOMIC_FLAG_INIT};
+   static std::atomic_flag engineInit = ATOMIC_FLAG_INIT;
 
    if (!engineInit.test_and_set()) {
       m_pQmlWidget = new RingQmlWidgets;

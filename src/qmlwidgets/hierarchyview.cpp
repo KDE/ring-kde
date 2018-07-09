@@ -237,7 +237,7 @@ void HierarchyViewPrivate::slotRowsInserted(const QModelIndex& parent, int first
 
 void HierarchyViewPrivate::slotRowsRemoved(const QModelIndex& parent, int first, int last)
 {
-    forEach(parent, first, last, [this](const QModelIndex& idx, HierarchyViewEntry* n) {
+    forEach(parent, first, last, [](const QModelIndex& idx, HierarchyViewEntry* n) {
         Q_UNUSED(idx)
         Q_UNUSED(n)
         //TODO

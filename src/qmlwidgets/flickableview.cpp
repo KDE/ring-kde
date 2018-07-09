@@ -32,7 +32,7 @@ public:
     QQmlComponent*                      m_pComponent      {nullptr};
     QQmlComponent*                      m_pHighlight      {nullptr};
     mutable QQmlContext*                m_pRootContext    {nullptr};
-    bool                                m_IsSortingEnabled{nullptr};
+    bool                                m_IsSortingEnabled{ false };
 
     // Selection
     QQuickItem* m_pSelectedItem   {nullptr};
