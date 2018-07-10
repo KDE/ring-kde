@@ -1420,6 +1420,7 @@ bool VisualTreeItem::nothing()
 bool VisualTreeItem::error()
 {
     Q_ASSERT(false);
+    return true;
 }
 #pragma GCC diagnostic pop
 
@@ -1642,6 +1643,7 @@ bool TreeView2Private::refreshBack()
 bool TreeView2Private::error()
 {
     Q_ASSERT(false);
+    return true;
 }
 
 #include <treeview2.moc>
