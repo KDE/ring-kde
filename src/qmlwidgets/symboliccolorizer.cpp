@@ -66,7 +66,7 @@ QPixmap SymbolicColorizerPrivate::paintSvg(const QString &id, QSize *size, const
     }
 
     // Always honor the original aspect ratio
-    const qreal aspectRatio = r->defaultSize().width()/r->defaultSize().height();
+    const qreal aspectRatio = ((qreal)r->defaultSize().width())/((qreal)r->defaultSize().height());
     const bool hOrW = r->defaultSize().width() >= r->defaultSize().height();
 
     size->setWidth(
