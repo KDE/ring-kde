@@ -50,7 +50,7 @@ Item {
                     height: applyButton.height
                     Button {
                         id: applyButton
-                        text: "Apply"
+                        text: i18n("Apply")
                         anchors.right: parent.right
                         onClicked: {
                             if (!videoSource.call)

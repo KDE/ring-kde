@@ -87,7 +87,7 @@ Rectangle {
         anchors.centerIn: parent
         Text {
             color: "black"
-            text: "Call Ended"
+            text: i18n("Call Ended")
             anchors.centerIn: parent
         }
     }

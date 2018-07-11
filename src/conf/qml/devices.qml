@@ -328,25 +328,25 @@ Rectangle {
                 }
 
                 Text {
-                    text: "Your pin is:"
+                    text: i18n("Your pin is:")
                 }
 
-                Text {
-                    text: "<b>2C33721B</b>"
-                    Layout.fillWidth: true
-                    font.pointSize: 16
-                    horizontalAlignment: Text.AlignHCenter
-
-                }
+//                 Text {
+//                     text: "<b>2C33721B</b>"
+//                     Layout.fillWidth: true
+//                     font.pointSize: 16
+//                     horizontalAlignment: Text.AlignHCenter
+//
+//                 }
 
                 Text {
                     wrapMode: Text.WordWrap
                     Layout.fillWidth: true
-                    text: "To complete the process, you need to open Ring on the new device. Create a new account with \"Link this device to an account\". Your pin is valid for 10 minutes."
+                    text: i18n("To complete the process, you need to open Ring on the new device. Create a new account with \"Link this device to an account\". Your pin is valid for 10 minutes.")
                 }
 
                 Text {
-                    text: "Close"
+                    text: i18n("Close")
                     Layout.fillWidth: true
                     horizontalAlignment: Text.AlignHCenter
 

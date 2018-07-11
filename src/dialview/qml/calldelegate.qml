@@ -72,7 +72,7 @@ Item {
             }
 
             Text {
-                text: "Conference"
+                text: i18n("Conference")
                 font.bold: true
                 font.underline: true
                 color: activePalette.text

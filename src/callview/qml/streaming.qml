@@ -46,7 +46,7 @@ ColumnLayout {
     }
     Button {
         Layout.fillWidth: true
-        text: "Select file"
+        text: i18n("Select file")
         onClicked: {
             streaming.currentFile = RecentFileModel.addFile()
         }
@@ -56,7 +56,7 @@ ColumnLayout {
         height:streamButton.height
         Button {
             id: streamButton
-            text: "Stream"
+            text: i18n("Stream")
             anchors.right: parent.right
             onClicked: {
                 if (!streaming.call)

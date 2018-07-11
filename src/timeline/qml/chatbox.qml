@@ -214,7 +214,7 @@ Rectangle {
                 ]
             }
             Button {
-                text: "Send"
+                text: i18n("Send")
                 Layout.fillHeight: true
                 onClicked: {
                     var rawText  = messageTextArea.getText(0, messageTextArea.length)

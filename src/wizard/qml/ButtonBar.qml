@@ -144,7 +144,7 @@ Item {
         },
 
         State {
-            name: "finish"
+            name: i18n("finish")
             extend: "nextAvailable"
             PropertyChanges {
                 target: skipButton

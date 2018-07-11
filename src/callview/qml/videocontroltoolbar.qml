@@ -184,7 +184,7 @@ Rectangle {
             height: parent.height
             verticalAlignment: Text.AlignVCenter
             color: "white"
-            text: qsTr("Take a snapshot")
+            text: i18n("Take a snapshot")
         }
 
         Image {

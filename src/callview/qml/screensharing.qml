@@ -94,7 +94,7 @@ GridLayout {
             id: shareButton
             anchors.right: parent.right
             anchors.top: parent.top
-            text: "Share"
+            text: i18n("Share")
             onClicked: {
                 if (!screenSharing.call)
                     return
