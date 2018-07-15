@@ -292,7 +292,7 @@ TreeView2::TreeView2(QQuickItem* parent) : FlickableView(parent),
 
 TreeView2::~TreeView2()
 {
-    delete m_pRoot;
+    delete d_ptr->m_pRoot;
     delete d_ptr;
 }
 
