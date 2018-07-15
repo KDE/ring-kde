@@ -149,9 +149,6 @@ IF(${ENABLE_TEST} MATCHES true)
    ADD_SUBDIRECTORY( src/test)
 ENDIF()
 
-# Handling of translation files
-KI18N_INSTALL( po )
-
 # macOS
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
    SET(MACOSX_BUNDLE ON)
