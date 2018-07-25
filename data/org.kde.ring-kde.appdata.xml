@@ -25,7 +25,6 @@
   <name xml:lang="tr">Ring-KDE</name>
   <name xml:lang="uk">Ring-KDE</name>
   <name xml:lang="x-test">xxRing-KDExx</name>
-  <name xml:lang="zh-CN">Ring-KDE</name>
   <name xml:lang="zh-TW">Ring-KDE</name>
   <summary>Call and receive calls with SIP or RING protocols</summary>
   <summary xml:lang="ca">Truca i rep trucades amb els protocols SIP o RING.</summary>
@@ -43,7 +42,6 @@
   <summary xml:lang="tr">SIP veya RING protokolleri ile arama yapın veya aranın</summary>
   <summary xml:lang="uk">Дзвоніть і отримуйте дзвінки за допомогою протоколів SIP або RING</summary>
   <summary xml:lang="x-test">xxCall and receive calls with SIP or RING protocolsxx</summary>
-  <summary xml:lang="zh-CN">使用 SIP 或 RING 协议拨出或接受呼叫</summary>
   <summary xml:lang="zh-TW">使用 SIP 或是 RING 協定打電話或是接電話</summary>
   <description>
     <p>
@@ -88,7 +86,6 @@
     <p xml:lang="tr">Özellikler:</p>
     <p xml:lang="uk">Можливості:</p>
     <p xml:lang="x-test">xxFeatures:xx</p>
-    <p xml:lang="zh-CN">功能：</p>
     <p xml:lang="zh-TW">功能：</p>
     <ul>
       <li>Calling real phone with accounts from common SIP service providers</li>
