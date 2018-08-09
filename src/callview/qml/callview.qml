@@ -96,6 +96,7 @@ Item {
         z: -100
         started: false
         visible: started && !hasFailed
+        call: videoDock.call
     }
 
     VideoWidget {
