@@ -19,10 +19,13 @@ import QtQuick 2.0
 import Ring 1.0
 
 Rectangle {
-    property bool   stretch: false
-    property string rendererName: "preview"
-    property alias  started: frameTimer.running
-    property bool   hasFailed: false
+    property bool     stretch: false
+    property string   rendererName: "preview"
+    property alias    started: frameTimer.running
+    property bool     hasFailed: false
+    property QtObject call: null
+
+    property int _delay: 0
 
     color: "black"
 
@@ -44,6 +47,18 @@ Rectangle {
         onTriggered: {
             videoBackground.source = "image://VideoFrame/"+rendererName+"/"+counter+".png"
             counter = counter + 1
+
+            // There is many race conditions with the different types of renderers. This
+            // code helps cleanup the messes in case a new source of issues is introduced.
+            // It was the case enough time I don't think ever removing this code is a good
+            // idea.
+            if (rendererName == "peer" && ((!call) || (!call.lifeCycleState == Call.Finished)))
+                _delay = _delay + 1
+
+            if (_delay >= 10) {
+                running = false
+                _delay  = 0
+            }
         }
     }
 
