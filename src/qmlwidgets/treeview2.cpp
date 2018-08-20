@@ -23,6 +23,12 @@
 
 #define V_ITEM(i) static_cast<VisualTreeItem*>(i)
 
+// Use some constant for readability
+#define PREVIOUS 0
+#define NEXT 1
+#define FIRST 0
+#define LAST 1
+
 /*
  * Design:
  *
@@ -139,15 +145,8 @@ struct TreeTraversalItems
     // Keep the parent to be able to get back to the root
     TreeTraversalItems* m_pParent;
 
-    // There is no need to keep an ordered vector, random access is not
-    // necessary. However to keep the double chained list in sync, the edges
-    // are.
-    TreeTraversalItems* m_pFirstChild {nullptr};
-    TreeTraversalItems* m_pLastChild {nullptr};
-
-    // Those are only for the elements in the same depth level
-    TreeTraversalItems* m_pPrevious {nullptr};
-    TreeTraversalItems* m_pNext {nullptr};
+    TreeTraversalItems* m_tSiblings[2] = {nullptr, nullptr};
+    TreeTraversalItems* m_tChildren[2] = {nullptr, nullptr};
 
     QPersistentModelIndex m_Index;
     VisualTreeItem* m_pTreeItem {nullptr};
@@ -452,14 +451,14 @@ void TreeView2::reloadChildren(const QModelIndex& index) const
         if (!p)
             return;
 
-        auto c = p->m_pFirstChild;
+        auto c = p->m_tChildren[FIRST];
 
-        while (c && c != p->m_pLastChild) {
+        while (c && c != p->m_tChildren[LAST]) {
             if (c->m_pTreeItem) {
                 c->m_pTreeItem->performAction( VisualTreeItem::Action::UPDATE );
                 c->m_pTreeItem->performAction( VisualTreeItem::Action::MOVE   );
             }
-            c = c->m_pNext;
+            c = c->m_tSiblings[NEXT];
         }
     }
 }
@@ -488,13 +487,13 @@ bool TreeView2Private::isActive(const QModelIndex& parent, int first, int last)
     if (parent.isValid() && pitem == m_pRoot)
         return false;
 
-    if ((!pitem->m_pLastChild) || (!pitem->m_pFirstChild))
+    if ((!pitem->m_tChildren[LAST]) || (!pitem->m_tChildren[FIRST]))
         return true;
 
-    if (pitem->m_pLastChild->m_Index.row() >= first)
+    if (pitem->m_tChildren[LAST]->m_Index.row() >= first)
         return true;
 
-    if (pitem->m_pFirstChild->m_Index.row() <= last)
+    if (pitem->m_tChildren[FIRST]->m_Index.row() <= last)
         return true;
 
     return false;
@@ -578,47 +577,47 @@ void TreeView2Private::_test_validateTree(TreeTraversalItems* p)
         return;
     }
 
-    if (p->m_pParent == m_pRoot && m_pRoot->m_pFirstChild == p) {
+    if (p->m_pParent == m_pRoot && m_pRoot->m_tChildren[FIRST] == p) {
         Q_ASSERT(!p->m_pTreeItem->up());
     }
 
     // First, let's check the linked list to avoid running more test on really
     // corrupted data
-    if (auto i = p->m_pFirstChild) {
+    if (auto i = p->m_tChildren[FIRST]) {
         auto idx = i->m_Index;
         int count = 1;
         auto oldI = i;
 
-        while ((oldI = i) && (i = i->m_pNext)) {
+        while ((oldI = i) && (i = i->m_tSiblings[NEXT])) {
             // If this is a next, then there has to be a previous
             Q_ASSERT(i->m_pParent == p);
-            Q_ASSERT(i->m_pPrevious);
-            Q_ASSERT(i->m_pPrevious->m_Index == idx);
+            Q_ASSERT(i->m_tSiblings[PREVIOUS]);
+            Q_ASSERT(i->m_tSiblings[PREVIOUS]->m_Index == idx);
             //Q_ASSERT(i->m_Index.row() == idx.row()+1); //FIXME
-            Q_ASSERT(i->m_pPrevious->m_pNext == i);
-            Q_ASSERT(i->m_pPrevious == oldI);
+            Q_ASSERT(i->m_tSiblings[PREVIOUS]->m_tSiblings[NEXT] == i);
+            Q_ASSERT(i->m_tSiblings[PREVIOUS] == oldI);
             idx = i->m_Index;
             count++;
         }
 
-        Q_ASSERT(p == p->m_pFirstChild->m_pParent);
-        Q_ASSERT(p == p->m_pLastChild->m_pParent);
+        Q_ASSERT(p == p->m_tChildren[FIRST]->m_pParent);
+        Q_ASSERT(p == p->m_tChildren[LAST]->m_pParent);
         Q_ASSERT(p->m_hLookup.size() == count);
     }
 
     // Do that again in the other direction
-    if (auto i = p->m_pLastChild) {
+    if (auto i = p->m_tChildren[LAST]) {
         auto idx = i->m_Index;
         auto oldI = i;
         int count = 1;
 
-        while ((oldI = i) && (i = i->m_pPrevious)) {
-            Q_ASSERT(i->m_pNext);
-            Q_ASSERT(i->m_pNext->m_Index == idx);
+        while ((oldI = i) && (i = i->m_tSiblings[PREVIOUS])) {
+            Q_ASSERT(i->m_tSiblings[NEXT]);
+            Q_ASSERT(i->m_tSiblings[NEXT]->m_Index == idx);
             Q_ASSERT(i->m_pParent == p);
             //Q_ASSERT(i->m_Index.row() == idx.row()-1); //FIXME
-            Q_ASSERT(i->m_pNext->m_pPrevious == i);
-            Q_ASSERT(i->m_pNext == oldI);
+            Q_ASSERT(i->m_tSiblings[NEXT]->m_tSiblings[PREVIOUS] == i);
+            Q_ASSERT(i->m_tSiblings[NEXT] == oldI);
             idx = i->m_Index;
             count++;
         }
@@ -646,9 +645,9 @@ void TreeView2Private::_test_validateTree(TreeTraversalItems* p)
         //Q_ASSERT(newest == i.value() || newest->m_Index.row() < i.key().row()); //FIXME
 
         // Test that there is no trivial duplicate TreeTraversalItems for the same index
-        if(i.value()->m_pPrevious && i.value()->m_pPrevious->m_hLookup.isEmpty()) {
+        if(i.value()->m_tSiblings[PREVIOUS] && i.value()->m_tSiblings[PREVIOUS]->m_hLookup.isEmpty()) {
             const auto prev = V_ITEM(i.value()->m_pTreeItem->up());
-            Q_ASSERT(prev->m_pTTI == i.value()->m_pPrevious);
+            Q_ASSERT(prev->m_pTTI == i.value()->m_tSiblings[PREVIOUS]);
 
             const auto next = V_ITEM(prev->down());
             Q_ASSERT(next->m_pTTI == i.value());
@@ -662,7 +661,7 @@ void TreeView2Private::_test_validateTree(TreeTraversalItems* p)
         else {
             // There is always a next is those conditions are not met unless there
             // is failed elements creating (auto-corrected) holes in the chains.
-            Q_ASSERT(!i.value()->m_pNext);
+            Q_ASSERT(!i.value()->m_tSiblings[NEXT]);
             Q_ASSERT(i.value()->m_hLookup.isEmpty());
         }
 
@@ -673,7 +672,7 @@ void TreeView2Private::_test_validateTree(TreeTraversalItems* p)
         else {
             // There is always a previous if those conditions are not met unless there
             // is failed elements creating (auto-corrected) holes in the chains.
-            Q_ASSERT(!i.value()->m_pPrevious);
+            Q_ASSERT(!i.value()->m_tSiblings[PREVIOUS]);
             Q_ASSERT(!i.value()->m_pParent->m_pTreeItem);
         }
 
@@ -685,7 +684,7 @@ void TreeView2Private::_test_validateTree(TreeTraversalItems* p)
         VisualTreeItem* oldVI(nullptr);
 
         int count(0), count2(0);
-        for (auto i = m_pRoot->m_pFirstChild->m_pTreeItem; i; i = V_ITEM(i->down())) {
+        for (auto i = m_pRoot->m_tChildren[FIRST]->m_pTreeItem; i; i = V_ITEM(i->down())) {
             Q_ASSERT((!oldVI) || i->up());
             Q_ASSERT(i->up() == oldVI);
             oldVI = i;
@@ -694,9 +693,9 @@ void TreeView2Private::_test_validateTree(TreeTraversalItems* p)
 
         // Backward too
         oldVI = nullptr;
-        auto last = m_pRoot->m_pLastChild;
-        while (last && last->m_pLastChild)
-            last = last->m_pLastChild;
+        auto last = m_pRoot->m_tChildren[LAST];
+        while (last && last->m_tChildren[LAST])
+            last = last->m_tChildren[LAST];
 
         for (auto i = last->m_pTreeItem; i; i = V_ITEM(i->up())) {
             Q_ASSERT((!oldVI) || i->down());
@@ -709,11 +708,11 @@ void TreeView2Private::_test_validateTree(TreeTraversalItems* p)
     }
 
     // Test that the list edges are valid
-    Q_ASSERT(!(!!p->m_pLastChild ^ !!p->m_pFirstChild));
-    Q_ASSERT(p->m_pLastChild  == old);
-    Q_ASSERT(p->m_pFirstChild == newest);
-    Q_ASSERT((!old) || !old->m_pNext);
-    Q_ASSERT((!newest) || !newest->m_pPrevious);
+    Q_ASSERT(!(!!p->m_tChildren[LAST] ^ !!p->m_tChildren[FIRST]));
+    Q_ASSERT(p->m_tChildren[LAST]  == old);
+    Q_ASSERT(p->m_tChildren[FIRST] == newest);
+    Q_ASSERT((!old) || !old->m_tSiblings[NEXT]);
+    Q_ASSERT((!newest) || !newest->m_tSiblings[PREVIOUS]);
 }
 
 void TreeView2Private::slotRowsInserted(const QModelIndex& parent, int first, int last)
@@ -744,32 +743,32 @@ void TreeView2Private::slotRowsInserted(const QModelIndex& parent, int first, in
         auto e = addChildren(pitem, idx);
 
         // Keep a dual chained linked list between the visual elements
-        e->m_pPrevious = prev ? prev : nullptr; //FIXME incorrect
+        e->m_tSiblings[PREVIOUS] = prev ? prev : nullptr; //FIXME incorrect
 
         //FIXME It can happen if the previous is out of the visible range
-        Q_ASSERT( e->m_pPrevious || e->m_Index.row() == 0);
+        Q_ASSERT( e->m_tSiblings[PREVIOUS] || e->m_Index.row() == 0);
 
         //TODO merge with bridgeGap
         if (prev)
             bridgeGap(prev, e, true);
 
         // This is required before ::ATTACH because otherwise ::down() wont work
-        if ((!pitem->m_pFirstChild) || e->m_Index.row() <= pitem->m_pFirstChild->m_Index.row()) {
-            e->m_pNext = pitem->m_pFirstChild;
-            pitem->m_pFirstChild = e;
+        if ((!pitem->m_tChildren[FIRST]) || e->m_Index.row() <= pitem->m_tChildren[FIRST]->m_Index.row()) {
+            e->m_tSiblings[NEXT] = pitem->m_tChildren[FIRST];
+            pitem->m_tChildren[FIRST] = e;
         }
 
         e->performAction(TreeTraversalItems::Action::ATTACH);
 
-        if ((!pitem->m_pFirstChild) || e->m_Index.row() <= pitem->m_pFirstChild->m_Index.row()) {
+        if ((!pitem->m_tChildren[FIRST]) || e->m_Index.row() <= pitem->m_tChildren[FIRST]->m_Index.row()) {
             Q_ASSERT(pitem != e);
             if (auto pe = V_ITEM(e->m_pTreeItem->up()))
                 pe->m_pTTI->performAction(TreeTraversalItems::Action::MOVE);
         }
 
-        if ((!pitem->m_pLastChild) || e->m_Index.row() > pitem->m_pLastChild->m_Index.row()) {
+        if ((!pitem->m_tChildren[LAST]) || e->m_Index.row() > pitem->m_tChildren[LAST]->m_Index.row()) {
             Q_ASSERT(pitem != e);
-            pitem->m_pLastChild = e;
+            pitem->m_tChildren[LAST] = e;
             if (auto ne = V_ITEM(e->m_pTreeItem->down()))
                 ne->m_pTTI->performAction(TreeTraversalItems::Action::MOVE);
         }
@@ -780,16 +779,16 @@ void TreeView2Private::slotRowsInserted(const QModelIndex& parent, int first, in
         prev = e;
     }
 
-    if ((!pitem->m_pLastChild) || last > pitem->m_pLastChild->m_Index.row())
-        pitem->m_pLastChild = prev;
+    if ((!pitem->m_tChildren[LAST]) || last > pitem->m_tChildren[LAST]->m_Index.row())
+        pitem->m_tChildren[LAST] = prev;
 
-    Q_ASSERT(pitem->m_pLastChild);
+    Q_ASSERT(pitem->m_tChildren[LAST]);
 
     //FIXME use down()
     if (q_ptr->model()->rowCount(parent) > last) {
         if (auto i = pitem->m_hLookup.value(q_ptr->model()->index(last+1, 0, parent))) {
-            i->m_pPrevious = prev;
-            prev->m_pNext = i;
+            i->m_tSiblings[PREVIOUS] = prev;
+            prev->m_tSiblings[NEXT] = i;
         }
 //         else //FIXME it happens
 //             Q_ASSERT(false);
@@ -854,31 +853,31 @@ void TreeView2Private::createGap(VisualTreeItem* first, VisualTreeItem* last)
 {
     Q_ASSERT(first->m_pTTI->m_pParent == last->m_pTTI->m_pParent);
 
-    if (first->m_pTTI->m_pPrevious) {
-        first->m_pTTI->m_pPrevious->m_pNext = last->m_pTTI->m_pNext;
+    if (first->m_pTTI->m_tSiblings[PREVIOUS]) {
+        first->m_pTTI->m_tSiblings[PREVIOUS]->m_tSiblings[NEXT] = last->m_pTTI->m_tSiblings[NEXT];
     }
 
-    if (last->m_pTTI->m_pNext) {
-        last->m_pTTI->m_pNext->m_pPrevious = first->m_pTTI->m_pPrevious;
+    if (last->m_pTTI->m_tSiblings[NEXT]) {
+        last->m_pTTI->m_tSiblings[NEXT]->m_tSiblings[PREVIOUS] = first->m_pTTI->m_tSiblings[PREVIOUS];
     }
 
-    if (first->m_pTTI->m_pParent->m_pFirstChild == first->m_pTTI)
-        first->m_pTTI->m_pParent->m_pFirstChild = last->m_pTTI->m_pNext;
+    if (first->m_pTTI->m_pParent->m_tChildren[FIRST] == first->m_pTTI)
+        first->m_pTTI->m_pParent->m_tChildren[FIRST] = last->m_pTTI->m_tSiblings[NEXT];
 
-    if (last->m_pTTI->m_pParent->m_pLastChild == last->m_pTTI)
-        last->m_pTTI->m_pParent->m_pLastChild = first->m_pTTI->m_pPrevious;
+    if (last->m_pTTI->m_pParent->m_tChildren[LAST] == last->m_pTTI)
+        last->m_pTTI->m_pParent->m_tChildren[LAST] = first->m_pTTI->m_tSiblings[PREVIOUS];
 
-    Q_ASSERT((!first->m_pTTI->m_pPrevious) ||
-        first->m_pTTI->m_pPrevious->m_pTreeItem->down() != first);
-    Q_ASSERT((!last->m_pTTI->m_pNext) ||
-        last->m_pTTI->m_pNext->m_pTreeItem->up() != last);
+    Q_ASSERT((!first->m_pTTI->m_tSiblings[PREVIOUS]) ||
+        first->m_pTTI->m_tSiblings[PREVIOUS]->m_pTreeItem->down() != first);
+    Q_ASSERT((!last->m_pTTI->m_tSiblings[NEXT]) ||
+        last->m_pTTI->m_tSiblings[NEXT]->m_pTreeItem->up() != last);
 
-    Q_ASSERT((!first) || first->m_pTTI->m_pFirstChild || first->m_pTTI->m_hLookup.isEmpty());
-    Q_ASSERT((!last) || last->m_pTTI->m_pFirstChild || last->m_pTTI->m_hLookup.isEmpty());
+    Q_ASSERT((!first) || first->m_pTTI->m_tChildren[FIRST] || first->m_pTTI->m_hLookup.isEmpty());
+    Q_ASSERT((!last) || last->m_pTTI->m_tChildren[FIRST] || last->m_pTTI->m_hLookup.isEmpty());
 
     // Do not leave invalid pointers for easier debugging
-    last->m_pTTI->m_pNext      = nullptr;
-    first->m_pTTI->m_pPrevious = nullptr;
+    last->m_pTTI->m_tSiblings[NEXT]      = nullptr;
+    first->m_pTTI->m_tSiblings[PREVIOUS] = nullptr;
 }
 
 // Convenience wrapper
@@ -900,56 +899,56 @@ void TreeView2Private::bridgeGap(TreeTraversalItems* first, TreeTraversalItems* 
         // first and second are siblings
 
         // Assume the second item is new
-        if (insert && first->m_pNext) {
-            second->m_pNext = first->m_pNext;
-            first->m_pNext->m_pPrevious = second;
+        if (insert && first->m_tSiblings[NEXT]) {
+            second->m_tSiblings[NEXT] = first->m_tSiblings[NEXT];
+            first->m_tSiblings[NEXT]->m_tSiblings[PREVIOUS] = second;
         }
 
-        first->m_pNext = second;
-        second->m_pPrevious = first;
+        first->m_tSiblings[NEXT] = second;
+        second->m_tSiblings[PREVIOUS] = first;
     }
     else if (second && ((!first) || first == second->m_pParent)) {
         // The `second` is `first` first child or it's the new root
-        second->m_pPrevious = nullptr;
+        second->m_tSiblings[PREVIOUS] = nullptr;
 
-        if (!second->m_pParent->m_pLastChild)
-            second->m_pParent->m_pLastChild = second;
+        if (!second->m_pParent->m_tChildren[LAST])
+            second->m_pParent->m_tChildren[LAST] = second;
 
-        second->m_pNext = second->m_pParent->m_pFirstChild;
+        second->m_tSiblings[NEXT] = second->m_pParent->m_tChildren[FIRST];
 
-        if (second->m_pParent->m_pFirstChild) {
-            second->m_pParent->m_pFirstChild->m_pPrevious = second;
+        if (second->m_pParent->m_tChildren[FIRST]) {
+            second->m_pParent->m_tChildren[FIRST]->m_tSiblings[PREVIOUS] = second;
         }
 
-        second->m_pParent->m_pFirstChild = second;
+        second->m_pParent->m_tChildren[FIRST] = second;
 
         //BEGIN test
         /*int count =0;
-        for (auto c = second->m_pParent->m_pFirstChild; c; c = c->m_pNext)
+        for (auto c = second->m_pParent->m_tChildren[FIRST]; c; c = c->m_tSiblings[NEXT])
             count++;
         Q_ASSERT(count == second->m_pParent->m_hLookup.size());*/
         //END test
     }
     else if (first) {
         // It's the last element or the second is a last leaf and first is unrelated
-        first->m_pNext = nullptr;
+        first->m_tSiblings[NEXT] = nullptr;
 
-        if (!first->m_pParent->m_pFirstChild)
-            first->m_pParent->m_pFirstChild = first;
+        if (!first->m_pParent->m_tChildren[FIRST])
+            first->m_pParent->m_tChildren[FIRST] = first;
 
-        if (first->m_pParent->m_pLastChild && first->m_pParent->m_pLastChild != first) {
-            first->m_pParent->m_pLastChild->m_pNext = first;
-            first->m_pPrevious = first->m_pParent->m_pLastChild;
+        if (first->m_pParent->m_tChildren[LAST] && first->m_pParent->m_tChildren[LAST] != first) {
+            first->m_pParent->m_tChildren[LAST]->m_tSiblings[NEXT] = first;
+            first->m_tSiblings[PREVIOUS] = first->m_pParent->m_tChildren[LAST];
         }
 
-        first->m_pParent->m_pLastChild = first;
+        first->m_pParent->m_tChildren[LAST] = first;
 
         //BEGIN test
         int count =0;
-        for (auto c = first->m_pParent->m_pLastChild; c; c = c->m_pPrevious)
+        for (auto c = first->m_pParent->m_tChildren[LAST]; c; c = c->m_tSiblings[PREVIOUS])
             count++;
 
-        Q_ASSERT(first->m_pParent->m_pFirstChild);
+        Q_ASSERT(first->m_pParent->m_tChildren[FIRST]);
 
         Q_ASSERT(count == first->m_pParent->m_hLookup.size());
         //END test
@@ -959,14 +958,14 @@ void TreeView2Private::bridgeGap(TreeTraversalItems* first, TreeTraversalItems* 
     }
 
     if (first)
-        Q_ASSERT(first->m_pParent->m_pFirstChild);
+        Q_ASSERT(first->m_pParent->m_tChildren[FIRST]);
     if (second)
-        Q_ASSERT(second->m_pParent->m_pFirstChild);
+        Q_ASSERT(second->m_pParent->m_tChildren[FIRST]);
 
     if (first)
-        Q_ASSERT(first->m_pParent->m_pLastChild);
+        Q_ASSERT(first->m_pParent->m_tChildren[LAST]);
     if (second)
-        Q_ASSERT(second->m_pParent->m_pLastChild);
+        Q_ASSERT(second->m_pParent->m_tChildren[LAST]);
 
 //     if (first && second) { //Need to disable other asserts in down()
 //         Q_ASSERT(first->down() == second);
@@ -1059,7 +1058,7 @@ void TreeView2Private::slotRowsMoved(const QModelIndex &parent, int start, int e
     auto endVI   = V_ITEM(q_ptr->itemForIndex(idxEnd));
 
     if (end - start == 1)
-        Q_ASSERT(startVI->m_pTTI->m_pNext == endVI->m_pTTI);
+        Q_ASSERT(startVI->m_pTTI->m_tSiblings[NEXT] == endVI->m_pTTI);
 
     //FIXME so I don't forget, it will mess things up if silently ignored
     Q_ASSERT(startVI && endVI);
@@ -1130,7 +1129,7 @@ void TreeView2Private::slotRowsMoved(const QModelIndex &parent, int start, int e
 
     // Update the tree parent (if necessary)
     if (oldParentTTI != newParentTTI) {
-        for (auto i = startVI; i; i = i->m_pTTI->m_pNext ? i->m_pTTI->m_pNext->m_pTreeItem : nullptr) {
+        for (auto i = startVI; i; i = i->m_pTTI->m_tSiblings[NEXT] ? i->m_pTTI->m_tSiblings[NEXT]->m_pTreeItem : nullptr) {
             auto idx = i->index();
 
             const int size = oldParentTTI->m_hLookup.size();
@@ -1151,20 +1150,20 @@ void TreeView2Private::slotRowsMoved(const QModelIndex &parent, int start, int e
     bridgeGap(endVI    , newNextVI);
 
     // Close the gap between the old previous and next elements
-    Q_ASSERT(startVI->m_pTTI->m_pNext     != startVI->m_pTTI);
-    Q_ASSERT(startVI->m_pTTI->m_pPrevious != startVI->m_pTTI);
-    Q_ASSERT(endVI->m_pTTI->m_pNext       != endVI->m_pTTI  );
-    Q_ASSERT(endVI->m_pTTI->m_pPrevious   != endVI->m_pTTI  );
+    Q_ASSERT(startVI->m_pTTI->m_tSiblings[NEXT]     != startVI->m_pTTI);
+    Q_ASSERT(startVI->m_pTTI->m_tSiblings[PREVIOUS] != startVI->m_pTTI);
+    Q_ASSERT(endVI->m_pTTI->m_tSiblings[NEXT]       != endVI->m_pTTI  );
+    Q_ASSERT(endVI->m_pTTI->m_tSiblings[PREVIOUS]   != endVI->m_pTTI  );
 
     //BEGIN debug
     if (newPrevVI) {
     int count = 0;
-    for (auto c = newPrevVI->m_pTTI->m_pParent->m_pFirstChild; c; c = c->m_pNext)
+    for (auto c = newPrevVI->m_pTTI->m_pParent->m_tChildren[FIRST]; c; c = c->m_tSiblings[NEXT])
         count++;
     Q_ASSERT(count == newPrevVI->m_pTTI->m_pParent->m_hLookup.size());
 
     count = 0;
-    for (auto c = newPrevVI->m_pTTI->m_pParent->m_pLastChild; c; c = c->m_pPrevious)
+    for (auto c = newPrevVI->m_pTTI->m_pParent->m_tChildren[LAST]; c; c = c->m_tSiblings[PREVIOUS])
         count++;
     Q_ASSERT(count == newPrevVI->m_pTTI->m_pParent->m_hLookup.size());
     }
@@ -1173,24 +1172,24 @@ void TreeView2Private::slotRowsMoved(const QModelIndex &parent, int start, int e
     bridgeGap(oldPreviousVI, oldNextVI);
 
 
-    if (endVI->m_pTTI->m_pNext) {
-        Q_ASSERT(endVI->m_pTTI->m_pNext->m_pPrevious == endVI->m_pTTI);
+    if (endVI->m_pTTI->m_tSiblings[NEXT]) {
+        Q_ASSERT(endVI->m_pTTI->m_tSiblings[NEXT]->m_tSiblings[PREVIOUS] == endVI->m_pTTI);
     }
 
-    if (startVI->m_pTTI->m_pPrevious) {
-        Q_ASSERT(startVI->m_pTTI->m_pPrevious->m_pParent == startVI->m_pTTI->m_pParent);
-        Q_ASSERT(startVI->m_pTTI->m_pPrevious->m_pNext == startVI->m_pTTI);
+    if (startVI->m_pTTI->m_tSiblings[PREVIOUS]) {
+        Q_ASSERT(startVI->m_pTTI->m_tSiblings[PREVIOUS]->m_pParent == startVI->m_pTTI->m_pParent);
+        Q_ASSERT(startVI->m_pTTI->m_tSiblings[PREVIOUS]->m_tSiblings[NEXT] == startVI->m_pTTI);
     }
 
 
-//     Q_ASSERT((!newNextVI) || newNextVI->m_pParent->m_pPrevious == endVI->m_pParent);
+//     Q_ASSERT((!newNextVI) || newNextVI->m_pParent->m_tSiblings[PREVIOUS] == endVI->m_pParent);
 //     Q_ASSERT((!newPrevVI) ||
-// //         newPrevVI->m_pParent->m_pNext == startVI->m_pParent ||
-//         (newPrevVI->m_pParent->m_pFirstChild == startVI->m_pParent && !row)
+// //         newPrevVI->m_pParent->m_tSiblings[NEXT] == startVI->m_pParent ||
+//         (newPrevVI->m_pParent->m_tChildren[FIRST] == startVI->m_pParent && !row)
 //     );
 
-//     Q_ASSERT((!oldPreviousVI) || (!oldPreviousVI->m_pParent->m_pNext) ||
-//         oldPreviousVI->m_pParent->m_pNext == (oldNextVI ? oldNextVI->m_pParent : nullptr));
+//     Q_ASSERT((!oldPreviousVI) || (!oldPreviousVI->m_pParent->m_tSiblings[NEXT]) ||
+//         oldPreviousVI->m_pParent->m_tSiblings[NEXT] == (oldNextVI ? oldNextVI->m_pParent : nullptr));
 
 
     // Move everything
@@ -1315,9 +1314,9 @@ FlickableView::ModelIndexItem* VisualTreeItem::up() const
     }
 
     // The parent has no previous siblings, therefor it is directly above the item
-    if (!m_pTTI->m_pPrevious) {
-//         if (m_pParent->m_pParent && m_pParent->m_pParent->m_pFirstChild)
-//             Q_ASSERT(m_pParent->m_pParent->m_pFirstChild == m_pParent);
+    if (!m_pTTI->m_tSiblings[PREVIOUS]) {
+//         if (m_pParent->m_pParent && m_pParent->m_pParent->m_tChildren[FIRST])
+//             Q_ASSERT(m_pParent->m_pParent->m_tChildren[FIRST] == m_pParent);
         //FIXME Q_ASSERT(index().row() == 0);
 
         // This is the root, there is no previous element
@@ -1332,10 +1331,10 @@ FlickableView::ModelIndexItem* VisualTreeItem::up() const
         goto sanitize;
     }
 
-    ret = m_pTTI->m_pPrevious;
+    ret = m_pTTI->m_tSiblings[PREVIOUS];
 
-    while (ret->m_pLastChild)
-        ret = ret->m_pLastChild;
+    while (ret->m_tChildren[LAST])
+        ret = ret->m_tChildren[LAST];
 
 sanitize:
 
@@ -1369,17 +1368,17 @@ FlickableView::ModelIndexItem* VisualTreeItem::down() const
     VisualTreeItem* ret = nullptr;
     auto i = m_pTTI;
 
-    if (m_pTTI->m_pFirstChild) {
-        //Q_ASSERT(m_pParent->m_pFirstChild->m_Index.row() == 0); //racy
-        ret = m_pTTI->m_pFirstChild->m_pTreeItem;
+    if (m_pTTI->m_tChildren[FIRST]) {
+        //Q_ASSERT(m_pParent->m_tChildren[FIRST]->m_Index.row() == 0); //racy
+        ret = m_pTTI->m_tChildren[FIRST]->m_pTreeItem;
         goto sanitizeNext;
     }
 
 
     // Recursively unwrap the tree until an element is found
     while(i) {
-        if (i->m_pNext) {
-            ret = i->m_pNext->m_pTreeItem;
+        if (i->m_tSiblings[NEXT]) {
+            ret = i->m_tSiblings[NEXT]->m_pTreeItem;
             goto sanitizeNext;
         }
 
@@ -1539,19 +1538,19 @@ bool TreeTraversalItems::detach()
         Q_ASSERT(size == m_pParent->m_hLookup.size()+1);
     }
 
-    if (m_pPrevious || m_pNext) {
-        if (m_pPrevious)
-            m_pPrevious->m_pNext = m_pNext;
-        if (m_pNext)
-            m_pNext->m_pPrevious = m_pPrevious;
+    if (m_tSiblings[PREVIOUS] || m_tSiblings[NEXT]) {
+        if (m_tSiblings[PREVIOUS])
+            m_tSiblings[PREVIOUS]->m_tSiblings[NEXT] = m_tSiblings[NEXT];
+        if (m_tSiblings[NEXT])
+            m_tSiblings[NEXT]->m_tSiblings[PREVIOUS] = m_tSiblings[PREVIOUS];
     }
     else if (m_pParent) { //FIXME very wrong
         Q_ASSERT(m_pParent->m_hLookup.isEmpty());
-        m_pParent->m_pFirstChild = nullptr;
-        m_pParent->m_pLastChild = nullptr;
+        m_pParent->m_tChildren[FIRST] = nullptr;
+        m_pParent->m_tChildren[LAST] = nullptr;
     }
 
-    //FIXME set the parent m_pFirstChild correctly and add an insert()/move() method
+    //FIXME set the parent m_tChildren[FIRST] correctly and add an insert()/move() method
     // then drop bridgeGap
 
     return true;
@@ -1562,12 +1561,12 @@ bool TreeTraversalItems::refresh()
     //
 //     qDebug() << "REFRESH";
 
-    for (auto i = m_pFirstChild; i; i = i->m_pNext) {
+    for (auto i = m_tChildren[FIRST]; i; i = i->m_tSiblings[NEXT]) {
         Q_ASSERT(i);
         Q_ASSERT(i != this);
         i->performAction(TreeTraversalItems::Action::UPDATE);
 
-        if (i == m_pLastChild)
+        if (i == m_tChildren[LAST])
             break;
     }
 
@@ -1579,12 +1578,12 @@ bool TreeTraversalItems::index()
     //TODO remove this implementation and use the one below
 
     // Propagate
-    for (auto i = m_pFirstChild; i; i = i->m_pNext) {
+    for (auto i = m_tChildren[FIRST]; i; i = i->m_tSiblings[NEXT]) {
         Q_ASSERT(i);
         Q_ASSERT(i != this);
         i->performAction(TreeTraversalItems::Action::MOVE);
 
-        if (i == m_pLastChild)
+        if (i == m_tChildren[LAST])
             break;
     }
 
@@ -1654,3 +1653,7 @@ bool TreeView2Private::error()
 
 #include <treeview2.moc>
 #undef V_ITEM
+#undef PREVIOUS
+#undef NEXT
+#undef FIRST
+#undef LAST
