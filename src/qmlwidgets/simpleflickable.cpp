@@ -159,6 +159,16 @@ QQuickItem* SimpleFlickable::contentItem()
     return d_ptr->m_pContainer;
 }
 
+QRectF SimpleFlickable::visibleRect() const
+{
+    return {
+        0.0,
+        currentY(),
+        width(),
+        height()
+    };
+}
+
 qreal SimpleFlickable::currentY() const
 {
     if (!d_ptr->m_pContainer)

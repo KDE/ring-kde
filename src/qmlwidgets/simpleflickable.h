@@ -53,11 +53,20 @@ public:
     Q_PROPERTY(bool interactive READ isInteractive WRITE setInteractive)
     Q_PROPERTY(qreal maximumFlickVelocity READ maximumFlickVelocity  WRITE setMaximumFlickVelocity)
 
+    /**
+     * The geometry of the content subset currently displayed be the Flickable.
+     *
+     * It is usually {0, currentY, height, width}.
+     */
+    Q_PROPERTY(QRectF visibleRect READ visibleRect NOTIFY currentYChanged)
+
     explicit SimpleFlickable(QQuickItem* parent = nullptr);
     virtual ~SimpleFlickable();
 
     qreal currentY() const;
     virtual void setCurrentY(qreal y);
+
+    QRectF visibleRect() const;
 
     qreal contentHeight() const;
 
