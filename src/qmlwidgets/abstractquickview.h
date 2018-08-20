@@ -23,25 +23,25 @@
 #include <QtCore/QAbstractItemModel>
 class QQmlComponent;
 
-class TreeView2Private;
-class TreeView2;
+class AbstractQuickViewPrivate;
+class AbstractQuickView;
 
 struct TreeTraversalItems; //FIXME remove
 
 /**
- * Polymorphic tree item for the TreeView2.
+ * Polymorphic tree item for the AbstractQuickView.
  *
- * Classes implementing TreeView2 need to provide an implementation of the pure
+ * Classes implementing AbstractQuickView need to provide an implementation of the pure
  * virtual functions. It is useful, for example, to manage both a raster and
  * QQuickItem based version of a view.
  *
- * The state is managed by the TreeView2 and it's own protected virtual methods.
+ * The state is managed by the AbstractQuickView and it's own protected virtual methods.
  */
 class VisualTreeItem : public FlickableView::ModelIndexItem
 {
-    friend class TreeView2;
+    friend class AbstractQuickView;
     friend struct TreeTraversalItems;
-    friend class TreeView2Private;
+    friend class AbstractQuickViewPrivate;
 public:
 
     explicit VisualTreeItem(FlickableView* p) : ModelIndexItem(p) {}
@@ -83,7 +83,7 @@ public:
     bool detach();
 
 private:
-    enum class Action { //TODO make this private to TreeView2Private
+    enum class Action { //TODO make this private to AbstractQuickViewPrivate
         ATTACH       = 0, /*!< Activate the element (do not sync it) */
         ENTER_BUFFER = 1, /*!< Sync all roles                        */
         ENTER_VIEW   = 2, /*!< NOP (todo)                            */
@@ -125,7 +125,7 @@ private:
  * could be folded into this widget (if it ever makes sense, otherwise they will
  * keep diverging).
  */
-class TreeView2 : public FlickableView
+class AbstractQuickView : public FlickableView
 {
     Q_OBJECT
     friend struct TreeTraversalItems;
@@ -155,9 +155,9 @@ public:
     };
     Q_ENUM(RecyclingMode)
 
-    explicit TreeView2(QQuickItem* parent = nullptr);
+    explicit AbstractQuickView(QQuickItem* parent = nullptr);
 
-    virtual ~TreeView2();
+    virtual ~AbstractQuickView();
 
     virtual void setModel(QSharedPointer<QAbstractItemModel> model) override;
 
@@ -216,6 +216,6 @@ Q_SIGNALS:
     virtual void contentChanged() = 0;
 
 private:
-    TreeView2Private* d_ptr;
-    Q_DECLARE_PRIVATE(TreeView2)
+    AbstractQuickViewPrivate* d_ptr;
+    Q_DECLARE_PRIVATE(AbstractQuickView)
 };

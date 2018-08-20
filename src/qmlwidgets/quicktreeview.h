@@ -17,7 +17,7 @@
  **************************************************************************/
 #pragma once
 
-#include <treeview2.h>
+#include <abstractquickview.h>
 
 // Qt
 class QQuickItem;
@@ -41,7 +41,7 @@ class TreeViewPage;
  * could be folded into this widget (if it ever makes sense, otherwise they will
  * keep diverging).
  */
-class QuickTreeView : public TreeView2
+class QuickTreeView : public AbstractQuickView
 {
     Q_OBJECT
 

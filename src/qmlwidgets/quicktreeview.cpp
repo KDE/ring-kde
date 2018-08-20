@@ -21,13 +21,13 @@
 #include <QQmlContext>
 
 /**
- * Polymorphic tree item for the TreeView2.
+ * Polymorphic tree item for the AbstractQuickView.
  *
- * Classes implementing TreeView2 need to provide an implementation of the pure
+ * Classes implementing AbstractQuickView need to provide an implementation of the pure
  * virtual functions. It is useful, for example, to manage both a raster and
  * QQuickItem based version of a view.
  *
- * The state is managed by the TreeView2 and it's own protected virtual methods.
+ * The state is managed by the AbstractQuickView and it's own protected virtual methods.
  */
 class QuickTreeViewItem : public VisualTreeItem
 {
@@ -69,7 +69,7 @@ public:
     QuickTreeView* q_ptr;
 };
 
-QuickTreeView::QuickTreeView(QQuickItem* parent) : TreeView2(parent),
+QuickTreeView::QuickTreeView(QQuickItem* parent) : AbstractQuickView(parent),
     d_ptr(new QuickTreeViewPrivate)
 {
     d_ptr->q_ptr = this;

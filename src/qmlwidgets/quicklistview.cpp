@@ -124,7 +124,7 @@ public Q_SLOTS:
     void slotDataChanged(const QModelIndex& tl, const QModelIndex& br);
 };
 
-QuickListView::QuickListView(QQuickItem* parent) : TreeView2(parent),
+QuickListView::QuickListView(QQuickItem* parent) : AbstractQuickView(parent),
     d_ptr(new QuickListViewPrivate(this))
 {
     connect(this, &FlickableView::currentIndexChanged,
@@ -170,7 +170,7 @@ void QuickListView::setCurrentIndex(int index)
     if (!model())
         return;
 
-    TreeView2::setCurrentIndex(
+    AbstractQuickView::setCurrentIndex(
         model()->index(index, 0),
         QItemSelectionModel::ClearAndSelect
     );
@@ -182,7 +182,7 @@ void QuickListView::setModel(QSharedPointer<QAbstractItemModel> m)
         disconnect(oldM.data(), &QAbstractItemModel::dataChanged, d_ptr,
             &QuickListViewPrivate::slotDataChanged);
 
-    TreeView2::setModel(m);
+    AbstractQuickView::setModel(m);
 
     if (!m)
         return;

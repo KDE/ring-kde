@@ -56,7 +56,7 @@ SET( libqmlwidgets_LIB_SRCS
     treehelper.cpp
     simpleflickable.cpp
     hierarchyview.cpp
-    treeview2.cpp
+    abstractquickview.cpp
     quicktreeview.cpp
     quicklistview.cpp
     flickableview.cpp

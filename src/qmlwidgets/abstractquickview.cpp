@@ -15,7 +15,7 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#include "treeview2.h"
+#include "abstractquickview.h"
 
 #include <QtCore/QTimer>
 
@@ -98,7 +98,7 @@ const VisualTreeItem::StateF VisualTreeItem::m_fStateMachine[7][7] = {
  */
 struct TreeTraversalItems
 {
-    explicit TreeTraversalItems(TreeTraversalItems* parent, TreeView2Private* d):
+    explicit TreeTraversalItems(TreeTraversalItems* parent, AbstractQuickViewPrivate* d):
         m_pParent(parent), d_ptr(d) {}
 
     enum class State {
@@ -160,7 +160,7 @@ struct TreeTraversalItems
     QPersistentModelIndex m_Index;
     VisualTreeItem* m_pTreeItem {nullptr};
 
-    TreeView2Private* d_ptr;
+    AbstractQuickViewPrivate* d_ptr;
 };
 
 #define S TreeTraversalItems::State::
@@ -187,7 +187,7 @@ const TreeTraversalItems::StateF TreeTraversalItems::m_fStateMachine[6][6] = {
 };
 #undef A
 
-class TreeView2Private : public QObject
+class AbstractQuickViewPrivate : public QObject
 {
     Q_OBJECT
 public:
@@ -208,7 +208,7 @@ public:
         SCROLL       = 4,
     };
 
-    typedef bool(TreeView2Private::*StateF)();
+    typedef bool(AbstractQuickViewPrivate::*StateF)();
 
     static const State  m_fStateMap    [5][5];
     static const StateF m_fStateMachine[5][5];
@@ -221,8 +221,8 @@ public:
     int  m_CacheBuffer        { 10  };
     int  m_PoolSize           { 10  };
     int  m_FailedCount        {  0  };
-    TreeView2::RecyclingMode m_RecyclingMode {
-        TreeView2::RecyclingMode::NoRecycling
+    AbstractQuickView::RecyclingMode m_RecyclingMode {
+        AbstractQuickView::RecyclingMode::NoRecycling
     };
     State m_State {State::UNFILLED};
 
@@ -250,7 +250,7 @@ public:
     // Tests
     void _test_validateTree(TreeTraversalItems* p);
 
-    TreeView2* q_ptr;
+    AbstractQuickView* q_ptr;
 
 private:
     bool nothing     ();
@@ -274,8 +274,8 @@ public Q_SLOTS:
     void slotViewportChanged();
 };
 
-#define S TreeView2Private::State::
-const TreeView2Private::State TreeView2Private::m_fStateMap[5][5] = {
+#define S AbstractQuickViewPrivate::State::
+const AbstractQuickViewPrivate::State AbstractQuickViewPrivate::m_fStateMap[5][5] = {
 /*              INSERTION    REMOVAL       MOVE     RESET_SCROLL    SCROLL  */
 /*UNFILLED */ { S ANCHORED, S UNFILLED , S UNFILLED , S UNFILLED, S UNFILLED },
 /*ANCHORED */ { S ANCHORED, S ANCHORED , S ANCHORED , S ANCHORED, S SCROLLED },
@@ -285,8 +285,8 @@ const TreeView2Private::State TreeView2Private::m_fStateMap[5][5] = {
 };
 #undef S
 
-#define A &TreeView2Private::
-const TreeView2Private::StateF TreeView2Private::m_fStateMachine[5][5] = {
+#define A &AbstractQuickViewPrivate::
+const AbstractQuickViewPrivate::StateF AbstractQuickViewPrivate::m_fStateMachine[5][5] = {
 /*              INSERTION           REMOVAL          MOVE        RESET_SCROLL     SCROLL  */
 /*UNFILLED*/ { A refreshFront, A refreshFront , A refreshFront , A nothing   , A nothing  },
 /*ANCHORED*/ { A refreshFront, A refreshFront , A refreshFront , A nothing   , A refresh  },
@@ -296,44 +296,44 @@ const TreeView2Private::StateF TreeView2Private::m_fStateMachine[5][5] = {
 };
 #undef A
 
-TreeView2::TreeView2(QQuickItem* parent) : FlickableView(parent),
-    d_ptr(new TreeView2Private())
+AbstractQuickView::AbstractQuickView(QQuickItem* parent) : FlickableView(parent),
+    d_ptr(new AbstractQuickViewPrivate())
 {
     d_ptr->q_ptr = this;
-    connect(this, &TreeView2::currentYChanged,
-        d_ptr, &TreeView2Private::slotViewportChanged);
+    connect(this, &AbstractQuickView::currentYChanged,
+        d_ptr, &AbstractQuickViewPrivate::slotViewportChanged);
 }
 
-TreeView2::~TreeView2()
+AbstractQuickView::~AbstractQuickView()
 {
     delete d_ptr->m_pRoot;
     delete d_ptr;
 }
 
-void TreeView2::setModel(QSharedPointer<QAbstractItemModel> m)
+void AbstractQuickView::setModel(QSharedPointer<QAbstractItemModel> m)
 {
     if (m == model())
         return;
 
     if (auto oldM = model()) {
         disconnect(oldM.data(), &QAbstractItemModel::rowsInserted, d_ptr,
-            &TreeView2Private::slotRowsInserted);
+            &AbstractQuickViewPrivate::slotRowsInserted);
         disconnect(oldM.data(), &QAbstractItemModel::rowsAboutToBeRemoved, d_ptr,
-            &TreeView2Private::slotRowsRemoved);
+            &AbstractQuickViewPrivate::slotRowsRemoved);
         disconnect(oldM.data(), &QAbstractItemModel::layoutAboutToBeChanged, d_ptr,
-            &TreeView2Private::cleanup);
+            &AbstractQuickViewPrivate::cleanup);
         disconnect(oldM.data(), &QAbstractItemModel::layoutChanged, d_ptr,
-            &TreeView2Private::slotLayoutChanged);
+            &AbstractQuickViewPrivate::slotLayoutChanged);
         disconnect(oldM.data(), &QAbstractItemModel::modelAboutToBeReset, d_ptr,
-            &TreeView2Private::cleanup);
+            &AbstractQuickViewPrivate::cleanup);
         disconnect(oldM.data(), &QAbstractItemModel::modelReset, d_ptr,
-            &TreeView2Private::slotLayoutChanged);
+            &AbstractQuickViewPrivate::slotLayoutChanged);
         disconnect(oldM.data(), &QAbstractItemModel::rowsAboutToBeMoved, d_ptr,
-            &TreeView2Private::slotRowsMoved);
+            &AbstractQuickViewPrivate::slotRowsMoved);
         disconnect(oldM.data(), &QAbstractItemModel::rowsMoved, d_ptr,
-            &TreeView2Private::slotRowsMoved2);
+            &AbstractQuickViewPrivate::slotRowsMoved2);
         disconnect(oldM.data(), &QAbstractItemModel::dataChanged, d_ptr,
-            &TreeView2Private::slotDataChanged);
+            &AbstractQuickViewPrivate::slotDataChanged);
 
         d_ptr->slotRowsRemoved({}, 0, oldM->rowCount()-1);
     }
@@ -349,116 +349,116 @@ void TreeView2::setModel(QSharedPointer<QAbstractItemModel> m)
         return;
 
     connect(model().data(), &QAbstractItemModel::rowsInserted, d_ptr,
-        &TreeView2Private::slotRowsInserted );
+        &AbstractQuickViewPrivate::slotRowsInserted );
     connect(model().data(), &QAbstractItemModel::rowsAboutToBeRemoved, d_ptr,
-        &TreeView2Private::slotRowsRemoved  );
+        &AbstractQuickViewPrivate::slotRowsRemoved  );
     connect(model().data(), &QAbstractItemModel::layoutAboutToBeChanged, d_ptr,
-        &TreeView2Private::cleanup);
+        &AbstractQuickViewPrivate::cleanup);
     connect(model().data(), &QAbstractItemModel::layoutChanged, d_ptr,
-        &TreeView2Private::slotLayoutChanged);
+        &AbstractQuickViewPrivate::slotLayoutChanged);
     connect(model().data(), &QAbstractItemModel::modelAboutToBeReset, d_ptr,
-        &TreeView2Private::cleanup);
+        &AbstractQuickViewPrivate::cleanup);
     connect(model().data(), &QAbstractItemModel::modelReset, d_ptr,
-        &TreeView2Private::slotLayoutChanged);
+        &AbstractQuickViewPrivate::slotLayoutChanged);
     connect(model().data(), &QAbstractItemModel::rowsAboutToBeMoved, d_ptr,
-        &TreeView2Private::slotRowsMoved);
+        &AbstractQuickViewPrivate::slotRowsMoved);
     connect(model().data(), &QAbstractItemModel::rowsMoved, d_ptr,
-        &TreeView2Private::slotRowsMoved2);
+        &AbstractQuickViewPrivate::slotRowsMoved2);
     connect(model().data(), &QAbstractItemModel::dataChanged, d_ptr,
-        &TreeView2Private::slotDataChanged  );
+        &AbstractQuickViewPrivate::slotDataChanged  );
 
     if (auto rc = m->rowCount())
         d_ptr->slotRowsInserted({}, 0, rc - 1);
 }
 
-bool TreeView2::hasUniformRowHeight() const
+bool AbstractQuickView::hasUniformRowHeight() const
 {
     return d_ptr->m_UniformRowHeight;
 }
 
-void TreeView2::setUniformRowHeight(bool value)
+void AbstractQuickView::setUniformRowHeight(bool value)
 {
     d_ptr->m_UniformRowHeight = value;
 }
 
-bool TreeView2::hasUniformColumnWidth() const
+bool AbstractQuickView::hasUniformColumnWidth() const
 {
     return d_ptr->m_UniformColumnWidth;
 }
 
-void TreeView2::setUniformColumnColumnWidth(bool value)
+void AbstractQuickView::setUniformColumnColumnWidth(bool value)
 {
     d_ptr->m_UniformColumnWidth = value;
 }
 
-bool TreeView2::isCollapsable() const
+bool AbstractQuickView::isCollapsable() const
 {
     return d_ptr->m_Collapsable;
 }
 
-void TreeView2::setCollapsable(bool value)
+void AbstractQuickView::setCollapsable(bool value)
 {
     d_ptr->m_Collapsable = value;
 }
 
-bool TreeView2::isAutoExpand() const
+bool AbstractQuickView::isAutoExpand() const
 {
     return d_ptr->m_AutoExpand;
 }
 
-void TreeView2::setAutoExpand(bool value)
+void AbstractQuickView::setAutoExpand(bool value)
 {
     d_ptr->m_AutoExpand = value;
 }
 
-int TreeView2::maxDepth() const
+int AbstractQuickView::maxDepth() const
 {
     return d_ptr->m_MaxDepth;
 }
 
-void TreeView2::setMaxDepth(int depth)
+void AbstractQuickView::setMaxDepth(int depth)
 {
     d_ptr->m_MaxDepth = depth;
 }
 
-int TreeView2::cacheBuffer() const
+int AbstractQuickView::cacheBuffer() const
 {
     return d_ptr->m_CacheBuffer;
 }
 
-void TreeView2::setCacheBuffer(int value)
+void AbstractQuickView::setCacheBuffer(int value)
 {
     d_ptr->m_CacheBuffer = value;
 }
 
-int TreeView2::poolSize() const
+int AbstractQuickView::poolSize() const
 {
     return d_ptr->m_PoolSize;
 }
 
-void TreeView2::setPoolSize(int value)
+void AbstractQuickView::setPoolSize(int value)
 {
     d_ptr->m_PoolSize = value;
 }
 
-TreeView2::RecyclingMode TreeView2::recyclingMode() const
+AbstractQuickView::RecyclingMode AbstractQuickView::recyclingMode() const
 {
     return d_ptr->m_RecyclingMode;
 }
 
-void TreeView2::setRecyclingMode(TreeView2::RecyclingMode mode)
+void AbstractQuickView::setRecyclingMode(AbstractQuickView::RecyclingMode mode)
 {
     d_ptr->m_RecyclingMode = mode;
 }
 
-void TreeView2::geometryChanged(const QRectF& newGeometry, const QRectF& oldGeometry)
+void AbstractQuickView::geometryChanged(const QRectF& newGeometry, const QRectF& oldGeometry)
 {
     FlickableView::geometryChanged(newGeometry, oldGeometry);
     d_ptr->m_pRoot->performAction(TreeTraversalItems::Action::MOVE);
     contentItem()->setWidth(newGeometry.width());
 }
 
-void TreeView2::reloadChildren(const QModelIndex& index) const
+void AbstractQuickView::reloadChildren(const QModelIndex& index) const
 {
     if (auto i = static_cast<VisualTreeItem*>(itemForIndex(index))) {
         const auto p = i->m_pTTI;
@@ -478,7 +478,7 @@ void TreeView2::reloadChildren(const QModelIndex& index) const
     }
 }
 
-QQuickItem* TreeView2::parentTreeItem(const QModelIndex& index) const
+QQuickItem* AbstractQuickView::parentTreeItem(const QModelIndex& index) const
 {
     if (auto i = static_cast<VisualTreeItem*>(itemForIndex(index))) {
         if (i->m_pTTI && i->m_pTTI->m_pParent && i->m_pTTI->m_pParent->m_pTreeItem)
@@ -489,7 +489,7 @@ QQuickItem* TreeView2::parentTreeItem(const QModelIndex& index) const
 }
 
 /// Return true if the indices affect the current view
-bool TreeView2Private::isActive(const QModelIndex& parent, int first, int last)
+bool AbstractQuickViewPrivate::isActive(const QModelIndex& parent, int first, int last)
 {
     return true; //FIXME
 
@@ -515,7 +515,7 @@ bool TreeView2Private::isActive(const QModelIndex& parent, int first, int last)
 }
 
 /// Add new entries to the mapping
-TreeTraversalItems* TreeView2Private::addChildren(TreeTraversalItems* parent, const QModelIndex& index)
+TreeTraversalItems* AbstractQuickViewPrivate::addChildren(TreeTraversalItems* parent, const QModelIndex& index)
 {
     Q_ASSERT(index.isValid());
     Q_ASSERT(index.parent() != index);
@@ -536,13 +536,13 @@ TreeTraversalItems* TreeView2Private::addChildren(TreeTraversalItems* parent, co
 }
 
 /// Make sure all elements exists all the way to the root
-void TreeView2Private::initTree(const QModelIndex& parent)
+void AbstractQuickViewPrivate::initTree(const QModelIndex& parent)
 {
     Q_UNUSED(parent);
     //
 }
 
-void TreeView2Private::cleanup()
+void AbstractQuickViewPrivate::cleanup()
 {
     m_pRoot->performAction(TreeTraversalItems::Action::DETACH);
 
@@ -551,7 +551,7 @@ void TreeView2Private::cleanup()
     m_FailedCount = 0;
 }
 
-FlickableView::ModelIndexItem* TreeView2::itemForIndex(const QModelIndex& idx) const
+FlickableView::ModelIndexItem* AbstractQuickView::itemForIndex(const QModelIndex& idx) const
 {
     if (!idx.isValid())
         return nullptr;
@@ -569,7 +569,7 @@ FlickableView::ModelIndexItem* TreeView2::itemForIndex(const QModelIndex& idx) c
     return nullptr;
 }
 
-void TreeView2::reload()
+void AbstractQuickView::reload()
 {
     if (d_ptr->m_hMapper.isEmpty())
         return;
@@ -577,7 +577,7 @@ void TreeView2::reload()
 
 }
 
-void TreeView2Private::_test_validateTree(TreeTraversalItems* p)
+void AbstractQuickViewPrivate::_test_validateTree(TreeTraversalItems* p)
 {
 #ifdef QT_NO_DEBUG_OUTPUT
     return;
@@ -730,7 +730,7 @@ void TreeView2Private::_test_validateTree(TreeTraversalItems* p)
     Q_ASSERT((!newest) || !newest->m_tSiblings[PREVIOUS]);
 }
 
-void TreeView2Private::slotRowsInserted(const QModelIndex& parent, int first, int last)
+void AbstractQuickViewPrivate::slotRowsInserted(const QModelIndex& parent, int first, int last)
 {
     Q_ASSERT((!parent.isValid()) || parent.model() == q_ptr->model());
 //     qDebug() << "\n\nADD" << first << last;
@@ -820,7 +820,7 @@ void TreeView2Private::slotRowsInserted(const QModelIndex& parent, int first, in
         Q_EMIT q_ptr->countChanged();
 }
 
-void TreeView2Private::slotRowsRemoved(const QModelIndex& parent, int first, int last)
+void AbstractQuickViewPrivate::slotRowsRemoved(const QModelIndex& parent, int first, int last)
 {
     Q_ASSERT((!parent.isValid()) || parent.model() == q_ptr->model());
     Q_EMIT q_ptr->contentChanged();
@@ -853,7 +853,7 @@ void TreeView2Private::slotRowsRemoved(const QModelIndex& parent, int first, int
         Q_EMIT q_ptr->countChanged();
 }
 
-void TreeView2Private::slotLayoutChanged()
+void AbstractQuickViewPrivate::slotLayoutChanged()
 {
 
     if (auto rc = q_ptr->model()->rowCount())
@@ -864,7 +864,7 @@ void TreeView2Private::slotLayoutChanged()
     Q_EMIT q_ptr->countChanged();
 }
 
-void TreeView2Private::createGap(VisualTreeItem* first, VisualTreeItem* last)
+void AbstractQuickViewPrivate::createGap(VisualTreeItem* first, VisualTreeItem* last)
 {
     Q_ASSERT(first->m_pTTI->m_pParent == last->m_pTTI->m_pParent);
 
@@ -896,7 +896,7 @@ void TreeView2Private::createGap(VisualTreeItem* first, VisualTreeItem* last)
 }
 
 // Convenience wrapper
-void TreeView2Private::bridgeGap(VisualTreeItem* first, VisualTreeItem* second, bool insert)
+void AbstractQuickViewPrivate::bridgeGap(VisualTreeItem* first, VisualTreeItem* second, bool insert)
 {
     bridgeGap(
         first  ? first->m_pTTI  : nullptr,
@@ -906,7 +906,7 @@ void TreeView2Private::bridgeGap(VisualTreeItem* first, VisualTreeItem* second, 
 }
 
 /// Fix the issues introduced by createGap (does not update m_pParent and m_hLookup)
-void TreeView2Private::bridgeGap(TreeTraversalItems* first, TreeTraversalItems* second, bool insert)
+void AbstractQuickViewPrivate::bridgeGap(TreeTraversalItems* first, TreeTraversalItems* second, bool insert)
 {
     // 3 possible case: siblings, first child or last child
 
@@ -988,7 +988,7 @@ void TreeView2Private::bridgeGap(TreeTraversalItems* first, TreeTraversalItems* 
 //     }
 }
 
-void TreeView2Private::setTemporaryIndices(const QModelIndex &parent, int start, int end,
+void AbstractQuickViewPrivate::setTemporaryIndices(const QModelIndex &parent, int start, int end,
                                      const QModelIndex &destination, int row)
 {
     //FIXME list only
@@ -1017,7 +1017,7 @@ void TreeView2Private::setTemporaryIndices(const QModelIndex &parent, int start,
     }
 }
 
-void TreeView2Private::resetTemporaryIndices(const QModelIndex &parent, int start, int end,
+void AbstractQuickViewPrivate::resetTemporaryIndices(const QModelIndex &parent, int start, int end,
                                      const QModelIndex &destination, int row)
 {
     //FIXME list only
@@ -1042,7 +1042,7 @@ void TreeView2Private::resetTemporaryIndices(const QModelIndex &parent, int star
     }
 }
 
-void TreeView2Private::slotRowsMoved(const QModelIndex &parent, int start, int end,
+void AbstractQuickViewPrivate::slotRowsMoved(const QModelIndex &parent, int start, int end,
                                      const QModelIndex &destination, int row)
 {
     Q_ASSERT((!parent.isValid()) || parent.model() == q_ptr->model());
@@ -1214,7 +1214,7 @@ void TreeView2Private::slotRowsMoved(const QModelIndex &parent, int start, int e
     resetTemporaryIndices(parent, start, end, destination, row);
 }
 
-void TreeView2Private::slotRowsMoved2(const QModelIndex &parent, int start, int end,
+void AbstractQuickViewPrivate::slotRowsMoved2(const QModelIndex &parent, int start, int end,
                                      const QModelIndex &destination, int row)
 {
     Q_UNUSED(parent)
@@ -1227,7 +1227,7 @@ void TreeView2Private::slotRowsMoved2(const QModelIndex &parent, int start, int 
     _test_validateTree(m_pRoot);
 }
 
-void TreeView2Private::slotDataChanged(const QModelIndex& tl, const QModelIndex& br)
+void AbstractQuickViewPrivate::slotDataChanged(const QModelIndex& tl, const QModelIndex& br)
 {
     if (tl.model() && tl.model() != q_ptr->model()) {
         Q_ASSERT(false);
@@ -1260,7 +1260,7 @@ void TreeView2Private::slotDataChanged(const QModelIndex& tl, const QModelIndex&
     }
 }
 
-void TreeView2Private::slotViewportChanged()
+void AbstractQuickViewPrivate::slotViewportChanged()
 {
     Q_ASSERT((!m_pRoot->m_tChildren[FIRST]) || m_tVisibleTTIRange[FIRST]);
     Q_ASSERT((!m_pRoot->m_tChildren[LAST ]) || m_tVisibleTTIRange[LAST ]);
@@ -1699,15 +1699,15 @@ bool TreeTraversalItems::destroy()
     return true;
 }
 
-bool TreeView2Private::nothing()
+bool AbstractQuickViewPrivate::nothing()
 { return true; }
 
-bool TreeView2Private::resetScoll()
+bool AbstractQuickViewPrivate::resetScoll()
 {
     return true;
 }
 
-bool TreeView2Private::refresh()
+bool AbstractQuickViewPrivate::refresh()
 {
     // Propagate
     for (auto i = m_pRoot->m_hLookup.constBegin(); i != m_pRoot->m_hLookup.constEnd(); i++)
@@ -1716,23 +1716,23 @@ bool TreeView2Private::refresh()
     return true;
 }
 
-bool TreeView2Private::refreshFront()
+bool AbstractQuickViewPrivate::refreshFront()
 {
     return true;
 }
 
-bool TreeView2Private::refreshBack()
+bool AbstractQuickViewPrivate::refreshBack()
 {
     return true;
 }
 
-bool TreeView2Private::error()
+bool AbstractQuickViewPrivate::error()
 {
     Q_ASSERT(false);
     return true;
 }
 
-#include <treeview2.moc>
+#include <abstractquickview.moc>
 #undef V_ITEM
 #undef PREVIOUS
 #undef NEXT
