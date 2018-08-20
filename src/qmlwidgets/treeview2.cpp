@@ -136,6 +136,12 @@ struct TreeTraversalItems
     bool index  ();
     bool destroy();
 
+    // Geometric navigation
+    TreeTraversalItems* up   () const;
+    TreeTraversalItems* down () const;
+    TreeTraversalItems* left () const;
+    TreeTraversalItems* right() const;
+
     // Helpers
     bool updateVisibility();
 
@@ -1304,6 +1310,86 @@ QPersistentModelIndex VisualTreeItem::index() const
     return m_pTTI->m_Index;
 }
 
+
+TreeTraversalItems* TreeTraversalItems::up() const
+{
+    TreeTraversalItems* ret = nullptr;
+
+    // Another simple case, there is no parent
+    if (!m_pParent) {
+        Q_ASSERT(!m_Index.parent().isValid()); //TODO remove, no longer true when partial loading is implemented
+
+        return nullptr;
+    }
+
+    // The parent has no previous siblings, therefor it is directly above the item
+    if (!m_tSiblings[PREVIOUS]) {
+//         if (m_pParent->m_pParent && m_pParent->m_pParent->m_tChildren[FIRST])
+//             Q_ASSERT(m_pParent->m_pParent->m_tChildren[FIRST] == m_pParent);
+        //FIXME Q_ASSERT(index().row() == 0);
+
+        // This is the root, there is no previous element
+        if (!m_pParent->m_pTreeItem) {
+            //Q_ASSERT(!index().parent().isValid()); //Happens when reseting models
+            return nullptr;
+        }
+
+        ret = m_pParent;
+
+        // Avoids useless unreadable indentation
+        return ret;
+    }
+
+    ret = m_tSiblings[PREVIOUS];
+
+    while (ret->m_tChildren[LAST])
+        ret = ret->m_tChildren[LAST];
+
+    return ret;
+}
+
+TreeTraversalItems* TreeTraversalItems::down() const
+{
+    TreeTraversalItems* ret = nullptr;
+    auto i = this;
+
+    if (m_tChildren[FIRST]) {
+        //Q_ASSERT(m_pParent->m_tChildren[FIRST]->m_Index.row() == 0); //racy
+        ret = m_tChildren[FIRST];
+        return ret;
+    }
+
+
+    // Recursively unwrap the tree until an element is found
+    while(i) {
+        if (i->m_tSiblings[NEXT]) {
+            ret = i->m_tSiblings[NEXT];
+            return ret;
+        }
+
+        i = i->m_pParent;
+    }
+
+    // Can't happen, exists to detect corrupted code
+    if (m_Index.parent().isValid()) {
+        Q_ASSERT(m_pParent);
+//         Q_ASSERT(m_pParent->m_pParent->m_pParent->m_hLookup.size()
+//             == m_pParent->m_Index.parent().row()+1);
+    }
+
+    return ret;
+}
+
+TreeTraversalItems* TreeTraversalItems::left() const
+{
+    return nullptr; //TODO
+}
+
+TreeTraversalItems* TreeTraversalItems::right() const
+{
+    return nullptr; //TODO
+}
+
 /**
  * Flatten the tree as a linked list.
  *
@@ -1319,39 +1405,8 @@ FlickableView::ModelIndexItem* VisualTreeItem::up() const
         // "deletion in progress" or swap the f call and set state
     );
 
-    TreeTraversalItems* ret = nullptr;
-
-    // Another simple case, there is no parent
-    if (!m_pTTI->m_pParent) {
-        Q_ASSERT(!index().parent().isValid()); //TODO remove, no longer true when partial loading is implemented
-
-        return nullptr;
-    }
-
-    // The parent has no previous siblings, therefor it is directly above the item
-    if (!m_pTTI->m_tSiblings[PREVIOUS]) {
-//         if (m_pParent->m_pParent && m_pParent->m_pParent->m_tChildren[FIRST])
-//             Q_ASSERT(m_pParent->m_pParent->m_tChildren[FIRST] == m_pParent);
-        //FIXME Q_ASSERT(index().row() == 0);
-
-        // This is the root, there is no previous element
-        if (!m_pTTI->m_pParent->m_pTreeItem) {
-            //Q_ASSERT(!index().parent().isValid()); //Happens when reseting models
-            return nullptr;
-        }
-
-        ret = m_pTTI->m_pParent;
-
-        // Avoids useless unreadable indentation
-        goto sanitize;
-    }
-
-    ret = m_pTTI->m_tSiblings[PREVIOUS];
-
-    while (ret->m_tChildren[LAST])
-        ret = ret->m_tChildren[LAST];
-
-sanitize:
+    const auto ret = m_pTTI->up();
+    //TODO support collapsed nodes
 
     Q_ASSERT((!ret) || ret->m_pTreeItem);
 
@@ -1380,43 +1435,19 @@ FlickableView::ModelIndexItem* VisualTreeItem::down() const
         // "deletion in progress" or swap the f call and set state
     );
 
-    VisualTreeItem* ret = nullptr;
-    auto i = m_pTTI;
+    auto ret = m_pTTI->down();
+    //TODO support collapsed entries
 
-    if (m_pTTI->m_tChildren[FIRST]) {
-        //Q_ASSERT(m_pParent->m_tChildren[FIRST]->m_Index.row() == 0); //racy
-        ret = m_pTTI->m_tChildren[FIRST]->m_pTreeItem;
-        goto sanitizeNext;
-    }
-
-
-    // Recursively unwrap the tree until an element is found
-    while(i) {
-        if (i->m_tSiblings[NEXT]) {
-            ret = i->m_tSiblings[NEXT]->m_pTreeItem;
-            goto sanitizeNext;
-        }
-
-        i = i->m_pParent;
-    }
-
-    // Can't happen, exists to detect corrupted code
-    if (m_pTTI->m_Index.parent().isValid()) {
-        Q_ASSERT(m_pTTI->m_pParent);
-//         Q_ASSERT(m_pParent->m_pParent->m_pParent->m_hLookup.size()
-//             == m_pParent->m_Index.parent().row()+1);
-    }
-
-sanitizeNext:
+    Q_ASSERT((!ret) || ret->m_pTreeItem);
 
     // Recursively look for a valid element. Doing this here allows the views
     // that implement this (abstract) class to work without having to always
     // check if some of their item failed to load. This is non-fatal in the
     // other Qt views, so it isn't fatal here either.
-    if (ret && ret->m_State == VisualTreeItem::State::FAILED)
-        return ret->down();
+    if (ret && ret->m_pTreeItem->m_State == VisualTreeItem::State::FAILED)
+        return ret->m_pTreeItem->down();
 
-    return ret;
+    return ret ? ret->m_pTreeItem : nullptr;
 }
 
 
