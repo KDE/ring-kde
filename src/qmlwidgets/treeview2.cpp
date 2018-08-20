@@ -136,6 +136,9 @@ struct TreeTraversalItems
     bool index  ();
     bool destroy();
 
+    // Helpers
+    bool updateVisibility();
+
     //TODO use a btree, not an hash
     QHash<QPersistentModelIndex, TreeTraversalItems*> m_hLookup;
 
@@ -219,6 +222,9 @@ public:
 
     TreeTraversalItems* m_pRoot {new TreeTraversalItems(nullptr, this)};
 
+    //TODO this is vertical only, make this a 2D vector for H
+    TreeTraversalItems* m_tVisibleTTIRange[2] = {nullptr, nullptr};
+
     /// All elements with loaded children
     QHash<QPersistentModelIndex, TreeTraversalItems*> m_hMapper;
 
@@ -259,6 +265,7 @@ public Q_SLOTS:
 
     void slotRowsMoved2    (const QModelIndex &p, int start, int end,
                             const QModelIndex &dest, int row);
+    void slotViewportChanged();
 };
 
 #define S TreeView2Private::State::
@@ -287,6 +294,8 @@ TreeView2::TreeView2(QQuickItem* parent) : FlickableView(parent),
     d_ptr(new TreeView2Private())
 {
     d_ptr->q_ptr = this;
+    connect(this, &TreeView2::currentYChanged,
+        d_ptr, &TreeView2Private::slotViewportChanged);
 }
 
 TreeView2::~TreeView2()
@@ -1245,6 +1254,12 @@ void TreeView2Private::slotDataChanged(const QModelIndex& tl, const QModelIndex&
     }
 }
 
+void TreeView2Private::slotViewportChanged()
+{
+    Q_ASSERT((!m_pRoot->m_tChildren[FIRST]) || m_tVisibleTTIRange[FIRST]);
+    Q_ASSERT((!m_pRoot->m_tChildren[LAST ]) || m_tVisibleTTIRange[LAST ]);
+}
+
 bool VisualTreeItem::performAction(Action a)
 {
     if (m_State == VisualTreeItem::State::FAILED)
@@ -1281,7 +1296,7 @@ int VisualTreeItem::depth() const
 
 bool VisualTreeItem::isVisible() const
 {
-    return true;//m_pTTI->TODO
+    return m_pTTI->m_State == TreeTraversalItems::State::VISIBLE;
 }
 
 QPersistentModelIndex VisualTreeItem::index() const
@@ -1465,6 +1480,35 @@ bool TreeTraversalItems::error()
 }
 #pragma GCC diagnostic pop
 
+bool TreeTraversalItems::updateVisibility()
+{
+    // Update the visible range
+    const auto geo  = m_pTreeItem->geometry();
+    const auto view = d_ptr->q_ptr->visibleRect();
+
+    //TODO support horizontal visibility
+    const bool isVisible = geo.y() >= view.y()
+        && (geo.y() <= view.y() + view.height());
+
+    if (auto up = m_pTreeItem->up()) {
+        if (isVisible && !up->isVisible()) {
+            d_ptr->m_tVisibleTTIRange[FIRST] = this;
+        }
+    }
+    else if (isVisible)
+        d_ptr->m_tVisibleTTIRange[FIRST] = this;
+
+    if (auto down = m_pTreeItem->up()) {
+        if (isVisible && !down->isVisible()) {
+            d_ptr->m_tVisibleTTIRange[LAST] = this;
+        }
+    }
+    else if (isVisible)
+        d_ptr->m_tVisibleTTIRange[LAST] = this;
+
+    return isVisible;
+}
+
 bool TreeTraversalItems::show()
 {
 //     qDebug() << "SHOW";
@@ -1476,6 +1520,8 @@ bool TreeTraversalItems::show()
 
     m_pTreeItem->performAction(VisualTreeItem::Action::ENTER_BUFFER);
     m_pTreeItem->performAction(VisualTreeItem::Action::ENTER_VIEW  );
+
+    updateVisibility();
 
     return true;
 }
@@ -1587,8 +1633,12 @@ bool TreeTraversalItems::index()
             break;
     }
 
-    if (m_pTreeItem)
+    //FIXME this if should not exists, this should be handled by the state
+    // machine.
+    if (m_pTreeItem) {
         m_pTreeItem->performAction(VisualTreeItem::Action::MOVE); //FIXME don't
+        updateVisibility(); //FIXME add a new state change for this
+    }
 
     return true;
 
