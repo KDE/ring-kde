@@ -71,7 +71,7 @@ public:
     virtual QWeakPointer<ModelIndexItem> reference() const final override;
 
     /// Visibility relative to the displayed window of the FlickableView::view()
-    virtual bool isVisible() const override {return true;} //FIXME implement
+    virtual bool isVisible() const override;
 
     // Actions
     virtual bool attach () = 0;
@@ -95,7 +95,7 @@ private:
 
     typedef bool(VisualTreeItem::*StateF)();
     State m_State {State::POOLED};
-    TreeTraversalItems* m_pParent {nullptr};
+    TreeTraversalItems* m_pTTI {nullptr};
     mutable QSharedPointer<VisualTreeItem> m_pSelf;
     int m_MoveToRow    {-1};
     int m_MoveToColumn {-1};

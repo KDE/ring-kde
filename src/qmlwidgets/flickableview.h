@@ -37,8 +37,6 @@ class FlickableViewPrivate;
  * API and be drop-in replacement for each other if the model topology is ever
  * extended.
  *
- * This is a base class and is not intended to be used directly.
- *
  * This is an abstract class and expect the implementations to properly
  * manage the `ModelIndexItem` elements. In return, this class provides an
  * unified way to handle the selection and drag&drop boiler plate code.
