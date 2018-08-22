@@ -241,6 +241,7 @@ public:
     void bridgeGap(TreeTraversalItems* first, TreeTraversalItems* second, bool insert = false);
     void bridgeGap(VisualTreeItem* first, VisualTreeItem* second, bool insert = false);
     void createGap(VisualTreeItem* first, VisualTreeItem* last  );
+    TreeTraversalItems* ttiForIndex(const QModelIndex& idx) const;
 
     void setTemporaryIndices(const QModelIndex &parent, int start, int end,
                              const QModelIndex &destination, int row);
@@ -551,22 +552,24 @@ void AbstractQuickViewPrivate::cleanup()
     m_FailedCount = 0;
 }
 
-FlickableView::ModelIndexItem* AbstractQuickView::itemForIndex(const QModelIndex& idx) const
+TreeTraversalItems* AbstractQuickViewPrivate::ttiForIndex(const QModelIndex& idx) const
 {
     if (!idx.isValid())
         return nullptr;
 
-    if (!idx.parent().isValid()) {
-        const auto tti = d_ptr->m_pRoot->m_hLookup.value(idx);
-        return tti ? tti->m_pTreeItem : nullptr;
-    }
+    if (!idx.parent().isValid())
+        return m_pRoot->m_hLookup.value(idx);
 
-    if (auto parent = d_ptr->m_hMapper.value(idx.parent())) {
-        const auto tti = parent->m_hLookup.value(idx);
-        return tti ? tti->m_pTreeItem : nullptr;
-    }
+    if (auto parent = m_hMapper.value(idx.parent()))
+        return parent->m_hLookup.value(idx);
 
     return nullptr;
+}
+
+FlickableView::ModelIndexItem* AbstractQuickView::itemForIndex(const QModelIndex& idx) const
+{
+    const auto tti = d_ptr->ttiForIndex(idx);
+    return tti ? tti->m_pTreeItem : nullptr;
 }
 
 void AbstractQuickView::reload()
