@@ -780,15 +780,15 @@ void AbstractQuickViewPrivate::slotRowsInserted(const QModelIndex& parent, int f
 
         if ((!pitem->m_tChildren[FIRST]) || e->m_Index.row() <= pitem->m_tChildren[FIRST]->m_Index.row()) {
             Q_ASSERT(pitem != e);
-            if (auto pe = V_ITEM(e->m_pTreeItem->up()))
-                pe->m_pTTI->performAction(TreeTraversalItems::Action::MOVE);
+            if (auto pe = e->up())
+                pe->performAction(TreeTraversalItems::Action::MOVE);
         }
 
         if ((!pitem->m_tChildren[LAST]) || e->m_Index.row() > pitem->m_tChildren[LAST]->m_Index.row()) {
             Q_ASSERT(pitem != e);
             pitem->m_tChildren[LAST] = e;
-            if (auto ne = V_ITEM(e->m_pTreeItem->down()))
-                ne->m_pTTI->performAction(TreeTraversalItems::Action::MOVE);
+            if (auto ne = e->down())
+                ne->performAction(TreeTraversalItems::Action::MOVE);
         }
 
         if (auto rc = q_ptr->model()->rowCount(idx))
