@@ -460,12 +460,7 @@ void AbstractQuickView::geometryChanged(const QRectF& newGeometry, const QRectF&
 
 void AbstractQuickView::reloadChildren(const QModelIndex& index) const
 {
-    if (auto i = static_cast<VisualTreeItem*>(itemForIndex(index))) {
-        const auto p = i->m_pTTI;
-
-        if (!p)
-            return;
-
+    if (auto p = d_ptr->ttiForIndex(index)) {
         auto c = p->m_tChildren[FIRST];
 
         while (c && c != p->m_tChildren[LAST]) {
@@ -480,9 +475,9 @@ void AbstractQuickView::reloadChildren(const QModelIndex& index) const
 
 QQuickItem* AbstractQuickView::parentTreeItem(const QModelIndex& index) const
 {
-    if (auto i = static_cast<VisualTreeItem*>(itemForIndex(index))) {
-        if (i->m_pTTI && i->m_pTTI->m_pParent && i->m_pTTI->m_pParent->m_pTreeItem)
-            return i->m_pTTI->m_pParent->m_pTreeItem->item();
+    if (auto i = d_ptr->ttiForIndex(index)) {
+        if (i->m_pParent && i->m_pParent->m_pTreeItem)
+            return i->m_pParent->m_pTreeItem->item();
     }
 
     return nullptr;
@@ -663,17 +658,17 @@ void AbstractQuickViewPrivate::_test_validateTree(TreeTraversalItems* p)
 
         // Test that there is no trivial duplicate TreeTraversalItems for the same index
         if(i.value()->m_tSiblings[PREVIOUS] && i.value()->m_tSiblings[PREVIOUS]->m_hLookup.isEmpty()) {
-            const auto prev = V_ITEM(i.value()->m_pTreeItem->up());
-            Q_ASSERT(prev->m_pTTI == i.value()->m_tSiblings[PREVIOUS]);
+            const auto prev = i.value()->up();
+            Q_ASSERT(prev == i.value()->m_tSiblings[PREVIOUS]);
 
-            const auto next = V_ITEM(prev->down());
-            Q_ASSERT(next->m_pTTI == i.value());
+            const auto next = prev->down();
+            Q_ASSERT(next == i.value());
         }
 
         // Test the virtual linked list between the leafs and branches
-        if(auto next = V_ITEM(i.value()->m_pTreeItem->down())) {
-            Q_ASSERT(next->up() == i.value()->m_pTreeItem);
-            Q_ASSERT(next->m_pTTI != i.value());
+        if(auto next = i.value()->down()) {
+            Q_ASSERT(next->up() == i.value());
+            Q_ASSERT(next != i.value());
         }
         else {
             // There is always a next is those conditions are not met unless there
@@ -682,15 +677,15 @@ void AbstractQuickViewPrivate::_test_validateTree(TreeTraversalItems* p)
             Q_ASSERT(i.value()->m_hLookup.isEmpty());
         }
 
-        if(auto prev = V_ITEM(i.value()->m_pTreeItem->up())) {
-            Q_ASSERT(V_ITEM(prev->down()) == i.value()->m_pTreeItem);
-            Q_ASSERT(prev->m_pTTI != i.value());
+        if(auto prev = i.value()->up()) {
+            Q_ASSERT(prev->down() == i.value());
+            Q_ASSERT(prev != i.value());
         }
         else {
             // There is always a previous if those conditions are not met unless there
             // is failed elements creating (auto-corrected) holes in the chains.
             Q_ASSERT(!i.value()->m_tSiblings[PREVIOUS]);
-            Q_ASSERT(!i.value()->m_pParent->m_pTreeItem);
+            Q_ASSERT(i.value()->m_pParent == m_pRoot);
         }
 
         _test_validateTree(i.value());
@@ -698,26 +693,26 @@ void AbstractQuickViewPrivate::_test_validateTree(TreeTraversalItems* p)
 
     // Traverse as a list
     if (p == m_pRoot) {
-        VisualTreeItem* oldVI(nullptr);
+        TreeTraversalItems* oldTTI(nullptr);
 
         int count(0), count2(0);
-        for (auto i = m_pRoot->m_tChildren[FIRST]->m_pTreeItem; i; i = V_ITEM(i->down())) {
-            Q_ASSERT((!oldVI) || i->up());
-            Q_ASSERT(i->up() == oldVI);
-            oldVI = i;
+        for (auto i = m_pRoot->m_tChildren[FIRST]; i; i = i->down()) {
+            Q_ASSERT((!oldTTI) || i->up());
+            Q_ASSERT(i->up() == oldTTI);
+            oldTTI = i;
             count++;
         }
 
         // Backward too
-        oldVI = nullptr;
+        oldTTI = nullptr;
         auto last = m_pRoot->m_tChildren[LAST];
         while (last && last->m_tChildren[LAST])
             last = last->m_tChildren[LAST];
 
-        for (auto i = last->m_pTreeItem; i; i = V_ITEM(i->up())) {
-            Q_ASSERT((!oldVI) || i->down());
-            Q_ASSERT(i->down() == oldVI);
-            oldVI = i;
+        for (auto i = last; i; i = i->up()) {
+            Q_ASSERT((!oldTTI) || i->down());
+            Q_ASSERT(i->down() == oldTTI);
+            oldTTI = i;
             count2++;
         }
 
