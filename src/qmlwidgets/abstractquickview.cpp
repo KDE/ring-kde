@@ -239,8 +239,7 @@ public:
     void initTree(const QModelIndex& parent);
     TreeTraversalItems* addChildren(TreeTraversalItems* parent, const QModelIndex& index);
     void bridgeGap(TreeTraversalItems* first, TreeTraversalItems* second, bool insert = false);
-    void bridgeGap(VisualTreeItem* first, VisualTreeItem* second, bool insert = false);
-    void createGap(VisualTreeItem* first, VisualTreeItem* last  );
+    void createGap(TreeTraversalItems* first, TreeTraversalItems* last  );
     TreeTraversalItems* ttiForIndex(const QModelIndex& idx) const;
 
     void setTemporaryIndices(const QModelIndex &parent, int start, int end,
@@ -867,45 +866,35 @@ void AbstractQuickViewPrivate::slotLayoutChanged()
     Q_EMIT q_ptr->countChanged();
 }
 
-void AbstractQuickViewPrivate::createGap(VisualTreeItem* first, VisualTreeItem* last)
+void AbstractQuickViewPrivate::createGap(TreeTraversalItems* first, TreeTraversalItems* last)
 {
-    Q_ASSERT(first->m_pTTI->m_pParent == last->m_pTTI->m_pParent);
+    Q_ASSERT(first->m_pParent == last->m_pParent);
 
-    if (first->m_pTTI->m_tSiblings[PREVIOUS]) {
-        first->m_pTTI->m_tSiblings[PREVIOUS]->m_tSiblings[NEXT] = last->m_pTTI->m_tSiblings[NEXT];
+    if (first->m_tSiblings[PREVIOUS]) {
+        first->m_tSiblings[PREVIOUS]->m_tSiblings[NEXT] = last->m_tSiblings[NEXT];
     }
 
-    if (last->m_pTTI->m_tSiblings[NEXT]) {
-        last->m_pTTI->m_tSiblings[NEXT]->m_tSiblings[PREVIOUS] = first->m_pTTI->m_tSiblings[PREVIOUS];
+    if (last->m_tSiblings[NEXT]) {
+        last->m_tSiblings[NEXT]->m_tSiblings[PREVIOUS] = first->m_tSiblings[PREVIOUS];
     }
 
-    if (first->m_pTTI->m_pParent->m_tChildren[FIRST] == first->m_pTTI)
-        first->m_pTTI->m_pParent->m_tChildren[FIRST] = last->m_pTTI->m_tSiblings[NEXT];
+    if (first->m_pParent->m_tChildren[FIRST] == first)
+        first->m_pParent->m_tChildren[FIRST] = last->m_tSiblings[NEXT];
 
-    if (last->m_pTTI->m_pParent->m_tChildren[LAST] == last->m_pTTI)
-        last->m_pTTI->m_pParent->m_tChildren[LAST] = first->m_pTTI->m_tSiblings[PREVIOUS];
+    if (last->m_pParent->m_tChildren[LAST] == last)
+        last->m_pParent->m_tChildren[LAST] = first->m_tSiblings[PREVIOUS];
 
-    Q_ASSERT((!first->m_pTTI->m_tSiblings[PREVIOUS]) ||
-        first->m_pTTI->m_tSiblings[PREVIOUS]->m_pTreeItem->down() != first);
-    Q_ASSERT((!last->m_pTTI->m_tSiblings[NEXT]) ||
-        last->m_pTTI->m_tSiblings[NEXT]->m_pTreeItem->up() != last);
+    Q_ASSERT((!first->m_tSiblings[PREVIOUS]) ||
+        first->m_tSiblings[PREVIOUS]->down() != first);
+    Q_ASSERT((!last->m_tSiblings[NEXT]) ||
+        last->m_tSiblings[NEXT]->up() != last);
 
-    Q_ASSERT((!first) || first->m_pTTI->m_tChildren[FIRST] || first->m_pTTI->m_hLookup.isEmpty());
-    Q_ASSERT((!last) || last->m_pTTI->m_tChildren[FIRST] || last->m_pTTI->m_hLookup.isEmpty());
+    Q_ASSERT((!first) || first->m_tChildren[FIRST] || first->m_hLookup.isEmpty());
+    Q_ASSERT((!last) || last->m_tChildren[FIRST] || last->m_hLookup.isEmpty());
 
     // Do not leave invalid pointers for easier debugging
-    last->m_pTTI->m_tSiblings[NEXT]      = nullptr;
-    first->m_pTTI->m_tSiblings[PREVIOUS] = nullptr;
-}
-
-// Convenience wrapper
-void AbstractQuickViewPrivate::bridgeGap(VisualTreeItem* first, VisualTreeItem* second, bool insert)
-{
-    bridgeGap(
-        first  ? first->m_pTTI  : nullptr,
-        second ? second->m_pTTI : nullptr,
-        insert
-    );
+    last->m_tSiblings[NEXT]      = nullptr;
+    first->m_tSiblings[PREVIOUS] = nullptr;
 }
 
 /// Fix the issues introduced by createGap (does not update m_pParent and m_hLookup)
@@ -1072,28 +1061,28 @@ void AbstractQuickViewPrivate::slotRowsMoved(const QModelIndex &parent, int star
     Q_ASSERT(idxStart.isValid() && idxEnd.isValid());
 
     //FIXME once partial ranges are supported, this is no longer always valid
-    auto startVI = V_ITEM(q_ptr->itemForIndex(idxStart));
-    auto endVI   = V_ITEM(q_ptr->itemForIndex(idxEnd));
+    auto startTTI = ttiForIndex(idxStart);
+    auto endTTI   = ttiForIndex(idxEnd);
 
     if (end - start == 1)
-        Q_ASSERT(startVI->m_pTTI->m_tSiblings[NEXT] == endVI->m_pTTI);
+        Q_ASSERT(startTTI->m_tSiblings[NEXT] == endTTI);
 
     //FIXME so I don't forget, it will mess things up if silently ignored
-    Q_ASSERT(startVI && endVI);
-    Q_ASSERT(startVI->m_pTTI->m_pParent == endVI->m_pTTI->m_pParent);
+    Q_ASSERT(startTTI && endTTI);
+    Q_ASSERT(startTTI->m_pParent == endTTI->m_pParent);
 
-    auto oldPreviousVI = V_ITEM(startVI->up());
-    auto oldNextVI     = V_ITEM(endVI->down());
+    auto oldPreviousTTI = startTTI->up();
+    auto oldNextTTI     = endTTI->down();
 
-    Q_ASSERT((!oldPreviousVI) || oldPreviousVI->down() == startVI);
-    Q_ASSERT((!oldNextVI) || oldNextVI->up() == endVI);
+    Q_ASSERT((!oldPreviousTTI) || oldPreviousTTI->down() == startTTI);
+    Q_ASSERT((!oldNextTTI) || oldNextTTI->up() == endTTI);
 
     auto newNextIdx = q_ptr->model()->index(row, 0, destination);
 
     // You cannot move things into an empty model
     Q_ASSERT((!row) || newNextIdx.isValid());
 
-    VisualTreeItem *newNextVI(nullptr), *newPrevVI(nullptr);
+    TreeTraversalItems *newNextTTI(nullptr), *newPrevTTI(nullptr);
 
     // Rewind until a next element is found, this happens when destination is empty
     if (!newNextIdx.isValid() && destination.parent().isValid()) {
@@ -1108,95 +1097,91 @@ void AbstractQuickViewPrivate::slotRowsMoved(const QModelIndex &parent, int star
             par = par.parent();
         } while (par.isValid());
 
-        newNextVI = V_ITEM(q_ptr->itemForIndex(newNextIdx));
+        newNextTTI = ttiForIndex(newNextIdx);
     }
     else {
-        newNextVI = V_ITEM(q_ptr->itemForIndex(newNextIdx));
-        newPrevVI = newNextVI ? V_ITEM(newNextVI->up()) : nullptr;
+        newNextTTI = ttiForIndex(newNextIdx);
+        newPrevTTI = newNextTTI ? newNextTTI->up() : nullptr;
     }
 
     if (!row) {
-        auto otherI = V_ITEM(q_ptr->itemForIndex(destination));
-        Q_ASSERT((!newPrevVI) || otherI == newPrevVI);
+        auto otherI = ttiForIndex(destination);
+        Q_ASSERT((!newPrevTTI) || otherI == newPrevTTI);
     }
 
     // When there is no next element, then the parent has to be extracted manually
-    if (!(newNextVI || newPrevVI)) {
+    if (!(newNextTTI || newPrevTTI)) {
         if (!row)
-            newPrevVI = V_ITEM(q_ptr->itemForIndex(destination));
+            newPrevTTI = ttiForIndex(destination);
         else {
-            newPrevVI = V_ITEM(q_ptr->itemForIndex(
+            newPrevTTI = ttiForIndex(
                 destination.model()->index(row-1, 0, destination)
-            ));
+            );
         }
     }
 
-    Q_ASSERT((newPrevVI || startVI) && newPrevVI != startVI);
-    Q_ASSERT((newNextVI || endVI  ) && newNextVI != endVI  );
+    Q_ASSERT((newPrevTTI || startTTI) && newPrevTTI != startTTI);
+    Q_ASSERT((newNextTTI || endTTI  ) && newNextTTI != endTTI  );
 
-    TreeTraversalItems* newParentTTI = nullptr;
-    auto oldParentTTI = startVI->m_pTTI->m_pParent;
-
-    if (auto parentVI = V_ITEM(q_ptr->itemForIndex(destination)))
-        newParentTTI = parentVI->m_pTTI;
-    else
-        newParentTTI = m_pRoot;
+    TreeTraversalItems* newParentTTI = ttiForIndex(destination);
+    newParentTTI = newParentTTI ? newParentTTI : m_pRoot;
+    auto oldParentTTI = startTTI->m_pParent;
 
     // Make sure not to leave invalid pointers while the steps below are being performed
-    createGap(startVI, endVI);
+    createGap(startTTI, endTTI);
 
     // Update the tree parent (if necessary)
     if (oldParentTTI != newParentTTI) {
-        for (auto i = startVI; i; i = i->m_pTTI->m_tSiblings[NEXT] ? i->m_pTTI->m_tSiblings[NEXT]->m_pTreeItem : nullptr) {
-            auto idx = i->index();
+        for (auto i = startTTI; i; i = i->m_tSiblings[NEXT]) {
+            auto idx = i->m_Index;
 
             const int size = oldParentTTI->m_hLookup.size();
             oldParentTTI->m_hLookup.remove(idx);
             Q_ASSERT(oldParentTTI->m_hLookup.size() == size-1);
 
-            newParentTTI->m_hLookup[idx] = i->m_pTTI;
-            i->m_pTTI->m_pParent = newParentTTI;
-            if (i == endVI)
+            newParentTTI->m_hLookup[idx] = i;
+            i->m_pParent = newParentTTI;
+            if (i == endTTI)
                 break;
         }
     }
 
-    Q_ASSERT(startVI->m_pTTI->m_pParent == newParentTTI);
-    Q_ASSERT(endVI->m_pTTI->m_pParent   == newParentTTI);
+    Q_ASSERT(startTTI->m_pParent == newParentTTI);
+    Q_ASSERT(endTTI->m_pParent   == newParentTTI);
 
-    bridgeGap(newPrevVI, startVI  );
-    bridgeGap(endVI    , newNextVI);
+    bridgeGap(newPrevTTI, startTTI );
+    bridgeGap(endTTI   , newNextTTI);
 
     // Close the gap between the old previous and next elements
-    Q_ASSERT(startVI->m_pTTI->m_tSiblings[NEXT]     != startVI->m_pTTI);
-    Q_ASSERT(startVI->m_pTTI->m_tSiblings[PREVIOUS] != startVI->m_pTTI);
-    Q_ASSERT(endVI->m_pTTI->m_tSiblings[NEXT]       != endVI->m_pTTI  );
-    Q_ASSERT(endVI->m_pTTI->m_tSiblings[PREVIOUS]   != endVI->m_pTTI  );
+    Q_ASSERT(startTTI->m_tSiblings[NEXT]     != startTTI);
+    Q_ASSERT(startTTI->m_tSiblings[PREVIOUS] != startTTI);
+    Q_ASSERT(endTTI->m_tSiblings[NEXT]       != endTTI  );
+    Q_ASSERT(endTTI->m_tSiblings[PREVIOUS]   != endTTI  );
 
     //BEGIN debug
-    if (newPrevVI) {
-    int count = 0;
-    for (auto c = newPrevVI->m_pTTI->m_pParent->m_tChildren[FIRST]; c; c = c->m_tSiblings[NEXT])
-        count++;
-    Q_ASSERT(count == newPrevVI->m_pTTI->m_pParent->m_hLookup.size());
+    if (newPrevTTI) {
+        int count = 0;
+        for (auto c = newPrevTTI->m_pParent->m_tChildren[FIRST]; c; c = c->m_tSiblings[NEXT])
+            count++;
+        Q_ASSERT(count == newPrevTTI->m_pParent->m_hLookup.size());
 
-    count = 0;
-    for (auto c = newPrevVI->m_pTTI->m_pParent->m_tChildren[LAST]; c; c = c->m_tSiblings[PREVIOUS])
-        count++;
-    Q_ASSERT(count == newPrevVI->m_pTTI->m_pParent->m_hLookup.size());
+        count = 0;
+        for (auto c = newPrevTTI->m_pParent->m_tChildren[LAST]; c; c = c->m_tSiblings[PREVIOUS])
+            count++;
+        Q_ASSERT(count == newPrevTTI->m_pParent->m_hLookup.size());
     }
     //END
 
-    bridgeGap(oldPreviousVI, oldNextVI);
+    bridgeGap(oldPreviousTTI, oldNextTTI);
 
 
-    if (endVI->m_pTTI->m_tSiblings[NEXT]) {
-        Q_ASSERT(endVI->m_pTTI->m_tSiblings[NEXT]->m_tSiblings[PREVIOUS] == endVI->m_pTTI);
+    if (endTTI->m_tSiblings[NEXT]) {
+        Q_ASSERT(endTTI->m_tSiblings[NEXT]->m_tSiblings[PREVIOUS] == endTTI);
     }
 
-    if (startVI->m_pTTI->m_tSiblings[PREVIOUS]) {
-        Q_ASSERT(startVI->m_pTTI->m_tSiblings[PREVIOUS]->m_pParent == startVI->m_pTTI->m_pParent);
-        Q_ASSERT(startVI->m_pTTI->m_tSiblings[PREVIOUS]->m_tSiblings[NEXT] == startVI->m_pTTI);
+    if (startTTI->m_tSiblings[PREVIOUS]) {
+        Q_ASSERT(startTTI->m_tSiblings[PREVIOUS]->m_pParent == startTTI->m_pParent);
+        Q_ASSERT(startTTI->m_tSiblings[PREVIOUS]->m_tSiblings[NEXT] == startTTI);
     }
 
 
