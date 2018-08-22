@@ -157,6 +157,12 @@ struct TreeTraversalItems
     TreeTraversalItems* m_tSiblings[2] = {nullptr, nullptr};
     TreeTraversalItems* m_tChildren[2] = {nullptr, nullptr};
 
+    // Because slotRowsMoved is called before the change take effect, cache
+    // the "new real row and column" since the current index()->row() is now
+    // garbage.
+    int m_MoveToRow    {-1};
+    int m_MoveToColumn {-1};
+
     QPersistentModelIndex m_Index;
     VisualTreeItem* m_pTreeItem {nullptr};
 
@@ -990,7 +996,7 @@ void AbstractQuickViewPrivate::setTemporaryIndices(const QModelIndex &parent, in
             auto elem = pitem->m_hLookup.value(idx);
             Q_ASSERT(elem);
 
-            elem->m_pTreeItem->m_MoveToRow = row + (i - start);
+            elem->m_MoveToRow = row + (i - start);
         }
 
         for (int i = row; i <= row + (end - start); i++) {
@@ -999,7 +1005,7 @@ void AbstractQuickViewPrivate::setTemporaryIndices(const QModelIndex &parent, in
             auto elem = pitem->m_hLookup.value(idx);
             Q_ASSERT(elem);
 
-            elem->m_pTreeItem->m_MoveToRow = row + (end - start) + 1;
+            elem->m_MoveToRow = row + (end - start) + 1;
         }
     }
 }
@@ -1017,14 +1023,14 @@ void AbstractQuickViewPrivate::resetTemporaryIndices(const QModelIndex &parent, 
             auto idx = q_ptr->model()->index(i, 0, parent);
             auto elem = pitem->m_hLookup.value(idx);
             Q_ASSERT(elem);
-            elem->m_pTreeItem->m_MoveToRow = -1;
+            elem->m_MoveToRow = -1;
         }
 
         for (int i = row; i <= row + (end - start); i++) {
             auto idx = q_ptr->model()->index(i, 0, parent);
             auto elem = pitem->m_hLookup.value(idx);
             Q_ASSERT(elem);
-            elem->m_pTreeItem->m_MoveToRow = -1;
+            elem->m_MoveToRow = -1;
         }
     }
 }
@@ -1436,12 +1442,14 @@ FlickableView::ModelIndexItem* VisualTreeItem::down() const
 
 int VisualTreeItem::row() const
 {
-    return m_MoveToRow == -1 ? index().row() : m_MoveToRow;
+    return m_pTTI->m_MoveToRow == -1 ?
+        index().row() : m_pTTI->m_MoveToRow;
 }
 
 int VisualTreeItem::column() const
 {
-    return m_MoveToColumn == -1 ? index().column() : m_MoveToColumn;
+    return m_pTTI->m_MoveToColumn == -1 ?
+        index().column() : m_pTTI->m_MoveToColumn;
 }
 
 bool VisualTreeItem::nothing()

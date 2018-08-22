@@ -97,8 +97,6 @@ private:
     State m_State {State::POOLED};
     TreeTraversalItems* m_pTTI {nullptr};
     mutable QSharedPointer<VisualTreeItem> m_pSelf;
-    int m_MoveToRow    {-1};
-    int m_MoveToColumn {-1};
 
     static const State  m_fStateMap    [7][7];
     static const StateF m_fStateMachine[7][7];
