@@ -62,6 +62,9 @@ public:
         /// Visibility relative to the displayed window of the FlickableView::view()
         virtual bool isVisible() const = 0;
 
+        /// Check before making it visible it can be displayed
+        virtual bool fitsInView() const = 0;
+
         /// Get a weak pointer into itself so the implementation can notify of deletion
         virtual QWeakPointer<ModelIndexItem> reference() const = 0;
 

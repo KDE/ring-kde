@@ -236,6 +236,9 @@ void QuickTreeViewItem::setSelected(bool s)
 
 QRectF QuickTreeViewItem::geometry() const
 {
+    if (!m_pItem)
+        return {};
+
     const QPointF p = m_pItem->mapFromItem(view()->contentItem(), {0,0});
     return {
         -p.x(),

@@ -66,12 +66,18 @@ public:
     // Getters
     virtual QPersistentModelIndex index   () const override final;
     virtual int depth() const final override;
+    // Getters
+    bool hasFailed() const {
+        return m_State == State::FAILED;
+    }
 
     /// Allows to keep a reference while still being tracked by the state machine
     virtual QWeakPointer<ModelIndexItem> reference() const final override;
 
     /// Visibility relative to the displayed window of the FlickableView::view()
     virtual bool isVisible() const override;
+
+    virtual bool fitsInView() const override;
 
     // Actions
     virtual bool attach () = 0;
