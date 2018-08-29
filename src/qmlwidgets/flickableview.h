@@ -29,6 +29,9 @@ class QItemSelectionModel;
 
 class FlickableViewPrivate;
 
+class ModelIndexItem;//FIXME remove
+class VisualTreeItem;//FIXME remove
+
 /**
  * This widget bridges the simple Flickable "cartesian plan" widget with a
  * model view.
@@ -46,59 +49,6 @@ class FlickableView : public SimpleFlickable
     Q_OBJECT
 
 public:
-    /**
-     * Abstract base class of the visual representation of a QModelIndex.
-     */
-    class ModelIndexItem
-    {
-    public:
-        virtual ~ModelIndexItem() {}
-
-        explicit ModelIndexItem(FlickableView* view);
-
-        /// Geometry relative to the FlickableView::view()
-        virtual QRectF geometry() const = 0;
-
-        /// Visibility relative to the displayed window of the FlickableView::view()
-        virtual bool isVisible() const = 0;
-
-        /// Check before making it visible it can be displayed
-        virtual bool fitsInView() const = 0;
-
-        /// Get a weak pointer into itself so the implementation can notify of deletion
-        virtual QWeakPointer<ModelIndexItem> reference() const = 0;
-
-        /// Allow implementations to be notified when it becomes selected
-        virtual void setSelected(bool) {}
-
-        /// The model index
-        virtual QPersistentModelIndex index() const = 0;
-
-        // Spacial navigation
-        virtual ModelIndexItem* up   () const { return nullptr ;}
-        virtual ModelIndexItem* down () const { return nullptr ;}
-        virtual ModelIndexItem* left () const { return nullptr ;}
-        virtual ModelIndexItem* right() const { return nullptr ;}
-        virtual int row   () const { return index().row   () ;}
-        virtual int column() const { return index().column() ;}
-
-        //TODO ::above() and ::firstBelow() and ::lastBelow()
-
-        /// The number of parent items
-        virtual int depth() const {return 0;}
-
-        /// Reference to the item own view
-        FlickableView* view() const;
-
-        virtual QQuickItem* item() const { return nullptr; }
-
-        /// Call to notify that the geometry changed (for the selection delegate)
-        void updateGeometry();
-
-    private:
-        FlickableView* m_pView {nullptr};
-    };
-
     Q_PROPERTY(QSharedPointer<QAbstractItemModel> model READ model WRITE setModel NOTIFY modelChanged)
     Q_PROPERTY(QAbstractItemModel* rawModel WRITE setRawModel)
     Q_PROPERTY(QQmlComponent* delegate READ delegate WRITE setDelegate)
@@ -140,6 +90,8 @@ public:
     bool isSortingEnabled() const;
     void setSortingEnabled(bool val);
 
+    void updateSelection(); //FIXME move to a new class
+
     bool isEmpty() const;
 
 protected:
@@ -150,7 +102,7 @@ protected:
     /**
      * To be implemented by the final class.
      */
-    virtual ModelIndexItem* createItem() const = 0;
+    virtual VisualTreeItem* createItem() const = 0;
 
     /**
      * Get the VolatileTreeItem associated with a model index.
@@ -158,7 +110,7 @@ protected:
      * Note that if the index is not currently visible or buferred, it will
      * return nullptr.
      */
-    virtual ModelIndexItem* itemForIndex(const QModelIndex& idx) const = 0;
+    virtual VisualTreeItem* itemForIndex(const QModelIndex& idx) const = 0;
 
 Q_SIGNALS:
     void currentIndexChanged(const QModelIndex& index);

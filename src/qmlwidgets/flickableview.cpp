@@ -36,7 +36,7 @@ public:
 
     // Selection
     QQuickItem* m_pSelectedItem   {nullptr};
-    QWeakPointer<FlickableView::ModelIndexItem> m_pSelectedViewItem;
+    QWeakPointer<ModelIndexItem> m_pSelectedViewItem;
 
     Qt::Corner m_Corner {Qt::TopLeftCorner};
 
@@ -322,9 +322,14 @@ QPair<QQuickItem*, QQmlContext*> FlickableView::loadDelegate(QQuickItem* parentI
 }
 
 
+void FlickableView::updateSelection()
+{
+    d_ptr->slotCurrentIndexChanged({}); //FIXME move to a new class
+}
+
 void FlickableViewPrivate::slotCurrentIndexChanged(const QModelIndex& idx)
 {
-    if ((!idx.isValid()))
+    /*if ((!idx.isValid()))
         return;
 
     Q_EMIT q_ptr->currentIndexChanged(idx);
@@ -386,7 +391,7 @@ void FlickableViewPrivate::slotCurrentIndexChanged(const QModelIndex& idx)
         geo.y()
     );
 
-    m_pSelectedViewItem = elem->reference();
+    m_pSelectedViewItem = elem->reference();*/
 }
 
 void FlickableViewPrivate::slotSelectionModelChanged()
@@ -418,31 +423,6 @@ void FlickableViewPrivate::slotModelDestroyed()
 bool FlickableView::isEmpty() const
 {
     return d_ptr->m_pModel ? !d_ptr->m_pModel->rowCount() : true;
-}
-
-FlickableView::ModelIndexItem::ModelIndexItem(FlickableView* v) : m_pView(v){}
-
-void FlickableView::ModelIndexItem::updateGeometry()
-{
-    const auto geo = geometry();
-
-    //TODO handle up/left/right too
-
-    if (!down()) {
-        view()->contentItem()->setHeight(std::max(
-            geo.y()+geo.height(), view()->height()
-        ));
-
-        emit view()->contentHeightChanged(view()->contentItem()->height());
-    }
-
-    if (view()->d_ptr->m_pSelectionModel && view()->d_ptr->m_pSelectionModel->currentIndex() == index())
-        view()->d_ptr->slotCurrentIndexChanged(index());
-}
-
-FlickableView* FlickableView::ModelIndexItem::view() const
-{
-    return m_pView;
 }
 
 #include <flickableview.moc>

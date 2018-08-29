@@ -26,7 +26,64 @@ class QQmlComponent;
 class AbstractQuickViewPrivate;
 class AbstractQuickView;
 
+#include <treetraversalreflector_p.h> //FIXME remove
 struct TreeTraversalItems; //FIXME remove
+
+class VisualTreeItem;
+
+/**
+* Abstract base class of the visual representation of a QModelIndex.
+*/
+class MoodelIndexItem
+{
+public:
+    virtual ~MoodelIndexItem() {}
+
+    explicit MoodelIndexItem(AbstractQuickView* view);
+
+    /// Geometry relative to the AbstractQuickView::view()
+    virtual QRectF geometry() const = 0;
+
+    /// Visibility relative to the displayed window of the AbstractQuickView::view()
+    virtual bool isVisible() const = 0;
+
+    /// Check before making it visible it can be displayed
+    virtual bool fitsInView() const = 0;
+
+    /// Get a weak pointer into itself so the implementation can notify of deletion
+    virtual QWeakPointer<VisualTreeItem> reference() const = 0;
+
+    /// Allow implementations to be notified when it becomes selected
+    virtual void setSelected(bool) {}
+
+    virtual bool hasFailed() const = 0;
+
+    /// The model index
+    virtual QPersistentModelIndex index() const = 0;
+
+    // Spacial navigation
+    virtual VisualTreeItem* up   () const { return nullptr ;}
+    virtual VisualTreeItem* down () const { return nullptr ;}
+    virtual VisualTreeItem* left () const { return nullptr ;}
+    virtual VisualTreeItem* right() const { return nullptr ;}
+    virtual int row   () const { return index().row   () ;}
+    virtual int column() const { return index().column() ;}
+
+    //TODO ::above() and ::firstBelow() and ::lastBelow()
+
+    /// The number of parent items
+    virtual int depth() const {return 0;}
+
+    /// Reference to the item own view
+    AbstractQuickView* view() const;
+
+    virtual QQuickItem* item() const { return nullptr; }
+
+    /// Call to notify that the geometry changed (for the selection delegate)
+    void updateGeometry();
+
+    AbstractQuickView* m_pView {nullptr};
+};
 
 /**
  * Polymorphic tree item for the AbstractQuickView.
@@ -37,14 +94,15 @@ struct TreeTraversalItems; //FIXME remove
  *
  * The state is managed by the AbstractQuickView and it's own protected virtual methods.
  */
-class VisualTreeItem : public FlickableView::ModelIndexItem
+class VisualTreeItem : public MoodelIndexItem
 {
     friend class AbstractQuickView;
     friend struct TreeTraversalItems;
     friend class AbstractQuickViewPrivate;
+    friend class TreeTraversalReflector;
 public:
 
-    explicit VisualTreeItem(FlickableView* p) : ModelIndexItem(p) {}
+    explicit VisualTreeItem(AbstractQuickView* p) : MoodelIndexItem(p) {}
     virtual ~VisualTreeItem() {}
 
     enum class State {
@@ -58,8 +116,8 @@ public:
     };
 
     // Helpers
-    virtual ModelIndexItem* up  () const override final;
-    virtual ModelIndexItem* down() const override final;
+    virtual VisualTreeItem* up  () const override final;
+    virtual VisualTreeItem* down() const override final;
     virtual int row   () const override final;
     virtual int column() const override final;
 
@@ -67,16 +125,15 @@ public:
     virtual QPersistentModelIndex index   () const override final;
     virtual int depth() const final override;
     // Getters
-    bool hasFailed() const {
+    virtual bool hasFailed() const override final {
         return m_State == State::FAILED;
     }
 
     /// Allows to keep a reference while still being tracked by the state machine
-    virtual QWeakPointer<ModelIndexItem> reference() const final override;
+    virtual QWeakPointer<VisualTreeItem> reference() const final override;
 
-    /// Visibility relative to the displayed window of the FlickableView::view()
+    /// Visibility relative to the displayed window of the AbstractQuickView::view()
     virtual bool isVisible() const override;
-
     virtual bool fitsInView() const override;
 
     // Actions
@@ -89,15 +146,6 @@ public:
     bool detach();
 
 private:
-    enum class Action { //TODO make this private to AbstractQuickViewPrivate
-        ATTACH       = 0, /*!< Activate the element (do not sync it) */
-        ENTER_BUFFER = 1, /*!< Sync all roles                        */
-        ENTER_VIEW   = 2, /*!< NOP (todo)                            */
-        UPDATE       = 3, /*!< Reload the roles                      */
-        MOVE         = 4, /*!< Move to a new position                */
-        LEAVE_BUFFER = 5, /*!< Stop keeping track of data changes    */
-        DETACH       = 6, /*!< Delete                                */
-    };
 
     typedef bool(VisualTreeItem::*StateF)();
     State m_State {State::POOLED};
@@ -107,7 +155,7 @@ private:
     static const State  m_fStateMap    [7][7];
     static const StateF m_fStateMachine[7][7];
 
-    bool performAction(Action);
+    bool performAction(TreeTraversalReflector::ViewAction); //FIXME make private, remove #include
 
     bool nothing();
     bool error  ();
@@ -210,7 +258,7 @@ protected:
      * Note that if the index is not currently visible or buferred, it will
      * return nullptr.
      */
-    ModelIndexItem* itemForIndex(const QModelIndex& idx) const final override;
+    VisualTreeItem* itemForIndex(const QModelIndex& idx) const final override;
 
     /// To be used with moderation. Necessary when the delegate is replaced.
     void reload();

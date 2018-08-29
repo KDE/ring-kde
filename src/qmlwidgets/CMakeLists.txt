@@ -57,6 +57,9 @@ SET( libqmlwidgets_LIB_SRCS
     simpleflickable.cpp
     hierarchyview.cpp
     abstractquickview.cpp
+    treetraversalreflector_p.cpp
+    treetraversalrange_p.cpp
+    abstractviewitem.cpp
     quicktreeview.cpp
     quicklistview.cpp
     flickableview.cpp

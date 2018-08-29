@@ -32,7 +32,7 @@
 class QuickTreeViewItem : public VisualTreeItem
 {
 public:
-    explicit QuickTreeViewItem(FlickableView* v);
+    explicit QuickTreeViewItem(AbstractQuickView* v);
     virtual ~QuickTreeViewItem();
 
     // Actions
@@ -80,14 +80,14 @@ QuickTreeView::~QuickTreeView()
     delete d_ptr;
 }
 
-FlickableView::ModelIndexItem* QuickTreeView::createItem() const
+VisualTreeItem* QuickTreeView::createItem() const
 {
     return new QuickTreeViewItem(
         const_cast<QuickTreeView*>(this)
     );
 }
 
-QuickTreeViewItem::QuickTreeViewItem(FlickableView* p) : VisualTreeItem(p)
+QuickTreeViewItem::QuickTreeViewItem(AbstractQuickView* p) : VisualTreeItem(p)
 {
 }
 

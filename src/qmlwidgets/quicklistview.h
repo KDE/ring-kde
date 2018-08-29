@@ -115,7 +115,7 @@ Q_SIGNALS:
     void indexChanged(int index);
 
 protected:
-    virtual ModelIndexItem* createItem() const override;
+    virtual VisualTreeItem* createItem() const override;
 
 private:
 

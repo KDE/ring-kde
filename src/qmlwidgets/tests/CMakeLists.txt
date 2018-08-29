@@ -32,7 +32,7 @@ qmlwidgets/qmlaction.cpp
 qmlwidgets/quicklistview.cpp
 qmlwidgets/quicktreeview.cpp
 qmlwidgets/simpleflickable.cpp
-qmlwidgets/treeview2.cpp
+qmlwidgets/abstractquickview.cpp
 )
 
 QT5_ADD_RESOURCES(modelviewtester_SRC

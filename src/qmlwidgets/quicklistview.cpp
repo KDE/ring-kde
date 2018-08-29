@@ -55,7 +55,7 @@ struct QuickListViewSection final
     QQuickItem* item(QQmlComponent* component);
 
     // Helpers
-    void reparentSection(QuickListViewItem* newParent, FlickableView* view);
+    void reparentSection(QuickListViewItem* newParent, AbstractQuickView* view);
     void setOwner(QuickListViewItem* newOwner);
 };
 
@@ -64,7 +64,7 @@ struct QuickListViewSection final
 class QuickListViewItem : public VisualTreeItem
 {
 public:
-    explicit QuickListViewItem(FlickableView* v);
+    explicit QuickListViewItem(AbstractQuickView* v);
     virtual ~QuickListViewItem();
 
     // Actions
@@ -82,7 +82,7 @@ public:
     virtual void setSelected(bool s) final override;
     QuickListViewSection* setSection(QuickListViewSection* s, const QVariant& val);
 
-    /// Geometry relative to the FlickableView::view()
+    /// Geometry relative to the AbstractQuickView::view()
     virtual QRectF geometry() const final override;
 
     virtual QQuickItem* item() const final override {
@@ -127,7 +127,7 @@ public Q_SLOTS:
 QuickListView::QuickListView(QQuickItem* parent) : AbstractQuickView(parent),
     d_ptr(new QuickListViewPrivate(this))
 {
-    connect(this, &FlickableView::currentIndexChanged,
+    connect(this, &AbstractQuickView::currentIndexChanged,
         d_ptr, &QuickListViewPrivate::slotCurrentIndexChanged);
 }
 
@@ -204,7 +204,7 @@ QuickListViewSections* QuickListView::section() const
     return d_ptr->m_pSections;
 }
 
-FlickableView::ModelIndexItem* QuickListView::createItem() const
+VisualTreeItem* QuickListView::createItem() const
 {
     return new QuickListViewItem(
         const_cast<QuickListView*>(this)
@@ -353,7 +353,7 @@ void QuickListViewPrivate::reloadSectionIndices() const
     m_IndexLoaded = m_pFirstSection != nullptr;
 }
 
-QuickListViewItem::QuickListViewItem(FlickableView* p) : VisualTreeItem(p)
+QuickListViewItem::QuickListViewItem(AbstractQuickView* p) : VisualTreeItem(p)
 {
 }
 
@@ -440,7 +440,7 @@ void QuickListViewSection::setOwner(QuickListViewItem* newParent)
     m_pOwner = newParent;
 }
 
-void QuickListViewSection::reparentSection(QuickListViewItem* newParent, FlickableView* view)
+void QuickListViewSection::reparentSection(QuickListViewItem* newParent, AbstractQuickView* view)
 {
     if (!m_pItem)
         return;

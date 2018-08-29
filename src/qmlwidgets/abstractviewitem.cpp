@@ -15,41 +15,36 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#pragma once
+#include "abstractviewitem.h"
 
-#include <flickableview.h>
 
-// Qt
-#include <QtCore/QAbstractItemModel>
-class QQmlComponent;
-
-class HierarchyViewPrivate;
-
-/**
- * Model view intended for the tree topology.
- *
- * Each index has a big container QQuickItem that encompass the item and all
- * its children.
- *
- * This view currently doesn't support lazy loading. It differs fromm the
- * TreeView2 for the lazy loading part, but allows more flexibility without
- * having to care about keeping everything in sync.
- */
-class HierarchyView : public FlickableView
+void AbstractViewItem::resetPosition()
 {
-    Q_OBJECT
-public:
-    explicit HierarchyView(QQuickItem* parent = nullptr);
-    virtual ~HierarchyView();
+    //
+}
 
-    virtual void setModel(QSharedPointer<QAbstractItemModel> model) override;
 
-protected:
-    virtual void refresh() override;
-    virtual VisualTreeItem* createItem() const override;
-    virtual VisualTreeItem* itemForIndex(const QModelIndex& idx) const override;
+AbstractViewItem* AbstractViewItem::up() const
+{
+    return nullptr;
+}
 
-private:
-    HierarchyViewPrivate* d_ptr;
-    Q_DECLARE_PRIVATE(HierarchyView)
-};
+AbstractViewItem* AbstractViewItem::down () const
+{
+    return nullptr;
+}
+
+AbstractViewItem* AbstractViewItem::left () const
+{
+    return nullptr;
+}
+
+AbstractViewItem* AbstractViewItem::right() const
+{
+    return nullptr;
+}
+
+AbstractViewItem* AbstractViewItem::parent() const
+{
+    return nullptr;
+}
