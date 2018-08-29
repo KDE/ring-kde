@@ -553,9 +553,6 @@ bool AbstractQuickViewPrivate::error()
     return true;
 }
 
-
-MoodelIndexItem::MoodelIndexItem(AbstractQuickView* v) : m_pView(v){}
-
 void VisualTreeItem::updateGeometry()
 {
     const auto geo = geometry();

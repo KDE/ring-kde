@@ -32,38 +32,6 @@ struct TreeTraversalItems; //FIXME remove
 class VisualTreeItem;
 
 /**
-* Abstract base class of the visual representation of a QModelIndex.
-*/
-class MoodelIndexItem
-{
-public:
-    virtual ~MoodelIndexItem() {}
-
-    explicit MoodelIndexItem(AbstractQuickView* view);
-
-    /// Allow implementations to be notified when it becomes selected
-    virtual void setSelected(bool) {}
-
-
-    /// The model index
-    virtual QPersistentModelIndex index() const = 0;
-
-    /// Geometry relative to the AbstractQuickView::view()
-    virtual QRectF geometry() const = 0;
-
-    // Spacial navigation
-    virtual VisualTreeItem* left () const { return nullptr ;}
-    virtual VisualTreeItem* right() const { return nullptr ;}
-
-    //TODO ::above() and ::firstBelow() and ::lastBelow()
-
-    virtual QQuickItem* item() const { return nullptr; }
-
-
-    AbstractQuickView* m_pView {nullptr};
-};
-
-/**
  * Polymorphic tree item for the AbstractQuickView.
  *
  * Classes implementing AbstractQuickView need to provide an implementation of the pure
@@ -72,7 +40,7 @@ public:
  *
  * The state is managed by the AbstractQuickView and it's own protected virtual methods.
  */
-class VisualTreeItem : public MoodelIndexItem
+class VisualTreeItem
 {
     friend class AbstractQuickView;
     friend struct TreeTraversalItems;
@@ -80,7 +48,7 @@ class VisualTreeItem : public MoodelIndexItem
     friend class TreeTraversalReflector;
 public:
 
-    explicit VisualTreeItem(AbstractQuickView* p) : MoodelIndexItem(p) {}
+    explicit VisualTreeItem(AbstractQuickView* p) : m_pView(p) {}
     virtual ~VisualTreeItem() {}
 
     enum class State {
@@ -97,14 +65,20 @@ public:
     void updateGeometry();
 
     // Helpers
+
+
+    // Spacial navigation
     VisualTreeItem* up  () const;
     VisualTreeItem* down() const;
+    VisualTreeItem* left () const { return nullptr ;}
+    VisualTreeItem* right() const { return nullptr ;}
     int row   () const;
     int column() const;
+    int depth() const;
+    //TODO firstChild, lastChild, parent
 
     // Getters
     QPersistentModelIndex index() const;
-    int depth() const;
     // Getters
     bool hasFailed() const{
         return m_State == State::FAILED;
@@ -119,6 +93,17 @@ public:
     /// Visibility relative to the displayed window of the AbstractQuickView::view()
     bool isVisible() const;
     bool fitsInView() const;
+
+    /// Allow implementations to be notified when it becomes selected
+    virtual void setSelected(bool) {}
+
+    /// Geometry relative to the AbstractQuickView::view()
+    virtual QRectF geometry() const = 0;
+
+
+    //TODO ::above() and ::firstBelow() and ::lastBelow()
+
+    virtual QQuickItem* item() const { return nullptr; }
 
     // Actions
     virtual bool attach () = 0;
@@ -135,6 +120,7 @@ private:
     State m_State {State::POOLED};
     TreeTraversalItems* m_pTTI {nullptr};
     mutable QSharedPointer<VisualTreeItem> m_pSelf;
+    AbstractQuickView* m_pView {nullptr};
 
     static const State  m_fStateMap    [7][7];
     static const StateF m_fStateMachine[7][7];
