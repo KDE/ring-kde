@@ -41,46 +41,24 @@ public:
 
     explicit MoodelIndexItem(AbstractQuickView* view);
 
-    /// Geometry relative to the AbstractQuickView::view()
-    virtual QRectF geometry() const = 0;
-
-    /// Visibility relative to the displayed window of the AbstractQuickView::view()
-    virtual bool isVisible() const = 0;
-
-    /// Check before making it visible it can be displayed
-    virtual bool fitsInView() const = 0;
-
-    /// Get a weak pointer into itself so the implementation can notify of deletion
-    virtual QWeakPointer<VisualTreeItem> reference() const = 0;
-
     /// Allow implementations to be notified when it becomes selected
     virtual void setSelected(bool) {}
 
-    virtual bool hasFailed() const = 0;
 
     /// The model index
     virtual QPersistentModelIndex index() const = 0;
 
+    /// Geometry relative to the AbstractQuickView::view()
+    virtual QRectF geometry() const = 0;
+
     // Spacial navigation
-    virtual VisualTreeItem* up   () const { return nullptr ;}
-    virtual VisualTreeItem* down () const { return nullptr ;}
     virtual VisualTreeItem* left () const { return nullptr ;}
     virtual VisualTreeItem* right() const { return nullptr ;}
-    virtual int row   () const { return index().row   () ;}
-    virtual int column() const { return index().column() ;}
 
     //TODO ::above() and ::firstBelow() and ::lastBelow()
 
-    /// The number of parent items
-    virtual int depth() const {return 0;}
-
-    /// Reference to the item own view
-    AbstractQuickView* view() const;
-
     virtual QQuickItem* item() const { return nullptr; }
 
-    /// Call to notify that the geometry changed (for the selection delegate)
-    void updateGeometry();
 
     AbstractQuickView* m_pView {nullptr};
 };
@@ -115,26 +93,32 @@ public:
         ERROR   , /*!< Something went wrong                                   */
     };
 
+    /// Call to notify that the geometry changed (for the selection delegate)
+    void updateGeometry();
+
     // Helpers
-    virtual VisualTreeItem* up  () const override final;
-    virtual VisualTreeItem* down() const override final;
-    virtual int row   () const override final;
-    virtual int column() const override final;
+    VisualTreeItem* up  () const;
+    VisualTreeItem* down() const;
+    int row   () const;
+    int column() const;
 
     // Getters
-    virtual QPersistentModelIndex index   () const override final;
-    virtual int depth() const final override;
+    QPersistentModelIndex index() const;
+    int depth() const;
     // Getters
-    virtual bool hasFailed() const override final {
+    bool hasFailed() const{
         return m_State == State::FAILED;
     }
 
+    /// Reference to the item own view
+    AbstractQuickView* view() const;
+
     /// Allows to keep a reference while still being tracked by the state machine
-    virtual QWeakPointer<VisualTreeItem> reference() const final override;
+    QWeakPointer<VisualTreeItem> reference() const;
 
     /// Visibility relative to the displayed window of the AbstractQuickView::view()
-    virtual bool isVisible() const override;
-    virtual bool fitsInView() const override;
+    bool isVisible() const;
+    bool fitsInView() const;
 
     // Actions
     virtual bool attach () = 0;

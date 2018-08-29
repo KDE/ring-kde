@@ -556,7 +556,7 @@ bool AbstractQuickViewPrivate::error()
 
 MoodelIndexItem::MoodelIndexItem(AbstractQuickView* v) : m_pView(v){}
 
-void MoodelIndexItem::updateGeometry()
+void VisualTreeItem::updateGeometry()
 {
     const auto geo = geometry();
 
@@ -574,7 +574,7 @@ void MoodelIndexItem::updateGeometry()
         view()->updateSelection();
 }
 
-AbstractQuickView* MoodelIndexItem::view() const
+AbstractQuickView* VisualTreeItem::view() const
 {
     return m_pView;
 }
