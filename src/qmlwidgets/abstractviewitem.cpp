@@ -17,6 +17,7 @@
  **************************************************************************/
 #include "abstractviewitem.h"
 
+#include "abstractviewitem_p.h"
 
 void AbstractViewItem::resetPosition()
 {
@@ -48,3 +49,4 @@ AbstractViewItem* AbstractViewItem::parent() const
 {
     return nullptr;
 }
+

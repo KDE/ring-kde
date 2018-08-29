@@ -17,9 +17,7 @@
  **************************************************************************/
 #include "treetraversalreflector_p.h"
 
-
-//FIXME temporary circular deps
-#include "abstractquickview.h"
+#include "abstractviewitem_p.h"
 
 // Use some constant for readability
 #define PREVIOUS 0
@@ -282,8 +280,8 @@ bool TreeTraversalItems::show()
         m_pTreeItem->m_pTTI = this;
     }
 
-    m_pTreeItem->performAction(TreeTraversalReflector::ViewAction::ENTER_BUFFER);
-    m_pTreeItem->performAction(TreeTraversalReflector::ViewAction::ENTER_VIEW  );
+    m_pTreeItem->performAction(VisualTreeItem::ViewAction::ENTER_BUFFER);
+    m_pTreeItem->performAction(VisualTreeItem::ViewAction::ENTER_VIEW  );
 
     updateVisibility();
 
@@ -299,7 +297,7 @@ bool TreeTraversalItems::hide()
 bool TreeTraversalItems::attach()
 {
     if (m_pTreeItem)
-        m_pTreeItem->performAction(TreeTraversalReflector::ViewAction::ATTACH);
+        m_pTreeItem->performAction(VisualTreeItem::ViewAction::ATTACH);
 
 //     qDebug() << "ATTACH" << (int)m_State;
     performAction(Action::MOVE); //FIXME don't
@@ -328,7 +326,7 @@ bool TreeTraversalItems::detach()
         // If the item was active (due, for example, of a full reset), then
         // it has to be removed from view then deleted.
         if (m_pTreeItem->m_State == VisualTreeItem::State::ACTIVE) {
-            m_pTreeItem->performAction(TreeTraversalReflector::ViewAction::DETACH);
+            m_pTreeItem->performAction(VisualTreeItem::ViewAction::DETACH);
 
             // It should still exists, it may crash otherwise, so make sure early
             Q_ASSERT(m_pTreeItem->m_State == VisualTreeItem::State::POOLED);
@@ -338,7 +336,7 @@ bool TreeTraversalItems::detach()
             // VisualTreeItem::detach from a new action method (instead of directly)
         }
 
-        m_pTreeItem->performAction(TreeTraversalReflector::ViewAction::DETACH);
+        m_pTreeItem->performAction(VisualTreeItem::ViewAction::DETACH);
         m_pTreeItem = nullptr;
     }
 
@@ -400,7 +398,7 @@ bool TreeTraversalItems::index()
     //FIXME this if should not exists, this should be handled by the state
     // machine.
     if (m_pTreeItem) {
-        m_pTreeItem->performAction(TreeTraversalReflector::ViewAction::MOVE); //FIXME don't
+        m_pTreeItem->performAction(VisualTreeItem::ViewAction::MOVE); //FIXME don't
         updateVisibility(); //FIXME add a new state change for this
     }
 
@@ -411,7 +409,7 @@ bool TreeTraversalItems::index()
 
 //FIXME this is better, but require having createItem() called earlier
 //     if (m_pTreeItem)
-//         m_pTreeItem->performAction(TreeTraversalReflector::ViewAction::MOVE); //FIXME don't
+//         m_pTreeItem->performAction(VisualTreeItem::ViewAction::MOVE); //FIXME don't
 //
 //     if (oldGeo != m_pTreeItem->geometry())
 //         if (auto n = m_pTreeItem->down())
@@ -1217,8 +1215,8 @@ void TreeTraversalReflector::reloadRange(const QModelIndex& idx)
 
         while (c && c != p->m_tChildren[LAST]) {
             if (c->m_pTreeItem) {
-                c->m_pTreeItem->performAction( TreeTraversalReflector::ViewAction::UPDATE );
-                c->m_pTreeItem->performAction( TreeTraversalReflector::ViewAction::MOVE   );
+                c->m_pTreeItem->performAction( VisualTreeItem::ViewAction::UPDATE );
+                c->m_pTreeItem->performAction( VisualTreeItem::ViewAction::MOVE   );
             }
             c = c->m_tSiblings[NEXT];
         }

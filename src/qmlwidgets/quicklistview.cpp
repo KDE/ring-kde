@@ -17,6 +17,8 @@
  **************************************************************************/
 #include "quicklistview.h"
 
+#include "abstractviewitem_p.h"
+
 // Qt
 #include <QQmlEngine>
 #include <QQmlContext>

@@ -17,6 +17,9 @@
  **************************************************************************/
 #pragma once
 
+#include <QtCore/QPersistentModelIndex>
+#include <QtCore/QRectF>
+
 /**
  * This class must be extended by the views to bind QModelIndex with a GUI element.
  *
@@ -98,6 +101,33 @@ public:
      */
     AbstractViewItem* parent() const;
 
+    /**
+     * The item row.
+     *
+     * Note that this doesn't always match QModelIndex::row() because this
+     * value is updated when the `rowsAboutToBeModed` signal is sent rather
+     * than after the change takes effect.
+     */
+    int row   () const;
+
+    /**
+     * The item column.
+     *
+     * Note that this doesn't always match QModelIndex::column() because this
+     * value is updated when the `columnsAboutToBeModed` signal is sent rather
+     * than after the change takes effect.
+     */
+    int column() const;
+
+    /**
+     * The model index.
+     *
+     * Please do not use .row() and .column() on the index and rather use
+     * ::row() and ::column() provided by this class. Otherwise items being
+     * moved wont be rendered correctly.
+     */
+    QPersistentModelIndex index() const;
+
     // Actions
 
     /**
@@ -113,4 +143,17 @@ public:
      * about them.
      */
     void resetPosition();
+
+
+    /**
+     * The size and position necessary to draw this item.
+     */
+    virtual QRectF geometry() const = 0;
+
+protected:
+    virtual bool attach () = 0;
+    virtual bool refresh() = 0;
+    virtual bool move   () = 0;
+    virtual bool flush  () = 0;
+    virtual bool remove () = 0;
 };

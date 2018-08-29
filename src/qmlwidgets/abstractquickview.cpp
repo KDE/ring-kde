@@ -21,6 +21,7 @@
 
 #include <functional>
 
+#include "abstractviewitem_p.h"
 #include "treetraversalreflector_p.h"
 #include "treetraversalrange_p.h"
 
@@ -319,8 +320,8 @@ void AbstractQuickView::reloadChildren(const QModelIndex& index) const
     d_ptr->m_pReflector->reloadRange(index);
 
     /*for (auto item : d_ptr->m_pRange->subset(index)) {
-        item->performAction( TreeTraversalReflector::ViewAction::UPDATE );
-        item->performAction( TreeTraversalReflector::ViewAction::MOVE   );
+        item->performAction( VisualTreeItem::ViewAction::UPDATE );
+        item->performAction( VisualTreeItem::ViewAction::MOVE   );
     }*/
 }
 
@@ -381,7 +382,7 @@ void AbstractQuickViewPrivate::slotDataChanged(const QModelIndex& tl, const QMod
     for (int i = tl.row(); i <= br.row(); i++) {
         const auto idx = q_ptr->model()->index(i, tl.column(), tl.parent());
         if (auto item = V_ITEM(q_ptr->itemForIndex(idx)))
-            item->performAction(TreeTraversalReflector::ViewAction::UPDATE);
+            item->performAction(VisualTreeItem::ViewAction::UPDATE);
     }
 }
 
@@ -391,7 +392,7 @@ void AbstractQuickViewPrivate::slotViewportChanged()
     //Q_ASSERT((!m_pReflector->m_pRoot->m_tChildren[LAST ]) || m_pReflector->m_tVisibleTTIRange[LAST ]);
 }
 
-bool VisualTreeItem::performAction(TreeTraversalReflector::ViewAction a)
+bool VisualTreeItem::performAction(VisualTreeItem::ViewAction a)
 {
     //if (m_State == VisualTreeItem::State::FAILED)
     //    m_pTTI->d_ptr->m_FailedCount--;

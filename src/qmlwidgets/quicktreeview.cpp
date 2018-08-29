@@ -17,6 +17,8 @@
  **************************************************************************/
 #include "quicktreeview.h"
 
+#include "abstractviewitem_p.h"
+
 // Qt
 #include <QQmlContext>
 

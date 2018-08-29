@@ -55,18 +55,6 @@ class TreeTraversalReflector final : public QObject
     Q_OBJECT
     friend class TreeTraversalItems; // Internal representation
 public:
-
-    //TODO find a way to make this private again
-    enum class ViewAction { //TODO make this private to AbstractQuickViewPrivate
-        ATTACH       = 0, /*!< Activate the element (do not sync it) */
-        ENTER_BUFFER = 1, /*!< Sync all roles                        */
-        ENTER_VIEW   = 2, /*!< NOP (todo)                            */
-        UPDATE       = 3, /*!< Reload the roles                      */
-        MOVE         = 4, /*!< Move to a new position                */
-        LEAVE_BUFFER = 5, /*!< Stop keeping track of data changes    */
-        DETACH       = 6, /*!< Delete                                */
-    };
-
     explicit TreeTraversalReflector(QObject* parent = nullptr);
     virtual ~TreeTraversalReflector();
 
