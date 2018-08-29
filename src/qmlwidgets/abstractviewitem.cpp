@@ -19,30 +19,69 @@
 
 #include "abstractviewitem_p.h"
 
+class AbstractViewItemPrivate
+{
+};
+
+AbstractViewItem::AbstractViewItem(AbstractQuickView* v) :
+    d_ptr(new AbstractViewItemPrivate),
+    s_ptr(new VisualTreeItem(v))
+{
+    s_ptr->d_ptr = this;
+}
+
+AbstractViewItem::~AbstractViewItem()
+{}
+
+AbstractQuickView* AbstractViewItem::view() const
+{
+    return s_ptr->m_pView;
+}
+
+
 void AbstractViewItem::resetPosition()
 {
     //
 }
 
 
+int AbstractViewItem::row() const
+{
+    return s_ptr->row();
+}
+
+int AbstractViewItem::column() const
+{
+    return s_ptr->column();
+}
+
+QPersistentModelIndex AbstractViewItem::index() const
+{
+    return s_ptr->index();
+}
+
 AbstractViewItem* AbstractViewItem::up() const
 {
-    return nullptr;
+    const auto i = s_ptr->up();
+    return i ? i->d_ptr : nullptr;
 }
 
-AbstractViewItem* AbstractViewItem::down () const
+AbstractViewItem* AbstractViewItem::down() const
 {
-    return nullptr;
+    const auto i = s_ptr->down();
+    return i ? i->d_ptr : nullptr;
 }
 
-AbstractViewItem* AbstractViewItem::left () const
+AbstractViewItem* AbstractViewItem::left() const
 {
-    return nullptr;
+    const auto i = s_ptr->left();
+    return i ? i->d_ptr : nullptr;
 }
 
 AbstractViewItem* AbstractViewItem::right() const
 {
-    return nullptr;
+    const auto i = s_ptr->right();
+    return i ? i->d_ptr : nullptr;
 }
 
 AbstractViewItem* AbstractViewItem::parent() const
@@ -50,3 +89,48 @@ AbstractViewItem* AbstractViewItem::parent() const
     return nullptr;
 }
 
+void AbstractViewItem::updateGeometry()
+{
+    s_ptr->updateGeometry();
+}
+
+
+void VisualTreeItem::setSelected(bool v)
+{
+    d_ptr->setSelected(v);
+}
+
+QRectF VisualTreeItem::geometry() const
+{
+    return d_ptr->geometry();
+}
+
+QQuickItem* VisualTreeItem::item() const
+{
+    return d_ptr->item();
+}
+
+bool VisualTreeItem::attach()
+{
+    return d_ptr->attach();
+}
+
+bool VisualTreeItem::refresh()
+{
+    return d_ptr->refresh();
+}
+
+bool VisualTreeItem::move()
+{
+    return d_ptr->move();
+}
+
+bool VisualTreeItem::flush()
+{
+    return d_ptr->flush();
+}
+
+bool VisualTreeItem::remove()
+{
+    return d_ptr->remove();
+}

@@ -22,6 +22,7 @@
 #include <functional>
 
 #include "abstractviewitem_p.h"
+#include "abstractviewitem.h"
 #include "treetraversalreflector_p.h"
 #include "treetraversalrange_p.h"
 
@@ -178,7 +179,7 @@ AbstractQuickView::AbstractQuickView(QQuickItem* parent) : FlickableView(parent)
 
     d_ptr->q_ptr = this;
 
-    d_ptr->m_pReflector->setItemFactory([this]() -> VisualTreeItem* {
+    d_ptr->m_pReflector->setItemFactory([this]() -> AbstractViewItem* {
         return V_ITEM(d_ptr->q_ptr->createItem());
     });
 
@@ -332,7 +333,7 @@ QQuickItem* AbstractQuickView::parentTreeItem(const QModelIndex& index) const
     return i ? i->item() : nullptr;
 }
 
-VisualTreeItem* AbstractQuickView::itemForIndex(const QModelIndex& idx) const
+AbstractViewItem* AbstractQuickView::itemForIndex(const QModelIndex& idx) const
 {
     return d_ptr->m_pReflector->itemForIndex(idx);
 }
@@ -382,7 +383,7 @@ void AbstractQuickViewPrivate::slotDataChanged(const QModelIndex& tl, const QMod
     for (int i = tl.row(); i <= br.row(); i++) {
         const auto idx = q_ptr->model()->index(i, tl.column(), tl.parent());
         if (auto item = V_ITEM(q_ptr->itemForIndex(idx)))
-            item->performAction(VisualTreeItem::ViewAction::UPDATE);
+            item->s_ptr->performAction(VisualTreeItem::ViewAction::UPDATE);
     }
 }
 

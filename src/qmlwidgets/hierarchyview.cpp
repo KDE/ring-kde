@@ -266,12 +266,12 @@ void HierarchyViewPrivate::slotDataChanged(const QModelIndex& tl, const QModelIn
     });
 }
 
-VisualTreeItem* HierarchyView::createItem() const
+AbstractViewItem* HierarchyView::createItem() const
 {
     return nullptr;
 }
 
-VisualTreeItem* HierarchyView::itemForIndex(const QModelIndex& idx) const
+AbstractViewItem* HierarchyView::itemForIndex(const QModelIndex& idx) const
 {
     Q_UNUSED(idx)
     //TODO

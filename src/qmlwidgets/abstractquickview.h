@@ -29,7 +29,7 @@ class AbstractQuickView;
 #include <treetraversalreflector_p.h> //FIXME remove
 struct TreeTraversalItems; //FIXME remove
 
-class VisualTreeItem;
+class AbstractViewItem;
 
 /**
  * Second generation of QtQuick treeview.
@@ -122,12 +122,12 @@ protected:
     virtual void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry) override;
 
     /**
-     * Get the VisualTreeItem associated with a model index.
+     * Get the AbstractViewItem associated with a model index.
      *
      * Note that if the index is not currently visible or buferred, it will
      * return nullptr.
      */
-    VisualTreeItem* itemForIndex(const QModelIndex& idx) const final override;
+    AbstractViewItem* itemForIndex(const QModelIndex& idx) const final override;
 
     /// To be used with moderation. Necessary when the delegate is replaced.
     void reload();

@@ -19,6 +19,11 @@
 
 #include <QtCore/QPersistentModelIndex>
 #include <QtCore/QRectF>
+class QQuickItem;
+
+class AbstractViewItemPrivate;
+class VisualTreeItem;
+class AbstractQuickView;
 
 /**
  * This class must be extended by the views to bind QModelIndex with a GUI element.
@@ -56,7 +61,15 @@
  */
 class AbstractViewItem
 {
+    friend class VisualTreeItem; //its internally shared properties
+    friend class TreeTraversalItems; //state tracking
+    friend class AbstractQuickViewPrivate; //notify when the view is resized
+
 public:
+    explicit AbstractViewItem(AbstractQuickView* v);
+    virtual ~AbstractViewItem();
+
+    AbstractQuickView* view() const;
 
     /**
      * The external state if the item.
@@ -150,10 +163,21 @@ public:
      */
     virtual QRectF geometry() const = 0;
 
+
+    virtual void setSelected(bool s) = 0;
+
+    void updateGeometry();
+
+    virtual QQuickItem* item() const = 0;
+
 protected:
     virtual bool attach () = 0;
     virtual bool refresh() = 0;
     virtual bool move   () = 0;
     virtual bool flush  () = 0;
     virtual bool remove () = 0;
+
+private:
+    AbstractViewItemPrivate* d_ptr;
+    VisualTreeItem* s_ptr;
 };

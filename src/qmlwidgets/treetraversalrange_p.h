@@ -19,6 +19,8 @@
 
 #include <flickableview.h>
 
+class AbstractViewItem;
+
 /**
 * This class exposes a way to track and iterate a subset of the model.
 *
@@ -41,7 +43,7 @@ public:
     public:
         explicit Iterator ();
         bool operator!= (const Iterator& other) const;
-        VisualTreeItem* operator* () const;
+        AbstractViewItem* operator* () const;
         const Iterator& operator++ ();
 
     private:

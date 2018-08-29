@@ -46,8 +46,8 @@ public:
 
 protected:
     virtual void refresh() override;
-    virtual VisualTreeItem* createItem() const override;
-    virtual VisualTreeItem* itemForIndex(const QModelIndex& idx) const override;
+    virtual AbstractViewItem* createItem() const override;
+    virtual AbstractViewItem* itemForIndex(const QModelIndex& idx) const override;
 
 private:
     HierarchyViewPrivate* d_ptr;

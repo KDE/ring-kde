@@ -115,7 +115,7 @@ Q_SIGNALS:
     void indexChanged(int index);
 
 protected:
-    virtual VisualTreeItem* createItem() const override;
+    virtual AbstractViewItem* createItem() const override;
 
 private:
 

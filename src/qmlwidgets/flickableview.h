@@ -30,7 +30,7 @@ class QItemSelectionModel;
 class FlickableViewPrivate;
 
 class ModelIndexItem;//FIXME remove
-class VisualTreeItem;//FIXME remove
+class AbstractViewItem;//FIXME remove
 
 /**
  * This widget bridges the simple Flickable "cartesian plan" widget with a
@@ -102,7 +102,7 @@ protected:
     /**
      * To be implemented by the final class.
      */
-    virtual VisualTreeItem* createItem() const = 0;
+    virtual AbstractViewItem* createItem() const = 0;
 
     /**
      * Get the VolatileTreeItem associated with a model index.
@@ -110,7 +110,7 @@ protected:
      * Note that if the index is not currently visible or buferred, it will
      * return nullptr.
      */
-    virtual VisualTreeItem* itemForIndex(const QModelIndex& idx) const = 0;
+    virtual AbstractViewItem* itemForIndex(const QModelIndex& idx) const = 0;
 
 Q_SIGNALS:
     void currentIndexChanged(const QModelIndex& index);

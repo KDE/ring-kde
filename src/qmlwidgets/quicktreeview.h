@@ -55,7 +55,7 @@ Q_SIGNALS:
     void contentChanged() final override;
 
 protected:
-    virtual VisualTreeItem* createItem() const override;
+    virtual AbstractViewItem* createItem() const override;
 
 private:
 

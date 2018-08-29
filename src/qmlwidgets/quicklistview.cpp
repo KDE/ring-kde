@@ -17,7 +17,7 @@
  **************************************************************************/
 #include "quicklistview.h"
 
-#include "abstractviewitem_p.h"
+#include "abstractviewitem.h"
 
 // Qt
 #include <QQmlEngine>
@@ -63,7 +63,7 @@ struct QuickListViewSection final
 
 /**
  */
-class QuickListViewItem : public VisualTreeItem
+class QuickListViewItem : public AbstractViewItem
 {
 public:
     explicit QuickListViewItem(AbstractQuickView* v);
@@ -206,7 +206,7 @@ QuickListViewSections* QuickListView::section() const
     return d_ptr->m_pSections;
 }
 
-VisualTreeItem* QuickListView::createItem() const
+AbstractViewItem* QuickListView::createItem() const
 {
     return new QuickListViewItem(
         const_cast<QuickListView*>(this)
@@ -355,7 +355,7 @@ void QuickListViewPrivate::reloadSectionIndices() const
     m_IndexLoaded = m_pFirstSection != nullptr;
 }
 
-QuickListViewItem::QuickListViewItem(AbstractQuickView* p) : VisualTreeItem(p)
+QuickListViewItem::QuickListViewItem(AbstractQuickView* p) : AbstractViewItem(p)
 {
 }
 
@@ -380,10 +380,10 @@ bool QuickListViewItem::attach()
     if (!pair.first->z())
         pair.first->setZ(1);
 
-    d()->m_DepthChart[depth()] = std::max(
+    /*d()->m_DepthChart[depth()] = std::max(
         d()->m_DepthChart[depth()],
         pair.first->height()
-    );
+    );*/
 
     m_pContent = pair.second;
     m_pItem    = pair.first;

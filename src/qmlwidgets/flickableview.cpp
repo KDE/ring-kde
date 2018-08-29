@@ -321,7 +321,6 @@ QPair<QQuickItem*, QQmlContext*> FlickableView::loadDelegate(QQuickItem* parentI
     return {container, pctx};
 }
 
-
 void FlickableView::updateSelection()
 {
     d_ptr->slotCurrentIndexChanged({}); //FIXME move to a new class

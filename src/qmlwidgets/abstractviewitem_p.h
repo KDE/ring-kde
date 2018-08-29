@@ -19,6 +19,7 @@
 
 class AbstractQuickView;
 class TreeTraversalItems;
+class AbstractViewItem;
 
 // Qt
 class QQuickItem;
@@ -39,6 +40,7 @@ class VisualTreeItem
     friend struct TreeTraversalItems;
     friend class AbstractQuickViewPrivate;
     friend class TreeTraversalReflector;
+    friend class AbstractViewItem;
 public:
 
     explicit VisualTreeItem(AbstractQuickView* p) : m_pView(p) {}
@@ -98,22 +100,22 @@ public:
     bool fitsInView() const;
 
     /// Allow implementations to be notified when it becomes selected
-    virtual void setSelected(bool) {}
+    virtual void setSelected(bool) final;
 
     /// Geometry relative to the AbstractQuickView::view()
-    virtual QRectF geometry() const = 0;
+    virtual QRectF geometry() const final;
 
 
     //TODO ::above() and ::firstBelow() and ::lastBelow()
 
-    virtual QQuickItem* item() const { return nullptr; }
+    virtual QQuickItem* item() const final;
 
     // Actions
-    virtual bool attach () = 0;
-    virtual bool refresh() = 0;
-    virtual bool move   () = 0;
-    virtual bool flush  () = 0;
-    virtual bool remove () = 0;
+    virtual bool attach () final;
+    virtual bool refresh() final;
+    virtual bool move   () final;
+    virtual bool flush  () final;
+    virtual bool remove () final;
 
     bool detach();
 
@@ -133,4 +135,6 @@ private:
     bool nothing();
     bool error  ();
     bool destroy();
+
+    AbstractViewItem* d_ptr;
 };

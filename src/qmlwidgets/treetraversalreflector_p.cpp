@@ -18,6 +18,7 @@
 #include "treetraversalreflector_p.h"
 
 #include "abstractviewitem_p.h"
+#include "abstractviewitem.h"
 
 // Use some constant for readability
 #define PREVIOUS 0
@@ -112,7 +113,7 @@ public:
     /// All elements with loaded children
     QHash<QPersistentModelIndex, TreeTraversalItems*> m_hMapper;
     QAbstractItemModel* m_pModel {nullptr};
-    std::function<VisualTreeItem*()> m_fFactory;
+    std::function<AbstractViewItem*()> m_fFactory;
     TreeTraversalReflector* q_ptr;
 };
 
@@ -275,7 +276,7 @@ bool TreeTraversalItems::show()
 //     qDebug() << "SHOW";
 
     if (!m_pTreeItem) {
-        m_pTreeItem = d_ptr->q_ptr->createItem();
+        m_pTreeItem = d_ptr->q_ptr->createItem()->s_ptr;
         Q_ASSERT(m_pTreeItem);
         m_pTreeItem->m_pTTI = this;
     }
@@ -461,13 +462,13 @@ VisualTreeItem* TreeTraversalReflector::getCorner(TreeTraversalRange* r, Qt::Cor
 }
 
 // Setters
-void TreeTraversalReflector::setItemFactory(std::function<VisualTreeItem*()> factory)
+void TreeTraversalReflector::setItemFactory(std::function<AbstractViewItem*()> factory)
 {
     d_ptr->m_fFactory = factory;
 }
 
 // factory
-VisualTreeItem* TreeTraversalReflector::createItem() const
+AbstractViewItem* TreeTraversalReflector::createItem() const
 {
     Q_ASSERT(d_ptr->m_fFactory);
     return d_ptr->m_fFactory();
@@ -1104,10 +1105,10 @@ VisualTreeItem* TreeTraversalReflector::parentTreeItem(const QModelIndex& index)
     return nullptr;
 }
 
-VisualTreeItem* TreeTraversalReflector::itemForIndex(const QModelIndex& idx) const
+AbstractViewItem* TreeTraversalReflector::itemForIndex(const QModelIndex& idx) const
 {
     const auto tti = ttiForIndex(idx);
-    return tti ? tti->m_pTreeItem : nullptr;
+    return tti ? tti->m_pTreeItem->d_ptr : nullptr;
 }
 
 bool TreeTraversalReflector::addRange(TreeTraversalRange* range)

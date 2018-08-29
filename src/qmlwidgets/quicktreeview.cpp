@@ -17,7 +17,7 @@
  **************************************************************************/
 #include "quicktreeview.h"
 
-#include "abstractviewitem_p.h"
+#include "abstractviewitem.h"
 
 // Qt
 #include <QQmlContext>
@@ -31,7 +31,7 @@
  *
  * The state is managed by the AbstractQuickView and it's own protected virtual methods.
  */
-class QuickTreeViewItem : public VisualTreeItem
+class QuickTreeViewItem : public AbstractViewItem
 {
 public:
     explicit QuickTreeViewItem(AbstractQuickView* v);
@@ -82,14 +82,14 @@ QuickTreeView::~QuickTreeView()
     delete d_ptr;
 }
 
-VisualTreeItem* QuickTreeView::createItem() const
+AbstractViewItem* QuickTreeView::createItem() const
 {
     return new QuickTreeViewItem(
         const_cast<QuickTreeView*>(this)
     );
 }
 
-QuickTreeViewItem::QuickTreeViewItem(AbstractQuickView* p) : VisualTreeItem(p)
+QuickTreeViewItem::QuickTreeViewItem(AbstractQuickView* p) : AbstractViewItem(p)
 {
 }
 
@@ -119,10 +119,10 @@ bool QuickTreeViewItem::attach()
     if (!pair.first->z())
         pair.first->setZ(1);
 
-    d()->m_DepthChart[depth()] = std::max(
+    /*d()->m_DepthChart[depth()] = std::max(
         d()->m_DepthChart[depth()],
         pair.first->height()
-    );
+    );*/
 
     m_pContent = pair.second;
     m_pItem    = pair.first;

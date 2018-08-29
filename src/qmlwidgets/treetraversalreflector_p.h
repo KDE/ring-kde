@@ -82,7 +82,7 @@ public:
 
     // Getter
     VisualTreeItem* parentTreeItem(const QModelIndex& idx) const;
-    VisualTreeItem* itemForIndex(const QModelIndex& idx) const;
+    AbstractViewItem* itemForIndex(const QModelIndex& idx) const;
 
     //TODO remove those temporary helpers once its encapsulated
     /*inline*/ QModelIndex indexForItem(const VisualTreeItem* i) const;
@@ -97,10 +97,10 @@ public:
     QList<TreeTraversalRange*> ranges() const;
 
     // Setters
-    void setItemFactory(std::function<VisualTreeItem*()> factory);
+    void setItemFactory(std::function<AbstractViewItem*()> factory);
 
     // factory
-    VisualTreeItem* createItem() const;
+    AbstractViewItem* createItem() const;
 
     // Tests
     void _test_validateTree(TreeTraversalItems* p);
