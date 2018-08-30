@@ -305,15 +305,6 @@ bool TreeTraversalItems::attach()
     return performAction(Action::SHOW); //FIXME don't
 }
 
-// This methodwrap the removal of the element from the view
-bool VisualTreeItem::detach()
-{
-    remove();
-    m_State = VisualTreeItem::State::POOLED;
-
-    return true;
-}
-
 bool TreeTraversalItems::detach()
 {
     // First, detach any remaining children
@@ -1128,12 +1119,33 @@ QList<TreeTraversalRange*> TreeTraversalReflector::ranges() const
     return {}; //TODO
 }
 
-VisualTreeItem* TreeTraversalReflector::up(const VisualTreeItem* i) const
+bool VisualTreeItem::isVisible() const
 {
-    const auto ret = i->m_pTTI->up();
-    //TODO support collapsed nodes
+    return m_pTTI->m_State == TreeTraversalItems::State::VISIBLE;
+}
 
-    Q_ASSERT((!ret) || ret->m_pTreeItem);
+QPersistentModelIndex VisualTreeItem::index() const
+{
+    return m_pTTI->m_Index;
+}
+
+/**
+ * Flatten the tree as a linked list.
+ *
+ * Returns the previous non-failed item.
+ */
+VisualTreeItem* VisualTreeItem::up() const
+{
+    Q_ASSERT(m_State == State::ACTIVE
+        || m_State == State::BUFFER
+        || m_State == State::FAILED
+        || m_State == State::POOLING
+        || m_State == State::DANGLING //FIXME add a new state for
+        // "deletion in progress" or swap the f call and set state
+    );
+
+    const auto ret = m_pTTI->up();
+    //TODO support collapsed nodes
 
     // Recursively look for a valid element. Doing this here allows the views
     // that implement this (abstract) class to work without having to always
@@ -1145,56 +1157,44 @@ VisualTreeItem* TreeTraversalReflector::up(const VisualTreeItem* i) const
     return ret ? ret->m_pTreeItem : nullptr;
 }
 
-VisualTreeItem* TreeTraversalReflector::down(const VisualTreeItem* i) const
+/**
+ * Flatten the tree as a linked list.
+ *
+ * Returns the next non-failed item.
+ */
+VisualTreeItem* VisualTreeItem::down() const
 {
-    auto ret = i->m_pTTI->down();
-    //TODO support collapsed entries
+    Q_ASSERT(m_State == State::ACTIVE
+        || m_State == State::BUFFER
+        || m_State == State::FAILED
+        || m_State == State::POOLING
+        || m_State == State::DANGLING //FIXME add a new state for
+        // "deletion in progress" or swap the f call and set state
+    );
 
-    Q_ASSERT((!ret) || ret->m_pTreeItem);
+    const auto ret = m_pTTI->down();
+    //TODO support collapsed entries
 
     // Recursively look for a valid element. Doing this here allows the views
     // that implement this (abstract) class to work without having to always
     // check if some of their item failed to load. This is non-fatal in the
     // other Qt views, so it isn't fatal here either.
     if (ret && !ret->m_pTreeItem)
-        return ret->m_pTreeItem->down(); //FIXME loop
+        return down(); //FIXME loop
 
     return ret ? ret->m_pTreeItem : nullptr;
 }
 
-VisualTreeItem* TreeTraversalReflector::left(const VisualTreeItem* i) const
+int VisualTreeItem::row() const
 {
-    return nullptr; //TODO
+    return m_pTTI->m_MoveToRow == -1 ?
+        index().row() : m_pTTI->m_MoveToRow;
 }
 
-VisualTreeItem* TreeTraversalReflector::right(const VisualTreeItem* i) const
+int VisualTreeItem::column() const
 {
-    return nullptr; //TODO
-}
-
-int TreeTraversalReflector::row(const VisualTreeItem* i) const
-{
-    return i->m_pTTI->m_MoveToRow == -1 ?
-        i->index().row() : i->m_pTTI->m_MoveToRow;
-}
-
-int TreeTraversalReflector::column(const VisualTreeItem* i) const
-{
-    return i->m_pTTI->m_MoveToColumn == -1 ?
-        i->index().column() : i->m_pTTI->m_MoveToColumn;
-}
-
-
-//TODO remove
-QModelIndex TreeTraversalReflector::indexForItem(const VisualTreeItem* i) const
-{
-    return i->m_pTTI->m_Index;
-}
-
-//TODO remove
-bool TreeTraversalReflector::isItemVisible(const VisualTreeItem* i) const
-{
-    return i->m_pTTI->m_State == TreeTraversalItems::State::VISIBLE;
+    return m_pTTI->m_MoveToColumn == -1 ?
+        index().column() : m_pTTI->m_MoveToColumn;
 }
 
 //TODO remove
@@ -1204,11 +1204,13 @@ void TreeTraversalReflector::refreshEverything()
         i.value()->performAction(TreeTraversalItems::Action::UPDATE);
 }
 
+//TODO remove
 void TreeTraversalReflector::moveEverything()
 {
     d_ptr->m_pRoot->performAction(TreeTraversalItems::Action::MOVE);
 }
 
+//TODO remove
 void TreeTraversalReflector::reloadRange(const QModelIndex& idx)
 {
     if (auto p = ttiForIndex(idx)) {

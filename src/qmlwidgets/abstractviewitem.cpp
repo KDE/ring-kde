@@ -17,7 +17,11 @@
  **************************************************************************/
 #include "abstractviewitem.h"
 
+// Qt
+#include <QtCore/QTimer>
+
 #include "abstractviewitem_p.h"
+#include "abstractquickview.h"
 
 class AbstractViewItemPrivate
 {
@@ -133,4 +137,86 @@ bool VisualTreeItem::flush()
 bool VisualTreeItem::remove()
 {
     return d_ptr->remove();
+}
+
+// This methodwrap the removal of the element from the view
+bool VisualTreeItem::detach()
+{
+    remove();
+    m_State = VisualTreeItem::State::POOLED;
+
+    return true;
+}
+
+bool VisualTreeItem::performAction(VisualTreeItem::ViewAction a)
+{
+    //if (m_State == VisualTreeItem::State::FAILED)
+    //    m_pTTI->d_ptr->m_FailedCount--;
+
+    const int s = (int)m_State;
+    m_State     = m_fStateMap [s][(int)a];
+    Q_ASSERT(m_State != VisualTreeItem::State::ERROR);
+
+    const bool ret = (this->*m_fStateMachine[s][(int)a])();
+
+    if (m_State == VisualTreeItem::State::FAILED || !ret) {
+        Q_ASSERT(false);
+        m_State = VisualTreeItem::State::FAILED;
+        //m_pTTI->d_ptr->m_FailedCount++;
+    }
+
+    return ret;
+}
+
+QWeakPointer<VisualTreeItem> VisualTreeItem::reference() const
+{
+    if (!m_pSelf)
+        m_pSelf = QSharedPointer<VisualTreeItem>(
+            const_cast<VisualTreeItem*>(this)
+        );
+
+    return m_pSelf;
+}
+
+int VisualTreeItem::depth() const
+{
+    return 0;//FIXME m_pTTI->m_Depth;
+}
+
+bool VisualTreeItem::fitsInView() const
+{
+    const auto geo  = geometry();
+    const auto v = view()->visibleRect();
+
+    //TODO support horizontal visibility
+    return geo.y() >= v.y()
+        && (geo.y() <= v.y() + v.height());
+}
+
+bool VisualTreeItem::nothing()
+{
+    return true;
+}
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wsuggest-attribute=noreturn"
+bool VisualTreeItem::error()
+{
+    Q_ASSERT(false);
+    return true;
+}
+#pragma GCC diagnostic pop
+
+bool VisualTreeItem::destroy()
+{
+    auto ptrCopy = m_pSelf;
+
+    QTimer::singleShot(0,[this, ptrCopy]() {
+        if (!ptrCopy)
+            delete this;
+        // else the reference will be dropped and the destructor called
+    });
+
+    m_pSelf.clear();
+    return true;
 }

@@ -62,21 +62,6 @@ public:
     void setModel(QAbstractItemModel* m);
     void populate();
 
-    /*
-     * Invert responsibilities so the VisualTreeItem don't need
-     * to know anything about itself it should not have to care about. The
-     * TreeTraversalItems are the "source of truth" when it comes to interfacing
-     * with the model. Implementing those methods directly in the VisualTreeItem
-     * would force to expose some internal state.
-     *
-     */
-    /*inline*/ VisualTreeItem* up    (const VisualTreeItem* i) const;
-    /*inline*/ VisualTreeItem* down  (const VisualTreeItem* i) const;
-    /*inline*/ VisualTreeItem* left  (const VisualTreeItem* i) const;
-    /*inline*/ VisualTreeItem* right (const VisualTreeItem* i) const;
-    /*inline*/ int row   (const VisualTreeItem* i) const;
-    /*inline*/ int column(const VisualTreeItem* i) const;
-
     //TODO move this to the range once it works
     VisualTreeItem* getCorner(TreeTraversalRange* r, Qt::Corner c) const;
 
@@ -85,8 +70,6 @@ public:
     AbstractViewItem* itemForIndex(const QModelIndex& idx) const;
 
     //TODO remove those temporary helpers once its encapsulated
-    /*inline*/ QModelIndex indexForItem(const VisualTreeItem* i) const;
-    /*inline*/ bool isItemVisible(const VisualTreeItem* i) const;
     void refreshEverything();
     void reloadRange(const QModelIndex& idx);
     void moveEverything();
