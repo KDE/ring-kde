@@ -55,38 +55,6 @@
  *
  */
 
-/*
- * The visual elements state changes.
- *
- * Note that the ::FAILED elements will always try to self-heal themselves and
- * go back into FAILED once the self-healing itself failed.
- */
-#define S VisualTreeItem::State::
-const VisualTreeItem::State VisualTreeItem::m_fStateMap[7][7] = {
-/*              ATTACH ENTER_BUFFER ENTER_VIEW UPDATE    MOVE   LEAVE_BUFFER  DETACH  */
-/*POOLING */ { S POOLING, S BUFFER, S ERROR , S ERROR , S ERROR , S ERROR  , S DANGLING },
-/*POOLED  */ { S POOLED , S BUFFER, S ERROR , S ERROR , S ERROR , S ERROR  , S DANGLING },
-/*BUFFER  */ { S ERROR  , S ERROR , S ACTIVE, S BUFFER, S ERROR , S POOLING, S DANGLING },
-/*ACTIVE  */ { S ERROR  , S BUFFER, S ERROR , S ACTIVE, S ACTIVE, S POOLING, S POOLING  },
-/*FAILED  */ { S ERROR  , S BUFFER, S ACTIVE, S ACTIVE, S ACTIVE, S POOLING, S DANGLING },
-/*DANGLING*/ { S ERROR  , S ERROR , S ERROR , S ERROR , S ERROR , S ERROR  , S DANGLING },
-/*ERROR   */ { S ERROR  , S ERROR , S ERROR , S ERROR , S ERROR , S ERROR  , S DANGLING },
-};
-#undef S
-
-#define A &VisualTreeItem::
-const VisualTreeItem::StateF VisualTreeItem::m_fStateMachine[7][7] = {
-/*             ATTACH  ENTER_BUFFER  ENTER_VIEW   UPDATE     MOVE   LEAVE_BUFFER  DETACH  */
-/*POOLING */ { A error  , A error  , A error  , A error  , A error  , A error  , A error   },
-/*POOLED  */ { A nothing, A attach , A error  , A error  , A error  , A error  , A destroy },
-/*BUFFER  */ { A error  , A error  , A move   , A refresh, A error  , A detach , A destroy },
-/*ACTIVE  */ { A error  , A nothing, A error  , A refresh, A move   , A detach , A detach  },
-/*FAILED  */ { A error  , A attach , A attach , A attach , A attach , A detach , A destroy },
-/*DANGLING*/ { A error  , A error  , A error  , A error  , A error  , A error  , A destroy },
-/*error   */ { A error  , A error  , A error  , A error  , A error  , A error  , A destroy },
-};
-#undef A
-
 class AbstractQuickViewPrivate final : public QObject
 {
     Q_OBJECT

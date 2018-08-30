@@ -25,12 +25,65 @@
 
 class AbstractViewItemPrivate
 {
+public:
+    typedef bool(AbstractViewItemPrivate::*StateF)();
+
+    // Actions
+    bool attach ();
+    bool refresh();
+    bool move   ();
+    bool flush  ();
+    bool remove ();
+    bool nothing();
+    bool error  ();
+    bool destroy();
+    bool detach ();
+
+    static const VisualTreeItem::State  m_fStateMap    [7][7];
+    static const StateF m_fStateMachine[7][7];
+
+    // Attributes
+    AbstractViewItem* q_ptr;
 };
+
+
+/*
+ * The visual elements state changes.
+ *
+ * Note that the ::FAILED elements will always try to self-heal themselves and
+ * go back into FAILED once the self-healing itself failed.
+ */
+#define S VisualTreeItem::State::
+const VisualTreeItem::State AbstractViewItemPrivate::m_fStateMap[7][7] = {
+/*              ATTACH ENTER_BUFFER ENTER_VIEW UPDATE    MOVE   LEAVE_BUFFER  DETACH  */
+/*POOLING */ { S POOLING, S BUFFER, S ERROR , S ERROR , S ERROR , S ERROR  , S DANGLING },
+/*POOLED  */ { S POOLED , S BUFFER, S ERROR , S ERROR , S ERROR , S ERROR  , S DANGLING },
+/*BUFFER  */ { S ERROR  , S ERROR , S ACTIVE, S BUFFER, S ERROR , S POOLING, S DANGLING },
+/*ACTIVE  */ { S ERROR  , S BUFFER, S ERROR , S ACTIVE, S ACTIVE, S POOLING, S POOLING  },
+/*FAILED  */ { S ERROR  , S BUFFER, S ACTIVE, S ACTIVE, S ACTIVE, S POOLING, S DANGLING },
+/*DANGLING*/ { S ERROR  , S ERROR , S ERROR , S ERROR , S ERROR , S ERROR  , S DANGLING },
+/*ERROR   */ { S ERROR  , S ERROR , S ERROR , S ERROR , S ERROR , S ERROR  , S DANGLING },
+};
+#undef S
+
+#define A &AbstractViewItemPrivate::
+const AbstractViewItemPrivate::StateF AbstractViewItemPrivate::m_fStateMachine[7][7] = {
+/*             ATTACH  ENTER_BUFFER  ENTER_VIEW   UPDATE     MOVE   LEAVE_BUFFER  DETACH  */
+/*POOLING */ { A error  , A error  , A error  , A error  , A error  , A error  , A error   },
+/*POOLED  */ { A nothing, A attach , A error  , A error  , A error  , A error  , A destroy },
+/*BUFFER  */ { A error  , A error  , A move   , A refresh, A error  , A detach , A destroy },
+/*ACTIVE  */ { A error  , A nothing, A error  , A refresh, A move   , A detach , A detach  },
+/*FAILED  */ { A error  , A attach , A attach , A attach , A attach , A detach , A destroy },
+/*DANGLING*/ { A error  , A error  , A error  , A error  , A error  , A error  , A destroy },
+/*error   */ { A error  , A error  , A error  , A error  , A error  , A error  , A destroy },
+};
+#undef A
 
 AbstractViewItem::AbstractViewItem(AbstractQuickView* v) :
     d_ptr(new AbstractViewItemPrivate),
     s_ptr(new VisualTreeItem(v))
 {
+    d_ptr->q_ptr = this;
     s_ptr->d_ptr = this;
 }
 
@@ -114,36 +167,67 @@ QQuickItem* VisualTreeItem::item() const
     return d_ptr->item();
 }
 
-bool VisualTreeItem::attach()
+bool AbstractViewItemPrivate::attach()
 {
-    return d_ptr->attach();
+    return q_ptr->attach();
 }
 
-bool VisualTreeItem::refresh()
+bool AbstractViewItemPrivate::refresh()
 {
-    return d_ptr->refresh();
+    return q_ptr->refresh();
 }
 
-bool VisualTreeItem::move()
+bool AbstractViewItemPrivate::move()
 {
-    return d_ptr->move();
+    return q_ptr->move();
 }
 
-bool VisualTreeItem::flush()
+bool AbstractViewItemPrivate::flush()
 {
-    return d_ptr->flush();
+    return q_ptr->flush();
 }
 
-bool VisualTreeItem::remove()
+bool AbstractViewItemPrivate::remove()
 {
-    return d_ptr->remove();
+    return q_ptr->remove();
 }
 
 // This methodwrap the removal of the element from the view
-bool VisualTreeItem::detach()
+bool AbstractViewItemPrivate::detach()
 {
     remove();
-    m_State = VisualTreeItem::State::POOLED;
+
+    //FIXME
+    q_ptr->s_ptr->m_State = VisualTreeItem::State::POOLED;
+
+    return true;
+}
+
+bool AbstractViewItemPrivate::nothing()
+{
+    return true;
+}
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wsuggest-attribute=noreturn"
+bool AbstractViewItemPrivate::error()
+{
+    Q_ASSERT(false);
+    return true;
+}
+#pragma GCC diagnostic pop
+
+bool AbstractViewItemPrivate::destroy()
+{
+    auto ptrCopy = q_ptr->s_ptr->m_pSelf;
+
+    QTimer::singleShot(0,[this, ptrCopy]() {
+        if (!ptrCopy)
+            delete this;
+        // else the reference will be dropped and the destructor called
+    });
+
+    q_ptr->s_ptr->m_pSelf.clear();
 
     return true;
 }
@@ -154,10 +238,10 @@ bool VisualTreeItem::performAction(VisualTreeItem::ViewAction a)
     //    m_pTTI->d_ptr->m_FailedCount--;
 
     const int s = (int)m_State;
-    m_State     = m_fStateMap [s][(int)a];
+    m_State     = d_ptr->d_ptr->m_fStateMap [s][(int)a];
     Q_ASSERT(m_State != VisualTreeItem::State::ERROR);
 
-    const bool ret = (this->*m_fStateMachine[s][(int)a])();
+    const bool ret = (d_ptr->d_ptr ->* d_ptr->d_ptr->m_fStateMachine[s][(int)a])();
 
     if (m_State == VisualTreeItem::State::FAILED || !ret) {
         Q_ASSERT(false);
@@ -191,32 +275,4 @@ bool VisualTreeItem::fitsInView() const
     //TODO support horizontal visibility
     return geo.y() >= v.y()
         && (geo.y() <= v.y() + v.height());
-}
-
-bool VisualTreeItem::nothing()
-{
-    return true;
-}
-
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wsuggest-attribute=noreturn"
-bool VisualTreeItem::error()
-{
-    Q_ASSERT(false);
-    return true;
-}
-#pragma GCC diagnostic pop
-
-bool VisualTreeItem::destroy()
-{
-    auto ptrCopy = m_pSelf;
-
-    QTimer::singleShot(0,[this, ptrCopy]() {
-        if (!ptrCopy)
-            delete this;
-        // else the reference will be dropped and the destructor called
-    });
-
-    m_pSelf.clear();
-    return true;
 }

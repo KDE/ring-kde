@@ -36,9 +36,11 @@ class QQuickItem;
  */
 class VisualTreeItem
 {
+    //FIXME remove all that
     friend class AbstractQuickView;
     friend struct TreeTraversalItems;
     friend class AbstractQuickViewPrivate;
+    friend class AbstractViewItemPrivate; //TODO remove
     friend class TreeTraversalReflector;
     friend class AbstractViewItem;
 public:
@@ -110,31 +112,15 @@ public:
 
     virtual QQuickItem* item() const final;
 
-    // Actions
-    virtual bool attach () final;
-    virtual bool refresh() final;
-    virtual bool move   () final;
-    virtual bool flush  () final;
-    virtual bool remove () final;
-
-    bool detach();
 
 private:
-
-    typedef bool(VisualTreeItem::*StateF)();
     State m_State {State::POOLED};
     TreeTraversalItems* m_pTTI {nullptr};
     mutable QSharedPointer<VisualTreeItem> m_pSelf;
     AbstractQuickView* m_pView {nullptr};
 
-    static const State  m_fStateMap    [7][7];
-    static const StateF m_fStateMachine[7][7];
-
     bool performAction(ViewAction); //FIXME make private, remove #include
 
-    bool nothing();
-    bool error  ();
-    bool destroy();
 
     AbstractViewItem* d_ptr;
 };

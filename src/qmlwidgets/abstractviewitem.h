@@ -64,6 +64,7 @@ class AbstractViewItem
     friend class VisualTreeItem; //its internally shared properties
     friend class TreeTraversalItems; //state tracking
     friend class AbstractQuickViewPrivate; //notify when the view is resized
+    friend class AbstractViewItemPrivate; // d_ptr (Q_DECLARE_PRIVATE)
 
 public:
     explicit AbstractViewItem(AbstractQuickView* v);
