@@ -101,9 +101,21 @@ struct TreeTraversalItems
     TreeTraversalReflectorPrivate* d_ptr;
 };
 
-class TreeTraversalReflectorPrivate
+class TreeTraversalReflectorPrivate : public QObject
 {
+    Q_OBJECT
 public:
+
+    // Helpers
+    TreeTraversalItems* addChildren(TreeTraversalItems* parent, const QModelIndex& index);
+    void bridgeGap(TreeTraversalItems* first, TreeTraversalItems* second, bool insert = false);
+    void createGap(TreeTraversalItems* first, TreeTraversalItems* last  );
+    TreeTraversalItems* ttiForIndex(const QModelIndex& idx) const;
+
+    void setTemporaryIndices(const QModelIndex &parent, int start, int end,
+                             const QModelIndex &destination, int row);
+    void resetTemporaryIndices(const QModelIndex &parent, int start, int end,
+                               const QModelIndex &destination, int row);
 
     TreeTraversalItems* m_pRoot {new TreeTraversalItems(nullptr, this)};
 
@@ -115,6 +127,19 @@ public:
     QAbstractItemModel* m_pModel {nullptr};
     std::function<AbstractViewItem*()> m_fFactory;
     TreeTraversalReflector* q_ptr;
+
+    // Tests
+    void _test_validateTree(TreeTraversalItems* p);
+
+public Q_SLOTS:
+    void cleanup();
+    void slotRowsInserted  (const QModelIndex& parent, int first, int last);
+    void slotRowsRemoved   (const QModelIndex& parent, int first, int last);
+    void slotLayoutChanged (                                              );
+    void slotRowsMoved     (const QModelIndex &p, int start, int end,
+                            const QModelIndex &dest, int row);
+    void slotRowsMoved2    (const QModelIndex &p, int start, int end,
+                            const QModelIndex &dest, int row);
 };
 
 #include <treetraversalreflector_debug.h>
@@ -465,30 +490,30 @@ AbstractViewItem* TreeTraversalReflector::createItem() const
     return d_ptr->m_fFactory();
 }
 
-void TreeTraversalReflector::slotRowsInserted(const QModelIndex& parent, int first, int last)
+void TreeTraversalReflectorPrivate::slotRowsInserted(const QModelIndex& parent, int first, int last)
 {
-    Q_ASSERT((!parent.isValid()) || parent.model() == model());
+    Q_ASSERT((!parent.isValid()) || parent.model() == q_ptr->model());
 //     qDebug() << "\n\nADD" << first << last;
 
-    if (!isActive(parent, first, last))
+    if (!q_ptr->isActive(parent, first, last))
         return;
 
 //     qDebug() << "\n\nADD2" << q_ptr->width() << q_ptr->height();
 
-    auto pitem = parent.isValid() ? d_ptr->m_hMapper.value(parent) : d_ptr->m_pRoot;
+    auto pitem = parent.isValid() ? m_hMapper.value(parent) : m_pRoot;
 
     TreeTraversalItems *prev(nullptr);
 
     //FIXME use up()
     if (first && pitem)
-        prev = pitem->m_hLookup.value(model()->index(first-1, 0, parent));
+        prev = pitem->m_hLookup.value(q_ptr->model()->index(first-1, 0, parent));
 
     //FIXME support smaller ranges
     for (int i = first; i <= last; i++) {
-        auto idx = model()->index(i, 0, parent);
+        auto idx = q_ptr->model()->index(i, 0, parent);
         Q_ASSERT(idx.isValid());
         Q_ASSERT(idx.parent() != idx);
-        Q_ASSERT(idx.model() == model());
+        Q_ASSERT(idx.model() == q_ptr->model());
 
         auto e = addChildren(pitem, idx);
 
@@ -523,7 +548,7 @@ void TreeTraversalReflector::slotRowsInserted(const QModelIndex& parent, int fir
                 ne->performAction(TreeTraversalItems::Action::MOVE);
         }
 
-        if (auto rc = model()->rowCount(idx))
+        if (auto rc = q_ptr->model()->rowCount(idx))
             slotRowsInserted(idx, 0, rc-1);
 
         prev = e;
@@ -535,8 +560,8 @@ void TreeTraversalReflector::slotRowsInserted(const QModelIndex& parent, int fir
     Q_ASSERT(pitem->m_tChildren[LAST]);
 
     //FIXME use down()
-    if (model()->rowCount(parent) > last) {
-        if (auto i = pitem->m_hLookup.value(model()->index(last+1, 0, parent))) {
+    if (q_ptr->model()->rowCount(parent) > last) {
+        if (auto i = pitem->m_hLookup.value(q_ptr->model()->index(last+1, 0, parent))) {
             i->m_tSiblings[PREVIOUS] = prev;
             prev->m_tSiblings[NEXT] = i;
         }
@@ -545,25 +570,25 @@ void TreeTraversalReflector::slotRowsInserted(const QModelIndex& parent, int fir
     }
 
     //FIXME EVIL and useless
-    d_ptr->m_pRoot->performAction(TreeTraversalItems::Action::MOVE);
+    m_pRoot->performAction(TreeTraversalItems::Action::MOVE);
 
-    _test_validateTree(d_ptr->m_pRoot);
+    _test_validateTree(m_pRoot);
 
-    Q_EMIT contentChanged();
+    Q_EMIT q_ptr->contentChanged();
 
     if (!parent.isValid())
-        Q_EMIT countChanged();
+        Q_EMIT q_ptr->countChanged();
 }
 
-void TreeTraversalReflector::slotRowsRemoved(const QModelIndex& parent, int first, int last)
+void TreeTraversalReflectorPrivate::slotRowsRemoved(const QModelIndex& parent, int first, int last)
 {
-    Q_ASSERT((!parent.isValid()) || parent.model() == model());
-    Q_EMIT contentChanged();
+    Q_ASSERT((!parent.isValid()) || parent.model() == q_ptr->model());
+    Q_EMIT q_ptr->contentChanged();
 
-    if (!isActive(parent, first, last))
+    if (!q_ptr->isActive(parent, first, last))
         return;
 
-    auto pitem = parent.isValid() ? d_ptr->m_hMapper.value(parent) : d_ptr->m_pRoot;
+    auto pitem = parent.isValid() ? m_hMapper.value(parent) : m_pRoot;
 
     //TODO make sure the state machine support them
     //TreeTraversalItems *prev(nullptr), *next(nullptr);
@@ -576,7 +601,7 @@ void TreeTraversalReflector::slotRowsRemoved(const QModelIndex& parent, int firs
 
     //FIXME support smaller ranges
     for (int i = first; i <= last; i++) {
-        auto idx = model()->index(i, 0, parent);
+        auto idx = q_ptr->model()->index(i, 0, parent);
 
         auto elem = pitem->m_hLookup.value(idx);
         Q_ASSERT(elem);
@@ -585,21 +610,21 @@ void TreeTraversalReflector::slotRowsRemoved(const QModelIndex& parent, int firs
     }
 
     if (!parent.isValid())
-        Q_EMIT countChanged();
+        Q_EMIT q_ptr->countChanged();
 }
 
-void TreeTraversalReflector::slotLayoutChanged()
+void TreeTraversalReflectorPrivate::slotLayoutChanged()
 {
 
-    if (auto rc = model()->rowCount())
+    if (auto rc = q_ptr->model()->rowCount())
         slotRowsInserted({}, 0, rc - 1);
 
-    Q_EMIT contentChanged();
+    Q_EMIT q_ptr->contentChanged();
 
-    Q_EMIT countChanged();
+    Q_EMIT q_ptr->countChanged();
 }
 
-void TreeTraversalReflector::createGap(TreeTraversalItems* first, TreeTraversalItems* last)
+void TreeTraversalReflectorPrivate::createGap(TreeTraversalItems* first, TreeTraversalItems* last)
 {
     Q_ASSERT(first->m_pParent == last->m_pParent);
 
@@ -631,7 +656,7 @@ void TreeTraversalReflector::createGap(TreeTraversalItems* first, TreeTraversalI
 }
 
 /// Fix the issues introduced by createGap (does not update m_pParent and m_hLookup)
-void TreeTraversalReflector::bridgeGap(TreeTraversalItems* first, TreeTraversalItems* second, bool insert)
+void TreeTraversalReflectorPrivate::bridgeGap(TreeTraversalItems* first, TreeTraversalItems* second, bool insert)
 {
     // 3 possible case: siblings, first child or last child
 
@@ -713,7 +738,7 @@ void TreeTraversalReflector::bridgeGap(TreeTraversalItems* first, TreeTraversalI
 //     }
 }
 
-void TreeTraversalReflector::setTemporaryIndices(const QModelIndex &parent, int start, int end,
+void TreeTraversalReflectorPrivate::setTemporaryIndices(const QModelIndex &parent, int start, int end,
                                      const QModelIndex &destination, int row)
 {
     //FIXME list only
@@ -721,9 +746,9 @@ void TreeTraversalReflector::setTemporaryIndices(const QModelIndex &parent, int 
     // on the index until before slotRowsMoved2 is called (but after this
     // method returns //TODO do not use the hashmap, it is already known
     if (parent == destination) {
-        const auto pitem = parent.isValid() ? d_ptr->m_hMapper.value(parent) : d_ptr->m_pRoot;
+        const auto pitem = parent.isValid() ? m_hMapper.value(parent) : m_pRoot;
         for (int i = start; i <= end; i++) {
-            auto idx = model()->index(i, 0, parent);
+            auto idx = q_ptr->model()->index(i, 0, parent);
 
             auto elem = pitem->m_hLookup.value(idx);
             Q_ASSERT(elem);
@@ -732,7 +757,7 @@ void TreeTraversalReflector::setTemporaryIndices(const QModelIndex &parent, int 
         }
 
         for (int i = row; i <= row + (end - start); i++) {
-            auto idx = model()->index(i, 0, parent);
+            auto idx = q_ptr->model()->index(i, 0, parent);
 
             auto elem = pitem->m_hLookup.value(idx);
             Q_ASSERT(elem);
@@ -742,7 +767,7 @@ void TreeTraversalReflector::setTemporaryIndices(const QModelIndex &parent, int 
     }
 }
 
-void TreeTraversalReflector::resetTemporaryIndices(const QModelIndex &parent, int start, int end,
+void TreeTraversalReflectorPrivate::resetTemporaryIndices(const QModelIndex &parent, int start, int end,
                                      const QModelIndex &destination, int row)
 {
     //FIXME list only
@@ -750,16 +775,16 @@ void TreeTraversalReflector::resetTemporaryIndices(const QModelIndex &parent, in
     // on the index until before slotRowsMoved2 is called (but after this
     // method returns //TODO do not use the hashmap, it is already known
     if (parent == destination) {
-        const auto pitem = parent.isValid() ? d_ptr->m_hMapper.value(parent) : d_ptr->m_pRoot;
+        const auto pitem = parent.isValid() ? m_hMapper.value(parent) : m_pRoot;
         for (int i = start; i <= end; i++) {
-            auto idx = model()->index(i, 0, parent);
+            auto idx = q_ptr->model()->index(i, 0, parent);
             auto elem = pitem->m_hLookup.value(idx);
             Q_ASSERT(elem);
             elem->m_MoveToRow = -1;
         }
 
         for (int i = row; i <= row + (end - start); i++) {
-            auto idx = model()->index(i, 0, parent);
+            auto idx = q_ptr->model()->index(i, 0, parent);
             auto elem = pitem->m_hLookup.value(idx);
             Q_ASSERT(elem);
             elem->m_MoveToRow = -1;
@@ -767,18 +792,18 @@ void TreeTraversalReflector::resetTemporaryIndices(const QModelIndex &parent, in
     }
 }
 
-void TreeTraversalReflector::slotRowsMoved(const QModelIndex &parent, int start, int end,
+void TreeTraversalReflectorPrivate::slotRowsMoved(const QModelIndex &parent, int start, int end,
                                      const QModelIndex &destination, int row)
 {
-    Q_ASSERT((!parent.isValid()) || parent.model() == model());
-    Q_ASSERT((!destination.isValid()) || destination.model() == model());
+    Q_ASSERT((!parent.isValid()) || parent.model() == q_ptr->model());
+    Q_ASSERT((!destination.isValid()) || destination.model() == q_ptr->model());
 
     // There is literally nothing to do
     if (parent == destination && start == row)
         return;
 
     // Whatever has to be done only affect a part that's not currently tracked.
-    if ((!isActive(parent, start, end)) && !isActive(destination, row, row+(end-start)))
+    if ((!q_ptr->isActive(parent, start, end)) && !q_ptr->isActive(destination, row, row+(end-start)))
         return;
 
     setTemporaryIndices(parent, start, end, destination, row);
@@ -789,8 +814,8 @@ void TreeTraversalReflector::slotRowsMoved(const QModelIndex &parent, int start,
     // the edges is necessary for the TreeTraversalItems. Each VisualTreeItem
     // need to be moved.
 
-    const auto idxStart = model()->index(start, 0, parent);
-    const auto idxEnd   = model()->index(end  , 0, parent);
+    const auto idxStart = q_ptr->model()->index(start, 0, parent);
+    const auto idxEnd   = q_ptr->model()->index(end  , 0, parent);
     Q_ASSERT(idxStart.isValid() && idxEnd.isValid());
 
     //FIXME once partial ranges are supported, this is no longer always valid
@@ -810,7 +835,7 @@ void TreeTraversalReflector::slotRowsMoved(const QModelIndex &parent, int start,
     Q_ASSERT((!oldPreviousTTI) || oldPreviousTTI->down() == startTTI);
     Q_ASSERT((!oldNextTTI) || oldNextTTI->up() == endTTI);
 
-    auto newNextIdx = model()->index(row, 0, destination);
+    auto newNextIdx = q_ptr->model()->index(row, 0, destination);
 
     // You cannot move things into an empty model
     Q_ASSERT((!row) || newNextIdx.isValid());
@@ -819,11 +844,11 @@ void TreeTraversalReflector::slotRowsMoved(const QModelIndex &parent, int start,
 
     // Rewind until a next element is found, this happens when destination is empty
     if (!newNextIdx.isValid() && destination.parent().isValid()) {
-        Q_ASSERT(model()->rowCount(destination) == row);
+        Q_ASSERT(q_ptr->model()->rowCount(destination) == row);
         auto par = destination.parent();
         do {
-            if (model()->rowCount(par.parent()) > par.row()) {
-                newNextIdx = model()->index(par.row(), 0, par.parent());
+            if (q_ptr->model()->rowCount(par.parent()) > par.row()) {
+                newNextIdx = q_ptr->model()->index(par.row(), 0, par.parent());
                 break;
             }
 
@@ -857,7 +882,7 @@ void TreeTraversalReflector::slotRowsMoved(const QModelIndex &parent, int start,
     Q_ASSERT((newNextTTI || endTTI  ) && newNextTTI != endTTI  );
 
     TreeTraversalItems* newParentTTI = ttiForIndex(destination);
-    newParentTTI = newParentTTI ? newParentTTI : d_ptr->m_pRoot;
+    newParentTTI = newParentTTI ? newParentTTI : m_pRoot;
     auto oldParentTTI = startTTI->m_pParent;
 
     // Make sure not to leave invalid pointers while the steps below are being performed
@@ -930,12 +955,12 @@ void TreeTraversalReflector::slotRowsMoved(const QModelIndex &parent, int start,
 
     // Move everything
     //TODO move it more efficient
-    d_ptr->m_pRoot->performAction(TreeTraversalItems::Action::MOVE);
+    m_pRoot->performAction(TreeTraversalItems::Action::MOVE);
 
     resetTemporaryIndices(parent, start, end, destination, row);
 }
 
-void TreeTraversalReflector::slotRowsMoved2(const QModelIndex &parent, int start, int end,
+void TreeTraversalReflectorPrivate::slotRowsMoved2(const QModelIndex &parent, int start, int end,
                                      const QModelIndex &destination, int row)
 {
     Q_UNUSED(parent)
@@ -945,7 +970,7 @@ void TreeTraversalReflector::slotRowsMoved2(const QModelIndex &parent, int start
     Q_UNUSED(row)
 
     // The test would fail if it was in aboutToBeMoved
-    _test_validateTree(d_ptr->m_pRoot);
+    _test_validateTree(m_pRoot);
 }
 
 
@@ -960,24 +985,24 @@ void TreeTraversalReflector::setModel(QAbstractItemModel* m)
         return;
 
     if (auto oldM = model()) {
-        disconnect(oldM, &QAbstractItemModel::rowsInserted, this,
-            &TreeTraversalReflector::slotRowsInserted);
-        disconnect(oldM, &QAbstractItemModel::rowsAboutToBeRemoved, this,
-            &TreeTraversalReflector::slotRowsRemoved);
-        disconnect(oldM, &QAbstractItemModel::layoutAboutToBeChanged, this,
-            &TreeTraversalReflector::cleanup);
-        disconnect(oldM, &QAbstractItemModel::layoutChanged, this,
-            &TreeTraversalReflector::slotLayoutChanged);
-        disconnect(oldM, &QAbstractItemModel::modelAboutToBeReset, this,
-            &TreeTraversalReflector::cleanup);
-        disconnect(oldM, &QAbstractItemModel::modelReset, this,
-            &TreeTraversalReflector::slotLayoutChanged);
-        disconnect(oldM, &QAbstractItemModel::rowsAboutToBeMoved, this,
-            &TreeTraversalReflector::slotRowsMoved);
-        disconnect(oldM, &QAbstractItemModel::rowsMoved, this,
-            &TreeTraversalReflector::slotRowsMoved2);
+        disconnect(oldM, &QAbstractItemModel::rowsInserted, d_ptr,
+            &TreeTraversalReflectorPrivate::slotRowsInserted);
+        disconnect(oldM, &QAbstractItemModel::rowsAboutToBeRemoved, d_ptr,
+            &TreeTraversalReflectorPrivate::slotRowsRemoved);
+        disconnect(oldM, &QAbstractItemModel::layoutAboutToBeChanged, d_ptr,
+            &TreeTraversalReflectorPrivate::cleanup);
+        disconnect(oldM, &QAbstractItemModel::layoutChanged, d_ptr,
+            &TreeTraversalReflectorPrivate::slotLayoutChanged);
+        disconnect(oldM, &QAbstractItemModel::modelAboutToBeReset, d_ptr,
+            &TreeTraversalReflectorPrivate::cleanup);
+        disconnect(oldM, &QAbstractItemModel::modelReset, d_ptr,
+            &TreeTraversalReflectorPrivate::slotLayoutChanged);
+        disconnect(oldM, &QAbstractItemModel::rowsAboutToBeMoved, d_ptr,
+            &TreeTraversalReflectorPrivate::slotRowsMoved);
+        disconnect(oldM, &QAbstractItemModel::rowsMoved, d_ptr,
+            &TreeTraversalReflectorPrivate::slotRowsMoved2);
 
-        slotRowsRemoved({}, 0, oldM->rowCount()-1);
+        d_ptr->slotRowsRemoved({}, 0, oldM->rowCount()-1);
     }
 
     d_ptr->m_hMapper.clear();
@@ -989,22 +1014,22 @@ void TreeTraversalReflector::setModel(QAbstractItemModel* m)
     if (!m)
         return;
 
-    connect(model(), &QAbstractItemModel::rowsInserted, this,
-        &TreeTraversalReflector::slotRowsInserted );
-    connect(model(), &QAbstractItemModel::rowsAboutToBeRemoved, this,
-        &TreeTraversalReflector::slotRowsRemoved  );
-    connect(model(), &QAbstractItemModel::layoutAboutToBeChanged, this,
-        &TreeTraversalReflector::cleanup);
-    connect(model(), &QAbstractItemModel::layoutChanged, this,
-        &TreeTraversalReflector::slotLayoutChanged);
-    connect(model(), &QAbstractItemModel::modelAboutToBeReset, this,
-        &TreeTraversalReflector::cleanup);
-    connect(model(), &QAbstractItemModel::modelReset, this,
-        &TreeTraversalReflector::slotLayoutChanged);
-    connect(model(), &QAbstractItemModel::rowsAboutToBeMoved, this,
-        &TreeTraversalReflector::slotRowsMoved);
-    connect(model(), &QAbstractItemModel::rowsMoved, this,
-        &TreeTraversalReflector::slotRowsMoved2);
+    connect(model(), &QAbstractItemModel::rowsInserted, d_ptr,
+        &TreeTraversalReflectorPrivate::slotRowsInserted );
+    connect(model(), &QAbstractItemModel::rowsAboutToBeRemoved, d_ptr,
+        &TreeTraversalReflectorPrivate::slotRowsRemoved  );
+    connect(model(), &QAbstractItemModel::layoutAboutToBeChanged, d_ptr,
+        &TreeTraversalReflectorPrivate::cleanup);
+    connect(model(), &QAbstractItemModel::layoutChanged, d_ptr,
+        &TreeTraversalReflectorPrivate::slotLayoutChanged);
+    connect(model(), &QAbstractItemModel::modelAboutToBeReset, d_ptr,
+        &TreeTraversalReflectorPrivate::cleanup);
+    connect(model(), &QAbstractItemModel::modelReset, d_ptr,
+        &TreeTraversalReflectorPrivate::slotLayoutChanged);
+    connect(model(), &QAbstractItemModel::rowsAboutToBeMoved, d_ptr,
+        &TreeTraversalReflectorPrivate::slotRowsMoved);
+    connect(model(), &QAbstractItemModel::rowsMoved, d_ptr,
+        &TreeTraversalReflectorPrivate::slotRowsMoved2);
 }
 
 void TreeTraversalReflector::populate()
@@ -1013,7 +1038,7 @@ void TreeTraversalReflector::populate()
         return;
 
     if (auto rc = model()->rowCount())
-        slotRowsInserted({}, 0, rc - 1);
+        d_ptr->slotRowsInserted({}, 0, rc - 1);
 }
 
 /// Return true if the indices affect the current view
@@ -1043,44 +1068,44 @@ bool TreeTraversalReflector::isActive(const QModelIndex& parent, int first, int 
 }
 
 /// Add new entries to the mapping
-TreeTraversalItems* TreeTraversalReflector::addChildren(TreeTraversalItems* parent, const QModelIndex& index)
+TreeTraversalItems* TreeTraversalReflectorPrivate::addChildren(TreeTraversalItems* parent, const QModelIndex& index)
 {
     Q_ASSERT(index.isValid());
     Q_ASSERT(index.parent() != index);
 
-    auto e = new TreeTraversalItems(parent, d_ptr);
+    auto e = new TreeTraversalItems(parent, this);
     e->m_Index = index;
 
-    const int oldSize(d_ptr->m_hMapper.size()), oldSize2(parent->m_hLookup.size());
+    const int oldSize(m_hMapper.size()), oldSize2(parent->m_hLookup.size());
 
-    d_ptr->m_hMapper [index] = e;
+    m_hMapper [index] = e;
     parent->m_hLookup[index] = e;
 
     // If the size did not grow, something leaked
-    Q_ASSERT(d_ptr->m_hMapper.size() == oldSize+1);
+    Q_ASSERT(m_hMapper.size() == oldSize+1);
     Q_ASSERT(parent->m_hLookup.size() == oldSize2+1);
 
     return e;
 }
 
-void TreeTraversalReflector::cleanup()
+void TreeTraversalReflectorPrivate::cleanup()
 {
-    d_ptr->m_pRoot->performAction(TreeTraversalItems::Action::DETACH);
+    m_pRoot->performAction(TreeTraversalItems::Action::DETACH);
 
-    d_ptr->m_hMapper.clear();
-    d_ptr->m_pRoot = new TreeTraversalItems(nullptr, d_ptr);
+    m_hMapper.clear();
+    m_pRoot = new TreeTraversalItems(nullptr, this);
     //m_FailedCount = 0;
 }
 
-TreeTraversalItems* TreeTraversalReflector::ttiForIndex(const QModelIndex& idx) const
+TreeTraversalItems* TreeTraversalReflectorPrivate::ttiForIndex(const QModelIndex& idx) const
 {
     if (!idx.isValid())
         return nullptr;
 
     if (!idx.parent().isValid())
-        return d_ptr->m_pRoot->m_hLookup.value(idx);
+        return m_pRoot->m_hLookup.value(idx);
 
-    if (auto parent = d_ptr->m_hMapper.value(idx.parent()))
+    if (auto parent = m_hMapper.value(idx.parent()))
         return parent->m_hLookup.value(idx);
 
     return nullptr;
@@ -1088,7 +1113,7 @@ TreeTraversalItems* TreeTraversalReflector::ttiForIndex(const QModelIndex& idx) 
 
 VisualTreeItem* TreeTraversalReflector::parentTreeItem(const QModelIndex& index) const
 {
-    if (auto i = ttiForIndex(index)) {
+    if (auto i = d_ptr->ttiForIndex(index)) {
         if (i->m_pParent && i->m_pParent->m_pTreeItem)
             return i->m_pParent->m_pTreeItem;
     }
@@ -1098,7 +1123,7 @@ VisualTreeItem* TreeTraversalReflector::parentTreeItem(const QModelIndex& index)
 
 AbstractViewItem* TreeTraversalReflector::itemForIndex(const QModelIndex& idx) const
 {
-    const auto tti = ttiForIndex(idx);
+    const auto tti = d_ptr->ttiForIndex(idx);
     return tti ? tti->m_pTreeItem->d_ptr : nullptr;
 }
 
@@ -1213,7 +1238,7 @@ void TreeTraversalReflector::moveEverything()
 //TODO remove
 void TreeTraversalReflector::reloadRange(const QModelIndex& idx)
 {
-    if (auto p = ttiForIndex(idx)) {
+    if (auto p = d_ptr->ttiForIndex(idx)) {
         auto c = p->m_tChildren[FIRST];
 
         while (c && c != p->m_tChildren[LAST]) {
@@ -1230,3 +1255,5 @@ void TreeTraversalReflector::reloadRange(const QModelIndex& idx)
 #undef NEXT
 #undef FIRST
 #undef LAST
+
+#include <treetraversalreflector_p.moc>

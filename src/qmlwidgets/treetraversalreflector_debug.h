@@ -3,7 +3,7 @@
  * always run strict tests at runtime.
  */
 
-void TreeTraversalReflector::_test_validateTree(TreeTraversalItems* p)
+void TreeTraversalReflectorPrivate::_test_validateTree(TreeTraversalItems* p)
 {
 #ifdef QT_NO_DEBUG_OUTPUT
     return;
@@ -18,7 +18,7 @@ void TreeTraversalReflector::_test_validateTree(TreeTraversalItems* p)
         return;
     }*/
 
-    if (p->m_pParent == d_ptr->m_pRoot && d_ptr->m_pRoot->m_tChildren[FIRST] == p) {
+    if (p->m_pParent == m_pRoot && m_pRoot->m_tChildren[FIRST] == p) {
         Q_ASSERT(!p->m_pTreeItem->up());
     }
 
@@ -80,8 +80,8 @@ void TreeTraversalReflector::_test_validateTree(TreeTraversalItems* p)
         Q_ASSERT(!i.value()->m_pTreeItem->hasFailed());
 
         // Test the indices
-        Q_ASSERT(p == d_ptr->m_pRoot || i.key().internalPointer() == i.value()->m_Index.internalPointer());
-        Q_ASSERT(p == d_ptr->m_pRoot || (p->m_Index.isValid()) || p->m_Index.internalPointer() != i.key().internalPointer());
+        Q_ASSERT(p == m_pRoot || i.key().internalPointer() == i.value()->m_Index.internalPointer());
+        Q_ASSERT(p == m_pRoot || (p->m_Index.isValid()) || p->m_Index.internalPointer() != i.key().internalPointer());
         //Q_ASSERT(old == i.value() || old->m_Index.row() > i.key().row()); //FIXME
         //Q_ASSERT(newest == i.value() || newest->m_Index.row() < i.key().row()); //FIXME
 
@@ -114,18 +114,18 @@ void TreeTraversalReflector::_test_validateTree(TreeTraversalItems* p)
             // There is always a previous if those conditions are not met unless there
             // is failed elements creating (auto-corrected) holes in the chains.
             Q_ASSERT(!i.value()->m_tSiblings[PREVIOUS]);
-            Q_ASSERT(i.value()->m_pParent == d_ptr->m_pRoot);
+            Q_ASSERT(i.value()->m_pParent == m_pRoot);
         }
 
         _test_validateTree(i.value());
     }
 
     // Traverse as a list
-    if (p == d_ptr->m_pRoot) {
+    if (p == m_pRoot) {
         TreeTraversalItems* oldTTI(nullptr);
 
         int count(0), count2(0);
-        for (auto i = d_ptr->m_pRoot->m_tChildren[FIRST]; i; i = i->down()) {
+        for (auto i = m_pRoot->m_tChildren[FIRST]; i; i = i->down()) {
             Q_ASSERT((!oldTTI) || i->up());
             Q_ASSERT(i->up() == oldTTI);
             oldTTI = i;
@@ -134,7 +134,7 @@ void TreeTraversalReflector::_test_validateTree(TreeTraversalItems* p)
 
         // Backward too
         oldTTI = nullptr;
-        auto last = d_ptr->m_pRoot->m_tChildren[LAST];
+        auto last = m_pRoot->m_tChildren[LAST];
         while (last && last->m_tChildren[LAST])
             last = last->m_tChildren[LAST];
 

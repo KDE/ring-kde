@@ -68,6 +68,7 @@ public:
     // Getter
     VisualTreeItem* parentTreeItem(const QModelIndex& idx) const;
     AbstractViewItem* itemForIndex(const QModelIndex& idx) const;
+    bool isActive(const QModelIndex& parent, int first, int last);
 
     //TODO remove those temporary helpers once its encapsulated
     void refreshEverything();
@@ -84,31 +85,6 @@ public:
 
     // factory
     AbstractViewItem* createItem() const;
-
-    // Tests
-    void _test_validateTree(TreeTraversalItems* p);
-
-    // Helpers
-    bool isActive(const QModelIndex& parent, int first, int last);
-    TreeTraversalItems* addChildren(TreeTraversalItems* parent, const QModelIndex& index);
-    void bridgeGap(TreeTraversalItems* first, TreeTraversalItems* second, bool insert = false);
-    void createGap(TreeTraversalItems* first, TreeTraversalItems* last  );
-    TreeTraversalItems* ttiForIndex(const QModelIndex& idx) const;
-
-    void setTemporaryIndices(const QModelIndex &parent, int start, int end,
-                             const QModelIndex &destination, int row);
-    void resetTemporaryIndices(const QModelIndex &parent, int start, int end,
-                               const QModelIndex &destination, int row);
-
-public Q_SLOTS:
-    void cleanup();
-    void slotRowsInserted  (const QModelIndex& parent, int first, int last);
-    void slotRowsRemoved   (const QModelIndex& parent, int first, int last);
-    void slotLayoutChanged (                                              );
-    void slotRowsMoved     (const QModelIndex &p, int start, int end,
-                            const QModelIndex &dest, int row);
-    void slotRowsMoved2    (const QModelIndex &p, int start, int end,
-                            const QModelIndex &dest, int row);
 
 Q_SIGNALS:
     void contentChanged();
