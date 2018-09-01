@@ -25,6 +25,8 @@
 #include "abstractviewitem.h"
 #include "treetraversalreflector_p.h"
 #include "treetraversalrange_p.h"
+#include "abstractselectableview.h"
+#include "abstractselectableview_p.h"
 
 #define V_ITEM(i) i
 
@@ -98,6 +100,8 @@ public:
 
     TreeTraversalRange* m_pRange {nullptr};
 
+    AbstractSelectableView* m_pSelectionManager {new AbstractSelectableView(this)};
+
     AbstractQuickView* q_ptr;
 
 private:
@@ -141,6 +145,7 @@ AbstractQuickView::AbstractQuickView(QQuickItem* parent) : FlickableView(parent)
     d_ptr(new AbstractQuickViewPrivate())
 {
     d_ptr->m_pReflector = new TreeTraversalReflector(this);
+    selectionManager()->s_ptr->setView(this);
 
     d_ptr->m_pRange = new TreeTraversalRange();
     d_ptr->m_pReflector->addRange(d_ptr->m_pRange);
@@ -170,6 +175,7 @@ void AbstractQuickView::setModel(QSharedPointer<QAbstractItemModel> m)
         return;
 
     d_ptr->m_pReflector->setModel(m.data());
+    selectionManager()->s_ptr->setModel(m.data());
 
     if (auto oldM = model())
         disconnect(oldM.data(), &QAbstractItemModel::dataChanged, d_ptr,
@@ -407,13 +413,26 @@ void VisualTreeItem::updateGeometry()
         emit view()->contentHeightChanged(view()->contentItem()->height());
     }
 
-    if (view()->selectionModel() && view()->selectionModel()->currentIndex() == index())
-        view()->updateSelection();
+    const auto sm = view()->selectionManager();
+
+    if (sm && sm->selectionModel() && sm->selectionModel()->currentIndex() == index())
+        sm->s_ptr->updateSelection(index());
 }
 
 AbstractQuickView* VisualTreeItem::view() const
 {
     return m_pView;
+}
+
+
+void AbstractQuickView::setSelectionManager(AbstractSelectableView* v)
+{
+    d_ptr->m_pSelectionManager = v;
+}
+
+AbstractSelectableView* AbstractQuickView::selectionManager() const
+{
+    return d_ptr->m_pSelectionManager;
 }
 
 #include <abstractquickview.moc>

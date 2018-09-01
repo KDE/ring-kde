@@ -25,10 +25,7 @@ class QQmlComponent;
 
 class AbstractQuickViewPrivate;
 class AbstractQuickView;
-
-#include <treetraversalreflector_p.h> //FIXME remove
-struct TreeTraversalItems; //FIXME remove
-
+class AbstractSelectableView;
 class AbstractViewItem;
 
 /**
@@ -51,6 +48,7 @@ class AbstractQuickView : public FlickableView
     Q_OBJECT
     friend struct TreeTraversalItems;
     friend class VisualTreeItem;
+    friend class AbstractSelectableViewPrivate; //TODO remove
 public:
     /// Assume each hierarchy level have the same height (for performance)
     Q_PROPERTY(bool uniformRowHeight READ hasUniformRowHeight   WRITE setUniformRowHeight)
@@ -131,6 +129,11 @@ protected:
 
     /// To be used with moderation. Necessary when the delegate is replaced.
     void reload();
+
+    // Rather then scope-creeping this class, all selection related elements
+    // are implemented independently.
+    void setSelectionManager(AbstractSelectableView* v);
+    AbstractSelectableView* selectionManager() const;
 
 Q_SIGNALS:
     void modelChanged(QSharedPointer<QAbstractItemModel> model);

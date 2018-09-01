@@ -94,9 +94,6 @@ public:
     /// Reference to the item own view
     AbstractQuickView* view() const;
 
-    /// Allows to keep a reference while still being tracked by the state machine
-    QWeakPointer<VisualTreeItem> reference() const;
-
     /// Visibility relative to the displayed window of the AbstractQuickView::view()
     bool isVisible() const;
     bool fitsInView() const;
@@ -116,7 +113,6 @@ public:
 private:
     State m_State {State::POOLED};
     TreeTraversalItems* m_pTTI {nullptr};
-    mutable QSharedPointer<VisualTreeItem> m_pSelf;
     AbstractQuickView* m_pView {nullptr};
 
     bool performAction(ViewAction); //FIXME make private, remove #include

@@ -26,19 +26,11 @@ class FlickableViewPrivate : public QObject
     Q_OBJECT
 public:
     QSharedPointer<QAbstractItemModel>  m_pModel          {nullptr};
-    QSharedPointer<QItemSelectionModel> m_pSelectionModel {nullptr};
+//     QSharedPointer<QItemSelectionModel> m_pSelectionModel {nullptr};
     QQmlComponent*                      m_pDelegate       {nullptr};
     QQmlEngine*                         m_pEngine         {nullptr};
     QQmlComponent*                      m_pComponent      {nullptr};
-    QQmlComponent*                      m_pHighlight      {nullptr};
     mutable QQmlContext*                m_pRootContext    {nullptr};
-    bool                                m_IsSortingEnabled{ false };
-
-    // Selection
-    QQuickItem* m_pSelectedItem   {nullptr};
-    QWeakPointer<ModelIndexItem> m_pSelectedViewItem;
-
-    Qt::Corner m_Corner {Qt::TopLeftCorner};
 
     mutable QHash<int, QString> m_hRoleNames;
     mutable QHash<const QAbstractItemModel*, QHash<int, QString>*> m_hhOtherRoleNames;
@@ -46,11 +38,6 @@ public:
     QHash<int, QString>* reloadRoleNames(const QModelIndex& index) const;
 
     FlickableView* q_ptr;
-
-public Q_SLOTS:
-    void slotCurrentIndexChanged(const QModelIndex& idx);
-    void slotSelectionModelChanged();
-    void slotModelDestroyed();
 };
 
 FlickableView::FlickableView(QQuickItem* parent) : SimpleFlickable(parent),
@@ -69,31 +56,8 @@ void FlickableView::setModel(QSharedPointer<QAbstractItemModel> model)
     if (d_ptr->m_pModel == model)
         return;
 
-    if (d_ptr->m_pSelectionModel && d_ptr->m_pSelectionModel->model() != model)
-        d_ptr->m_pSelectionModel = nullptr;
-
-    if (d_ptr->m_IsSortingEnabled && model) {
-        model->sort(0);
-    }
-
-    if (d_ptr->m_pModel)
-        disconnect(d_ptr->m_pModel.data(), &QObject::destroyed,
-            d_ptr, &FlickableViewPrivate::slotModelDestroyed);
-
-    // In theory it can cause an issue when QML set both properties in random
-    // order when replacing this model, but for until that happens, better be
-    // strict.
-    Q_ASSERT((!d_ptr->m_pSelectionModel)
-        || (!model)
-        || model == d_ptr->m_pSelectionModel->model()
-    );
-
     d_ptr->m_pModel = model;
     d_ptr->m_hRoleNames.clear();
-
-    if (d_ptr->m_pModel)
-        connect(d_ptr->m_pModel.data(), &QObject::destroyed,
-            d_ptr, &FlickableViewPrivate::slotModelDestroyed);
 
     emit modelChanged(model);
     emit countChanged();
@@ -115,17 +79,6 @@ QSharedPointer<QAbstractItemModel> FlickableView::model() const
     return d_ptr->m_pModel;
 }
 
-Qt::Corner FlickableView::gravity() const
-{
-    return d_ptr->m_Corner;
-}
-
-void FlickableView::setGravity(Qt::Corner g)
-{
-    d_ptr->m_Corner = g;
-    refresh();
-}
-
 void FlickableView::setDelegate(QQmlComponent* delegate)
 {
     d_ptr->m_pDelegate = delegate;
@@ -144,70 +97,6 @@ QQmlContext* FlickableView::rootContext() const
         d_ptr->m_pRootContext = QQmlEngine::contextForObject(this);
 
     return d_ptr->m_pRootContext;
-}
-
-
-QQmlComponent* FlickableView::highlight() const
-{
-    return d_ptr->m_pHighlight;
-}
-
-void FlickableView::setHighlight(QQmlComponent* h)
-{
-    d_ptr->m_pHighlight = h;
-}
-
-QSharedPointer<QItemSelectionModel> FlickableView::selectionModel() const
-{
-    if (model() && !d_ptr->m_pSelectionModel) {
-        auto sm = new QItemSelectionModel(model().data());
-        d_ptr->m_pSelectionModel = QSharedPointer<QItemSelectionModel>(sm);
-        d_ptr->slotSelectionModelChanged();
-        Q_EMIT selectionModelChanged();
-        connect(d_ptr->m_pSelectionModel.data(), &QItemSelectionModel::currentChanged,
-            d_ptr, &FlickableViewPrivate::slotCurrentIndexChanged);
-    }
-
-    return d_ptr->m_pSelectionModel;
-}
-
-void FlickableView::setSelectionModel(QSharedPointer<QItemSelectionModel> m)
-{
-    d_ptr->m_pSelectionModel = m;
-
-    // This will cause undebugable issues. Better ban it early
-    Q_ASSERT((!model()) || (!m) || model() == m->model());
-
-    d_ptr->slotSelectionModelChanged();
-    Q_EMIT selectionModelChanged();
-}
-
-bool FlickableView::isSortingEnabled() const
-{
-    return d_ptr->m_IsSortingEnabled;
-}
-
-void FlickableView::setSortingEnabled(bool val)
-{
-    d_ptr->m_IsSortingEnabled = val;
-
-    if (d_ptr->m_IsSortingEnabled && d_ptr->m_pModel) {
-        d_ptr->m_pModel->sort(0);
-    }
-}
-
-QModelIndex FlickableView::currentIndex() const
-{
-    return selectionModel()->currentIndex();
-}
-
-void FlickableView::setCurrentIndex(const QModelIndex& index, QItemSelectionModel::SelectionFlags f)
-{
-    Q_ASSERT(model() == index.model() || !index.isValid());
-    if (!model())
-        return;
-
-    selectionModel()->setCurrentIndex(index, f);
 }
 
 void FlickableView::refresh()
@@ -272,10 +161,6 @@ void FlickableView::applyRoles(QQmlContext* ctx, const QModelIndex& self) const
     ctx->setContextProperty(QStringLiteral("index"        ) , self.row()        );
     ctx->setContextProperty(QStringLiteral("rootIndex"    ) , self              );
     ctx->setContextProperty(QStringLiteral("rowCount"     ) , m->rowCount(self) );
-
-    const bool sel = d_ptr->m_pSelectionModel && d_ptr->m_pSelectionModel->currentIndex() == self;
-
-    ctx->setContextProperty(QStringLiteral("isCurrentItem") , sel );
 }
 
 QPair<QQuickItem*, QQmlContext*> FlickableView::loadDelegate(QQuickItem* parentI, QQmlContext* parentCtx, const QModelIndex& self) const
@@ -319,104 +204,6 @@ QPair<QQuickItem*, QQmlContext*> FlickableView::loadDelegate(QQuickItem* parentI
     container->setProperty("content", QVariant::fromValue(item));
 
     return {container, pctx};
-}
-
-void FlickableView::updateSelection()
-{
-    d_ptr->slotCurrentIndexChanged({}); //FIXME move to a new class
-}
-
-void FlickableViewPrivate::slotCurrentIndexChanged(const QModelIndex& idx)
-{
-    /*if ((!idx.isValid()))
-        return;
-
-    Q_EMIT q_ptr->currentIndexChanged(idx);
-
-
-    if (m_pSelectedItem && !idx.isValid()) {
-        delete m_pSelectedItem;
-        m_pSelectedItem = nullptr;
-        return;
-    }
-
-    if (!q_ptr->highlight())
-        return;
-
-    auto elem = q_ptr->itemForIndex(idx);
-
-    // QItemSelectionModel::setCurrentIndex isn't protected against setting the item many time
-    if (m_pSelectedViewItem && elem == m_pSelectedViewItem.data()) {
-        // But it may have moved
-        const auto geo = elem->geometry();
-        m_pSelectedItem->setWidth(geo.width());
-        m_pSelectedItem->setHeight(geo.height());
-        m_pSelectedItem->setY(geo.y());
-
-        return;
-    }
-
-    // There is no need to waste effort if the element is not visible
-    if ((!elem) || (!elem->isVisible())) {
-        if (m_pSelectedItem)
-            m_pSelectedItem->setVisible(false);
-        return;
-    }
-
-    // Create the highlighter
-    if (!m_pSelectedItem) {
-        m_pSelectedItem = qobject_cast<QQuickItem*>(q_ptr->highlight()->create(
-            q_ptr->rootContext()
-        ));
-        m_pSelectedItem->setParentItem(q_ptr->contentItem());
-        q_ptr->rootContext()->engine()->setObjectOwnership(
-            m_pSelectedItem,QQmlEngine::CppOwnership
-        );
-        m_pSelectedItem->setX(0);
-    }
-
-    const auto geo = elem->geometry();
-    m_pSelectedItem->setVisible(true);
-    m_pSelectedItem->setWidth(geo.width());
-    m_pSelectedItem->setHeight(geo.height());
-
-    elem->setSelected(true);
-
-    if (m_pSelectedViewItem)
-        m_pSelectedViewItem.toStrongRef()->setSelected(false);
-
-    // Use X/Y to allow behavior to perform the silly animation
-    m_pSelectedItem->setY(
-        geo.y()
-    );
-
-    m_pSelectedViewItem = elem->reference();*/
-}
-
-void FlickableViewPrivate::slotSelectionModelChanged()
-{
-    if (m_pSelectionModel)
-        disconnect(m_pSelectionModel.data(), &QItemSelectionModel::currentChanged,
-            this, &FlickableViewPrivate::slotCurrentIndexChanged);
-
-    m_pSelectionModel = q_ptr->selectionModel();
-
-    if (m_pSelectionModel)
-        connect(m_pSelectionModel.data(), &QItemSelectionModel::currentChanged,
-            this, &FlickableViewPrivate::slotCurrentIndexChanged);
-
-    slotCurrentIndexChanged(
-        m_pSelectionModel ? m_pSelectionModel->currentIndex() : QModelIndex()
-    );
-}
-
-// Because smart pointer are ref counted and QItemSelectionModel is not, there
-// is a race condition where ::loadDelegate or ::applyRoles can be called
-// on a QItemSelectionModel::currentIndex while the model has just been destroyed
-void FlickableViewPrivate::slotModelDestroyed()
-{
-    if (m_pSelectionModel && m_pSelectionModel->model() == QObject::sender())
-        q_ptr->setSelectionModel(nullptr);
 }
 
 bool FlickableView::isEmpty() const

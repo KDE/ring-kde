@@ -42,6 +42,8 @@ public:
     static const VisualTreeItem::State  m_fStateMap    [7][7];
     static const StateF m_fStateMachine[7][7];
 
+    mutable QSharedPointer<AbstractViewItem::SelectionLocker> m_pLocker;
+
     // Attributes
     AbstractViewItem* q_ptr;
 };
@@ -219,7 +221,7 @@ bool AbstractViewItemPrivate::error()
 
 bool AbstractViewItemPrivate::destroy()
 {
-    auto ptrCopy = q_ptr->s_ptr->m_pSelf;
+    auto ptrCopy = m_pLocker;
 
     QTimer::singleShot(0,[this, ptrCopy]() {
         if (!ptrCopy)
@@ -227,7 +229,8 @@ bool AbstractViewItemPrivate::destroy()
         // else the reference will be dropped and the destructor called
     });
 
-    q_ptr->s_ptr->m_pSelf.clear();
+    if (m_pLocker)
+        m_pLocker.clear();
 
     return true;
 }
@@ -252,16 +255,6 @@ bool VisualTreeItem::performAction(VisualTreeItem::ViewAction a)
     return ret;
 }
 
-QWeakPointer<VisualTreeItem> VisualTreeItem::reference() const
-{
-    if (!m_pSelf)
-        m_pSelf = QSharedPointer<VisualTreeItem>(
-            const_cast<VisualTreeItem*>(this)
-        );
-
-    return m_pSelf;
-}
-
 int VisualTreeItem::depth() const
 {
     return 0;//FIXME m_pTTI->m_Depth;
@@ -275,4 +268,17 @@ bool VisualTreeItem::fitsInView() const
     //TODO support horizontal visibility
     return geo.y() >= v.y()
         && (geo.y() <= v.y() + v.height());
+}
+
+
+QPair<QWeakPointer<AbstractViewItem::SelectionLocker>, AbstractViewItem*>
+AbstractViewItem::weakReference() const
+{
+    if (d_ptr->m_pLocker)
+        return {d_ptr->m_pLocker, const_cast<AbstractViewItem*>(this)};
+
+    d_ptr->m_pLocker = QSharedPointer<SelectionLocker>(new SelectionLocker());
+
+
+    return {d_ptr->m_pLocker, const_cast<AbstractViewItem*>(this)};
 }

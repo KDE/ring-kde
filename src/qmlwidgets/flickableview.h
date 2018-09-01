@@ -29,7 +29,6 @@ class QItemSelectionModel;
 
 class FlickableViewPrivate;
 
-class ModelIndexItem;//FIXME remove
 class AbstractViewItem;//FIXME remove
 
 /**
@@ -52,14 +51,7 @@ public:
     Q_PROPERTY(QSharedPointer<QAbstractItemModel> model READ model WRITE setModel NOTIFY modelChanged)
     Q_PROPERTY(QAbstractItemModel* rawModel WRITE setRawModel)
     Q_PROPERTY(QQmlComponent* delegate READ delegate WRITE setDelegate)
-    Q_PROPERTY(Qt::Corner gravity READ gravity WRITE setGravity)
-    Q_PROPERTY(QQmlComponent* highlight READ highlight WRITE setHighlight)
-    Q_PROPERTY(QSharedPointer<QItemSelectionModel> selectionModel READ selectionModel WRITE setSelectionModel NOTIFY selectionModelChanged)
-    Q_PROPERTY(bool sortingEnabled READ isSortingEnabled WRITE setSortingEnabled)
     Q_PROPERTY(bool empty READ isEmpty NOTIFY countChanged)
-
-    // QML support for selectionModels is rather bad since many Q_INVOKABLE are missing
-    Q_PROPERTY(QModelIndex currentIndex READ currentIndex WRITE setCurrentIndex)
 
     explicit FlickableView(QQuickItem* parent = nullptr);
     virtual ~FlickableView();
@@ -73,30 +65,12 @@ public:
 
     QQmlContext* rootContext() const;
 
-    Qt::Corner gravity() const;
-    void setGravity(Qt::Corner g);
-
-    QQmlComponent* highlight() const;
-    void setHighlight(QQmlComponent* h);
-
-    QSharedPointer<QItemSelectionModel> selectionModel() const;
-    void setSelectionModel(QSharedPointer<QItemSelectionModel> m);
-
-    QModelIndex currentIndex() const;
-    Q_INVOKABLE void setCurrentIndex(const QModelIndex& index,
-        QItemSelectionModel::SelectionFlags f = QItemSelectionModel::ClearAndSelect
-    );
-
-    bool isSortingEnabled() const;
-    void setSortingEnabled(bool val);
-
-    void updateSelection(); //FIXME move to a new class
 
     bool isEmpty() const;
 
 protected:
     virtual void refresh();
-    void applyRoles(QQmlContext* ctx, const QModelIndex& self) const;
+    virtual void applyRoles(QQmlContext* ctx, const QModelIndex& self) const;
     QPair<QQuickItem*, QQmlContext*> loadDelegate(QQuickItem* parentI, QQmlContext* parentCtx, const QModelIndex& self) const;
 
     /**
@@ -113,9 +87,7 @@ protected:
     virtual AbstractViewItem* itemForIndex(const QModelIndex& idx) const = 0;
 
 Q_SIGNALS:
-    void currentIndexChanged(const QModelIndex& index);
     void modelChanged(QSharedPointer<QAbstractItemModel> model);
-    void selectionModelChanged() const;
     void countChanged();
 
 private:

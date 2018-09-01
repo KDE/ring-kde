@@ -17,7 +17,7 @@
  **************************************************************************/
 #pragma once
 
-#include <abstractquickview.h>
+#include <abstractviewcompat.h>
 
 // Qt
 class QQuickItem;
@@ -87,7 +87,7 @@ Q_DECLARE_METATYPE(QuickListViewSections*)
  *    QtWidgets::QListView. Stable and mature models should not require modifications
  *    to acknowledge misguided QtQuick.ListView changes.
  */
-class QuickListView : public AbstractQuickView
+class QuickListView : public AbstractViewCompat
 {
     Q_OBJECT
 

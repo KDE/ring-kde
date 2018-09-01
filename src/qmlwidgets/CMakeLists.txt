@@ -60,6 +60,8 @@ SET( libqmlwidgets_LIB_SRCS
     treetraversalreflector_p.cpp
     treetraversalrange_p.cpp
     abstractviewitem.cpp
+    abstractselectableview.cpp
+    abstractviewcompat.cpp
     quicktreeview.cpp
     quicklistview.cpp
     flickableview.cpp

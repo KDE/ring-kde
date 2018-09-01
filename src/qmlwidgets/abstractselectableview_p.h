@@ -15,50 +15,26 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#pragma once
-
-#include <abstractviewcompat.h>
 
 // Qt
-class QQuickItem;
-class QQmlContext;
+class QAbstractItemModel;
 
-class QuickTreeViewPrivate;
-class TreeViewPage;
+class AbstractQuickView;
 
-/**
- * Second generation of QtQuick treeview.
- *
- * The first one was designed for the chat view. It had a limited number of
- * requirements when it came to QtModel. However it required total control of
- * the layout.
- *
- * This is the opposite use case. The layout is classic, but the model support
- * has to be complete. Performance and lazy loading is also more important.
- *
- * It require less work to write a new treeview than refector the first one to
- * support the additional requirements. In the long run, the first generation
- * could be folded into this widget (if it ever makes sense, otherwise they will
- * keep diverging).
- */
-class QuickTreeView : public AbstractViewCompat
+// This class exists for the AbstractItemView to be able to internally
+// notify the AbstractSelectableView about some events. In theory the public
+// interface of both of these class should be extended to handle such events
+// but for now a private interface allows more flexibility.
+class AbstractSelectableViewSyncInterface
 {
-    Q_OBJECT
-
-    friend class QuickTreeViewItem;
 public:
+    virtual void updateSelection(const QModelIndex& idx);
 
-    explicit QuickTreeView(QQuickItem* parent = nullptr);
-    virtual ~QuickTreeView();
+    QAbstractItemModel* model() const;
+    void setModel(QAbstractItemModel* m);
 
-Q_SIGNALS:
-    void contentChanged() final override;
+    AbstractQuickView* view() const;
+    void setView(AbstractQuickView* v);
 
-protected:
-    virtual AbstractViewItem* createItem() const override;
-
-private:
-
-    QuickTreeViewPrivate* d_ptr;
-    Q_DECLARE_PRIVATE(QuickTreeView)
+    AbstractSelectableView* q_ptr;
 };

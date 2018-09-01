@@ -66,7 +66,7 @@ struct QuickListViewSection final
 class QuickListViewItem : public AbstractViewItem
 {
 public:
-    explicit QuickListViewItem(AbstractQuickView* v);
+    explicit QuickListViewItem(AbstractViewCompat* v);
     virtual ~QuickListViewItem();
 
     // Actions
@@ -84,7 +84,7 @@ public:
     virtual void setSelected(bool s) final override;
     QuickListViewSection* setSection(QuickListViewSection* s, const QVariant& val);
 
-    /// Geometry relative to the AbstractQuickView::view()
+    /// Geometry relative to the AbstractViewCompat::view()
     virtual QRectF geometry() const final override;
 
     virtual QQuickItem* item() const final override {
@@ -126,10 +126,10 @@ public Q_SLOTS:
     void slotDataChanged(const QModelIndex& tl, const QModelIndex& br);
 };
 
-QuickListView::QuickListView(QQuickItem* parent) : AbstractQuickView(parent),
+QuickListView::QuickListView(QQuickItem* parent) : AbstractViewCompat(parent),
     d_ptr(new QuickListViewPrivate(this))
 {
-    connect(this, &AbstractQuickView::currentIndexChanged,
+    connect(this, &AbstractViewCompat::currentIndexChanged,
         d_ptr, &QuickListViewPrivate::slotCurrentIndexChanged);
 }
 
@@ -172,7 +172,7 @@ void QuickListView::setCurrentIndex(int index)
     if (!model())
         return;
 
-    AbstractQuickView::setCurrentIndex(
+    AbstractViewCompat::setCurrentIndex(
         model()->index(index, 0),
         QItemSelectionModel::ClearAndSelect
     );
@@ -184,7 +184,7 @@ void QuickListView::setModel(QSharedPointer<QAbstractItemModel> m)
         disconnect(oldM.data(), &QAbstractItemModel::dataChanged, d_ptr,
             &QuickListViewPrivate::slotDataChanged);
 
-    AbstractQuickView::setModel(m);
+    AbstractViewCompat::setModel(m);
 
     if (!m)
         return;
@@ -355,7 +355,7 @@ void QuickListViewPrivate::reloadSectionIndices() const
     m_IndexLoaded = m_pFirstSection != nullptr;
 }
 
-QuickListViewItem::QuickListViewItem(AbstractQuickView* p) : AbstractViewItem(p)
+QuickListViewItem::QuickListViewItem(AbstractViewCompat* p) : AbstractViewItem(p)
 {
 }
 

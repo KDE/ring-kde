@@ -17,48 +17,43 @@
  **************************************************************************/
 #pragma once
 
-#include <abstractviewcompat.h>
-
 // Qt
-class QQuickItem;
+#include <QtCore/QObject>
+class QItemSelectionModel;
+class QQmlComponent;
 class QQmlContext;
 
-class QuickTreeViewPrivate;
-class TreeViewPage;
+class AbstractSelectableViewSyncInterface;
+class AbstractSelectableViewPrivate;
 
 /**
- * Second generation of QtQuick treeview.
+ * This class adds support for multi-selection using selection models.
  *
- * The first one was designed for the chat view. It had a limited number of
- * requirements when it came to QtModel. However it required total control of
- * the layout.
- *
- * This is the opposite use case. The layout is classic, but the model support
- * has to be complete. Performance and lazy loading is also more important.
- *
- * It require less work to write a new treeview than refector the first one to
- * support the additional requirements. In the long run, the first generation
- * could be folded into this widget (if it ever makes sense, otherwise they will
- * keep diverging).
+ * It must be attached to a single instance of a `AbstractQuickView` object.
  */
-class QuickTreeView : public AbstractViewCompat
+class AbstractSelectableView : public QObject
 {
     Q_OBJECT
-
-    friend class QuickTreeViewItem;
+    friend class AbstractQuickView; // Notify of all relevant events
+    friend class VisualTreeItem; // Notify of all relevant events
+    friend class AbstractSelectableViewSyncInterface; // Its own internals
 public:
+    explicit AbstractSelectableView(QObject* parent = nullptr);
+    virtual ~AbstractSelectableView();
 
-    explicit QuickTreeView(QQuickItem* parent = nullptr);
-    virtual ~QuickTreeView();
+    QQmlComponent* highlight() const;
+    void setHighlight(QQmlComponent* h);
+
+    QSharedPointer<QItemSelectionModel> selectionModel() const;
+    void setSelectionModel(QSharedPointer<QItemSelectionModel> sm);
+    void applySelectionRoles(QQmlContext* ctx, const QModelIndex& self) const;
 
 Q_SIGNALS:
-    void contentChanged() final override;
-
-protected:
-    virtual AbstractViewItem* createItem() const override;
+    void currentIndexChanged(const QModelIndex& index);
+    void selectionModelChanged() const;
 
 private:
-
-    QuickTreeViewPrivate* d_ptr;
-    Q_DECLARE_PRIVATE(QuickTreeView)
+    AbstractSelectableViewSyncInterface* s_ptr;
+    AbstractSelectableViewPrivate* d_ptr;
+    Q_DECLARE_PRIVATE(AbstractSelectableView);
 };

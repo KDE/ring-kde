@@ -158,6 +158,21 @@ public:
      */
     void resetPosition();
 
+    struct SelectionLocker {};
+
+    /**
+     * Get a pointer for this item.
+     *
+     * The SelectionLocker (first element of the pair) will be nullptr if the
+     * item no longer belong to the same QModelIndex as when it was acquired.
+     *
+     * Keep in mind that these objects are recycled, so comparing the
+     * AbstractViewItem pointer tells nothing.
+     *
+     * **DO NOT STORE IT AS A QSharedPointer**. This is only intended to be
+     * stored as a QWeakPointer. It will
+     */
+    QPair<QWeakPointer<SelectionLocker>, AbstractViewItem*> weakReference() const;
 
     /**
      * The size and position necessary to draw this item.
