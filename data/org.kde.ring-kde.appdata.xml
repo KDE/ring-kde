@@ -41,6 +41,7 @@
   <summary xml:lang="nl">Maak of ontvang oproepen met SIP of RING-protocollen</summary>
   <summary xml:lang="pl">Dzwoń i odbieraj rozmowy przy użyciu protokołów SIP lub RING</summary>
   <summary xml:lang="pt">Fazer e receber chamadas com os protocolos SIP ou RING</summary>
+  <summary xml:lang="pt-BR">Fazer e receber chamadas com os protocolos SIP ou RING</summary>
   <summary xml:lang="sv">Ring och ta emot samtal med SIP- eller RING-protokoll</summary>
   <summary xml:lang="tr">SIP veya RING protokolleri ile arama yapın veya aranın</summary>
   <summary xml:lang="uk">Дзвоніть і отримуйте дзвінки за допомогою протоколів SIP або RING</summary>
@@ -124,6 +125,7 @@
       <li xml:lang="nl">Ondersteunt SIP, SIPS en het RING gedistribueerde communicatieprotocol</li>
       <li xml:lang="pl">Obsługa protokołów komunikacyjnych SIP, SIPS oraz RING</li>
       <li xml:lang="pt">Suporta os protocolos de comunicação SIP, SIPS e o protocolo distribuído do RING</li>
+      <li xml:lang="pt-BR">Suporte aos protocolos de comunicação SIP, SIPS e o protocolo de comunicação distribuída do RING</li>
       <li xml:lang="sv">Stöder SIP, SIPS, och det distribuerade RING-kommunikationsprotokollet</li>
       <li xml:lang="tr">SIP, SIPS ve RING dağıtık iletişim protokolü desteği</li>
       <li xml:lang="uk">Підтримка SIP, SIPS і протоколу розподіленого обміну даними RING</li>
