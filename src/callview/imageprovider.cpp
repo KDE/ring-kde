@@ -167,7 +167,7 @@ QImage ImageProvider::requestImage(const QString &id, QSize *size, const QSize &
 
             // I give up, every month, the daemon manage to break their SHM
             // memory model. From now on, ring-kde copy the frame. It's slow,
-            // but wont cause surprise SIGSEGV (2015)
+            // but won't cause surprise SIGSEGV (2015)
             if (!fb->m_pFrameCopy) {
                 fb->m_pFrameCopy = new char[fb->m_Frame.size];
                 fb->m_FrameSize  = fb->m_Frame.size;

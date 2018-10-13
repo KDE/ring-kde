@@ -207,7 +207,7 @@ public:
 
     bool m_UniformRowHeight   {false};
     bool m_UniformColumnWidth {false};
-    bool m_Collapsable        {true };
+    bool m_Collapsible        {true };
     bool m_AutoExpand         {false};
     int  m_MaxDepth           { -1  };
     int  m_CacheBuffer        { 10  };
@@ -377,14 +377,14 @@ void TreeView2::setUniformColumnColumnWidth(bool value)
     d_ptr->m_UniformColumnWidth = value;
 }
 
-bool TreeView2::isCollapsable() const
+bool TreeView2::isCollapsible() const
 {
-    return d_ptr->m_Collapsable;
+    return d_ptr->m_Collapsible;
 }
 
-void TreeView2::setCollapsable(bool value)
+void TreeView2::setCollapsible(bool value)
 {
-    d_ptr->m_Collapsable = value;
+    d_ptr->m_Collapsible = value;
 }
 
 bool TreeView2::isAutoExpand() const
@@ -753,7 +753,7 @@ void TreeView2Private::slotRowsInserted(const QModelIndex& parent, int first, in
         if (prev)
             bridgeGap(prev, e, true);
 
-        // This is required before ::ATTACH because otherwise ::down() wont work
+        // This is required before ::ATTACH because otherwise ::down() won't work
         if ((!pitem->m_pFirstChild) || e->m_Index.row() <= pitem->m_pFirstChild->m_Index.row()) {
             e->m_pNext = pitem->m_pFirstChild;
             pitem->m_pFirstChild = e;
@@ -978,7 +978,7 @@ void TreeView2Private::setTemporaryIndices(const QModelIndex &parent, int start,
                                      const QModelIndex &destination, int row)
 {
     //FIXME list only
-    // Before moving them, set a temporary now/col value because it wont be set
+    // Before moving them, set a temporary now/col value because it won't be set
     // on the index until before slotRowsMoved2 is called (but after this
     // method returns //TODO do not use the hashmap, it is already known
     if (parent == destination) {
@@ -1007,7 +1007,7 @@ void TreeView2Private::resetTemporaryIndices(const QModelIndex &parent, int star
                                      const QModelIndex &destination, int row)
 {
     //FIXME list only
-    // Before moving them, set a temporary now/col value because it wont be set
+    // Before moving them, set a temporary now/col value because it won't be set
     // on the index until before slotRowsMoved2 is called (but after this
     // method returns //TODO do not use the hashmap, it is already known
     if (parent == destination) {

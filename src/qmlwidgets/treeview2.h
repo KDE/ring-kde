@@ -136,7 +136,7 @@ public:
     /// Assume each column has the same width (for performance)
     Q_PROPERTY(bool uniformColumnWidth READ hasUniformColumnWidth WRITE setUniformColumnColumnWidth)
     /// The view can be collapsed
-    Q_PROPERTY(bool collapsable READ isCollapsable WRITE setCollapsable)
+    Q_PROPERTY(bool collapsible READ isCollapsible WRITE setCollapsible)
     /// Expand all elements by default
     Q_PROPERTY(bool autoExpand READ isAutoExpand WRITE setAutoExpand)
     /// The maximum depth of a tree (for performance)
@@ -167,8 +167,8 @@ public:
     bool hasUniformColumnWidth() const;
     void setUniformColumnColumnWidth(bool value);
 
-    bool isCollapsable() const;
-    void setCollapsable(bool value);
+    bool isCollapsible() const;
+    void setCollapsible(bool value);
 
     bool isAutoExpand() const;
     void setAutoExpand(bool value);

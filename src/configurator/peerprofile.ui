@@ -37,7 +37,7 @@
       <item row="0" column="1">
        <widget class="QRadioButton" name="m_pIgnore">
         <property name="text">
-         <string>Ignore the new contact informations</string>
+         <string>Ignore the new contact information</string>
         </property>
        </widget>
       </item>

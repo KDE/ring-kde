@@ -56,7 +56,7 @@ void DeduplicateProxy::setComparator(const Comparator& f)
 /**
  * Useful when there is a main filter role, but some items need to be kept.
  *
- * If any role added to this list is different, the index wont be hidden
+ * If any role added to this list is different, the index won't be hidden
  *
  * For example using this proxy to create instant messaging thread if they
  * come from the same person, but also create different threads if the date

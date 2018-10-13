@@ -488,7 +488,7 @@ void ActionCollection::slotNewContact()
 
    GlobalInstances::actionExtender().editPerson(p);
 
-   // The editor wont save if the name isn't set, so it can be used to check
+   // The editor won't save if the name isn't set, so it can be used to check
    // if cancel was clicked.
    col->editor<Person>()->addExisting(p);
 }

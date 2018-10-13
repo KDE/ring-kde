@@ -431,8 +431,8 @@ void RingApplication::setStartPhone(bool value)
    m_StartPhone = value;
 }
 
-#define QML_TYPE(name) qmlRegisterUncreatableType<name>(AppName, 1,0, #name, #name "cannot be instanciated");
-#define QML_NS(name) qmlRegisterUncreatableMetaObject( name :: staticMetaObject, #name, 1, 0, #name, "Namespaces cannot be instanciated" );
+#define QML_TYPE(name) qmlRegisterUncreatableType<name>(AppName, 1,0, #name, #name "cannot be instantiated");
+#define QML_NS(name) qmlRegisterUncreatableMetaObject( name :: staticMetaObject, #name, 1, 0, #name, "Namespaces cannot be instantiated" );
 #define QML_CRTYPE(name) qmlRegisterType<name>(AppName, 1,0, #name);
 #define QML_SINGLETON(name) RingApplication::engine()->rootContext()->setContextProperty(QStringLiteral(#name), &name::instance());
 #define QML_SINGLETON2(name) RingApplication::engine()->rootContext()->setContextProperty(QStringLiteral(#name), name::instance());
@@ -545,7 +545,7 @@ QQmlApplicationEngine* RingApplication::engine()
          }
 
          qmlRegisterUncreatableType<::Media::Media>(
-            AppName, 1,0, "Media", QStringLiteral("cannot be instanciated")
+            AppName, 1,0, "Media", QStringLiteral("cannot be instantiated")
          );
 
          RingApplication::engine()->rootContext()->setContextProperty(

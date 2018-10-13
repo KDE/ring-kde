@@ -197,7 +197,7 @@ void MainPage::setContactMethod(ContactMethod* cm)
             d_ptr->m_lTimers << t;
         }
 
-    // Keep a strong reference because QML wont
+    // Keep a strong reference because QML won't
     d_ptr->m_Invididual = cm->individual();
     d_ptr->m_CallsModel = cm->individual()->eventAggregate()->unsortedListView();
     Q_ASSERT(d_ptr->m_CallsModel);
