@@ -23,6 +23,7 @@ import RingQmlWidgets 1.0
 import Ring 1.0
 import QtGraphicalEffects 1.0
 import org.kde.kirigami 2.2 as Kirigami
+import org.kde.playground.kquickview 1.0 as KQuickView
 
 Kirigami.Page {
     id: contactList
@@ -33,6 +34,8 @@ Kirigami.Page {
     topPadding: 0
     bottomPadding: 0
     rightPadding: 0
+
+    anchors.fill: parent
 
     function selectContact(index, object, modelIndex) {
         treeView.selectItem(modelIndex)
@@ -112,17 +115,18 @@ Kirigami.Page {
             }
         }
 
-        QuickTreeView {
+        KQuickView.TreeView {
             id: treeView
             anchors.top: sorting.bottom
             anchors.bottom: parent.bottom
-            width: parent.width
+            width: contactList.width
+            height: contactList.height - sorting.height
 
             function selectItem(index) {
                 treeView.currentIndex = index
             }
 
-            rawModel: SortedContactModel
+            model: SortedContactModel
             delegate: masterComponent
             sortingEnabled: true
 

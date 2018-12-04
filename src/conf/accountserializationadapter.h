@@ -35,7 +35,7 @@ struct ConnHolder;
  *
  *  * QLineEdit
  */
-class LIB_EXPORT AccountSerializationAdapter : public QObject
+class LIB_EXPORT AccountSerializationAdapter final : public QObject
 {
    Q_OBJECT
 public:

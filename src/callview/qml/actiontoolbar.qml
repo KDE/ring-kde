@@ -20,7 +20,7 @@ import QtQuick 2.0
 import Ring 1.0
 import QtQuick.Layouts 1.0
 
-import RingQmlWidgets 1.0
+import org.kde.playground.kquickview 1.0 as KQuickView
 
 Rectangle {
     id: toolbar
@@ -110,7 +110,7 @@ Rectangle {
                 RowLayout {
                     anchors.margins: 15
                     anchors.fill: parent
-                    PixmapWrapper {
+                    KQuickView.DecorationAdapter {
                         anchors.verticalCenter: parent.verticalCenter
                         pixmap: decoration
                         width:  30

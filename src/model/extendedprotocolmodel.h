@@ -23,7 +23,7 @@
 
 #include <protocolmodel.h>
 
-class ExtendedProtocolModel : public QIdentityProxyModel
+class ExtendedProtocolModel final : public QIdentityProxyModel
 {
    Q_OBJECT
 

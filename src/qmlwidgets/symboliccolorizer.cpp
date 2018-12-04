@@ -19,17 +19,13 @@
 
 // Qt
 #include <QtCore/QDir>
+#include <QtCore/QDebug>
 #include <QtCore/QFile>
 #include <QtGui/QPalette>
 #include <QtGui/QIcon>
 #include <QtGui/QPainter>
 #include <QtGui/QGuiApplication>
 #include <QtSvg/QSvgRenderer>
-
-#include <call.h>
-
-#include <callmodel.h>
-#include <video/previewmanager.h>
 
 class SymbolicColorizerPrivate final : public QObject
 {

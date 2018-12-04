@@ -429,6 +429,7 @@ TARGET_LINK_LIBRARIES(ring-kde
   contactview
   accountview
   libqmlwidgets
+  kquickview
 
   # Qt5
   Qt5::Widgets

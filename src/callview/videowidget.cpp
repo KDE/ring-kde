@@ -35,7 +35,7 @@
 
 #include "imageprovider.h"
 
-class VideoWidget3Private : public QObject
+class VideoWidget3Private final : public QObject
 {
     Q_OBJECT
 public:

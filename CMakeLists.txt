@@ -41,6 +41,15 @@ ELSE()
    FIND_PACKAGE ( LibRingQt QUIET CONFIG)
 ENDIF()
 
+# This package was developed for Ring-KDE. It is now a shared framework. Until
+# it is more widespread and stable, a copy is still included in Ring-KDE.
+IF(IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/libkquickview/")
+   SET(LibKQuickView_SRC "${CMAKE_CURRENT_SOURCE_DIR}/libkquickview/")
+   SET(quickview_FOUND true)
+ELSE()
+    FIND_PACKAGE (KF5 REQUIRED COMPONENTS QuickView)
+ENDIF()
+
 # Download libringqt if it wasn't found to simplify the build process
 IF(NOT ringqt_FOUND)
    INCLUDE(cmake/FetchRingQt.cmake)
@@ -59,6 +68,14 @@ IF(LibRingQt_SRC)
 
    INCLUDE_DIRECTORIES(${LibRingQt_SRC}/src)
 ENDIF()
+
+IF(LibKQuickView_SRC)
+   # Use the .a, not the .so;
+   SET(ENABLE_STATIC true)
+
+   ADD_SUBDIRECTORY(${LibKQuickView_SRC})
+ENDIF()
+
 
 INCLUDE(ECMInstallIcons)
 INCLUDE(ECMOptionalAddSubdirectory)

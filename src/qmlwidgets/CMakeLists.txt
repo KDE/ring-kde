@@ -52,29 +52,14 @@ SET( libqmlwidgets_LIB_SRCS
     contactbuilder.cpp
     cmiconengine.cpp
     personiconengine.cpp
-    pixmapwrapper.cpp
     treehelper.cpp
-    simpleflickable.cpp
-    hierarchyview.cpp
-    abstractquickview.cpp
-    treetraversalreflector_p.cpp
-    treetraversalrange_p.cpp
-    abstractviewitem.cpp
-    abstractselectableview.cpp
-    abstractviewcompat.cpp
-    quicktreeview.cpp
-    quicklistview.cpp
-    flickableview.cpp
-    modelscrolladapter.cpp
     multicall.cpp
-    bindedcombobox.cpp
     recentfilemodel.cpp
     snapshotadapter.cpp
     timelinedots.cpp
     qmlaction.cpp
     qactionbinder.cpp
     symboliccolorizer.cpp
-    flickablescrollbar.cpp
 )
 
 QT5_ADD_RESOURCES(libqmlwidgets_LIB_SRCS
@@ -103,5 +88,4 @@ SET( libqmlwidgets_LIB_HDRS
     bubble.h
     plugin.h
     messagebuilder.h
-    pixmapwrapper.h
 )

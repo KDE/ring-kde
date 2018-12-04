@@ -51,7 +51,7 @@ protected:
     virtual bool filterAcceptsRow(int row, const QModelIndex & srcParent ) const override;
 };
 
-class MainPagePrivate : public QObject {
+class MainPagePrivate final : public QObject {
     Q_OBJECT
 public:
     QSharedPointer<QAbstractItemModel> m_CallsModel;

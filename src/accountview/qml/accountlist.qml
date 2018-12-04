@@ -22,6 +22,7 @@ import Ring 1.0
 import QtQuick.Controls 2.2
 import ContactView 1.0
 import org.kde.kirigami 2.2 as Kirigami
+import org.kde.playground.kquickview 1.0 as KQuickView
 
 ListView {
     id: accountList
@@ -93,7 +94,7 @@ ListView {
                 text: obj.alias
             }
 
-            PixmapWrapper {
+            KQuickView.DecorationAdapter {
                 pixmap: secIcon
                 anchors.verticalCenter: parent.verticalCenter
                 height: (Kirigami.Units.fontMetrics.height * 2) - 6
@@ -156,7 +157,7 @@ ListView {
                 }
             }
 
-            PixmapWrapper {
+            KQuickView.DecorationAdapter {
                 pixmap: secIcon
                 anchors.verticalCenter: parent.verticalCenter
                 height: (Kirigami.Units.fontMetrics.height * 2) - 6

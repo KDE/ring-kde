@@ -19,9 +19,6 @@
 
 #include <QQuickImageProvider>
 
-#include <video/renderer.h>
-// #include <video/model.h>
-
 class SymbolicColorizerPrivate;
 
 /**

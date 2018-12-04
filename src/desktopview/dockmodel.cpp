@@ -23,7 +23,7 @@
 
 #include "../actioncollection.h"
 
-class DockModelPrivate : public QObject
+class DockModelPrivate final : public QObject
 {
     Q_OBJECT
 public:

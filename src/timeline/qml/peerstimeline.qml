@@ -21,6 +21,7 @@ import Ring 1.0
 import QtQuick.Layouts 1.0
 import QtGraphicalEffects 1.0
 import org.kde.kirigami 2.2 as Kirigami
+import org.kde.playground.kquickview 1.0 as KQuickView
 
 import RingQmlWidgets 1.0
 
@@ -137,7 +138,7 @@ Rectangle {
             ))
         }
 
-        QuickListView {
+        KQuickView.ListView {
             id: recentView
             clip: true
             anchors.fill: parent
@@ -164,7 +165,36 @@ Rectangle {
                 }
             }
 
-            rawModel: PeersTimelineModel
+            model: KQuickView.SizeHintProxyModel {
+                id: proxyModel
+
+                /*invalidationRoles: [
+                    "object",
+                    "unreadTextMessageCount",
+                    "isRecording",
+                    "hasActiveVideo",
+                ]*/
+
+                constants: ({
+                    fmh: fontMetrics.height,
+                    fmh2: fontMetrics.height,
+                })
+
+                function getRowCount(obj) {
+                    var activeCM = obj ? obj.activeContactMethod : null
+
+                    return 2 + ((obj != null) && (obj.hasActiveCall
+                        || obj.unreadTextMessageCount > 0
+                        || (activeCM && activeCM.isRecording)
+                        || (activeCM && activeCM.hasActiveVideo)
+                    ) ? 1 : 0)
+                }
+
+                widthHint: recentView.width
+                heightHint: (proxyModel.getRowCount(object)*2+1)*fmh + 13
+
+                sourceModel: PeersTimelineModel
+            }
         }
 
         TimelineScrollbar {

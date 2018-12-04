@@ -20,7 +20,7 @@
 
 #include <QtWidgets/QListView>
 
-class ContextListView : public QListView
+class ContextListView final : public QListView
 {
    Q_OBJECT
 public:

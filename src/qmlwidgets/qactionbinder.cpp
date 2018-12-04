@@ -34,7 +34,7 @@ struct ActionBinder {
     QObject*     m_pQmlShortcut;
 };
 
-class QActionBinderPrivate : public QObject
+class QActionBinderPrivate final : public QObject
 {
     Q_OBJECT
 
