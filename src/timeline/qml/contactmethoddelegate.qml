@@ -51,11 +51,11 @@ MouseArea {
 
     onClicked: {
         if (mouse.button == Qt.LeftButton) {
-            recentView.currentIndex = modelIndex.row
+            recentView.currentIndex = rootIndex.row
             individualSelected(object)
         }
         else if (mouse.button == Qt.RightButton)
-            contextMenuRequested(object.lastUsedContactMethod, modelIndex.row)
+            contextMenuRequested(object.lastUsedContactMethod, rootIndex.row)
     }
 
     Rectangle {
