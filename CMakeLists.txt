@@ -16,7 +16,7 @@ IF(POLICY CMP0028)
    CMAKE_POLICY(SET CMP0028 NEW)
 ENDIF(POLICY CMP0028)
 
-SET(PROJECT_VERSION "3.0.0")
+SET(PROJECT_VERSION "3.0.1")
 PROJECT(ring-kde)
 
 SET(QT_MIN_VERSION  "5.9.0" )
@@ -43,11 +43,13 @@ ENDIF()
 
 # This package was developed for Ring-KDE. It is now a shared framework. Until
 # it is more widespread and stable, a copy is still included in Ring-KDE.
-IF(IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/libkquickview/")
-   SET(LibKQuickView_SRC "${CMAKE_CURRENT_SOURCE_DIR}/libkquickview/")
+IF(IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/libkquickitemviews/")
+   SET(LibKQuickView_SRC "${CMAKE_CURRENT_SOURCE_DIR}/libkquickitemviews/")
    SET(quickview_FOUND true)
 ELSE()
-    FIND_PACKAGE (KF5 REQUIRED COMPONENTS QuickView)
+    message("Download KQuickItemViews from `git clone https://anongit.kde.org/kquickitemviews/`")
+    message("and move it to `path/to/ring-kde/libkquickitemviews`")
+    #FIND_PACKAGE (KF5 REQUIRED COMPONENTS KQuickItemViews)
 ENDIF()
 
 # Download libringqt if it wasn't found to simplify the build process

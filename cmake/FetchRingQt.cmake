@@ -67,6 +67,12 @@ else()
     )
 endif()
 
+if (NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/libkquickitemviews)
+    execute_process(COMMAND
+        git clone  http://anongit.kde.org/kquickitemviews/--branch master ${CMAKE_CURRENT_BINARY_DIR}/libkquickitemviews
+    )
+endif()
+
 # Build LibRingQt
 SET(RING_XML_INTERFACES_DIR ${XML_PATH})
 

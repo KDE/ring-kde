@@ -36,7 +36,7 @@
 #include <QQmlExtensionPlugin>
 Q_IMPORT_PLUGIN(KQuickView)
 
-constexpr static const char version[] = "3.0.0";
+constexpr static const char version[] = "3.0.1";
 
 int main(int argc, char **argv)
 {
