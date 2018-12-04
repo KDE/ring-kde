@@ -98,9 +98,9 @@ Item {
             anchors.fill: parent
             onClicked: {
                 if (selectionCallback)
-                    selectionCallback(index, object, modelIndex)
+                    selectionCallback(index, object, rootIndex)
                 else if (treeView != undefined) { //FIXME move elsewhere
-                    treeView.selectItem(modelIndex)
+                    treeView.selectItem(rootIndex)
                     if (objectType == 0)
                         contactList.contactMethodSelected(
                             object.lastUsedContactMethod

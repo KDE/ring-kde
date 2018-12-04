@@ -75,7 +75,7 @@ Item {
         MouseArea {
             anchors.fill: parent
             onClicked: {
-                treeView.selectItem(modelIndex)
+                treeView.selectItem(rootIndex)
                 bookmarkList.contactMethodSelected(object)
             }
         }
