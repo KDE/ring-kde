@@ -53,10 +53,11 @@ Kirigami.Page {
         color: activePalette.base
         anchors.fill: parent
 
-        KQuickView.ListView {
+        KQuickView.TreeView {
             id: treeView
-            width: contactList.width
-            height: contactList.height - sorting.height
+            width: bookmarkList.width
+            height: bookmarkList.height - sorting.height
+            anchors.fill: parent
 
             function selectItem(index) {
                 treeView.currentIndex = index
