@@ -19,6 +19,7 @@
 
 //Qt
 #include <QtCore/QString>
+#include <QtCore/QtPlugin>
 #include <QtGui/QImage>
 
 //KDE
@@ -31,6 +32,9 @@
 #include "klib/kcfg_settings.h"
 #include "cmd.h"
 #include <QQmlDebuggingEnabler>
+
+#include <QQmlExtensionPlugin>
+Q_IMPORT_PLUGIN(KQuickView)
 
 constexpr static const char version[] = "3.0.0";
 
@@ -45,6 +49,9 @@ int main(int argc, char **argv)
       RingApplication app( argc, argv );
 
       KLocalizedString::setApplicationDomain("ring-kde");
+
+      //FIXME remove
+      qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_KQuickView().instance())->registerTypes("org.kde.playground.kquickview");
 
       KAboutData about(QStringLiteral("ring-kde"),
          i18n("ring-kde"),

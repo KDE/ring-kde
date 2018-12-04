@@ -19,6 +19,7 @@ import QtQuick 2.0
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
 import Ring 1.0
+import org.kde.playground.kquickview 1.0 as KQuickView
 
 Item {
     property QtObject call: null
@@ -163,7 +164,7 @@ Item {
                     color:  "#CC222222"
                     border.width:  mouseArea.containsMouse ? 3 : 0
                     border.color: "#dd5555"
-                    PixmapWrapper {
+                    KQuickView.DecorationAdapter {
                         anchors.fill: parent
                         anchors.margins: 10
                         pixmap: decoration

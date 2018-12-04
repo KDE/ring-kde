@@ -117,6 +117,7 @@
 #include "extensions/presencecollectionextension.h"
 
 //QML
+#include <KQuickView/plugin.h>
 #include "qmlwidgets/plugin.h"
 #include "qmlwidgets/recentfilemodel.h"
 #include "qmlwidgets/symboliccolorizer.h"
@@ -128,7 +129,7 @@
 #include "accountview/accountviewplugin.h"
 #include "dialview/dialviewplugin.h"
 #include "timeline/timelineplugin.h"
-#include "flickableview.h"
+#include "viewbase.h"
 
 //Widgets
 #include "widgets/systray.h"

@@ -23,10 +23,12 @@ import RingQmlWidgets 1.0
 import QtGraphicalEffects 1.0
 import Ring 1.0
 import org.kde.kirigami 2.2 as Kirigami
+import org.kde.playground.kquickview 1.0 as KQuickView
 
 Kirigami.Page {
     id: bookmarkList
     signal contactMethodSelected(var cm)
+    anchors.fill: parent
 
     leftPadding: 0
     topPadding: 0
@@ -51,27 +53,13 @@ Kirigami.Page {
         color: activePalette.base
         anchors.fill: parent
 
-        QuickTreeView {
+        KQuickView.ListView {
             id: treeView
-            anchors.fill: parent
+            width: contactList.width
+            height: contactList.height - sorting.height
 
             function selectItem(index) {
                 treeView.currentIndex = index
-            }
-
-            rawModel: CategorizedBookmarkModel
-            delegate: masterComponent
-            sortingEnabled: true
-
-            highlight: Item {
-                Rectangle {
-                    anchors.fill: parent
-                    anchors.margins: 5
-                    anchors.leftMargin: 10
-                    anchors.rightMargin: 10
-                    radius: 5
-                    color: activePalette.highlight
-                }
             }
 
             Component {
@@ -108,6 +96,21 @@ Kirigami.Page {
                     sourceComponent: objectType ? contactComponent : categoryComponent
                 }
             }
+
+            model: CategorizedBookmarkModel
+            delegate: masterComponent
+            sortingEnabled: true
+
+            highlight: Item {
+                Rectangle {
+                    anchors.fill: parent
+                    anchors.margins: 5
+                    anchors.leftMargin: 10
+                    anchors.rightMargin: 10
+                    radius: 5
+                    color: activePalette.highlight
+                }
+            }
         }
 
         // It needs to be here due to z-index conflicts between
@@ -121,7 +124,7 @@ Kirigami.Page {
             anchors.top: parent.top
             anchors.rightMargin: - 15
             width: scrollbar.fullWidth + 15
-            height: chatView.height
+            height: treeView.height
             clip: true
 
             Behavior on opacity {
@@ -150,11 +153,11 @@ Kirigami.Page {
             id: effectSource
             visible: false
 
-            sourceItem: chatView
-            anchors.right: timelinePage.right
-            anchors.top: timelinePage.top
+            sourceItem: treeView
+            anchors.right: bookmarkList.right
+            anchors.top: bookmarkList.top
             width: scrollbar.fullWidth + 15
-            height: chatView.height
+            height: treeView.height
 
             sourceRect: Qt.rect(
                 burryOverlay.x,

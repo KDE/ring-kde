@@ -24,7 +24,7 @@
 
 namespace Pages {
 
-class RingTone : public PageBase, public Ui_RingtonePage
+class RingTone final : public PageBase, public Ui_RingtonePage
 {
 Q_OBJECT
 public:

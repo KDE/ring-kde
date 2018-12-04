@@ -17,6 +17,7 @@
 *****************************************************************************/
 import QtQuick 2.0
 import Ring 1.0
+import org.kde.playground.kquickview 1.0 as KQuickView
 
 Item {
     id: item
@@ -65,7 +66,7 @@ Item {
             height: 20
             width: parent.width
 
-            PixmapWrapper {
+            KQuickView.DecorationAdapter {
                 pixmap: decoration
                 height: 20
                 width: 20

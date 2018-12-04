@@ -21,6 +21,7 @@ import QtQuick.Controls 2.2
 import RingQmlWidgets 1.0
 
 import PhotoSelectorPlugin 1.0
+import org.kde.playground.kquickview 1.0 as KQuickView
 
 import Ring 1.0
 
@@ -71,7 +72,7 @@ Dialog {
                 visible: !existingPhoto.hasPixmap
             }
 
-            PixmapWrapper {
+            KQuickView.DecorationAdapter {
                 id: existingPhoto
                 anchors.centerIn: parent
                 pixmap: person ? person.photo : undefined

@@ -21,7 +21,7 @@
 #include <QtCore/QMimeData>
 #include <QtCore/QItemSelectionModel>
 
-class TreeHelperPrivate : public QObject
+class TreeHelperPrivate final : public QObject
 {
     Q_OBJECT
 public:

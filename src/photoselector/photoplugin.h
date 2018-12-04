@@ -20,7 +20,7 @@
 #include <QQmlExtensionPlugin>
 
 //![plugin]
-class Q_DECL_EXPORT PhotoSelectorPlugin : public QObject//QQmlExtensionPlugin
+class Q_DECL_EXPORT PhotoSelectorPlugin final : public QObject//QQmlExtensionPlugin
 {
     Q_OBJECT
 //     Q_PLUGIN_METADATA(IID "PhotoSelectorPlugin")

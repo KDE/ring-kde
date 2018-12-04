@@ -27,7 +27,7 @@ class QKeyEvent;
 #include <callmodel.h>
 
 ///CategorizedTreeView: A better looking widget than the plain QListWidget
-class CategorizedTreeView : public CategorizedTree
+class CategorizedTreeView final : public CategorizedTree
 {
   Q_OBJECT
 

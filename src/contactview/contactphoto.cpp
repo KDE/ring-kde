@@ -29,7 +29,7 @@
 // KDE
 #include <KColorScheme>
 
-class ContactPhotoPrivate : public QObject
+class ContactPhotoPrivate final : public QObject
 {
     Q_OBJECT
 public:
