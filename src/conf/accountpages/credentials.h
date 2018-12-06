@@ -23,6 +23,7 @@
 #include "ui_credentials.h"
 
 class CategorizedDelegate;
+class QQuickWidget;
 class QStyledItemDelegate;
 
 namespace Pages {
@@ -34,10 +35,12 @@ public:
    //Constructor
    explicit Credentials(QWidget *parent = nullptr);
    virtual ~Credentials();
+   void setAccount(Account* a);
 
 private:
    CategorizedDelegate* m_pDelegate;
    QStyledItemDelegate* m_pChildDelegate;
+   QQuickWidget* m_pWidget;
 
 private Q_SLOTS:
    void loadInfo();

@@ -2,5 +2,6 @@
     <qresource prefix="/">
         <file alias="Devices.qml">qml/devices.qml</file>
         <file alias="Codecs.qml">qml/codecs.qml</file>
+        <file alias="Credentials.qml">qml/credentials.qml</file>
     </qresource>
 </RCC>

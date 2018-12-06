@@ -17,18 +17,42 @@
  **************************************************************************/
 #include "credentials.h"
 
+// Qt
+#include <QQmlEngine>
+#include <QQmlApplicationEngine>
+#include <QQmlContext>
+#include <QQuickItem>
+#include <QQuickWidget>
+#include <QQmlError>
+
+// LibRingQt
 #include <account.h>
 #include <credentialmodel.h>
 
 #include <delegates/categorizeddelegate.h>
+#include <ringapplication.h>
 
 Pages::Credentials::Credentials(QWidget *parent) : PageBase(parent)
 {
    setupUi(this);
+   m_pWidget = new QQuickWidget(RingApplication::engine(), this);
    m_pDelegate = new CategorizedDelegate(m_pCredentials);
    m_pChildDelegate = new QStyledItemDelegate();
    m_pDelegate->setChildDelegate(m_pChildDelegate);
    m_pCredentials->setItemDelegate(m_pDelegate);
+
+   auto l = new QHBoxLayout(m_pQML);
+   l->setContentsMargins(0,0,0,0);
+   l->addWidget(m_pWidget);
+
+   m_pWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
+   m_pWidget->setSource(QUrl(QStringLiteral("qrc:/Credentials.qml")));
+
+   const auto errors = m_pWidget->errors();
+
+   for (auto e : qAsConst(errors)) {
+      qDebug() << e.toString();
+   }
 
    connect(this,&PageBase::accountSet, this, &Pages::Credentials::slotSetAccount);
 
@@ -38,7 +62,6 @@ Pages::Credentials::Credentials(QWidget *parent) : PageBase(parent)
    connect(edit_credential_realm_2    , &QLineEdit::textChanged, this, &Pages::Credentials::slotRealmChanged     );
    connect(edit_credential_auth_2     , &QLineEdit::textChanged, this, &Pages::Credentials::slotUserChanged      );
    connect(edit_credential_password_2 , &QLineEdit::textChanged, this, &Pages::Credentials::slotPasswdChanged    );
-
 }
 
 Pages::Credentials::~Credentials()
@@ -108,6 +131,19 @@ void Pages::Credentials::loadInfo()
       m_pCredentials->setCurrentIndex(account()->credentialModel()->index(0,0));
       loadInfo();
    }
+}
+
+void Pages::Credentials::setAccount(Account* a)
+{
+    const auto errors = m_pWidget->errors();
+    for (auto e : qAsConst(errors)) {
+        qDebug() << e.toString();
+    }
+
+    Q_ASSERT(m_pWidget->rootObject());
+
+    if (m_pWidget->rootObject())
+        m_pWidget->rootObject()->setProperty("account", QVariant::fromValue(a));
 }
 
 // kate: space-indent on; indent-width 3; replace-tabs on;

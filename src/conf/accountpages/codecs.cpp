@@ -98,7 +98,6 @@ Pages::Codecs::Codecs(QWidget* parent) : PageBase(parent),m_pAccount(nullptr)
 
 void Pages::Codecs::setAccount(Account* a)
 {
-
     const auto errors = m_pWidget->errors();
     for (auto e : qAsConst(errors)) {
         qDebug() << e.toString();
