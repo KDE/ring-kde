@@ -17,9 +17,43 @@
  **************************************************************************/
 import QtQuick 2.0
 import Ring 1.0
+import RingQmlWidgets 1.0
+import QtQuick.Layouts 1.0
 
 Item {
     id: button
+    height: 50
+    implicitHeight: 50
+    property alias model: repeater.model
 
-    property
+    property bool _isButtons: true
+
+    property list<OutlineButton> buttons: [OutlineButton{}]
+
+    onButtonsChanged: {
+        for (var i = 0; i<buttons.length; i++) {
+            var b = buttons[i]
+        }
+    }
+
+    Row {
+        anchors.fill: parent
+        Repeater {
+            id: repeater
+
+            Item {
+                width: button.width / repeater.count
+                implicitHeight: 50
+                implicitWidth: width
+                height: 50
+                OutlineButton {
+                    anchors.fill: parent
+                    label: display
+                    onClicked: {
+                        action.trigger()
+                    }
+                }
+            }
+        }
+    }
 }
