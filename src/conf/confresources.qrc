@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file alias="Devices.qml">qml/devices.qml</file>
+        <file alias="Codecs.qml">qml/codecs.qml</file>
     </qresource>
 </RCC>

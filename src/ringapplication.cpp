@@ -87,6 +87,7 @@
 #include <certificatemodel.h>
 #include <availableaccountmodel.h>
 #include <numbercategorymodel.h>
+#include <codecmodel.h>
 #include <presencestatusmodel.h>
 #include <personmodel.h>
 #include <infotemplatemanager.h>
@@ -488,6 +489,7 @@ QQmlApplicationEngine* RingApplication::engine()
       QML_TYPE( IndividualTimelineModel    )
       QML_TYPE( PendingContactRequestModel )
       QML_TYPE( RingDeviceModel            )
+      QML_TYPE( CodecModel                 )
       QML_TYPE( Event                      )
 
       QML_TYPE( QAction)

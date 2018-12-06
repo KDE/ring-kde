@@ -19,6 +19,8 @@
 #define CODECS_PAGE_H
 
 #include <QWidget>
+class QQuickWidget;
+
 #include "pagebase.h"
 #include "ui_codecs.h"
 
@@ -26,14 +28,19 @@ namespace Pages {
 
 class Codecs final : public PageBase, public Ui_CodecPage
 {
-Q_OBJECT
+    Q_OBJECT
 public:
-   //Constructor
-   explicit Codecs(QWidget *parent = nullptr);
+    //Constructor
+    explicit Codecs(QWidget *parent = nullptr);
+    void setAccount(Account* a);
+
+private:
+    Account* m_pAccount;
+    QQuickWidget* m_pWidget;
 };
 
 }
 
 #endif
 
-// kate: space-indent on; indent-width 3; replace-tabs on;
+// kate: space-indent on; indent-width 4; replace-tabs on;
