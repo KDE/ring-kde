@@ -192,6 +192,7 @@ Q_ASSERT(action_configureRing );
    INIT_ACTION(action_addPerson             , QIcon::fromTheme(QStringLiteral("contact-new"                     )), i18n("Add new contact"         ));
    INIT_ACTION(action_configureShortcut     , QIcon::fromTheme(QStringLiteral("configure-shortcuts"             )), i18n("Configure Shortcuts"     ));
    INIT_ACTION(action_configureNotifications, QIcon::fromTheme(QStringLiteral("preferences-desktop-notification")), i18n("Configure Notifications" ));
+   INIT_ACTION(action_configureAccount      , QIcon::fromTheme(QStringLiteral("preferences-desktop-notification")), i18n("Configure Accounts"      ));
 
 #define COL(a,b) col->setDefaultShortcut(a,b)
    // Assign default shortcuts
@@ -295,13 +296,13 @@ Q_ASSERT(action_configureRing );
    // Load the initial text
    l(uam->index(0,0), uam->index(uam->rowCount() -1));
 
-
    const auto as = &Audio::Settings::instance();
 
    // Connect actions
    connect(action_mute_capture           , &QAction::toggled   , as                 , &Audio::Settings::muteCapture             );
    connect(action_mute_playback          , &QAction::toggled   , as                 , &Audio::Settings::mutePlayback            );
    connect(action_show_wizard            , &QAction::triggered , RingApplication::instance(), &RingApplication::showWizard      );
+   connect(action_configureAccount       , &QAction::triggered , RingApplication::instance(), &RingApplication::configureAccounts);
    connect(action_show_menu              , &QAction::toggled   , this               , &ActionCollection::slotShowMenubar        );
    connect(action_close                  , &QAction::triggered , this               , &ActionCollection::slotClose              );
    connect(action_new_contact            , &QAction::triggered , this               , &ActionCollection::slotNewContact         );
@@ -333,7 +334,7 @@ Q_ASSERT(action_configureRing );
       action_edit_contact      , action_focus_history     , action_remove_history    ,
       action_raise_client      , action_focus_contact     , action_focus_call        ,
       action_focus_bookmark    , action_show_wizard       , action_show_directory    ,
-      action_show_menu         , action_showTimelineDock  ,
+      action_show_menu         , action_showTimelineDock  , action_configureAccount  ,
       action_configureNotifications, action_displayVolumeControls ,
    }) {
       col->addAction(a->objectName(), a);
@@ -555,6 +556,7 @@ GETTER(newContact                   , action_new_contact           )
 GETTER(configureRing                , action_configureRing         )
 GETTER(configureShortcut            , action_configureShortcut     )
 GETTER(configureNotification        , action_configureNotifications)
+GETTER(configureAccount             , action_configureAccount)
 
 //Video actions
 #ifdef ENABLE_VIDEO

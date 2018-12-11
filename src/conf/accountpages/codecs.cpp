@@ -60,23 +60,6 @@
 Pages::Codecs::Codecs(QWidget* parent) : PageBase(parent),m_pAccount(nullptr)
 {
     setupUi(this);
-    m_pWidget = new QQuickWidget(RingApplication::engine(), this);
-
-    for (auto w : {static_cast<QWidget*>(this), static_cast<QWidget*>(m_pWidget)})
-        w->setStyleSheet(QStringLiteral("margin:0px; spacing:0px; padding:0px;"));
-
-    auto l = new QHBoxLayout(m_pPlaceHolder);
-    l->setContentsMargins(0,0,0,0);
-    l->addWidget(m_pWidget);
-
-    m_pWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
-    m_pWidget->setSource(QUrl(QStringLiteral("qrc:/Codecs.qml")));
-
-    const auto errors = m_pWidget->errors();
-
-    for (auto e : qAsConst(errors)) {
-        qDebug() << e.toString();
-    }
 
     connect(this,&PageBase::accountSet,[this]() {
 //         disconnect(button_audiocodecUp  );
@@ -98,16 +81,6 @@ Pages::Codecs::Codecs(QWidget* parent) : PageBase(parent),m_pAccount(nullptr)
 
 void Pages::Codecs::setAccount(Account* a)
 {
-    const auto errors = m_pWidget->errors();
-    for (auto e : qAsConst(errors)) {
-        qDebug() << e.toString();
-    }
-
-    Q_ASSERT(m_pWidget->rootObject());
-
-    if (m_pWidget->rootObject())
-        m_pWidget->rootObject()->setProperty("account", QVariant::fromValue(a));
-
     m_pAccount = a;
 }
 

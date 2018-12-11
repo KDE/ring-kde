@@ -110,6 +110,7 @@ private Q_SLOTS:
 
 public Q_SLOTS:
    void showWizard();
+   void configureAccounts();
 };
 
 #endif // RINGAPPLICATION_H

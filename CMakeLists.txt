@@ -40,6 +40,7 @@ IF(IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/libringqt/")
 ELSE()
    FIND_PACKAGE ( LibRingQt QUIET CONFIG)
 ENDIF()
+   FIND_PACKAGE ( LibRingQtQuick REQUIRED CONFIG)
 
 # This package was developed for Ring-KDE. It is now a shared framework. Until
 # it is more widespread and stable, a copy is still included in Ring-KDE.

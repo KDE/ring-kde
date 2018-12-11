@@ -61,6 +61,7 @@
 #include <media/recordingmodel.h>
 #include <peerstimelinemodel.h>
 #include <individualtimelinemodel.h>
+#include <ringtonemodel.h>
 #include <video/previewmanager.h>
 #include <media/recording.h>
 #include <media/avrecording.h>
@@ -523,6 +524,7 @@ QQmlApplicationEngine* RingApplication::engine()
          QML_SINGLETON( ProfileModel             );
          QML_SINGLETON( PresenceStatusModel      );
          QML_SINGLETON( EventModel               );
+         QML_SINGLETON( RingtoneModel            );
 
          QML_SINGLETON2( ActionCollection        );
 
@@ -664,6 +666,13 @@ void RingApplication::showWizard()
 
    auto wiz = new WelcomeDialog();
    wiz->show();
+}
+
+void RingApplication::configureAccounts()
+{
+   desktopWindow()->setProperty(
+      "accountMode", true
+   );
 }
 
 ///Exit gracefully

@@ -40,7 +40,6 @@ public:
 private:
    CategorizedDelegate* m_pDelegate;
    QStyledItemDelegate* m_pChildDelegate;
-   QQuickWidget* m_pWidget;
 
 private Q_SLOTS:
    void loadInfo();

@@ -431,6 +431,9 @@ TARGET_LINK_LIBRARIES(ring-kde
   libqmlwidgets
   kquickview
 
+  # RingQt
+  ringqtquick
+
   # Qt5
   Qt5::Widgets
   Qt5::Core

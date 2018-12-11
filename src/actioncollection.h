@@ -32,7 +32,8 @@ class PhoneWindow;
 class KActionCollection;
 
 ///Group action declaration under the same umbrella
-class ActionCollection : public QObject {
+class ActionCollection : public QObject
+{
    Q_OBJECT
 public:
 
@@ -72,6 +73,7 @@ public:
    Q_PROPERTY(QAction* configureRing               READ configureRing               CONSTANT)
    Q_PROPERTY(QAction* configureShortcut           READ configureShortcut           CONSTANT)
    Q_PROPERTY(QAction* configureNotification       READ configureNotification       CONSTANT)
+   Q_PROPERTY(QAction* configureAccount            READ configureAccount            CONSTANT)
    #ifdef ENABLE_VIDEO
    Q_PROPERTY(QAction* videoRotateLeftAction     READ videoRotateLeftAction     CONSTANT)
    Q_PROPERTY(QAction* videoRotateRightAction    READ videoRotateRightAction    CONSTANT)
@@ -116,6 +118,7 @@ public:
    QAction* configureRing               ();
    QAction* configureShortcut           ();
    QAction* configureNotification       ();
+   QAction* configureAccount            ();
 
    //Video actions
    #ifdef ENABLE_VIDEO
@@ -177,6 +180,7 @@ private:
    QAction * action_configureRing          {nullptr};
    QAction * action_configureShortcut      {nullptr};
    QAction * action_configureNotifications {nullptr};
+   QAction * action_configureAccount       {nullptr};
    QAction * action_pastenumber            {nullptr};
    QAction * action_showContactDock        {nullptr};
    QAction * action_showHistoryDock        {nullptr};

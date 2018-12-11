@@ -24,6 +24,12 @@
 #include <QtGui/QPainter>
 #include <QtWidgets/QMessageBox>
 #include <QtCore/QAbstractProxyModel>
+#include <QQuickWidget>
+#include <QQmlEngine>
+#include <QQmlApplicationEngine>
+#include <QQmlContext>
+#include <QQuickItem>
+#include <QQmlError>
 
 // KDE
 #include <KPasswordDialog>
@@ -34,6 +40,7 @@
 #include <profilemodel.h>
 #include <account.h>
 #include <protocolmodel.h>
+#include <ringapplication.h>
 
 #include "accountpages/account.h"
 

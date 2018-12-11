@@ -95,7 +95,7 @@ GridLayout {
             formattedName.text = individual.bestName
     }
 
-    Component.onCompleted:  {
+    Component.onCompleted: {
         if (formattedName.text == "" && individual)
             formattedName.text = individual.bestName
     }
@@ -105,6 +105,7 @@ GridLayout {
         text: i18n("Formatted name:")
         color: labelColor ? labelColor : activePalette.text
     }
+
     TextField {
         id: formattedName
         readOnly: hasTarget && !mainInfo.editing

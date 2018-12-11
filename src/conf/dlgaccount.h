@@ -25,6 +25,7 @@ class QQmlEngine;
 class Account;
 class ExtendedProtocolModel;
 class CategorizedDelegate;
+class QQuickWidget;
 
 namespace Pages {
     class Account;

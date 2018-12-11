@@ -35,7 +35,6 @@ public:
 
 private:
     Account* m_pAccount;
-    QQuickWidget* m_pWidget;
 };
 
 }

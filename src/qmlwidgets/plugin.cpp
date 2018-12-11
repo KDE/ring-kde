@@ -45,4 +45,5 @@ void RingQmlWidgets::registerTypes(const char *uri)
     qmlRegisterType<QmlAction>(uri, 1, 0, "QmlAction");
     qmlRegisterType<QActionBinder>(uri, 1, 0, "QActionBinder");
     qmlRegisterType(QStringLiteral("qrc:/OutlineButton.qml"), uri, 1, 0, "OutlineButton");
+    qmlRegisterType(QStringLiteral("qrc:/OutlineButtons.qml"), uri, 1, 0, "OutlineButtons");
 }

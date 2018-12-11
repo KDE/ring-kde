@@ -94,11 +94,14 @@ ListView {
                 text: obj.alias
             }
 
-            KQuickView.DecorationAdapter {
-                pixmap: secIcon
-                anchors.verticalCenter: parent.verticalCenter
-                height: (Kirigami.Units.fontMetrics.height * 2) - 6
-                width:  (Kirigami.Units.fontMetrics.height * 2) - 6
+            Item {
+                Layout.fillHeight: true
+                KQuickView.DecorationAdapter {
+                    pixmap: secIcon
+                    anchors.verticalCenter: parent.verticalCenter
+                    height: (Kirigami.Units.fontMetrics.height * 2) - 6
+                    width:  (Kirigami.Units.fontMetrics.height * 2) - 6
+                }
             }
 
             // Do not cover the handle

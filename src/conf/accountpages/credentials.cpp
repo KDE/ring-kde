@@ -35,24 +35,10 @@
 Pages::Credentials::Credentials(QWidget *parent) : PageBase(parent)
 {
    setupUi(this);
-   m_pWidget = new QQuickWidget(RingApplication::engine(), this);
    m_pDelegate = new CategorizedDelegate(m_pCredentials);
    m_pChildDelegate = new QStyledItemDelegate();
    m_pDelegate->setChildDelegate(m_pChildDelegate);
    m_pCredentials->setItemDelegate(m_pDelegate);
-
-   auto l = new QHBoxLayout(m_pQML);
-   l->setContentsMargins(0,0,0,0);
-   l->addWidget(m_pWidget);
-
-   m_pWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
-   m_pWidget->setSource(QUrl(QStringLiteral("qrc:/Credentials.qml")));
-
-   const auto errors = m_pWidget->errors();
-
-   for (auto e : qAsConst(errors)) {
-      qDebug() << e.toString();
-   }
 
    connect(this,&PageBase::accountSet, this, &Pages::Credentials::slotSetAccount);
 
@@ -135,15 +121,6 @@ void Pages::Credentials::loadInfo()
 
 void Pages::Credentials::setAccount(Account* a)
 {
-    const auto errors = m_pWidget->errors();
-    for (auto e : qAsConst(errors)) {
-        qDebug() << e.toString();
-    }
-
-    Q_ASSERT(m_pWidget->rootObject());
-
-    if (m_pWidget->rootObject())
-        m_pWidget->rootObject()->setProperty("account", QVariant::fromValue(a));
 }
 
 // kate: space-indent on; indent-width 3; replace-tabs on;

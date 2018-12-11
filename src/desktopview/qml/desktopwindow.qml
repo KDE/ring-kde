@@ -31,6 +31,7 @@ Kirigami.ApplicationWindow {
     height: 768
 
     property bool wizardVisible: false
+    property bool accountMode: false
 
     TipModel {
         id: displayTips
@@ -94,6 +95,7 @@ Kirigami.ApplicationWindow {
 
         var actions = [
             "ActionCollection.showWizard",
+            "ActionCollection.configureAccount",
             "ActionCollection.configureRing",
             "ActionCollection.configureShortcut",
             "ActionCollection.configureNotification",
@@ -226,45 +228,6 @@ Kirigami.ApplicationWindow {
         actions: regularActions()
 
         Component {
-            id: accountsOnly
-            ColumnLayout {
-                anchors.fill: drawerContainer
-
-                Item {
-                    width: globalDrawer.width
-
-                    // Layouts in Layouts **** up QML, so make sure the result
-                    // is what's expected by removing all ambiguities. Otherwise
-                    // it's randomly corrupted
-                    Layout.preferredHeight: drawerContainer.height
-                        - accounts.contentHeight
-                    Layout.maximumHeight: drawerContainer.height
-                        - accounts.contentHeight
-                    Layout.minimumHeight: drawerContainer.height
-                        - accounts.contentHeight
-                    height: drawerContainer.height
-                        - accounts.contentHeight
-                    implicitHeight: drawerContainer.height
-                        - accounts.contentHeight
-
-                    Layout.fillHeight: true
-                    Layout.fillWidth: true
-                }
-
-                AccountList {
-                    id: accounts
-                    height: contentHeight
-                    Layout.minimumHeight: contentHeight
-                    Layout.preferredHeight: contentHeight
-                    Layout.maximumHeight: contentHeight
-                    Layout.fillWidth: true
-                    Layout.fillHeight: false
-                    enableAdd: true
-                }
-            }
-        }
-
-        Component {
             id: timelineAndAccounts
             ColumnLayout {
                 width: globalDrawer.width
@@ -292,6 +255,45 @@ Kirigami.ApplicationWindow {
         // `content` cannot be resized after being created
         content: Item {
             id: drawerContainer
+
+            Component {
+                id: accountsOnly
+                ColumnLayout {
+                    anchors.fill: drawerContainer
+
+                    Item {
+                        width: globalDrawer.width
+
+                        // Layouts in Layouts **** up QML, so make sure the result
+                        // is what's expected by removing all ambiguities. Otherwise
+                        // it's randomly corrupted
+                        Layout.preferredHeight: drawerContainer.height
+                            - accounts.contentHeight
+                        Layout.maximumHeight: drawerContainer.height
+                            - accounts.contentHeight
+                        Layout.minimumHeight: drawerContainer.height
+                            - accounts.contentHeight
+                        height: drawerContainer.height
+                            - accounts.contentHeight
+                        implicitHeight: drawerContainer.height
+                            - accounts.contentHeight
+
+                        Layout.fillHeight: true
+                        Layout.fillWidth: true
+                    }
+
+                    AccountList {
+                        id: accounts
+                        height: contentHeight
+                        Layout.minimumHeight: contentHeight
+                        Layout.preferredHeight: contentHeight
+                        Layout.maximumHeight: contentHeight
+                        Layout.fillWidth: true
+                        Layout.fillHeight: false
+                        enableAdd: true
+                    }
+                }
+            }
 
             // The drawer is a QtQuick.Layout, it uses implicitHeight even if
             // Layout.fillHeight is set to device the "winner" that will take
@@ -418,6 +420,19 @@ Kirigami.ApplicationWindow {
             }
         }
 
+    }
+
+    onAccountModeChanged: {
+        console.log("\n\n\n\nSHOW ACCOUNT!")
+        var component = Qt.createComponent("AccountDialog.qml")
+        if (component.status == Component.Ready) {
+            var window = component.createObject(applicationWindow().contentItem)
+            window.open()
+        }
+        else
+            console.log("ERROR", component.status, component.errorString())
+
+        accountMode = false
     }
 
     onClosing: {
