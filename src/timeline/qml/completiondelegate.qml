@@ -20,7 +20,7 @@ import QtQuick.Layouts 1.0
 import QtQuick.Controls 2.0
 import Ring 1.0
 import RingQmlWidgets 1.0
-import org.kde.playground.kquickview 1.0 as KQuickView
+import org.kde.playground.kquickitemviews 1.0 as KQuickItemViews
 
 Item {
     id: componentItem
@@ -57,7 +57,7 @@ Item {
         anchors.margins: 3
         anchors.fill: parent
         spacing: 0
-        KQuickView.DecorationAdapter {
+        KQuickItemViews.DecorationAdapter {
             visible: componentItem.showPhoto
             height:  Math.min(46, 4*componentItem.labelHeight + 12)
             width:  Math.min(46, 4*componentItem.labelHeight + 12)
@@ -87,7 +87,7 @@ Item {
             }
             RowLayout {
                 Layout.fillWidth: true
-                KQuickView.DecorationAdapter {
+                KQuickItemViews.DecorationAdapter {
                     height: 16
                     width:  16
                     pixmap: categoryIcon

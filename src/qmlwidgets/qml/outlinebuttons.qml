@@ -15,34 +15,34 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-import QtQuick 2.0
+import QtQuick 2.9
 import Ring 1.0
 import RingQmlWidgets 1.0
 import QtQuick.Layouts 1.0
 
 Item {
     id: button
-    height: 50
-    implicitHeight: 50
+    height: 50 * rows + 2*padding
+    implicitHeight: 50 * rows + 2*padding
+    property alias padding: buttonGrid.padding
     property alias model: repeater.model
+    property alias rows: buttonGrid.rows
+    property var actions: []
+    property var action: function(index) {}
 
     property bool _isButtons: true
 
-    property list<OutlineButton> buttons: [OutlineButton{}]
-
-    onButtonsChanged: {
-        for (var i = 0; i<buttons.length; i++) {
-            var b = buttons[i]
-        }
-    }
-
-    Row {
+    Grid {
+        id: buttonGrid
         anchors.fill: parent
+        rowSpacing: padding
+        columnSpacing: padding
+        rows: 1
         Repeater {
             id: repeater
 
             Item {
-                width: button.width / repeater.count
+                width: button.width / (repeater.count / buttonGrid.rows)
                 implicitHeight: 50
                 implicitWidth: width
                 height: 50
@@ -50,7 +50,10 @@ Item {
                     anchors.fill: parent
                     label: display
                     onClicked: {
-                        action.trigger()
+                        if (actions.lenght >= index) {
+                            actions[index]()
+                        }
+                        action(index)
                     }
                 }
             }

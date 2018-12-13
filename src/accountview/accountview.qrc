@@ -5,6 +5,7 @@
         <file alias="Accounts.qml">qml/accounts.qml</file>
         <file alias="AccountDialog.qml">qml/accountdialog.qml</file>
         <file alias="SecurityLevel.qml">qml/securitylevel.qml</file>
+        <file alias="SecurityTip.qml">qml/securitytip.qml</file>
         <file alias="Pages/Basic.qml">qml/pages/basic.qml</file>
         <file alias="Pages/Advanced.qml">qml/pages/advanced.qml</file>
         <file alias="Pages/Network.qml">qml/pages/network.qml</file>

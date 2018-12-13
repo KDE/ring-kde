@@ -192,7 +192,7 @@ Q_ASSERT(action_configureRing );
    INIT_ACTION(action_addPerson             , QIcon::fromTheme(QStringLiteral("contact-new"                     )), i18n("Add new contact"         ));
    INIT_ACTION(action_configureShortcut     , QIcon::fromTheme(QStringLiteral("configure-shortcuts"             )), i18n("Configure Shortcuts"     ));
    INIT_ACTION(action_configureNotifications, QIcon::fromTheme(QStringLiteral("preferences-desktop-notification")), i18n("Configure Notifications" ));
-   INIT_ACTION(action_configureAccount      , QIcon::fromTheme(QStringLiteral("preferences-desktop-notification")), i18n("Configure Accounts"      ));
+   INIT_ACTION(action_configureAccount      , QIcon::fromTheme(QStringLiteral("configure"                       )), i18n("Configure Accounts"      ));
 
 #define COL(a,b) col->setDefaultShortcut(a,b)
    // Assign default shortcuts

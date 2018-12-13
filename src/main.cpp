@@ -34,7 +34,13 @@
 #include <QQmlDebuggingEnabler>
 
 #include <QQmlExtensionPlugin>
-Q_IMPORT_PLUGIN(KQuickView)
+
+#ifdef KQUICKITEMVIEWS_USE_STATIC_PLUGIN
+Q_IMPORT_PLUGIN(KQuickItemViews)
+#else
+#include <KQuickItemViews/plugin.h>
+#endif
+
 Q_IMPORT_PLUGIN(RingQtQuick)
 
 constexpr static const char version[] = "3.0.1";
@@ -52,7 +58,13 @@ int main(int argc, char **argv)
       KLocalizedString::setApplicationDomain("ring-kde");
 
       //FIXME remove
-      qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_KQuickView().instance())->registerTypes("org.kde.playground.kquickview");
+#ifdef KQUICKITEMVIEWS_USE_STATIC_PLUGIN
+      qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_KQuickItemViews().instance())->registerTypes("org.kde.playground.kquickitemviews");
+#else
+      KQuickItemViews v;
+      v.registerTypes("org.kde.playground.kquickitemviews");
+#endif
+
       qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_RingQtQuick().instance())->registerTypes("net.lvindustries.ringqtquick");
 
       KAboutData about(QStringLiteral("ring-kde"),

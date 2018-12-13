@@ -21,7 +21,7 @@ import Ring 1.0
 import QtQuick.Layouts 1.0
 import QtGraphicalEffects 1.0
 import org.kde.kirigami 2.2 as Kirigami
-import org.kde.playground.kquickview 1.0 as KQuickView
+import org.kde.playground.kquickitemviews 1.0 as KQuickItemViews
 
 import RingQmlWidgets 1.0
 
@@ -138,7 +138,7 @@ Rectangle {
             ))
         }
 
-        KQuickView.ListView {
+        KQuickItemViews.ListView {
             id: recentView
             clip: true
             anchors.fill: parent
@@ -165,7 +165,7 @@ Rectangle {
                 }
             }
 
-            model: KQuickView.SizeHintProxyModel {
+            model: KQuickItemViews.SizeHintProxyModel {
                 id: proxyModel
 
                 /*invalidationRoles: [

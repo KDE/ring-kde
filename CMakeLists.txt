@@ -42,15 +42,16 @@ ELSE()
 ENDIF()
    FIND_PACKAGE ( LibRingQtQuick REQUIRED CONFIG)
 
+FIND_PACKAGE (KQuickItemViews QUIET CONFIG)
+
 # This package was developed for Ring-KDE. It is now a shared framework. Until
 # it is more widespread and stable, a copy is still included in Ring-KDE.
-IF(IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/libkquickitemviews/")
-   SET(LibKQuickView_SRC "${CMAKE_CURRENT_SOURCE_DIR}/libkquickitemviews/")
-   SET(quickview_FOUND true)
-ELSE()
-    message("Download KQuickItemViews from `git clone https://anongit.kde.org/kquickitemviews/`")
-    message("and move it to `path/to/ring-kde/libkquickitemviews`")
-    #FIND_PACKAGE (KF5 REQUIRED COMPONENTS KQuickItemViews)
+IF(NOT KQuickItemViews_FOUND AND IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/libkquickitemviews/")
+   SET(LibKQuickItemViews_SRC "${CMAKE_CURRENT_SOURCE_DIR}/libkquickitemviews/")
+   SET(libkquickitemviews_FOUND true)
+   ADD_DEFINITIONS(-DKQUICKITEMVIEWS_USE_STATIC_PLUGIN=1)
+ELSEIF(NOT KQuickItemViews_FOUND)
+    message(FATAL_ERROR "Download KQuickItemViews from `git clone https://anongit.kde.org/kquickitemviews/` and move it to `path/to/ring-kde/libkquickitemviews`")
 ENDIF()
 
 # Download libringqt if it wasn't found to simplify the build process
@@ -72,11 +73,11 @@ IF(LibRingQt_SRC)
    INCLUDE_DIRECTORIES(${LibRingQt_SRC}/src)
 ENDIF()
 
-IF(LibKQuickView_SRC)
+IF(LibKQuickItemViews_SRC)
    # Use the .a, not the .so;
    SET(ENABLE_STATIC true)
 
-   ADD_SUBDIRECTORY(${LibKQuickView_SRC})
+   ADD_SUBDIRECTORY(${LibKQuickItemViews_SRC})
 ENDIF()
 
 

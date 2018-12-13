@@ -20,7 +20,7 @@ import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
 import RingQmlWidgets 1.0
 import Ring 1.0
-import org.kde.playground.kquickview 1.0 as KQuickView
+import org.kde.playground.kquickitemviews 1.0 as KQuickItemViews
 
 GridLayout {
     property alias deviceSelectionModel    : device.selectionModel
@@ -34,7 +34,7 @@ GridLayout {
         color: "white"
         text: i18n("Device")
     }
-    KQuickView.ComboBoxView {
+    KQuickItemViews.ComboBoxView {
         id: device
         Layout.fillWidth: true
         selectionModel: VideoDeviceSelectionModel
@@ -44,7 +44,7 @@ GridLayout {
         color: "white"
         text: i18n("Channel")
     }
-    KQuickView.ComboBoxView {
+    KQuickItemViews.ComboBoxView {
         id: channel
         selectionModel: VideoChannelSelectionModel
         Layout.fillWidth: true
@@ -54,7 +54,7 @@ GridLayout {
         color: "white"
         text: i18n("Resolution")
     }
-    KQuickView.ComboBoxView {
+    KQuickItemViews.ComboBoxView {
         id: resolution
         selectionModel: VideoResolutionSelectionModel
         Layout.fillWidth: true
@@ -64,7 +64,7 @@ GridLayout {
         color: "white"
         text: i18n("Frame rate")
     }
-    KQuickView.ComboBoxView {
+    KQuickItemViews.ComboBoxView {
         id: rate
         selectionModel: VideoRateSelectionModel
         Layout.fillWidth: true

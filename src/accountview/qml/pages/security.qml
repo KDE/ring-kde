@@ -19,7 +19,7 @@ import QtQuick 2.8
 import org.kde.kirigami 2.5 as Kirigami
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
-import org.kde.playground.kquickview 1.0 as KQuickItemViews
+import org.kde.playground.kquickitemviews 1.0 as KQuickItemViews
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 import "../" as AccountWidgets
 
@@ -34,40 +34,100 @@ Page {
         AccountWidgets.SecurityLevel {
             Layout.fillWidth: true
             level: securityLevel
-        }
-
-        GroupBox {
-            title: i18n("Security related suggestions")
-            Layout.fillWidth: true
-            Layout.preferredHeight: 250
-            ListView {
-                id: securityIssues
-                anchors.fill: parent
-                model: securityEvaluationModel
-                delegate: Kirigami.SwipeListItem {
-                    id: swipeItem
-                    width: parent.width
-                    RowLayout {
-                        width: parent.width
-                        KQuickItemViews.DecorationAdapter {
-                            pixmap: decoration
-                            Layout.preferredWidth: swipeItem.implicitHeight
-                            Layout.minimumWidth: swipeItem.implicitHeight
-                        }
-                        Label {
-                            text: display
-                            Layout.fillWidth: true
-                        }
-                    }
-                }
-            }
+            informationCount: object.securityEvaluationModel.informationCount
+            warningCount: object.securityEvaluationModel.warningCount
+            issueCount: object.securityEvaluationModel.issueCount
+            errorCount: object.securityEvaluationModel.errorCount
+            model: securityEvaluationModel
         }
 
         Kirigami.FormLayout {
             Layout.fillWidth: true
 
+            Kirigami.Separator {
+                Kirigami.FormData.label: i18n("TLS Certificates")
+                Kirigami.FormData.isSection: true
+            }
+
+            TextField {
+                Kirigami.FormData.label: i18n("Authority certificate(s)")
+                KQuickItemViews.RoleBinder.modelRole: "tlsCaListCertificate"                             //<widget class="QLineEdit"
+                KQuickItemViews.RoleBinder.objectProperty: "text"
+                RingQtQuick.FieldStatus.name: "tlsCaListCertificate"
+                visible: RingQtQuick.FieldStatus.available
+            }
+
+            TextField {
+                Kirigami.FormData.label: i18n("Endpoint certificate")
+                KQuickItemViews.RoleBinder.modelRole: "tlsCertificate"                             //<widget class="QLineEdit"
+                KQuickItemViews.RoleBinder.objectProperty: "text"
+                RingQtQuick.FieldStatus.name: "tlsCertificate"
+                visible: RingQtQuick.FieldStatus.available
+            }
+
+            TextField {
+                Kirigami.FormData.label: i18n("Private key")
+                KQuickItemViews.RoleBinder.modelRole: "tlsPrivateKey"                             //<widget class="QLineEdit"
+                KQuickItemViews.RoleBinder.objectProperty: "text"
+                RingQtQuick.FieldStatus.name: "tlsPrivateKey"
+                visible: RingQtQuick.FieldStatus.available
+            }
+
+            TextField {
+                Kirigami.FormData.label: i18n("")
+                KQuickItemViews.RoleBinder.modelRole: "tlsPassword"                             //<widget class="QLineEdit"
+                KQuickItemViews.RoleBinder.objectProperty: "text"
+                RingQtQuick.FieldStatus.name: "tlsPassword"
+                visible: RingQtQuick.FieldStatus.available
+            }
+
+            AccountWidgets.SecurityTip {
+                id: permTip
+                visible: object.securityEvaluationModel.permissionWarning
+                Kirigami.FormData.isSection: true
+                message: i18n("Your certificates access are too permissive. Certificates should only be readable by the owner.")
+                icon: "image://icon/dialog-warning"
+                Button {
+                    text: i18n("Fix the permissions")
+                    onClicked: {
+                        object.tlsCertificate.fixPermissions()
+                    }
+                }
+                Button {
+                    text: i18n("No thanks")
+                    onClicked: {
+                        permTip.visible = false
+                    }
+                }
+            }
+
+            AccountWidgets.SecurityTip {
+                id: pathTip
+                Kirigami.FormData.isSection: true
+                visible: object.securityEvaluationModel.locationWarning
+                message: i18n("A good security practice is to move the certificates to a common directory. SELinux recommends ~/.cert for this. Do you wish to move the certificate there?")
+                icon: "image://icon/dialog-warning"
+                Button {
+                    text: i18n("Move to ~/.cert")
+                    onClicked: {
+                        object.tlsCertificate.moveToDotCert()
+                    }
+                }
+                Button {
+                    text: i18n("No thanks")
+                    onClicked: {
+                        pathTip.visible = false
+                    }
+                }
+            }
+
+            Kirigami.Separator {
+                Kirigami.FormData.label: i18n("Faulty servers workarounds")
+                Kirigami.FormData.isSection: true
+            }
+
             CheckBox {
-                Kirigami.FormData.label: i18n("Encr&amp;ypt media streams (SRTP)")
+                Kirigami.FormData.label: i18n("Encrypt media streams (SRTP)")
                 KQuickItemViews.RoleBinder.modelRole: "srtpEnabled"                             //
                 KQuickItemViews.RoleBinder.objectProperty: "checked"
                 RingQtQuick.FieldStatus.name: "srtpEnabled"
@@ -83,7 +143,7 @@ Page {
             }
 
             CheckBox {
-                Kirigami.FormData.label: i18n("Encrypt negotiation (&amp;TLS)")
+                Kirigami.FormData.label: i18n("Encrypt negotiation (TLS)")
                 KQuickItemViews.RoleBinder.modelRole: "tlsEnabled"                              //<widget class="QGroupBox"
                 KQuickItemViews.RoleBinder.objectProperty: "checked"
                 RingQtQuick.FieldStatus.name: "tlsEnabled"
@@ -95,14 +155,6 @@ Page {
                 KQuickItemViews.RoleBinder.modelRole: "tlsVerifyServer"                         //<widget class="QCheckBox"
                 KQuickItemViews.RoleBinder.objectProperty: "checked"
                 RingQtQuick.FieldStatus.name: "tlsVerifyServer"
-                visible: RingQtQuick.FieldStatus.available
-            }
-
-            TextField {
-                Kirigami.FormData.label: i18n("")
-                KQuickItemViews.RoleBinder.modelRole: "tlsPassword"                             //<widget class="QLineEdit"
-                KQuickItemViews.RoleBinder.objectProperty: "text"
-                RingQtQuick.FieldStatus.name: "tlsPassword"
                 visible: RingQtQuick.FieldStatus.available
             }
 
@@ -137,39 +189,6 @@ Page {
                 visible: RingQtQuick.FieldStatus.available
                 KQuickItemViews.RoleBinder.objectProperty: "checked"
             }
-
-            TextField {
-                Kirigami.FormData.label: i18n("")
-                KQuickItemViews.RoleBinder.modelRole: "tlsCaListCertificate"   //<widget class="FileSelector"
-                RingQtQuick.FieldStatus.name: "tlsCaListCertificate"
-                visible: RingQtQuick.FieldStatus.available
-                KQuickItemViews.RoleBinder.objectProperty: "text"
-            }
-
-            TextField {
-                Kirigami.FormData.label: i18n("")
-                KQuickItemViews.RoleBinder.modelRole: "tlsCertificate"       //<widget class="FileSelector"
-                RingQtQuick.FieldStatus.name: "tlsCertificate"
-                visible: RingQtQuick.FieldStatus.available
-                KQuickItemViews.RoleBinder.objectProperty: "text"
-            }
-
-            TextField {
-                Kirigami.FormData.label: i18n("")
-                KQuickItemViews.RoleBinder.modelRole: "tlsPrivateKey"       //<widget class="FileSelector"
-                RingQtQuick.FieldStatus.name: "tlsPrivateKey"
-                visible: RingQtQuick.FieldStatus.available
-                KQuickItemViews.RoleBinder.objectProperty: "text"
-            }
-
-//                 KQuickItemViews.RoleBinder.modelRole: "allowedCertificatesModel"         //<widget class="ContextListView"
-//                 KQuickItemViews.RoleBinder.modelRole: "bannedCertificatesModel"          //<widget class="ContextListView"
-//                 KQuickItemViews.RoleBinder.modelRole: "knownCertificateModel"            //<widget class="ContextListView"
-
-                //KQuickItemViews.RoleBinder.modelRole: "alias"
-                //KQuickItemViews.RoleBinder.objectProperty: "text"
-                //Kirigami.FormData.label: i18n("Alias")
-
         }
 
         Item {

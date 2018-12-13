@@ -79,6 +79,9 @@ TreeHelper::~TreeHelper()
 
 QModelIndex TreeHelper::getIndex(int row, const QModelIndex& parent)
 {
+    if (d_ptr->m_pModel && !parent.isValid())
+        return d_ptr->m_pModel->index(row, 0);
+
     if (!parent.isValid())
         return {};
 

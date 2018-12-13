@@ -423,14 +423,15 @@ Kirigami.ApplicationWindow {
     }
 
     onAccountModeChanged: {
-        console.log("\n\n\n\nSHOW ACCOUNT!")
-        var component = Qt.createComponent("AccountDialog.qml")
-        if (component.status == Component.Ready) {
-            var window = component.createObject(applicationWindow().contentItem)
-            window.open()
+        if (accountMode == true) {
+            var component = Qt.createComponent("AccountDialog.qml")
+            if (component.status == Component.Ready) {
+                var window = component.createObject(applicationWindow().contentItem)
+                window.open()
+            }
+            else
+                console.log("ERROR", component.status, component.errorString())
         }
-        else
-            console.log("ERROR", component.status, component.errorString())
 
         accountMode = false
     }

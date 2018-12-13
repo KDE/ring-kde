@@ -25,6 +25,7 @@
 #include <QtCore/QCommandLineParser>
 #include <QtCore/QDebug>
 #include <QtCore/QStandardPaths>
+#include <QtCore/QItemSelectionModel>
 #include <QtWidgets/QAction>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
@@ -54,6 +55,7 @@
 #include <categorizedbookmarkmodel.h>
 #include <numbercompletionmodel.h>
 #include <useractionmodel.h>
+#include <protocolmodel.h>
 #include <pendingcontactrequestmodel.h>
 #include <video/configurationproxy.h>
 #include <video/sourcemodel.h>
@@ -120,7 +122,7 @@
 #include "extensions/presencecollectionextension.h"
 
 //QML
-#include <KQuickView/plugin.h>
+#include <KQuickItemViews/plugin.h>
 #include "qmlwidgets/plugin.h"
 #include "qmlwidgets/recentfilemodel.h"
 #include "qmlwidgets/symboliccolorizer.h"
@@ -132,7 +134,6 @@
 #include "accountview/accountviewplugin.h"
 #include "dialview/dialviewplugin.h"
 #include "timeline/timelineplugin.h"
-#include "viewbase.h"
 
 //Widgets
 #include "widgets/systray.h"
@@ -490,10 +491,12 @@ QQmlApplicationEngine* RingApplication::engine()
       QML_TYPE( UserActionModel            )
       QML_TYPE( IndividualTimelineModel    )
       QML_TYPE( PendingContactRequestModel )
+      QML_TYPE( SecurityEvaluationModel    )
       QML_TYPE( RingDeviceModel            )
       QML_TYPE( CodecModel                 )
       QML_TYPE( CredentialModel            )
       QML_TYPE( Event                      )
+      QML_TYPE( ProtocolModel              )
 
       QML_TYPE( QAction)
 

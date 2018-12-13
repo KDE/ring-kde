@@ -19,145 +19,152 @@ import QtQuick 2.8
 import org.kde.kirigami 2.5 as Kirigami
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
-import org.kde.playground.kquickview 1.0 as KQuickItemViews
+import org.kde.playground.kquickitemviews 1.0 as KQuickItemViews
+import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 
-Rectangle {
+ListView {
+    id: accountList
+
     property QtObject selectedAccount: null
 
-    SystemPalette {
-        id: activePalette
-        colorGroup: SystemPalette.Active
-    }
+    spacing : 10
+    model: ProfileModel
+    delegate: codecDelegate
 
-    color: activePalette.window
+    Component {
+        id: codecDelegate
+        Kirigami.Card {
+            id: card
+            x: 5
+            width: accountList.width - 10
+            height: content.height + 20
+            implicitHeight: content.height + 20
 
-    Kirigami.CardsListView {
-        id: gridView
+            property var pModel : ProfileModel.profilesForPerson(model.object)
 
-        Component {
-            id: codecDelegate
-            Kirigami.Card {
-                id: card
-                width: gridView.width
-                height: content.height + 20
-                implicitHeight: content.height + 20
+            ColumnLayout {
+                id: content
+                height: implicitHeight
+                width: parent.width
+                Kirigami.Heading {
+                    text: model.display
+                    level:4
+                }
 
-                property var pModel : ProfileModel.profilesForPerson(model.object)
-
-                ColumnLayout {
-                    id: content
-                    height: implicitHeight
+                ListView {
+                    id: profileList
+                    interactive: false
+                    model: pModel
+                    implicitHeight: contentHeight
+                    height: contentHeight
                     width: parent.width
-                    Kirigami.Heading {
-                        text: model.display
-                        level:4
-                    }
 
-                    ListView {
-                        id: profileList
-                        interactive: false
-                        model: pModel
-                        implicitHeight: contentHeight
-                        height: contentHeight
-                        width: parent.width
+                    delegate: Kirigami.SwipeListItem {
+                        id: listItem
+                        width: card.width
+                        background: Rectangle {
+                            id: background
+                            property var listItem: parent
 
-                        delegate: Kirigami.SwipeListItem {
-                            id: listItem
-                            width: card.width
-                            background: Rectangle {
-                                id: background
-                                property var listItem: parent
+                            color: listItem.checked ||
+                                listItem.highlighted || (
+                                    listItem.supportsMouseEvents
+                                    && listItem.pressed
+                                    && !listItem.checked
+                                    && !listItem.sectionDelegate
+                                ) ? listItem.activeBackgroundColor : listItem.backgroundColor
 
-                                color: listItem.checked ||
-                                    listItem.highlighted || (
-                                        listItem.supportsMouseEvents
-                                        && listItem.pressed
-                                        && !listItem.checked
-                                        && !listItem.sectionDelegate
-                                    ) ? listItem.activeBackgroundColor : listItem.backgroundColor
+                            visible: listItem.ListView.view ? listItem.ListView.view.highlight === null : true
 
-                                visible: listItem.ListView.view ? listItem.ListView.view.highlight === null : true
+                            Rectangle {
+                                id: internal
+                                property bool indicateActiveFocus: listItem.pressed || listItem.activeFocus || (listItem.ListView.view ? listItem.ListView.view.activeFocus : false)
+                                anchors.fill: parent
+                                visible: !listItem.supportsMouseEvents
+                                color: listItem.activeBackgroundColor
+                                opacity: (listItem.hovered || listItem.highlighted || listItem.activeFocus) && !listItem.pressed ? 0.5 : 0
+                                Behavior on opacity { NumberAnimation { duration: Kirigami.Units.longDuration } }
+                            }
 
-                                Rectangle {
-                                    id: internal
-                                    property bool indicateActiveFocus: listItem.pressed || listItem.activeFocus || (listItem.ListView.view ? listItem.ListView.view.activeFocus : false)
-                                    anchors.fill: parent
-                                    visible: !listItem.supportsMouseEvents
-                                    color: listItem.activeBackgroundColor
-                                    opacity: (listItem.hovered || listItem.highlighted || listItem.activeFocus) && !listItem.pressed ? 0.5 : 0
-                                    Behavior on opacity { NumberAnimation { duration: Kirigami.Units.longDuration } }
-                                }
+                            Rectangle {
+                                opacity: 0.9
+                                anchors.fill: parent
+                                color: object == accountList.selectedAccount ? activePalette.highlight : registrationStateColor
+                            }
 
-                                Rectangle {
-                                    opacity: 0.9
-                                    anchors.fill: parent
-                                    color: registrationStateColor
-                                }
+                            KQuickItemViews.DecorationAdapter {
+                                width: check.implicitHeight
+                                height: check.implicitHeight
+                                anchors.right: parent.right
+                                anchors.verticalCenter: parent.verticalCenter
+                                pixmap: securityLevelIcon
+                            }
 
-                                KQuickItemViews.DecorationAdapter {
-                                    width: check.implicitHeight
-                                    height: check.implicitHeight
-                                    anchors.right: parent.right
-                                    anchors.verticalCenter: parent.verticalCenter
-                                    pixmap: securityLevelIcon
-                                }
+                            readonly property bool __separatorVisible: listItem.separatorVisible
 
-                                readonly property bool __separatorVisible: listItem.separatorVisible
-
-                                on__SeparatorVisibleChanged: {
-                                    if (__separatorVisible) {
-                                        var newObject = Qt.createQmlObject('import QtQuick 2.0; import org.kde.kirigami 2.4; Separator {anchors {left: parent.left; right: parent.right; bottom: parent.top} visible: listItem.separatorVisible}',
-                                                            background);
-                                        newObject = Qt.createQmlObject('import QtQuick 2.0; import org.kde.kirigami 2.4; Separator {anchors {left: parent.left; right: parent.right; bottom: parent.bottom} visible: listItem.separatorVisible}',
-                                                            background);
-                                    }
+                            on__SeparatorVisibleChanged: {
+                                if (__separatorVisible) {
+                                    var newObject = Qt.createQmlObject('import QtQuick 2.0; import org.kde.kirigami 2.4; Separator {anchors {left: parent.left; right: parent.right; bottom: parent.top} visible: listItem.separatorVisible}',
+                                                        background);
+                                    newObject = Qt.createQmlObject('import QtQuick 2.0; import org.kde.kirigami 2.4; Separator {anchors {left: parent.left; right: parent.right; bottom: parent.bottom} visible: listItem.separatorVisible}',
+                                                        background);
                                 }
                             }
-                            RowLayout {
-                                width: parent.width
-                                height: check.implicitHeight*2
-                                CheckBox {
-                                    id: check
-                                    width: height
-                                    checked: model.enabled
-                                }
-
-                                KQuickItemViews.DecorationAdapter {
-                                    height: check.implicitHeight
-                                    width: check.implicitHeight
-                                    pixmap: decoration
-                                }
-
-                                Label {
-                                    text: alias
-                                    Layout.fillWidth: true
-                                }
+                        }
+                        RowLayout {
+                            width: parent.width
+                            height: check.implicitHeight*2
+                            CheckBox {
+                                id: check
+                                width: height
+                                checked: model.enabled
                             }
-                            actions: [
-                                Kirigami.Action {
-                                    text: i18n("Remove")
-                                    iconName: "list-remove"
-                                    onTriggered: {}
-                                }
-                            ]
 
-                            onPressedChanged: {
-                                selectedAccount = object
+                            KQuickItemViews.DecorationAdapter {
+                                height: check.implicitHeight
+                                width: check.implicitHeight
+                                pixmap: decoration
                             }
+
+                            Label {
+                                text: alias
+                                Layout.fillWidth: true
+                            }
+                        }
+                        actions: [
+                            Kirigami.Action {
+                                text: i18n("Remove")
+                                iconName: "list-remove"
+                                onTriggered: {}
+                            }
+                        ]
+
+                        onPressedChanged: {
+                            accountList.selectedAccount = object
                         }
                     }
                 }
             }
         }
+    }
 
-        footer: OutlineButton {
-            height: 50
-            label: i18n("Add an account")
-            width: parent.width
+    RingQtQuick.AccountBuilder {
+        id: accountBuilder
+    }
+
+    footer: OutlineButtons {
+        function callback(index) {
+            selectedAccount = accountBuilder.buildFor(index)
         }
 
-        anchors.fill: parent
-        model: ProfileModel
-        delegate: codecDelegate
+        width: accountList.width
+        rows: 2
+        padding: 5
+        model: accountBuilder
+        action: callback
+    }
+
+    Component.onCompleted: {
+        accountList.selectedAccount = AvailableAccountModel.currentDefaultAccount()
     }
 }

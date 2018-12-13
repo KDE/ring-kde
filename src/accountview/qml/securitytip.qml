@@ -21,61 +21,40 @@ import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
 import org.kde.playground.kquickitemviews 1.0 as KQuickItemViews
 
-/**
- * This page contains the most basic elements necessary to create a SIP or
- * Ring/Jami account.
- */
-Page {
-    Kirigami.FormLayout {
+Rectangle {
+    property alias message: label.text
+    property alias icon: img.source
+    default property alias contents: buttons.children
+    height: content.implicitHeight + 10
+    implicitHeight: content.implicitHeight + 10
+    anchors.horizontalCenter: parent.horizontalCenter
 
-        KQuickItemViews.QModelIndexBinder {
-            modelRole: "alias"
-            objectProperty: "text"
-            TextField {
-                id: alias
+    color: "transparent"
+    radius: 3
+    border.width: 1
+    border.color: inactivePalette.text
+    anchors.margins: 5
+
+    RowLayout {
+        id: content
+        width: parent.width
+        x: 5
+        y: 5
+        Image {
+            id: img
+            fillMode: Image.PreserveAspectFit
+            Layout.preferredWidth: parent.height
+        }
+        ColumnLayout {
+            Layout.fillWidth: true
+            Label {
+                id: label
+                Layout.fillWidth: true
+                wrapMode: Text.WordWrap
+            }
+            RowLayout {
+                id: buttons
             }
         }
-
-        KQuickItemViews.QModelIndexBinder {
-            modelRole: "profile"
-            objectProperty: "text"
-            ComboBox {
-                id: profile
-                model: ProfileModel
-            }
-        }
-
-        KQuickItemViews.QModelIndexBinder {
-            modelRole: "protocol"
-            objectProperty: "text"
-            ComboBox {
-                id: profile
-                model: object.protocolModel
-            }
-        }
-
-        KQuickItemViews.QModelIndexBinder {
-            modelRole: "registeredname"
-            objectProperty: "text"
-            TextField {
-                id: registeredname
-            }
-        }
-
-        KQuickItemViews.QModelIndexBinder {
-            modelRole: "displayname"
-            objectProperty: "text"
-            TextField {
-                id: displayname
-            }
-        }
-
-//         registeredname/displayname
-//         server
-//         name
-//         password
-//         autoAnswer
-
-
     }
 }

@@ -17,7 +17,7 @@
 **************************************************************************/
 import QtQuick 2.8
 import org.kde.kirigami 2.5 as Kirigami
-import org.kde.playground.kquickview 1.0 as KQuickItemViews
+import org.kde.playground.kquickitemviews 1.0 as KQuickItemViews
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
 import RingQmlWidgets 1.0
@@ -121,10 +121,21 @@ Page {
        }
 
         OutlineButtons {
+            TreeHelper {
+                id: creationHelper
+                model: account ? account.credentialModel.availableTypeModel : null
+            }
+
             Layout.fillWidth: true
             height: 50
+            padding: 5
             implicitHeight: 50
             model: account ? account.credentialModel.availableTypeModel : null
+            action: function(index) {
+                account.credentialModel.addCredentials(
+                    creationHelper.getIndex(index, undefined)
+                )
+            }
         }
 
         Item {
@@ -146,7 +157,6 @@ Page {
                 implicitHeight: 0
                 height: 0
                 delegate: Kirigami.FormLayout {
-
                     anchors.fill: parent
 
                     TextField {
@@ -165,6 +175,7 @@ Page {
                         Kirigami.FormData.label: i18n("Password")
                         KQuickItemViews.RoleBinder.modelRole: "password"
                         KQuickItemViews.RoleBinder.objectProperty: "text"
+                        echoMode: TextInput.Password
                     }
 
                 }

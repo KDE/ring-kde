@@ -21,7 +21,7 @@ import QtQuick.Layouts 1.0
 import Ring 1.0
 import RingQmlWidgets 1.0
 import org.kde.kirigami 2.2 as Kirigami
-import org.kde.playground.kquickview 1.0 as KQuickView
+import org.kde.playground.kquickitemviews 1.0 as KQuickItemViews
 
 ListView {
     id: numbers
@@ -259,7 +259,7 @@ ListView {
                 implicitHeight: columns.implicitHeight + 30
                 spacing: 10
 
-                KQuickView.DecorationAdapter {
+                KQuickItemViews.DecorationAdapter {
                     Layout.preferredHeight: 16
                     Layout.preferredWidth: 16
                     anchors.verticalCenter: parent.verticalCenter

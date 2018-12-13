@@ -20,7 +20,7 @@ import org.kde.kirigami 2.5 as Kirigami
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
-import org.kde.playground.kquickview 1.0 as KQuickItemViews
+import org.kde.playground.kquickitemviews 1.0 as KQuickItemViews
 
 /**
  * This page contains the most basic elements necessary to create a SIP or
@@ -40,20 +40,24 @@ Page {
             readOnly: RingQtQuick.FieldStatus.readOnly
         }
 
-        ComboBox {
+        KQuickItemViews.ComboBoxView {
 //             KQuickItemViews.RoleBinder.modelRole: "profile"
 //             KQuickItemViews.RoleBinder.objectProperty: "text"
             id: profile
-            model: ProfileModel
+//             model: ProfileModel
             Kirigami.FormData.label: i18n("Profile")
+//             textRole: "display"
+            selectionModel: ProfileModel.getAccountSelectionModel(object)
         }
 
-        ComboBox {
+        KQuickItemViews.ComboBoxView {
             id: protocol
 //             KQuickItemViews.RoleBinder.modelRole: "protocol"
 //             KQuickItemViews.RoleBinder.objectProperty: "text"
-            model: object.protocolModel
+//             model: object.protocolModel
             Kirigami.FormData.label: i18n("Protocol")
+//             editable: RingQtQuick.FieldStatus.readOnly
+            selectionModel: protocolModel.selectionModel
         }
 
         TextField {

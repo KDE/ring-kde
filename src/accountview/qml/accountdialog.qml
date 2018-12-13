@@ -22,7 +22,7 @@ import QtQuick.Layouts 1.0
 import RingQmlWidgets 1.0
 import "Pages/" as Pages
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
-import org.kde.playground.kquickview 1.0 as KQuickItemViews
+import org.kde.playground.kquickitemviews 1.0 as KQuickItemViews
 
 Dialog {
     id: accountDialog
@@ -46,12 +46,14 @@ Dialog {
             id: accountTree
             Layout.fillHeight: true
             Layout.preferredWidth: 300
+            Layout.maximumWidth: 300
         }
 
         KQuickItemViews.IndexView {
             Layout.fillHeight: true
             Layout.fillWidth: true
-            modelIndex: accountTree.selectedAccount ? accountTree.selectedAccount.index : undefined
+            modelIndex: accountTree.selectedAccount ?
+                accountTree.selectedAccount.index : undefined
             clip: true
 
             delegate: RingQtQuick.AccountFields {
@@ -90,6 +92,7 @@ Dialog {
 
                     SwipeView {
                         currentIndex: pageTabs.currentIndex
+                        interactive : false
                         Layout.fillHeight: true
                         Layout.fillWidth: true
                         Pages.Basic {}
