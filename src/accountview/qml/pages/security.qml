@@ -74,7 +74,7 @@ Page {
             }
 
             TextField {
-                Kirigami.FormData.label: i18n("")
+                Kirigami.FormData.label: i18n("Password")
                 KQuickItemViews.RoleBinder.modelRole: "tlsPassword"                             //<widget class="QLineEdit"
                 KQuickItemViews.RoleBinder.objectProperty: "text"
                 RingQtQuick.FieldStatus.name: "tlsPassword"
@@ -151,7 +151,7 @@ Page {
             }
 
             CheckBox {
-                Kirigami.FormData.label: i18n("")
+                Kirigami.FormData.label: i18n("Verify Server")
                 KQuickItemViews.RoleBinder.modelRole: "tlsVerifyServer"                         //<widget class="QCheckBox"
                 KQuickItemViews.RoleBinder.objectProperty: "checked"
                 RingQtQuick.FieldStatus.name: "tlsVerifyServer"
@@ -159,7 +159,7 @@ Page {
             }
 
             TextField {
-                Kirigami.FormData.label: i18n("")
+                Kirigami.FormData.label: i18n("Server Name")
                 KQuickItemViews.RoleBinder.modelRole: "tlsServerName"                           //<widget class="QLineEdit"
                 KQuickItemViews.RoleBinder.objectProperty: "text"
                 RingQtQuick.FieldStatus.name: "tlsServerName"
