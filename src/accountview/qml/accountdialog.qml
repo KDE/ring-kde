@@ -20,6 +20,7 @@ import org.kde.kirigami 2.2 as Kirigami
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.0
 import RingQmlWidgets 1.0
+import Ring 1.0
 import "Pages/" as Pages
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 import org.kde.playground.kquickitemviews 1.0 as KQuickItemViews
@@ -35,9 +36,17 @@ Dialog {
     width:  applicationWindow().contentItem.width  * 0.85
     height: applicationWindow().contentItem.height * 0.85
 
-    onAccepted: {}
+    onAccepted: {
+        if (accountTree.selectedAccount) {
+            accountTree.selectedAccount.performAction(Account.SAVE)
+        }
+    }
 
-    onRejected: {}
+    onRejected: {
+        if (accountTree.selectedAccount) {
+            accountTree.selectedAccount.performAction(Account.CANCEL)
+        }
+    }
 
     RowLayout {
         anchors.fill: parent
