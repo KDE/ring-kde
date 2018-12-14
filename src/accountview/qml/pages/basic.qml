@@ -83,9 +83,9 @@ Page {
         TextField {
             id: name
             Kirigami.FormData.label: i18n("Username")
-            RingQtQuick.FieldStatus.name: "name"
+            RingQtQuick.FieldStatus.name: "username"
             visible: RingQtQuick.FieldStatus.available
-            KQuickItemViews.RoleBinder.modelRole: "name"
+            KQuickItemViews.RoleBinder.modelRole: "username"
             KQuickItemViews.RoleBinder.objectProperty: "text"
             readOnly: RingQtQuick.FieldStatus.readOnly
         }
