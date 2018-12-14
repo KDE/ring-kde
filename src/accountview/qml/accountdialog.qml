@@ -29,6 +29,8 @@ Dialog {
     id: accountDialog
     standardButtons: Dialog.Save | Dialog.Cancel
 
+    property var profilePage: undefined
+
     parent: applicationWindow().contentItem
     x: applicationWindow().contentItem.width / 2 - width/2
     y: applicationWindow().contentItem.height / 2 - height/2
@@ -38,6 +40,8 @@ Dialog {
 
     onAccepted: {
         if (accountTree.selectedAccount) {
+            if (profilePage)
+                profilePage.save()
             accountTree.selectedAccount.performAction(Account.SAVE)
         }
     }
@@ -68,6 +72,7 @@ Dialog {
             delegate: RingQtQuick.AccountFields {
                 anchors.fill: parent
                 account: object
+
                 ColumnLayout {
                     anchors.fill: parent
                     TabBar {
@@ -75,6 +80,9 @@ Dialog {
                         Layout.fillWidth: true
                         TabButton {
                             text: i18n("Basic")
+                        }
+                        TabButton {
+                            text: i18n("Profile")
                         }
                         TabButton {
                             text: i18n("Advanced")
@@ -105,6 +113,12 @@ Dialog {
                         Layout.fillHeight: true
                         Layout.fillWidth: true
                         Pages.Basic {}
+                        Pages.Profiles {
+                            id: prof
+                            Component.onCompleted: {
+                                accountDialog.profilePage = prof
+                            }
+                        }
                         Pages.Advanced {}
                         Pages.Network {}
                         Pages.Devices {}

@@ -17,10 +17,13 @@
  **************************************************************************/
 #include "timelineplugin.h"
 
+#include <QQmlExtensionPlugin>
+#include <QQmlEngine>
 #include <QtCore/QDebug>
 
 #include <qrc_recentdock.cpp>
 
-void TimelinePlugin::registerTypes(const char *)
+void TimelinePlugin::registerTypes(const char *uri)
 {
+    qmlRegisterType(QStringLiteral("qrc:/ContactInfo.qml"), uri, 1, 0, "ContactInfo");
 }

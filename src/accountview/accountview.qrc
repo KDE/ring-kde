@@ -14,5 +14,6 @@
         <file alias="Pages/Devices.qml">qml/pages/devices.qml</file>
         <file alias="Pages/Security.qml">qml/pages/security.qml</file>
         <file alias="Pages/Ringtones.qml">qml/pages/ringtones.qml</file>
+        <file alias="Pages/Profiles.qml">qml/pages/profiles.qml</file>
     </qresource>
 </RCC>
