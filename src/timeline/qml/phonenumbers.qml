@@ -262,7 +262,7 @@ ListView {
                 KQuickItemViews.DecorationAdapter {
                     Layout.preferredHeight: 16
                     Layout.preferredWidth: 16
-                    anchors.verticalCenter: parent.verticalCenter
+                    Layout.alignment: Qt.AlignVCenter
                     pixmap: decoration
                 }
 

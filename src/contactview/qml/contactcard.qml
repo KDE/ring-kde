@@ -62,11 +62,13 @@ Item {
             anchors.bottomMargin: 5
             anchors.fill: parent
             Item {
-                width:  48
-                height: 48
-                anchors.verticalCenter: parent.verticalCenter
+                Layout.preferredWidth: 48
+                Layout.fillHeight: true
                 ContactPhoto {
-                    anchors.fill: parent
+                    width:  36
+                    height: 36
+
+                    anchors.centerIn: parent
                     anchors.margins: 5
                     person: personObj
                 }

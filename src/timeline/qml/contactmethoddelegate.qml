@@ -114,8 +114,6 @@ MouseArea {
                 height: 3*fontMetrics.height
 
                 Item {
-                    anchors.margins: 4
-
                     height: parent.height
                     width:  parent.height
 
@@ -134,7 +132,7 @@ MouseArea {
                     clip: true
                     font.bold : true
                     Layout.fillWidth: true
-                    anchors.verticalCenter: parent.verticalCenter
+                    Layout.alignment: Qt.AlignVCenter
                     color: isCurrentItem ?
                         activePalette.highlightedText : activePalette.text
                 }

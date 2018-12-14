@@ -17,7 +17,7 @@
  **************************************************************************/
 import QtQuick 2.7
 import QtQuick.Controls 2.0
-import QtQuick.Layouts 1.0
+import QtQuick.Layouts 1.2
 import Ring 1.0
 import PhotoSelectorPlugin 1.0
 import RingQmlWidgets 1.0
@@ -167,10 +167,6 @@ Kirigami.ScrollablePage {
                         id: vCardForm
                         height: preferredHeight
                         editing: contactViewPage.editing
-
-                        onEditingChanged: {
-                            console.log("Editing changed", editing)
-                        }
 
                         onChanged: {
                             isChanged = true
@@ -326,7 +322,7 @@ Kirigami.ScrollablePage {
 
         Item {
             id: statisticHolder
-            anchors.left: parent.left
+//             Layout.leftAnchor: parent.left
             height: statistics.implicitHeight
             Layout.fillWidth: true
         }
