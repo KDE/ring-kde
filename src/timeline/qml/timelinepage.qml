@@ -31,6 +31,10 @@ Rectangle {
         chatBox.focusEdit()
     }
 
+    function showNewContent() {
+        chatView.moveTo(Qt.BottomEdge)
+    }
+
     function setContactMethod() {
         if (currentIndividual && !currentContactMethod) {
             currentContactMethod = currentIndividual.preferredContactMethod(Media.TEXT)
@@ -201,8 +205,6 @@ Rectangle {
         target: chatBox
         onSendMessage: {
             timelinePage.setContactMethod()
-
-
             if (currentContactMethod) {
                 if (currentContactMethod.account && currentContactMethod.confirmationStatus == ContactMethod.UNCONFIRMED)
                     currentContactMethod.sendContactRequest()

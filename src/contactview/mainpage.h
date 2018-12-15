@@ -71,6 +71,7 @@ public Q_SLOTS:
     void setIndividual(Individual* ind);
     void setPerson(Person* p);
     void showVideo(Call* c);
+    void contextInserted();
 
 Q_SIGNALS:
     void suggestSelection(Individual* individual, const QModelIndex& modelIndex);

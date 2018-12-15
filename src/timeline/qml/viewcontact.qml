@@ -49,6 +49,11 @@ Item {
             tabBar.currentIndex = 1
     }
 
+    function showNewContent() {
+        if (timelinePage.item)
+            timelinePage.item.showNewContent()
+    }
+
     clip: true
 
     onCurrentContactMethodChanged: {

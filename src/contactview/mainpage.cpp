@@ -159,6 +159,11 @@ void MainPage::setIndividual(Individual* ind)
     if (!ind)
         return;
 
+    if (d_ptr->m_TimelineModel) {
+        disconnect(d_ptr->m_TimelineModel.data(), &QAbstractItemModel::rowsInserted,
+            this, &MainPage::contextInserted);
+    }
+
     d_ptr->m_Invididual = ind;
     d_ptr->m_TimelineModel = ind->timelineModel();
     d_ptr->m_CallsModel = ind->eventAggregate()->unsortedListView();
@@ -174,6 +179,11 @@ void MainPage::setIndividual(Individual* ind)
 
     d_ptr->m_pItem->setProperty( "timelineModel", QVariant::fromValue(d_ptr->m_TimelineModel));
     d_ptr->m_pItem->setProperty( "unsortedListView", QVariant::fromValue(d_ptr->m_CallsModel));
+
+    if (d_ptr->m_TimelineModel) {
+        connect(d_ptr->m_TimelineModel.data(), &QAbstractItemModel::rowsInserted,
+            this, &MainPage::contextInserted);
+    }
 }
 
 void MainPage::setContactMethod(ContactMethod* cm)
@@ -197,6 +207,11 @@ void MainPage::setContactMethod(ContactMethod* cm)
             d_ptr->m_lTimers << t;
         }
 
+    if (d_ptr->m_TimelineModel) {
+        disconnect(d_ptr->m_TimelineModel.data(), &QAbstractItemModel::rowsInserted,
+            this, &MainPage::contextInserted);
+    }
+
     // Keep a strong reference because QML won't
     d_ptr->m_Invididual = cm->individual();
     d_ptr->m_CallsModel = cm->individual()->eventAggregate()->unsortedListView();
@@ -210,10 +225,20 @@ void MainPage::setContactMethod(ContactMethod* cm)
     ));
     d_ptr->m_pItem->setProperty( "timelineModel", QVariant::fromValue(d_ptr->m_TimelineModel));
     d_ptr->m_pItem->setProperty( "unsortedListView", QVariant::fromValue(d_ptr->m_CallsModel));
+
+    if (d_ptr->m_TimelineModel) {
+        connect(d_ptr->m_TimelineModel.data(), &QAbstractItemModel::rowsInserted,
+            this, &MainPage::contextInserted);
+    }
 }
 
 void MainPage::setPerson(Person* p)
 {
+    if (d_ptr->m_TimelineModel) {
+        disconnect(d_ptr->m_TimelineModel.data(), &QAbstractItemModel::rowsInserted,
+            this, &MainPage::contextInserted);
+    }
+
     auto ind = p->individual();
     d_ptr->m_Invididual = ind;
 
@@ -226,6 +251,11 @@ void MainPage::setPerson(Person* p)
     Q_ASSERT(d_ptr->m_CallsModel);
 
     d_ptr->m_pItem->setProperty( "unsortedListView", QVariant::fromValue(d_ptr->m_CallsModel));
+
+    if (d_ptr->m_TimelineModel) {
+        connect(d_ptr->m_TimelineModel.data(), &QAbstractItemModel::rowsInserted,
+            this, &MainPage::contextInserted);
+    }
 }
 
 void MainPage::setCurrentPage(MainPage::Pages page)
@@ -340,6 +370,11 @@ QModelIndex MainPage::suggestedTimelineIndex() const
         );
 
     return {};
+}
+
+void MainPage::contextInserted()
+{
+    QMetaObject::invokeMethod(d_ptr->m_pItem, "showNewContent");
 }
 
 #include <mainpage.moc>
