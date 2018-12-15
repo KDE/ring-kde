@@ -43,7 +43,7 @@ Q_IMPORT_PLUGIN(KQuickItemViews)
 
 Q_IMPORT_PLUGIN(RingQtQuick)
 
-constexpr static const char version[] = "3.0.1";
+constexpr static const char version[] = "3.1.0";
 
 int main(int argc, char **argv)
 {
