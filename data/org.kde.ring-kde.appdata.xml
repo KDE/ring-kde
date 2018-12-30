@@ -15,6 +15,7 @@
   <name xml:lang="fi">Ring-kde</name>
   <name xml:lang="fr">Ring-KDE</name>
   <name xml:lang="gl">Ring-KDE</name>
+  <name xml:lang="id">Ring-KDE</name>
   <name xml:lang="it">Ring-KDE</name>
   <name xml:lang="nl">Ring-KDE</name>
   <name xml:lang="pl">Ring-KDE</name>
@@ -37,6 +38,7 @@
   <summary xml:lang="fi">Soita ja vastaanota puheluja SIP- tai RING-yhteyskäytännöin</summary>
   <summary xml:lang="fr">Appeler et recevoir des appels avec les protocoles « SIP » ou « RING »</summary>
   <summary xml:lang="gl">Chamar e recibir chamadas mediante os protocolos SIP e RING</summary>
+  <summary xml:lang="id">Panggilan dan terima panggilan dengan protokol SIP atau RING</summary>
   <summary xml:lang="it">Chiama e ricevi telefonate con i protocolli SIP o RING</summary>
   <summary xml:lang="nl">Maak of ontvang oproepen met SIP of RING-protocollen</summary>
   <summary xml:lang="pl">Dzwoń i odbieraj rozmowy przy użyciu protokołów SIP lub RING</summary>
@@ -62,6 +64,7 @@
     <p xml:lang="fi">Ring-KDE on graafinen käyttöliittymä Ringi-viestintäalustalle (www.ring.cx). Sitä voi käyttää joko yleisviestintäsovelluksena muiden Ring-käyttäjien kanssa tai useimpien toimistopuhelinten käyttämän SIP-teollisuusstandardin kanssa yhteensopivana VoIP-ohjelmistopuhelimena.</p>
     <p xml:lang="fr">Ring-KDE est un client graphique pour la plate-forme de communication Ring (www.ring.cx). Vous pouvez l'utiliser comme application de communication généraliste avec les autres utilisateurs Ring ou pour sa compatibilité VoiP avec SIP, le standard de l'industrie utilisé par la majorité des téléphones de bureau.</p>
     <p xml:lang="gl">Ring-KDE é un cliente gráfico para a plataforma de comunicación Ring (www.ring.cx). Pode usarse ou ben como un aplicativo xeral de comunicación con outros usuarios de Ring ou ben como un teléfono de software VoIP compatíbel co estándar da industria SIP que usan a meirande parte das oficinas.</p>
+    <p xml:lang="id">Ring-KDE adalah sebuah klien grafis untuk platform komunikasi Ring (www.ring.cx). Ini bisa antara digunakan sebagai aplikasi komunikasi pada umumnya dengan para pengguna Ring lain atau sebagai softphone VoiP yang kompatibel dengan standar industri SIP yang digunakan oleh sebagian besar telepon kantor.</p>
     <p xml:lang="it">Ring-KDE è un client grafico per la piattaforma di comunicazione Ring (www.ring.cx). Può essere utilizzato sia come un'applicazione di comunicazione generica con altri utenti di Ring o come softphone VoIP compatibile con lo standard SIP utilizzato dalla maggior parte dei telefoni da ufficio.</p>
     <p xml:lang="nl">Ring-KDE is een grafische client voor het Ring (www.ring.cx) communicatieplatform. Het kan ofwel gebruikt worden als een communicatietoepassing met andere RING-gebruikers voor algemeen gebruik worden gebruikt of als een VoiP software telefoon compatibel met de SIP industriestandaard gebruikt door de meeste kantoortelefoons.</p>
     <p xml:lang="pl">Ring-KDE jest graficznym klientem dla platformy komunikacyjnej Ring (www.ring.cx). Można go używać albo jako ogólnej aplikacji do porozumiewania się z innymi użytkownikami Ringa lub jako telefonu VoiP zgodnego ze standardem rynkowym SIP używanym przez większość telefonów biurowych.</p>
@@ -83,6 +86,7 @@
     <p xml:lang="fi">Ominaisuuksia:</p>
     <p xml:lang="fr">Fonctionnalités :</p>
     <p xml:lang="gl">Funcionalidades:</p>
+    <p xml:lang="id">Fitur:</p>
     <p xml:lang="it">Funzionalità:</p>
     <p xml:lang="nl">Mogelijkheden:</p>
     <p xml:lang="pl">Możliwości:</p>
@@ -104,6 +108,7 @@
       <li xml:lang="fi">Soitot tavallisiin puhelimiin yleisten SIP-palveluntarjoajien tileillä</li>
       <li xml:lang="fr">Appel de numéros de téléphone réels à l'aide de fournisseurs de services SIP</li>
       <li xml:lang="gl">Chamar a teléfonos reais con contas de fornecedores de servizo SIP habituais.</li>
+      <li xml:lang="id">Memanggil telepon dengan akun dari penyedia layanan SIP pada umumnya</li>
       <li xml:lang="it">Chiamare un vero telefono con account da fornitori di servizi SIP comuni</li>
       <li xml:lang="nl">Opbellen naar echte telefoons met accounts van algemene SIP-serviceproviders</li>
       <li xml:lang="pl">Dzwonienie na rzeczywiste telefony z kont powszechnych dostawców usług SIP</li>
@@ -122,6 +127,7 @@
       <li xml:lang="fi">Hajautettujen SIP-, SIPS- ja RING-viestintäyhteyskäytäntöjen tuki</li>
       <li xml:lang="fr">Prise en charge des protocoles de communication SIP, SIPS et du protocole distribué RING</li>
       <li xml:lang="gl">Compatibilidade con SIP, SIPS e o protocolo de comunicación distribuída RING.</li>
+      <li xml:lang="id">Dukungan protokol komunikasi SIP, SIPS, dan RING yang didistribusikan</li>
       <li xml:lang="it">Supporta SIP, SIPS e il protocollo di comunicazione distribuita RING</li>
       <li xml:lang="nl">Ondersteunt SIP, SIPS en het RING gedistribueerde communicatieprotocol</li>
       <li xml:lang="pl">Obsługa protokołów komunikacyjnych SIP, SIPS oraz RING</li>
@@ -140,6 +146,7 @@
       <li xml:lang="fi">Ääni-, video- ja muotoillut tekstiviestit</li>
       <li xml:lang="fr">Messages audio, vidéo et texte enrichi</li>
       <li xml:lang="gl">Mensaxes de son, vídeo e texto enriquecido.</li>
+      <li xml:lang="id">Perpesanan teks, Video, dan Audio</li>
       <li xml:lang="it">Audio, video e messaggi di testo formattato</li>
       <li xml:lang="nl">Audio-, video- en opgemaakte tekstberichten</li>
       <li xml:lang="pl">Wiadomości głosowe, wideo i tekstowe</li>
@@ -161,6 +168,7 @@
       <li xml:lang="fi">Yhteensopiva monien teollisuusstandardien kanssa, kuten:</li>
       <li xml:lang="fr">Compatible avec de nombreux standards de l'industrie comme :</li>
       <li xml:lang="gl">Compatibilidade con varios estándares da industria, como:</li>
+      <li xml:lang="id">Sesuai dengan berbagai standar industri sepertihalnya:</li>
       <li xml:lang="it">Compatibile con vari standard industriali come:</li>
       <li xml:lang="nl">Voldoet aan verschillende industriestandaarden zoals:</li>
       <li xml:lang="pl">Zgodny z różnymi standardami rynkowymi takimi jak:</li>
@@ -181,6 +189,7 @@
       <li xml:lang="fi">Useiden suosittujen ääni- ja videokoodekkien tuki</li>
       <li xml:lang="fr">Prise en charge de plusieurs codecs audio et vidéo populaires</li>
       <li xml:lang="gl">Compatibilidade con moitos códecs de son e vídeo populares.</li>
+      <li xml:lang="id">Dukungan multipel codec audio dan video yang populer</li>
       <li xml:lang="it">Supporta diversi codificatori audio e video popolari</li>
       <li xml:lang="nl">Meerdere populaire audio- en video-codecs worden ondersteund</li>
       <li xml:lang="pl">Obsługa różnych kodeków dźwięku i obrazu</li>
@@ -199,6 +208,7 @@
       <li xml:lang="fi">SIP-soitonsiirto (sekä suora että valvottu)</li>
       <li xml:lang="fr">Transfert d'appels SIP (direct et assisté)</li>
       <li xml:lang="gl">Transferencia de chamadas SIP (directa ou asistida)</li>
+      <li xml:lang="id">Transfer panggilan SIP (hadir dan saling terhubung langsung)</li>
       <li xml:lang="it">Trasferimento di chiamata SIP (sia diretto che assistito)</li>
       <li xml:lang="nl">SIP oproepoverdracht (zowel direct als bewaakt)</li>
       <li xml:lang="pl">Przeniesienie rozmowy SIP (zarówno bezpośrednie jak i nadzorowane)</li>
@@ -218,6 +228,7 @@
       <li xml:lang="fi">Ääni- ja videoneuvottelut</li>
       <li xml:lang="fr">Conférences audio et vidéo</li>
       <li xml:lang="gl">Conferencias de son e vídeo.</li>
+      <li xml:lang="id">Percakapan audio dan video</li>
       <li xml:lang="it">Conferenze audio e video</li>
       <li xml:lang="nl">Audio- en video-conferenties</li>
       <li xml:lang="pl">Konferencje głosowe i wideo</li>
@@ -236,6 +247,7 @@
       <li xml:lang="fi">Useammat yhtäaikaiset puhelut pito-ominaisuudella</li>
       <li xml:lang="fr">Appels simultanés multiples avec fonction « mise en attente »</li>
       <li xml:lang="gl">Varias chamadas simultáneas, con función de espera.</li>
+      <li xml:lang="id">Panggilan multi bersamaan dengan fitur "on hold"</li>
       <li xml:lang="it">Più chiamate simultanee con la funzionalità «in attesa»</li>
       <li xml:lang="nl">Meerdere gelijktijdige oproepen met "on hold" mogelijkheid</li>
       <li xml:lang="pl">Wiele równorzędnych rozmów przy użyciu funkcji "wstrzymaj"</li>
@@ -255,6 +267,7 @@
       <li xml:lang="fi">Useammat tilit</li>
       <li xml:lang="fr">Comptes multiples</li>
       <li xml:lang="gl">Varias contas.</li>
+      <li xml:lang="id">Multi akun</li>
       <li xml:lang="it">Account multipli</li>
       <li xml:lang="nl">Meerdere accounts</li>
       <li xml:lang="pl">Wiele kont</li>
@@ -274,6 +287,7 @@
       <li xml:lang="fi">Useammat käyttäjäprofiilit</li>
       <li xml:lang="fr">Profils utilisateurs multiples</li>
       <li xml:lang="gl">Varios perfís de usuario.</li>
+      <li xml:lang="id">Multi profil pengguna</li>
       <li xml:lang="it">Profili utente multipli</li>
       <li xml:lang="nl">Meerdere gebruikersprofielen</li>
       <li xml:lang="pl">Wiele profili użytkownika</li>
@@ -292,6 +306,7 @@
       <li xml:lang="fi">Järjestelmän yhteystietojen integrointi</li>
       <li xml:lang="fr">Intégration avec les contacts du système</li>
       <li xml:lang="gl">Integración cos contactos do sistema.</li>
+      <li xml:lang="id">Integrasi kontak sistem</li>
       <li xml:lang="it">Integrazione con i contatti di sistema</li>
       <li xml:lang="nl">Integratie met contactpersonen in het systeem</li>
       <li xml:lang="pl">Integracja kontaktów systemowych</li>
@@ -310,6 +325,7 @@
       <li xml:lang="fi">Mukautettavat vuorovaikuttaiset järjestelmäilmoitukset</li>
       <li xml:lang="fr">Notifications système interactives configurables</li>
       <li xml:lang="gl">Notificacións do sistema interactivas e configurábeis.</li>
+      <li xml:lang="id">Notifikasi sistem interaktif yang dapat dikonfigurasi</li>
       <li xml:lang="it">Notifica di sistema interattiva configurabile</li>
       <li xml:lang="nl">Instelbare interactieve systeemmeldingen</li>
       <li xml:lang="pl">Ustawialne, interaktywne powiadomienia systemowe</li>
@@ -328,6 +344,7 @@
       <li xml:lang="fi">Mukautettavat paikalliset ja yleiset pikanäppäimet</li>
       <li xml:lang="fr">Raccourcis clavier locaux et globaux configurables</li>
       <li xml:lang="gl">Atallos de teclado locais e globais configurábeis.</li>
+      <li xml:lang="id">Pintasan keyboard global dan lokal yang dapat dikonfigurasi</li>
       <li xml:lang="it">Scorciatoie da tastiera locali e globali configurabili</li>
       <li xml:lang="nl">Instelbare lokale en globale sneltoetsen</li>
       <li xml:lang="pl">Ustawialne lokalne i globalne skróty klawiszowe</li>
@@ -347,6 +364,7 @@
       <li xml:lang="fi">Tilikohtaisesti eroavat soittoäänet</li>
       <li xml:lang="fr">Plusieurs sonneries par compte</li>
       <li xml:lang="gl">Sons de chamada distintos para cada conta.</li>
+      <li xml:lang="id">Nadadering yang berbeda tiap akun</li>
       <li xml:lang="it">Suonerie differenziate per account</li>
       <li xml:lang="nl">Verschillende ring-tonen per account</li>
       <li xml:lang="pl">Różne dzwonki w zależności od konta</li>
@@ -365,6 +383,7 @@
       <li xml:lang="fi">Puheluvalikko tukee automatisointia makroin</li>
       <li xml:lang="fr">Prise en charge de l'automatisation du menu d'appel à l'aide de macros</li>
       <li xml:lang="gl">O menú de chamadas permite automatización mediante macros.</li>
+      <li xml:lang="id">Otomatisasi dukungan menu panggilan menggunakan macro</li>
       <li xml:lang="it">Il menu di chiamata supporta l'automazione con macro</li>
       <li xml:lang="nl">Ondersteuning menu voor automatisering van oproepen met macro</li>
       <li xml:lang="pl">Automatyzacja menu rozmów przy użyciu makr</li>
@@ -383,6 +402,7 @@
       <li xml:lang="fi">Puhelujen tallentaminen</li>
       <li xml:lang="fr">Enregistrement d'appels audio</li>
       <li xml:lang="gl">Gravación de chamadas de son.</li>
+      <li xml:lang="id">Perekaman audio panggilan</li>
       <li xml:lang="it">Registrazione delle chiamate audio</li>
       <li xml:lang="nl">Geluidsopname van oproepen</li>
       <li xml:lang="pl">Nagrywanie rozmów głosowych</li>
@@ -402,6 +422,7 @@
       <li xml:lang="fi">Puheluhistoria ja kirjanmerkit</li>
       <li xml:lang="fr">Journal d'appels et signets</li>
       <li xml:lang="gl">Historial de chamadas e marcadores.</li>
+      <li xml:lang="id">Markah dan histori panggilan</li>
       <li xml:lang="it">Cronologia delle chiamate e segnalibri</li>
       <li xml:lang="nl">Geschiedenis van oproepen en bladwijzers</li>
       <li xml:lang="pl">Zakładki i historia rozmów</li>
@@ -421,6 +442,7 @@
       <li xml:lang="fi">Automaattivastaus (tilikohtainen)</li>
       <li xml:lang="fr">Réponse automatique (par compte)</li>
       <li xml:lang="gl">Resposta automática (para cada conta)</li>
+      <li xml:lang="id">Auto jawab (tiap akun)</li>
       <li xml:lang="it">Risposta automatica (per account)</li>
       <li xml:lang="nl">Automatisch antwoord (per account)</li>
       <li xml:lang="pl">Auto-odpowiedzi (w zależności od konta)</li>
@@ -440,6 +462,7 @@
       <li xml:lang="fi">Pulseaudio-, portaudio-, core audio-, ALSA- ja Windows audio -integrointi</li>
       <li xml:lang="fr">Intégration audio pulseaudio, portaudio, core audio, ALSA et windows</li>
       <li xml:lang="gl">Integración con PulseAudio, PortAudio, Core Audio, ALSA e Windows Audio.</li>
+      <li xml:lang="id">Integrasi audio windows, pulseaudio, portaudio, core audio, dan ALSA</li>
       <li xml:lang="it">Integrazione pulseaudio, portaudio, core audio, ALSA e windows audio</li>
       <li xml:lang="nl">Integratie met geluid van pulseaudio, portaudio, core audio, ALSA en windows</li>
       <li xml:lang="pl">Pulseaudio, portaudio, core audio, ALSA oraz integracja dźwiękowa z windowsem</li>
@@ -458,6 +481,7 @@
       <li xml:lang="fi">Eri äänilaite soittamiseen ja puhumiseen</li>
       <li xml:lang="fr">Appareil audio différent pour la sonnerie et la voix</li>
       <li xml:lang="gl">Dispositivos de son distintos para chamar e falar.</li>
+      <li xml:lang="id">Perangkat audio yang berbeda untuk dering dan bicara</li>
       <li xml:lang="it">Dispositivi audio diversi per squillo e conversazione</li>
       <li xml:lang="nl">Verschillend geluidsapparaat voor beltoon en spraak</li>
       <li xml:lang="pl">Różne urządzenia dźwiękowe do dzwonienia i rozmów</li>
@@ -476,6 +500,7 @@
       <li xml:lang="fi">Älykäs puhelinnumeron automaattitäydennys</li>
       <li xml:lang="fr">Complètement automatique intelligent des numéros de téléphone</li>
       <li xml:lang="gl">Completamento automático intelixente de números de teléfono.</li>
+      <li xml:lang="id">Penyelesaian auto nomor smart phone</li>
       <li xml:lang="it">Completamento automatico intelligente dei numeri di telefono</li>
       <li xml:lang="nl">Automatische aanvulling van nummer van smartphone</li>
       <li xml:lang="pl">Samo-uzupełnianie numerów telefonów</li>
