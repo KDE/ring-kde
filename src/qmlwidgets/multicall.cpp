@@ -37,7 +37,9 @@ public:
 };
 
 bool MultiCallPrivate::init = false;
-QPixmap* MultiCallPrivate::iconCache[2][2] = {{{},{}},{{},{}}};
+QPixmap* MultiCallPrivate::iconCache[2][2] = {
+    { nullptr, nullptr }, { nullptr, nullptr }
+};
 
 
 MultiCall::MultiCall(QQuickItem* parent) :
