@@ -51,6 +51,13 @@ ENDIF()
 
 FIND_PACKAGE (KQuickItemViews QUIET CONFIG)
 
+# Download libringqt if it wasn't found to simplify the build process
+IF(NOT ringqt_FOUND)
+   INCLUDE(cmake/FetchRingQt.cmake)
+
+   SET(LibRingQt_SRC ${CMAKE_CURRENT_BINARY_DIR}/libringqt/)
+ENDIF()
+
 # This package was developed for Ring-KDE. It is now a shared framework. Until
 # it is more widespread and stable, a copy is still included in Ring-KDE.
 IF(NOT KQuickItemViews_FOUND AND IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/libkquickitemviews/")
@@ -59,13 +66,6 @@ IF(NOT KQuickItemViews_FOUND AND IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/libkq
    ADD_DEFINITIONS(-DKQUICKITEMVIEWS_USE_STATIC_PLUGIN=1)
 ELSEIF(NOT KQuickItemViews_FOUND)
     message(FATAL_ERROR "Download KQuickItemViews from `git clone https://anongit.kde.org/kquickitemviews/` and move it to `path/to/ring-kde/libkquickitemviews`")
-ENDIF()
-
-# Download libringqt if it wasn't found to simplify the build process
-IF(NOT ringqt_FOUND)
-   INCLUDE(cmake/FetchRingQt.cmake)
-
-   SET(LibRingQt_SRC ${CMAKE_CURRENT_BINARY_DIR}/libringqt/)
 ENDIF()
 
 # Use the build-in copy if it has been found
