@@ -79,7 +79,7 @@ IF(LibRingQt_SRC)
 
    LIST(APPEND CMAKE_MODULE_PATH "${LibRingQt_SRC}/cmake/")
 
-   ADD_SUBDIRECTORY(${LibRingQt_SRC} build)
+   ADD_SUBDIRECTORY(${LibRingQt_SRC} build/build_libringqt)
 
    INCLUDE_DIRECTORIES(${LibRingQt_SRC}/src)
 ENDIF()
@@ -88,7 +88,7 @@ IF(LibKQuickItemViews_SRC)
    # Use the .a, not the .so;
    SET(ENABLE_STATIC true)
 
-   ADD_SUBDIRECTORY(${LibKQuickItemViews_SRC} build)
+   ADD_SUBDIRECTORY(${LibKQuickItemViews_SRC} build/build_libkquickitemviews)
 ENDIF()
 
 
