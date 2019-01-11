@@ -69,7 +69,7 @@ endif()
 
 if (NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/libkquickitemviews)
     execute_process(COMMAND
-        git clone  http://anongit.kde.org/kquickitemviews/--branch master ${CMAKE_CURRENT_BINARY_DIR}/libkquickitemviews
+        git clone  http://anongit.kde.org/kquickitemviews/ --branch master ${CMAKE_CURRENT_BINARY_DIR}/libkquickitemviews
     )
 endif()
 
