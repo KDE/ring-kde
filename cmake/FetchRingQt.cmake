@@ -13,8 +13,21 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
 find_package(Git REQUIRED)
 include(ExternalProject)
 
+message(STATUS "Manually downloading the missing dependencies")
+message(STATUS "Install them properly if you prefer to build without a network connection")
+
 # Fetch the XMLs
 set(XML_PATH ${CMAKE_CURRENT_BINARY_DIR}/xml/)
+
+if(${ENABLE_LIBWRAP})
+    message(STATUS "Direct linking of libjami is enabled, skipping the XML detection")
+else()
+    message(STATUS "Checking for the DBus interface XMLs in ${XML_PATH}")
+
+    if (EXISTS ${XML_PATH}/cx.ring.Ring.CallManager.xml)
+        message(STATUS "CallManager.xml found in ${XML_PATH}")
+    endif()
+endif()
 
 if ((NOT ${ENABLE_LIBWRAP}) AND (NOT EXISTS ${XML_PATH}/cx.ring.Ring.CallManager.xml))
 
