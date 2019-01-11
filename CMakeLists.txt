@@ -23,6 +23,10 @@ SET(QT_MIN_VERSION  "5.9.0" )
 SET(KF5_DEP_VERSION "5.6.0" )
 SET(AKO_DEP_VERSION "4.89.0")
 
+IF(${OPERATING_SYSTEM} MATCHES "Android")
+    SET(OS_ANDROID 1)
+ENDIF()
+
 OPTION(ENABLE_SINGLE_INSTANCE  "Reuse instances of Ring-KDE when possible" ON)
 
 SET(LOCAL_CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/" )
@@ -89,8 +93,13 @@ INCLUDE(ECMOptionalAddSubdirectory)
 
 INCLUDE(KDEInstallDirs)
 INCLUDE(KDECMakeSettings)
-INCLUDE(KDECompilerSettings)
 INCLUDE(FeatureSummary)
+
+# On Android, the executable is treated as a library, this is not what's
+# normally expected.
+IF(NOT DEFINED OS_ANDROID)
+  INCLUDE(KDECompilerSettings)
+ENDIF()
 
 # So far only Linux systems use this feature, so it will print noise on all
 # platforms where the necessary infrastructure doesn't even exists, let alone
