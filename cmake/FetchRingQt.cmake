@@ -52,6 +52,12 @@ if (NOT EXISTS ${XML_PATH}/cx.ring.Ring.CallManager.xml AND NOT ENABLE_LIBWRAP)
         ${XML_PATH}cx.ring.Ring.VideoManager.xml INACTIVITY_TIMEOUT 30)
 
     # Fetch the constants
+    file(DOWNLOAD https://raw.githubusercontent.com/savoirfairelinux/ring-daemon/master/src/dring/def.h
+        ${CMAKE_CURRENT_BINARY_DIR}/dring/def.h INACTIVITY_TIMEOUT 30)
+
+    file(DOWNLOAD https://raw.githubusercontent.com/savoirfairelinux/ring-daemon/master/src/dring/dring.h
+        ${CMAKE_CURRENT_BINARY_DIR}/dring/dring.h INACTIVITY_TIMEOUT 30)
+
     file(DOWNLOAD https://raw.githubusercontent.com/savoirfairelinux/ring-daemon/master/src/dring/account_const.h
         ${CMAKE_CURRENT_BINARY_DIR}/dring/account_const.h INACTIVITY_TIMEOUT 30)
 
