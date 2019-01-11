@@ -29,7 +29,7 @@ else()
     endif()
 endif()
 
-if ((NOT ${ENABLE_LIBWRAP}) AND (NOT EXISTS ${XML_PATH}/cx.ring.Ring.CallManager.xml))
+if (NOT EXISTS ${XML_PATH}/cx.ring.Ring.CallManager.xml AND NOT ENABLE_LIBWRAP)
 
     message(STATUS "Downloading the GNU Ring API definition")
 
