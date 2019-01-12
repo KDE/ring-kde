@@ -20,7 +20,7 @@
 
 #include <interfaces/pixmapmanipulatori.h>
 #include <call.h>
-#include "matrixutils.h"
+// #include "matrixutils.h"
 
 class Person;
 
@@ -68,8 +68,6 @@ public:
    virtual QVariant decorationRole(const Account*           a    ) override;
 
    static const char* icnPath[2][2];
-private:
-   static const TypedStateMachine< const char* , Call::State > callStateIcons;
 };
 
 #endif // KDEPIXMAPMANIPULATION_H

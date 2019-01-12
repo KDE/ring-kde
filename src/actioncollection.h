@@ -42,7 +42,6 @@ public:
    virtual ~ActionCollection();
    static ActionCollection* instance();
    void setupAction();
-   void setupPhoneAction(PhoneWindow* mw);
 
    Q_PROPERTY(QAction* holdAction                  READ holdAction                  CONSTANT)
    Q_PROPERTY(QAction* recordAction                READ recordAction                CONSTANT)
@@ -184,7 +183,6 @@ private:
    QAction * action_showBookmarkDock       {nullptr};
    QAction * action_showTimelineDock       {nullptr};
    QAction * action_showDialDock           {nullptr};
-   QAction * action_editToolBar            {nullptr};
    QAction * action_addPerson              {nullptr};
    QAction * action_raise_client           {nullptr};
    QAction * action_focus_history          {nullptr};
@@ -204,8 +202,6 @@ public Q_SLOTS:
 private Q_SLOTS:
    void showShortCutEditor    ();
    void showNotificationEditor();
-   void showDirectory         ();
-   void editToolBar           ();
    void slotAddPerson         ();
    void updateRecordButton    ();
    void updateVolumeButton    ();

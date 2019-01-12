@@ -20,19 +20,15 @@
 //Qt
 #include <QtWidgets/QAction>
 #include <QtCore/QPointer>
-#include <QtCore/QStandardPaths>
 #include <QtCore/QTimer>
 #include <QtGui/QKeySequence>
-#include <QtWidgets/QAction>
 #include <QQuickWindow>
 
 //KDE
 #include <KLocalizedString>
-#include <kmessagebox.h>
 #include <KStandardAction>
 #include <KShortcutsDialog>
 #include <KActionCollection>
-#include <KEditToolBar>
 #include <KSharedConfig>
 #include <KNotifyConfigWidget>
 #include <KGlobalAccel>
@@ -44,15 +40,12 @@
 #include "icons/icons.h"
 #include "klib/kcfg_settings.h"
 #include <call.h>
-#include <account.h>
-#include <availableaccountmodel.h>
 #include <callmodel.h>
 #include <implementation.h>
 #include <useractionmodel.h>
 #include <audio/settings.h>
 #include <personmodel.h>
 #include <delegates/kdepixmapmanipulation.h>
-// #include "widgets/directoryview.h"
 
 #ifdef HAVE_SPEECH
  #include "accessibility.h"
@@ -157,22 +150,21 @@ void ActionCollection::setupAction()
    auto col = mw->actionCollection();
 
    // Import standard actions
-   action_quit          = KStandardAction::quit       ( RingApplication::instance(), SLOT(quit())   , this);
+   action_quit = KStandardAction::quit       ( RingApplication::instance(), SLOT(quit())   , this);
 
-   action_quit          ->setObjectName( QStringLiteral("action_quit")          );
-   action_close         ->setObjectName( QStringLiteral("action_close")          );
+   action_quit ->setObjectName( QStringLiteral("action_quit")          );
+   action_close->setObjectName( QStringLiteral("action_close")          );
 
    action_quit->setText(i18n("Quit"));
 
-   INIT_ACTION(action_displayDialpad        , QIcon(RingIcons::DISPLAY_DIALPAD                   ), i18n("Display dialpad"         ));
-   INIT_ACTION(action_displayVolumeControls , {}                                                  , i18n("Display volume controls" ));
-   INIT_ACTION(action_displayAccountCbb     , {}                                                  , i18n("Display account selector"));
-   INIT_ACTION(action_raise_client          , {}                                                  , i18n("Raise Ring-KDE window"   ));
-   INIT_ACTION(action_focus_history         , {}                                                  , i18n("Search history"          ));
-   INIT_ACTION(action_focus_call            , {}                                                  , i18n("Search call"             ));
-   INIT_ACTION(action_focus_contact         , {}                                                  , i18n("Search contact"          ));
-   INIT_ACTION(action_focus_bookmark        , {}                                                  , i18n("Search bookmark"         ));
-   INIT_ACTION(action_show_directory        , {}                                                  , i18n("Show the phone directory"));
+   INIT_ACTION(action_displayDialpad        , QIcon(RingIcons::DISPLAY_DIALPAD), i18n("Display dialpad"         ));
+   INIT_ACTION(action_displayVolumeControls , {}                               , i18n("Display volume controls" ));
+   INIT_ACTION(action_displayAccountCbb     , {}                               , i18n("Display account selector"));
+   INIT_ACTION(action_raise_client          , {}                               , i18n("Raise Ring-KDE window"   ));
+   INIT_ACTION(action_focus_history         , {}                               , i18n("Search history"          ));
+   INIT_ACTION(action_focus_call            , {}                               , i18n("Search call"             ));
+   INIT_ACTION(action_focus_contact         , {}                               , i18n("Search contact"          ));
+   INIT_ACTION(action_focus_bookmark        , {}                               , i18n("Search bookmark"         ));
 
    INIT_ACTION(action_show_wizard           , QIcon::fromTheme(QStringLiteral("tools-wizard"                    )), i18n("New account wizard"      ));
    INIT_ACTION(action_show_menu             , QIcon::fromTheme(QStringLiteral("application-menu"                )), i18n("Show the menu"           ));
@@ -183,7 +175,6 @@ void ActionCollection::setupAction()
    INIT_ACTION(action_showBookmarkDock      , QIcon::fromTheme(QStringLiteral("bookmark-new-list"               )), i18n("Display bookmark"        ));
    INIT_ACTION(action_showTimelineDock      , QIcon::fromTheme(QStringLiteral("bookmark-new-list"               )), i18n("Display timeline"        ));
    INIT_ACTION(action_showDialDock          , QIcon::fromTheme(QStringLiteral("bookmark-new-list"               )), i18n("Display call manager"    ));
-   INIT_ACTION(action_editToolBar           , QIcon::fromTheme(QStringLiteral("configure-toolbars"              )), i18n("Configure Toolbars"      ));
    INIT_ACTION(action_addPerson             , QIcon::fromTheme(QStringLiteral("contact-new"                     )), i18n("Add new contact"         ));
    INIT_ACTION(action_configureShortcut     , QIcon::fromTheme(QStringLiteral("configure-shortcuts"             )), i18n("Configure Shortcuts"     ));
    INIT_ACTION(action_configureNotifications, QIcon::fromTheme(QStringLiteral("preferences-desktop-notification")), i18n("Configure Notifications" ));
@@ -302,16 +293,14 @@ void ActionCollection::setupAction()
    connect(action_close                  , &QAction::triggered , this               , &ActionCollection::slotClose              );
    connect(action_new_contact            , &QAction::triggered , this               , &ActionCollection::slotNewContact         );
    connect(action_configureShortcut      , &QAction::triggered , this               , &ActionCollection::showShortCutEditor     );
-   connect(action_show_directory         , &QAction::triggered , this               , &ActionCollection::showDirectory          );
    connect(action_configureNotifications , &QAction::triggered , this               , &ActionCollection::showNotificationEditor );
-   connect(action_editToolBar            , &QAction::triggered , this               , &ActionCollection::editToolBar            );
    connect(action_addPerson              , &QAction::triggered , this               , &ActionCollection::slotAddPerson          );
    connect(action_raise_client           , &QAction::triggered , this               , &ActionCollection::slotRaiseClient        );
 
-   connect(as                     , &Audio::Settings::captureVolumeChanged  , this                , &ActionCollection::updateRecordButton );
-   connect(as                     , &Audio::Settings::playbackVolumeChanged , this                , &ActionCollection::updateVolumeButton );
-   connect(as                     , &Audio::Settings::captureMuted          , action_mute_capture , &QAction::setChecked                  );
-   connect(as                     , &Audio::Settings::playbackMuted         , action_mute_playback, &QAction::setChecked                  );
+   connect(as, &Audio::Settings::captureVolumeChanged  , this                , &ActionCollection::updateRecordButton );
+   connect(as, &Audio::Settings::playbackVolumeChanged , this                , &ActionCollection::updateVolumeButton );
+   connect(as, &Audio::Settings::captureMuted          , action_mute_capture , &QAction::setChecked                  );
+   connect(as, &Audio::Settings::playbackMuted         , action_mute_playback, &QAction::setChecked                  );
 
    // Add the actions to the collection
    for (QAction* a : {
@@ -320,7 +309,7 @@ void ActionCollection::setupAction()
       action_quit              , action_displayDialpad    , action_showDialDock      ,
       action_displayAccountCbb , action_close             ,
       action_configureShortcut , action_pastenumber       , action_showContactDock   ,
-      action_showHistoryDock   , action_showBookmarkDock  , action_editToolBar       ,
+      action_showHistoryDock   , action_showBookmarkDock  ,
       action_addPerson         , action_mute_capture      , action_mute_playback     ,
       action_mute_video        , action_join              , action_toggle_video      ,
       action_add_contact       , action_add_to_contact    , action_delete_contact    ,
@@ -328,7 +317,7 @@ void ActionCollection::setupAction()
       action_view_chat_history , action_add_contact_method, action_call_contact      ,
       action_edit_contact      , action_focus_history     , action_remove_history    ,
       action_raise_client      , action_focus_contact     , action_focus_call        ,
-      action_focus_bookmark    , action_show_wizard       , action_show_directory    ,
+      action_focus_bookmark    , action_show_wizard       ,
       action_show_menu         , action_showTimelineDock  , action_configureAccount  ,
       action_configureNotifications, action_displayVolumeControls ,
    }) {
@@ -361,18 +350,6 @@ void ActionCollection::setupAction()
    });
 }
 
-
-void ActionCollection::setupPhoneAction(PhoneWindow* mw)
-{
-   Q_UNUSED(mw)
-   //FIXME DROP QTWIDGET
-//    connect(action_displayAccountCbb      , &QAction::toggled   , mw         , &PhoneWindow::displayAccountCbb            );
-//    connect(action_displayVolumeControls  , &QAction::toggled   , mw->view() , &View::displayVolumeControls              );
-//    connect(action_displayDialpad         , &QAction::toggled   , mw->view() , &View::displayDialpad                     );
-//    connect(action_pastenumber            , &QAction::triggered , mw->view() , &View::paste                              );
-
-}
-
 ///Display the shortcuts dialog
 void ActionCollection::showShortCutEditor()
 {
@@ -383,26 +360,10 @@ void ActionCollection::showShortCutEditor()
    );
 }
 
-///Display the shortcuts dialog
-void ActionCollection::showDirectory()
-{
-//    new DirectoryView(nullptr);
-}
-
 ///Display the notification manager
 void ActionCollection::showNotificationEditor()
 {
    KNotifyConfigWidget::configure(nullptr, QStringLiteral("ring-kde"));
-}
-
-///Show the toolbar editor
-void ActionCollection::editToolBar()
-{
-//    QPointer<KEditToolBar> toolbareditor = new KEditToolBar(RingApplication::instance()->mainWindow()->guiFactory());
-//    toolbareditor->setModal(true);
-//    toolbareditor->setDefaultToolBar(QStringLiteral("mainToolBar"));
-//    toolbareditor->exec();
-//    delete toolbareditor;
 }
 
 void ActionCollection::slotAddPerson()
@@ -414,10 +375,6 @@ void ActionCollection::slotAddPerson()
 ///Change icon of the record button
 void ActionCollection::updateRecordButton()
 {
-//FIXME DROP QTWIDGET
-//    if (!RingApplication::instance()->isPhoneVisible())
-//       return;
-
    double recVol = Audio::Settings::instance().captureVolume();
    static const QIcon icons[4] = {
       QIcon(QStringLiteral(":/images/icons/mic.svg"   )),
@@ -428,30 +385,21 @@ void ActionCollection::updateRecordButton()
 
    const int idx = (recVol/26 < 0 || recVol/26 >= 4)?0:recVol/26;
    ActionCollection::instance()->muteCaptureAction()->setIcon(icons[idx]);
-//FIXME DROP QTWIDGET
-//    PhoneWindow::app()->view()->updateVolumeControls();
 }
 
 ///Update the colunm button icon
 void ActionCollection::updateVolumeButton()
 {
-//FIXME DROP QTWIDGET
-//    if (!RingApplication::instance()->isPhoneVisible())
-//       return;
+   double sndVol = Audio::Settings::instance().playbackVolume();
+   static const QIcon icons[4] = {
+      QIcon(QStringLiteral(":/images/icons/speaker.svg"   )),
+      QIcon(QStringLiteral(":/images/icons/speaker_25.svg")),
+      QIcon(QStringLiteral(":/images/icons/speaker_50.svg")),
+      QIcon(QStringLiteral(":/images/icons/speaker_75.svg"))
+   };
 
-//    double sndVol = Audio::Settings::instance().playbackVolume();
-//    static const QIcon icons[4] = {
-//       QIcon(QStringLiteral(":/images/icons/speaker.svg"   )),
-//       QIcon(QStringLiteral(":/images/icons/speaker_25.svg")),
-//       QIcon(QStringLiteral(":/images/icons/speaker_50.svg")),
-//       QIcon(QStringLiteral(":/images/icons/speaker_75.svg"))
-//    };
-
-//    const int idx = (sndVol/26 < 0 || sndVol/26 >= 4)?0:sndVol/26;
-//    ActionCollection::instance()->mutePlaybackAction()->setIcon(icons[idx]);
-
-//FIXME DROP QTWIDGET
-//   PhoneWindow::app()->view()->updateVolumeControls();
+   const int idx = (sndVol/26 < 0 || sndVol/26 >= 4)?0:sndVol/26;
+   ActionCollection::instance()->mutePlaybackAction()->setIcon(icons[idx]);
 }
 
 void ActionCollection::slotNewContact()
@@ -493,20 +441,10 @@ void ActionCollection::slotShowMenubar(bool s)
 ///Raise the main window to the foreground
 void ActionCollection::slotRaiseClient(bool focus)
 {
-//FIXME
-//    RingApplication::instance()->mainWindow()->show          ();
-//    RingApplication::instance()->mainWindow()->activateWindow();
-//    RingApplication::instance()->mainWindow()->raise         ();
-
    if (focus) {
       // Add a new call if there is none
       if (!CallModel::instance().rowCount())
          CallModel::instance().userActionModel() << UserActionModel::Action::ADD_NEW;
-
-
-//FIXME DROP QTWIDGET
-//       if (RingApplication::instance()->isPhoneVisible())
-//          RingApplication::instance()->phoneWindow()->view()->setFocus(Qt::OtherFocusReason);
    }
 }
 

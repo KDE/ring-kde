@@ -49,7 +49,7 @@
 #include "../callview/imageprovider.h"
 
 
-const TypedStateMachine< const char* , Call::State > KDEPixmapManipulation::callStateIcons = {{
+static const char* callStateIcons[] = {
    RingIcons::DIALING       , /* NEW            */
    RingIcons::INCOMING      , /* INCOMING       */
    RingIcons::RINGING       , /* RINGING        */
@@ -67,7 +67,7 @@ const TypedStateMachine< const char* , Call::State > KDEPixmapManipulation::call
    RingIcons::INITIALIZATION, /* INITIALIZATION */
    RingIcons::FAILURE       , /* ABORTED        */
    RingIcons::CONNECTED     , /* CONNECTED      */
-}};
+};
 
 KDEPixmapManipulation::KDEPixmapManipulation() : QObject(), Interfaces::PixmapManipulatorI()
 {
@@ -113,7 +113,7 @@ QVariant KDEPixmapManipulation::callPhoto(Call* c, const QSize& size, bool displ
       return contactPhoto(c->peerContactMethod()->contact(),size,displayPresence);
    }
    else
-      return QIcon(callStateIcons[c->state()]);
+      return QIcon(callStateIcons[(int)c->state()]);
 }
 
 QVariant KDEPixmapManipulation::numberCategoryIcon(const QVariant& p, const QSize& size, bool displayPresence, bool isPresent)

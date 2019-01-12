@@ -45,9 +45,6 @@ void WelcomeDialog::show()
       QStringLiteral("WelcomeDialog"), this
    );
 
-//    RingApplication::engine()->load(QUrl(QStringLiteral("qrc:/Wizard.qml")));
-
-
    QMetaObject::invokeMethod(RingApplication::instance()->desktopWindow(), "showWizard");
 }
 

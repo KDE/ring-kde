@@ -116,7 +116,6 @@
 
 //Delegates
 #include <delegates/kdepixmapmanipulation.h>
-// #include <delegates/accountinfodelegate.h>
 #include <interfaces/itemmodelstateserializeri.h>
 #include "klib/itemmodelserialization.h"
 #include "extensions/presencecollectionextension.h"
@@ -164,28 +163,7 @@ public:
 protected:
    virtual bool eventFilter(QObject *obj, QEvent *event)  override {
       Q_UNUSED(obj)
-      if (event->type() == QEvent::WindowStateChange) {
-//FIXME DROP QTWIDGET
-//          QWindowStateChangeEvent* e = static_cast<QWindowStateChangeEvent*>(event);
-//          switch (PhoneWindow::app()->windowState()) {
-//             case Qt::WindowMinimized:
-//                emit minimized(true);
-//                break;
-//             case Qt::WindowActive:
-//                qDebug() << "The window is now active";
-//                [[clang::fallthrough]];
-//             case Qt::WindowNoState:
-//             default:
-//                if (e->oldState() == Qt::WindowMinimized)
-//                   emit minimized(false);
-//                break;
-//          };
-      }
-      else if (event->type() == QEvent::KeyPress) {
-//FIXME DROP QTWIDGET
-//          m_pParent->viewKeyEvent(static_cast<QKeyEvent*>(event));
-      }
-      else if (event->type() == QEvent::WindowDeactivate) {
+      if (event->type() == QEvent::WindowDeactivate) {
          m_pParent->m_HasFocus = false;
       }
       else if (event->type() == QEvent::WindowActivate) {
@@ -225,10 +203,6 @@ void RingApplication::init()
    }
 
    initCollections();
-
-   connect(&CallModel::instance(), &CallModel::callAdded, this, &RingApplication::callAdded);
-   connect(&CallModel::instance(), &CallModel::callStateChanged, this, &RingApplication::callAdded);
-
 }
 
 /**
@@ -379,19 +353,8 @@ int RingApplication::newInstance()
       init = false;
 
       ActionCollection::instance()->setupAction();
-
-//FIXME DROP QTWIDGET
-//       if (m_StartPhone) {
-//          mw = RingApplication::phoneWindow();
-//
-//          if (displayOnStart)
-//             mw->show();
-//          else
-//             mw->hide();
-//       }
-//       else
-         desktopWindow();
-         new SysTray(QIcon(QStringLiteral(":appicon/icons/64-apps-ring-kde.png")));
+      desktopWindow();
+      new SysTray(QIcon(QStringLiteral(":appicon/icons/64-apps-ring-kde.png")));
    }
 
    // The first run wizard
@@ -475,8 +438,6 @@ QQmlApplicationEngine* RingApplication::engine()
 
       m_pCanvasIndicator = new CanvasIndicator;
       m_pCanvasIndicator->registerTypes("CanvasIndicator");
-
-//       qRegisterMetaType<IndividualPointer>("IndividualPointer");
 
       QML_TYPE( Account                    )
       QML_TYPE( const Account              )
@@ -634,26 +595,6 @@ void RingApplication::daemonTimeout()
    if ((!CallModel::instance().isConnected()) || (!CallModel::instance().isValid())) {
       KMessageBox::error(nullptr, ErrorMessage::NO_DAEMON_ERROR);
       exit(1);
-   }
-}
-
-void RingApplication::callAdded(Call* c)
-{
-   if (c && ConfigurationSkeleton::displayOnNewCalls() && (
-    c->state() == Call::State::CURRENT   ||
-    c->state() == Call::State::INCOMING  ||
-    c->state() == Call::State::CONNECTED ||
-    c->state() == Call::State::RINGING   ||
-    c->state() == Call::State::INITIALIZATION)) {
-//       if (isPhoneVisible()) {
-//FIXME DROP QTWIDGET
-//          RingApplication::instance()->phoneWindow()->show ();
-//          RingApplication::instance()->phoneWindow()->raise();
-//       }
-//       else {
-         //timelineWindow()->viewContact(c->peerContactMethod());
-         //timelineWindow()->setCurrentPage(ViewContactDock::Pages::MEDIA);
-//       }
    }
 }
 

@@ -167,14 +167,6 @@ void Cmd::slotActivateActionRequested (const QString&, const QVariant&)
 void Cmd::slotActivateRequested (const QStringList& args, const QString& cwd)
 {
    Q_UNUSED(cwd)
-//TODO manage to share the parseArgs implementation, QCommandLineOption cannot
-//    char** l = new char*[args.size()];
-//    int i=0;
-//    for (const QString& str : args) {
-//       l[i] = (char*) malloc(sizeof(char)*(str.toLatin1().size()+1/*for \0*/));
-//       strcpy(l[i++],str.toLatin1().data());
-//    }
-//    parseCmd(args.size(), l);
 
    enum class Current {
       NONE      , /* No args */
@@ -222,13 +214,6 @@ void Cmd::slotActivateRequested (const QStringList& args, const QString& cwd)
    if (sendMessage && sendTextTo.size() && messages.size()) {
       foreach (const QString& msg, messages)
          sendText(sendTextTo, msg);
-   }
-
-   if (ConfigurationSkeleton::displayOnStart()) {
-//FIXME DROP QTWIDGET
-//       PhoneWindow::app()->show();
-//       PhoneWindow::app()->activateWindow();
-//       PhoneWindow::app()->raise();
    }
 }
 

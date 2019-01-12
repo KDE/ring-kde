@@ -106,7 +106,6 @@ private:
 
 private Q_SLOTS:
    void daemonTimeout();
-   void callAdded(Call* c);
 
 public Q_SLOTS:
    void showWizard();
