@@ -279,7 +279,7 @@ void RingApplication::initCollections()
    PersonModel::instance()             .registerConfigarator<PeerProfileCollection2  >    (new PeerProfileConfigurator   (this));
    PersonModel::instance()             .registerConfigarator<FallbackPersonCollection>    (new FallbackPersonConfigurator(this));
    Session::instance()->historyModel()->registerConfigarator<LocalHistoryCollection  >    (new LocalHistoryConfigurator  (this));
-   CategorizedBookmarkModel::instance().registerConfigarator<LocalBookmarkCollection >    (new BookmarkConfigurator      (this));
+   Session::instance()->bookmarkModel()->registerConfigarator<LocalBookmarkCollection >    (new BookmarkConfigurator      (this));
    Media::RecordingModel::instance()   .registerConfigarator<LocalRecordingCollection>    (new AudioRecordingConfigurator(this,
       AudioRecordingConfigurator::Mode::AUDIO
    ));
@@ -316,8 +316,8 @@ void RingApplication::initCollections()
    );
 #endif
 
-   CategorizedBookmarkModel::instance().addCollection<LocalBookmarkCollection>();
-   CategorizedBookmarkModel::instance().setDisplayPopular(
+   Session::instance()->bookmarkModel()->addCollection<LocalBookmarkCollection>();
+   Session::instance()->bookmarkModel()->setDisplayPopular(
       ConfigurationSkeleton::displayPopularAsBookmark()
    );
 
@@ -442,7 +442,7 @@ QQmlApplicationEngine* RingApplication::engine()
 
       QML_TYPE( QAction)
 
-      QML_CRTYPE( QItemSelectionModel   )
+      QML_CRTYPE( QItemSelectionModel )
 
       QML_NS(Ring)
 
@@ -454,9 +454,6 @@ QQmlApplicationEngine* RingApplication::engine()
       m_pDeclarative->setupBindings();
 
       try {
-         QML_SINGLETON( AvailableAccountModel    );
-         QML_SINGLETON( CategorizedContactModel  );
-         QML_SINGLETON( CategorizedBookmarkModel );
          QML_SINGLETON( NameDirectory            );
          QML_SINGLETON( PeersTimelineModel       );
          QML_SINGLETON( NumberCategoryModel      );

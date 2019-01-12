@@ -20,6 +20,7 @@
 #include <KLocalizedString>
 
 #include <categorizedbookmarkmodel.h>
+#include <session.h>
 
 #include "ui_bookmark.h"
 
@@ -57,7 +58,7 @@ void BookmarkConfigurator::loadCollection(CollectionInterface* col, QObject* par
     if (auto w = qobject_cast<QWidget*>(parent)) {
         m_pUi = new Ui_Bookmark();
         m_pUi->setupUi(w);
-        connect(m_pUi->pushButton, &QPushButton::clicked, &CategorizedBookmarkModel::instance(), &CategorizedBookmarkModel::clear);
+        connect(m_pUi->pushButton, &QPushButton::clicked, Session::instance()->bookmarkModel(), &CategorizedBookmarkModel::clear);
         connect(m_pUi->pushButton, &QPushButton::clicked, this, [this]() {
             m_HasChanged = true;
         });
@@ -79,7 +80,7 @@ void BookmarkConfigurator::save()
     if (!m_pUi)
         return;
 
-    CategorizedBookmarkModel::instance().setDisplayPopular(
+    Session::instance()->bookmarkModel()->setDisplayPopular(
         m_pUi->kcfg_displayPopularAsBookmark->isChecked()
     );
 

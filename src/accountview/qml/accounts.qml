@@ -173,6 +173,6 @@ ListView {
     }
 
     Component.onCompleted: {
-        accountList.selectedAccount = AvailableAccountModel.currentDefaultAccount()
+        accountList.selectedAccount = RingSession.availableAccountModel.currentDefaultAccount()
     }
 }

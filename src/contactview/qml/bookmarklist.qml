@@ -24,6 +24,7 @@ import QtGraphicalEffects 1.0
 import Ring 1.0
 import org.kde.kirigami 2.2 as Kirigami
 import org.kde.playground.kquickitemviews 1.0 as KQuickItemViews
+import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 
 Kirigami.Page {
     id: bookmarkList
@@ -98,7 +99,7 @@ Kirigami.Page {
                 }
             }
 
-            model: CategorizedBookmarkModel
+            model: RingSession.bookmarkModel
             delegate: masterComponent
             sortingEnabled: true
 
@@ -175,7 +176,7 @@ Kirigami.Page {
             height: parent.height
             anchors.right: parent.right
             display: treeView.moving
-            model: CategorizedBookmarkModel
+            model: RingSession.bookmarkModel
             view: treeView
 
             onWidthChanged: {
