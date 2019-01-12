@@ -29,7 +29,6 @@
 
 //Ring
 #include "klib/kcfg_settings.h"
-#include "conf/configurationdialog.h"
 #include "categorizedhistorymodel.h"
 
 ///Constructor

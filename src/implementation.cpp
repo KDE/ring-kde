@@ -51,7 +51,6 @@
 #include <media/textrecording.h>
 #include <securityevaluationmodel.h>
 #include "klib/kcfg_settings.h"
-#include "conf/accountpages/dlgprofiles.h"
 #include <collectioninterface.h>
 #include "icons/icons.h"
 #include <ringapplication.h>
