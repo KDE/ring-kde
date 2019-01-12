@@ -36,8 +36,8 @@ Item {
     function hide() {
         search.text = ""
         search.focus = false
-        if (CallModel.hasDialingCall)
-            CallModel.dialingCall().performAction(RingQtQuick.Call.REFUSE)
+        if (RingSession.callModel.hasDialingCall)
+            RingSession.callModel.dialingCall().performAction(RingQtQuick.Call.REFUSE)
     }
 
     FontMetrics {
@@ -53,8 +53,8 @@ Item {
 
 
         font.pointSize: Kirigami.Theme.defaultFont.pointSize*1.4
-        text: CallModel.hasDialingCall ?
-            CallModel.dialingCall().dialNumber : ""
+        text: RingSession.callModel.hasDialingCall ?
+            RingSession.callModel.dialingCall().dialNumber : ""
 
         Behavior on x {
             NumberAnimation {duration: 300}
@@ -130,8 +130,8 @@ Item {
             // is created for the first time
             var text = search.text
 
-            if (CallModel.hasDialingCall || text != "") {
-                var call = CallModel.dialingCall()
+            if (RingSession.callModel.hasDialingCall || text != "") {
+                var call = RingSession.callModel.dialingCall()
                 call.dialNumber = text
             }
         }

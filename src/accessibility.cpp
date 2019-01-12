@@ -77,9 +77,9 @@ Accessibility* Accessibility::instance()
 ///Use the speech daemon to read details about the current calls
 void Accessibility::listCall()
 {
-   if (CallModel::instance().getActiveCalls().size()>0) {
-      m_Speech->say(i18np("You currently have <numid>%1</numid> call","You currently have <numid>%1</numid> calls",CallModel::instance().getActiveCalls().size()));
-      foreach (Call* call,CallModel::instance().getActiveCalls()) {
+   if (Session::instance()->callModel()->getActiveCalls().size()>0) {
+      m_Speech->say(i18np("You currently have <numid>%1</numid> call","You currently have <numid>%1</numid> calls",Session::instance()->callModel()->getActiveCalls().size()));
+      foreach (Call* call,Session::instance()->callModel()->getActiveCalls()) {
          m_Speech->say(i18n("Call from %1, number %2",call->peerName(),numberToDigit((!call->peerContactMethod()->uri().isEmpty())?call->peerContactMethod()->uri():call->dialNumber())));
       }
    }
@@ -104,8 +104,8 @@ QString Accessibility::numberToDigit(const QString &number)
 ///Use the speech daemon to read the current call details
 void Accessibility::currentCallDetails()
 {
-   foreach (Call* call,CallModel::instance().getActiveCalls()) {
-      if (CallModel::instance().selectedCall() == call) {
+   foreach (Call* call,Session::instance()->callModel()->getActiveCalls()) {
+      if (Session::instance()->callModel()->selectedCall() == call) {
          QString toSay = i18n("The current call is %1",i18n(call->toHumanStateName(call->state()).toLatin1() ));
          if (!call->peerName().trimmed().isEmpty())
             toSay += i18n(",Your peer is %1",numberToDigit(call->peerName()));

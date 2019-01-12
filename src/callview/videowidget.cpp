@@ -31,6 +31,7 @@
 #include <video/sourcemodel.h>
 #include <call.h>
 #include <callmodel.h>
+#include <session.h>
 #include <useractionmodel.h>
 
 #include "imageprovider.h"
@@ -57,10 +58,10 @@ ImageProvider* VideoWidget3Private::m_spProvider = nullptr;
 VideoWidget3::VideoWidget3(QWidget* parent) :
     VideoWidget3(VideoWidget3::Mode::CONVERSATION, parent)
 {
-    connect(&CallModel::instance(), &CallModel::rendererAdded,
+    connect(Session::instance()->callModel(), &CallModel::rendererAdded,
         this, &VideoWidget3::addRenderer);
 
-    connect(&CallModel::instance(), &CallModel::rendererRemoved,
+    connect(Session::instance()->callModel(), &CallModel::rendererRemoved,
         this, &VideoWidget3::removeRenderer);
 }
 
@@ -90,10 +91,10 @@ VideoWidget3::VideoWidget3(VideoWidget3::Mode mode, QWidget* parent) :
     installEventFilter(this);
 
     if (mode == Mode::CONVERSATION) {
-        connect(&CallModel::instance(), &CallModel::rendererAdded,
+        connect(Session::instance()->callModel(), &CallModel::rendererAdded,
             this, &VideoWidget3::addRenderer);
 
-        connect(&CallModel::instance(), &CallModel::rendererRemoved,
+        connect(Session::instance()->callModel(), &CallModel::rendererRemoved,
             this, &VideoWidget3::removeRenderer);
     }
 }

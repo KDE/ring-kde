@@ -38,6 +38,7 @@
 #include <person.h>
 #include <call.h>
 #include <callmodel.h>
+#include <session.h>
 
 // Remove inactive calls from the CallModel
 class ActiveCallProxy2 : public QSortFilterProxyModel
@@ -72,8 +73,8 @@ MainPage::MainPage(QQuickItem* parent) :
     QQuickItem(parent), d_ptr(new MainPagePrivate)
 {
     d_ptr->q_ptr = this;
-    auto cp = new ActiveCallProxy2(&CallModel::instance());
-    cp->setSourceModel(&CallModel::instance());
+    auto cp = new ActiveCallProxy2(Session::instance()->callModel());
+    cp->setSourceModel(Session::instance()->callModel());
 
     QFile file(QStringLiteral(":/assets/welcome.html"));
     if (file.open(QIODevice::ReadOnly))
@@ -82,7 +83,7 @@ MainPage::MainPage(QQuickItem* parent) :
     RingApplication::engine()->rootContext()->setContextProperty(QStringLiteral("ActiveCallProxyModel"), cp);
 
     connect(this, &QQuickItem::windowChanged, d_ptr, &MainPagePrivate::slotWindowChanged);
-    connect(&CallModel::instance(), &CallModel::callAttentionRequest, this, &MainPage::showVideo);
+    connect(Session::instance()->callModel(), &CallModel::callAttentionRequest, this, &MainPage::showVideo);
 
     installEventFilter(this);
 

@@ -41,6 +41,7 @@
 #include "klib/kcfg_settings.h"
 #include <call.h>
 #include <callmodel.h>
+#include <session.h>
 #include <implementation.h>
 #include <useractionmodel.h>
 #include <audio/settings.h>
@@ -229,7 +230,7 @@ void ActionCollection::setupAction()
 #undef BIND_KCFG
 
    //Bind actions to the useractionmodel
-   UserActionModel* uam = CallModel::instance().userActionModel();
+   UserActionModel* uam = Session::instance()->callModel()->userActionModel();
    QHash<int, QAction*> actionHash;
    actionHash[ (int)UserActionModel::Action::ACCEPT              ] = action_accept             ;
    actionHash[ (int)UserActionModel::Action::ADD_NEW             ] = action_new_call           ;
@@ -443,8 +444,8 @@ void ActionCollection::slotRaiseClient(bool focus)
 {
    if (focus) {
       // Add a new call if there is none
-      if (!CallModel::instance().rowCount())
-         CallModel::instance().userActionModel() << UserActionModel::Action::ADD_NEW;
+      if (!Session::instance()->callModel()->rowCount())
+         Session::instance()->callModel()->userActionModel() << UserActionModel::Action::ADD_NEW;
    }
 }
 

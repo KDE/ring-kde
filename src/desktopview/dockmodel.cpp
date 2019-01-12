@@ -20,6 +20,7 @@
 #include <QtWidgets/QAction>
 
 #include <callmodel.h>
+#include <session.h>
 
 #include "../actioncollection.h"
 
@@ -50,10 +51,10 @@ DockModel::DockModel(QObject* parent) : QAbstractListModel(parent), d_ptr(new Do
         std::get<0>(tuple)->setProperty("identifier", std::get<2>(tuple));
     }
 
-    connect(&CallModel::instance(), &CallModel::callStateChanged,
+    connect(Session::instance()->callModel(), &CallModel::callStateChanged,
         d_ptr, &DockModelPrivate::reload);
 
-    connect(&CallModel::instance(), &CallModel::layoutChanged,
+    connect(Session::instance()->callModel(), &CallModel::layoutChanged,
         d_ptr, &DockModelPrivate::reload);
 
     d_ptr->reload();
@@ -82,8 +83,8 @@ QVariant DockModel::data( const QModelIndex& index, int role) const
             return QVariant::fromValue(a);
         case Roles::ActiveCount:
             if (a == ActionCollection::instance()->showDialDockAction())
-                return CallModel::instance().size()
-                    - (CallModel::instance().hasDialingCall() ? 1 : 0);
+                return Session::instance()->callModel()->size()
+                    - (Session::instance()->callModel()->hasDialingCall() ? 1 : 0);
             return 0;
     }
 

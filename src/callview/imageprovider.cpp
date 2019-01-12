@@ -25,6 +25,7 @@
 #include <call.h>
 
 #include <callmodel.h>
+#include <session.h>
 #include <video/previewmanager.h>
 
 class FrameBuffer final : public QObject
@@ -104,10 +105,10 @@ ImageProvider::ImageProvider()
 {
     ImageProviderPrivate::m_spInstance = this;
 
-    QObject::connect(&CallModel::instance(), &CallModel::rendererAdded,
+    QObject::connect(Session::instance()->callModel(), &CallModel::rendererAdded,
         d_ptr, &ImageProviderPrivate::addRenderer);
 
-    QObject::connect(&CallModel::instance(), &CallModel::rendererRemoved,
+    QObject::connect(Session::instance()->callModel(), &CallModel::rendererRemoved,
         d_ptr, &ImageProviderPrivate::removeRenderer);
 
     QObject::connect(&Video::PreviewManager::instance(), &Video::PreviewManager::previewStarted,
@@ -118,7 +119,7 @@ ImageProvider::ImageProvider()
 
     // Check if there is active renderers
 
-    foreach(Call* c, CallModel::instance().getActiveCalls()) {
+    foreach(Call* c, Session::instance()->callModel()->getActiveCalls()) {
         if (c->videoRenderer())
             d_ptr->addRenderer(c, c->videoRenderer());
     }

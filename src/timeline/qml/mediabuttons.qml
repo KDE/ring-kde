@@ -227,7 +227,7 @@ Grid {
                     return
                 }
 
-                var call = CallModel.dialingCall(cm)
+                var call = RingSession.callModel.dialingCall(cm)
 
                 call.removeMedia(RingQtMedia.Media.VIDEO)
 
@@ -292,7 +292,7 @@ Grid {
                     return
                 }
 
-                CallModel.dialingCall(cm)
+                RingSession.callModel.dialingCall(cm)
                     .performAction(RingQtQuick.Call.ACCEPT)
             })
         }
@@ -351,7 +351,7 @@ Grid {
                     return
                 }
 
-                CallModel.dialingCall(cm)
+                RingSession.callModel.dialingCall(cm)
                     .performAction(RingQtQuick.Call.ACCEPT)
             })
         }

@@ -228,7 +228,7 @@ Item {
                                 return
                             }
 
-                            CallModel.dialingCall(cm)
+                            RingSession.callModel.dialingCall(cm)
                                 .performAction(RingQtQuick.Call.ACCEPT)
                         }
                         onCallWithVideo: {
@@ -239,7 +239,7 @@ Item {
                                 return
                             }
 
-                            CallModel.dialingCall(cm)
+                            RingSession.callModel.dialingCall(cm)
                                 .performAction(RingQtQuick.Call.ACCEPT)
                         }
                         onCallWithScreen: {
@@ -250,7 +250,7 @@ Item {
                                 return
                             }
 
-                            CallModel.dialingCall(cm)
+                            RingSession.callModel.dialingCall(cm)
                                 .performAction(RingQtQuick.Call.ACCEPT)
                         }
                     }

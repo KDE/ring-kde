@@ -40,6 +40,7 @@
 #include <securityevaluationmodel.h>
 #include <collectioninterface.h>
 #include <useractionmodel.h>
+#include <session.h>
 #include <video/sourcemodel.h>
 #include <QStandardPaths>
 #include "icons/icons.h"

@@ -31,6 +31,7 @@
 #include <QQmlContext>
 #include <QQuickItem>
 #include <QQuickWindow>
+#include <QQmlExtensionPlugin>
 #include <QQmlComponent>
 
 //KDE
@@ -41,6 +42,7 @@
 
 //LRC
 #include <itemdataroles.h>
+#include <session.h>
 #include <callmodel.h>
 #include <eventmodel.h>
 #include <accountmodel.h>
@@ -78,7 +80,6 @@
 #include "klib/kcfg_settings.h"
 #include "cmd.h"
 #include "errormessage.h"
-#include "callmodel.h"
 #include "implementation.h"
 #include "wizard/welcome.h"
 #include "callview/videowidget.h"
@@ -198,7 +199,7 @@ RingApplication::RingApplication(int & argc, char ** argv) : QApplication(argc,a
 
 void RingApplication::init()
 {
-   if ((!CallModel::instance().isConnected()) || (!CallModel::instance().isValid())) {
+   if ((!Session::instance()->callModel()->isConnected()) || (!Session::instance()->callModel()->isValid())) {
       QTimer::singleShot(5000,this,&RingApplication::daemonTimeout);
    }
 
@@ -219,7 +220,7 @@ RingApplication::~RingApplication()
    delete &PeersTimelineModel::instance();
    delete &Media::RecordingModel::instance();
    delete &PersonModel::instance();
-   delete &CallModel::instance();
+   delete Session::instance()->callModel();
    delete &ProfileModel::instance();
    delete &AccountModel::instance();
    delete &PhoneDirectoryModel::instance();
@@ -267,7 +268,7 @@ void RingApplication::initCollections()
 
    loadNumberCategories();
 
-   CallModel::instance().setAudoCleanDelay(5000);
+   Session::instance()->callModel()->setAudoCleanDelay(5000);
 
    InfoTemplateManager::instance();
 
@@ -453,7 +454,6 @@ QQmlApplicationEngine* RingApplication::engine()
       m_pDeclarative->setupBindings();
 
       try {
-         QML_SINGLETON( CallModel                );
          QML_SINGLETON( CategorizedHistoryModel  );
          QML_SINGLETON( AccountModel             );
          QML_SINGLETON( AvailableAccountModel    );
@@ -564,7 +564,7 @@ QQuickWindow* RingApplication::desktopWindow() const
 ///The daemon is not found
 void RingApplication::daemonTimeout()
 {
-   if ((!CallModel::instance().isConnected()) || (!CallModel::instance().isValid())) {
+   if ((!Session::instance()->callModel()->isConnected()) || (!Session::instance()->callModel()->isValid())) {
       KMessageBox::error(nullptr, ErrorMessage::NO_DAEMON_ERROR);
       exit(1);
    }

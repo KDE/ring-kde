@@ -55,7 +55,7 @@ FocusScope {
 
     DialPad {
         width: parent.width
-        visible: CallModel.supportsDTMF
+        visible: RingSession.callModel.supportsDTMF
         height: 200
         anchors.horizontalCenter: dialView.horizontalCenter
         anchors.bottom: actionToolbar.top
@@ -74,19 +74,19 @@ FocusScope {
 
         completionSelection.clearSelection()
 
-        var idx = CallModel.getIndex(call)
+        var idx = RingSession.callModel.getIndex(call)
 
         if (!idx.valid)
             return
 
-        var directPrev = CallModel.index(idx.row-1, 0, idx.parent)
+        var directPrev = RingSession.callModel.index(idx.row-1, 0, idx.parent)
 
-        var nextCall = CallModel.getCall(directPrev)
+        var nextCall = RingSession.callModel.getCall(directPrev)
 
         if (!nextCall)
             return
 
-        CallModel.selectedCall = nextCall
+        RingSession.callModel.selectedCall = nextCall
 
         dialView.selectCall(nextCall)
     }
@@ -97,29 +97,29 @@ FocusScope {
 
         completionSelection.clearSelection()
 
-        var idx = CallModel.getIndex(call)
+        var idx = RingSession.callModel.getIndex(call)
 
         if (!idx.valid)
             return
 
-        var directPrev = CallModel.index(idx.row+1, 0, idx.parent)
+        var directPrev = RingSession.callModel.index(idx.row+1, 0, idx.parent)
 
-        var nextCall = CallModel.getCall(directPrev)
+        var nextCall = RingSession.callModel.getCall(directPrev)
 
         if (!nextCall)
             return
 
-        CallModel.selectedCall = nextCall
+        RingSession.callModel.selectedCall = nextCall
 
         dialView.selectCall(nextCall)
     }
 
     function performCall() {
-        var call = CallModel.selectedCall
+        var call = RingSession.callModel.selectedCall
 
         if (!call) {
-            call = CallModel.dialingCall()
-            CallModel.selectedCall = call
+            call = RingSession.callModel.dialingCall()
+            RingSession.callModel.selectedCall = call
         }
 
         // Apply the auto completion
@@ -131,11 +131,11 @@ FocusScope {
 
 
     function getCall() {
-        var call = CallModel.selectedCall
+        var call = RingSession.callModel.selectedCall
 
         if (!call) {
-            call = CallModel.dialingCall()
-            CallModel.selectedCall = call
+            call = RingSession.callModel.dialingCall()
+            RingSession.callModel.selectedCall = call
         }
 
         return call
@@ -172,9 +172,9 @@ FocusScope {
     }
 
     Connections {
-        target: CallModel
+        target: RingSession.callModel
         onCallAttentionRequest: {
-            CallModel.selectedCall = call
+            RingSession.callModel.selectedCall = call
         }
     }
 

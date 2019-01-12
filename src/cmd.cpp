@@ -30,6 +30,7 @@
 //Ring
 #include <call.h>
 #include <callmodel.h>
+#include <session.h>
 #include <media/text.h>
 #include "ringapplication.h"
 #include "klib/kcfg_settings.h"
@@ -108,7 +109,7 @@ void Cmd::placeCall(const QString& number)
 
    //Wait until the initialization is done
    QTimer::singleShot(0,[number] {
-      Call* call = CallModel::instance().dialingCall();
+      Call* call = Session::instance()->callModel()->dialingCall();
       call->reset();
       call->appendText(number);
       call->performAction(Call::Action::ACCEPT);
@@ -121,7 +122,7 @@ void Cmd::sendText(const QString& number, const QString& text)
    Q_UNUSED(number)
    Q_UNUSED(text)
    QTimer::singleShot(0,[number,text] {
-      Call* call = CallModel::instance().dialingCall();
+      Call* call = Session::instance()->callModel()->dialingCall();
       call->reset();
       call->appendText(number);
       call->setProperty("message",text);

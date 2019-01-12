@@ -223,7 +223,7 @@ Rectangle {
     GridView  {
         id: actionGrid
         anchors.fill: parent
-        model: CallModel.userActionModel.activeActionModel
+        model: RingQtQuick.Session.callModel.userActionModel.activeActionModel
         delegate: actionDelegate
         cellWidth: 70; cellHeight: 60
 
@@ -276,11 +276,11 @@ Rectangle {
 
     onUserActionModelChanged: {
         if (!userActionModel) {
-            userActionModel = CallModel.userActionModel
+            userActionModel = RingQtQuick.Session.callModel.userActionModel
             return
         }
 
         actionGrid.model = (userActionModel && userActionModel.activeActionModel) ?
-            userActionModel.activeActionModel : CallModel.userActionModel.activeActionModel
+            userActionModel.activeActionModel : RingQtQuick.Session.callModel.userActionModel.activeActionModel
     }
 }

@@ -31,7 +31,7 @@ Rectangle {
     color: selected ? activePalette.highlight: "transparent"
 
     height: content.implicitHeight + 20 + errorMessage.height
-    property bool selected: object == CallModel.selectedCall
+    property bool selected: object == RingSession.callModel.selectedCall
 
     property bool skipSelect: errorMessage.active || missedMessage.active
 
@@ -51,7 +51,7 @@ Rectangle {
 
     TreeHelper {
         id: treeHelper
-        model: CallModel
+        model: RingSession.callModel
     }
 
     Drag.onDragFinished: {
@@ -147,7 +147,7 @@ Rectangle {
         propagateComposedEvents: true
         onClicked: {
             mouse.accepted = true
-            CallModel.selectedCall = object
+            RingSession.callModel.selectedCall = object
             dialView.selectCall(object)
         }
         drag.target: callDelegateItem

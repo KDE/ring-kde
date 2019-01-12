@@ -16,6 +16,7 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.    *
  *****************************************************************************/
 import QtQuick 2.0
+import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 
 Item {
     id:dialPad
@@ -101,7 +102,7 @@ Item {
                         anchors.fill: parent
                         hoverEnabled: true
                         onClicked: {
-                            var call = CallModel.selectedCall
+                            var call = RingSession.callModel.selectedCall
 
                             if (!call)
                                 return
@@ -176,7 +177,7 @@ Item {
     }
 
     Connections {
-        target: CallModel
+        target: RingSession.callModel
         onDtmfPlayed: {
             dialPad.mapper[code].state = "played"
         }

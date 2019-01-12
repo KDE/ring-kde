@@ -18,6 +18,7 @@
 import QtQuick 2.0
 import Ring 1.0
 import RingQmlWidgets 1.0
+import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 
 OutlineButton {
     id: mainArea
@@ -25,8 +26,8 @@ OutlineButton {
     expandedHeight: 64
     width: parent.width
     label: i18n("Create a call")
-    visible: !CallModel.hasDialingCall
+    visible: !RingSession.callModel.hasDialingCall
     onClicked: {
-        CallModel.selectDialingCall()
+        RingSession.callModel.selectDialingCall()
     }
 }

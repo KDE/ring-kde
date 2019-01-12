@@ -21,6 +21,7 @@
 #include <QtCore/QString>
 #include <QtCore/QtPlugin>
 #include <QtGui/QImage>
+#include <QQmlApplicationEngine>
 
 //KDE
 #include <KDBusService>
@@ -66,6 +67,7 @@ int main(int argc, char **argv)
 #endif
 
       qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_RingQtQuick().instance())->registerTypes("net.lvindustries.ringqtquick");
+      qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_RingQtQuick().instance())->initializeEngine(app.engine(), "net.lvindustries.ringqtquick");
 
       KAboutData about(QStringLiteral("ring-kde"),
          i18n("ring-kde"),

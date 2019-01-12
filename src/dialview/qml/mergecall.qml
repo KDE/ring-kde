@@ -18,6 +18,7 @@
 import QtQuick 2.0
 import Ring 1.0
 import org.kde.kirigami 2.2 as Kirigami
+import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 
 Item {
     id: mainArea
@@ -71,10 +72,10 @@ Item {
             anchors.fill: parent
             hoverEnabled: true
             onClicked: {
-                if (CallModel.hasConference)
-                    CallModel.detachAllCalls()
+                if (RingSession.callModel.hasConference)
+                    RingSession.callModel.detachAllCalls()
                 else
-                    CallModel.mergeAllCalls()
+                    RingSession.callModel.mergeAllCalls()
             }
         }
 
@@ -96,7 +97,7 @@ Item {
                 },
                 State {
                     name: "active"
-                    when: CallModel.conferencePossible || CallModel.hasConference
+                    when: RingSession.callModel.conferencePossible || RingQtQuick.session.callModel.hasConference
                     PropertyChanges {
                         target: addCallButton
                         visible: true
@@ -115,7 +116,7 @@ Item {
                 State {
                     name: "hasconference"
                     extend: "active"
-                    when: CallModel.hasConference
+                    when: RingSession.callModel.hasConference
                     PropertyChanges {
                         target: label
                         text: i18n("Detach all calls")

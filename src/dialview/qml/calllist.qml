@@ -17,6 +17,7 @@
  *****************************************************************************/
 import QtQuick 2.0
 import Ring 1.0
+import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 
 ListView {
     Component {
@@ -31,5 +32,5 @@ ListView {
     spacing: 10
 
     delegate: callDelegate
-    model: CallModel
+    model: RingSession.callModel
 } //CallList

@@ -18,6 +18,7 @@
 import QtQuick 2.0
 import Ring 1.0
 import org.kde.playground.kquickitemviews 1.0 as KQuickItemViews
+import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 
 Item {
     id: item
@@ -25,7 +26,7 @@ Item {
         confDelegateLayout.height + 40 + 12
     width: parent.width - 10
     x: 5
-    property bool selected: object == CallModel.selectedCall
+    property bool selected: object == RingSession.callModel.selectedCall
 
     //If it is not a conference, use this delegate
     CallDelegateItem {
@@ -83,7 +84,7 @@ Item {
                 anchors.fill: parent
                 propagateComposedEvents: true
                 onClicked: {
-                    CallModel.selectedCall = object
+                    RingSession.callModel.selectedCall = object
                 }
             }
         }
@@ -109,7 +110,7 @@ Item {
         if (isConference == true) {
             callDelegateItem.visible = false
             confDelegateItem.visible = true
-            confDelegateVisualDataModel.model = CallModel
+            confDelegateVisualDataModel.model = RingSession.callModel
             confDelegateVisualDataModel.delegate = confItemDelegate
             confDelegateRepeater.model.rootIndex = confDelegateRepeater.model.modelIndex(index)
         }

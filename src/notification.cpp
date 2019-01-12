@@ -30,6 +30,7 @@
 #include <accountmodel.h>
 #include <call.h>
 #include <person.h>
+#include <session.h>
 #include <contactmethod.h>
 #include <numbercategory.h>
 #include <useractionmodel.h>
@@ -214,7 +215,7 @@ void CreateContactNotification::actionPerformed(uint actionId)
 
 Notification::Notification(QObject* parent) : QObject(parent)
 {
-   connect(&CallModel::instance(), &CallModel::incomingCall, this, &Notification::incomingCall);
+   connect(Session::instance()->callModel(), &CallModel::incomingCall, this, &Notification::incomingCall);
    connect(&AccountModel::instance(), &AccountModel::accountStateChanged, this, &Notification::accountStatus);
    connect(&Media::RecordingModel::instance(), &Media::RecordingModel::mimeMessageInserted, this, &Notification::incomingText);
 }
