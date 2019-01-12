@@ -59,7 +59,7 @@ Rectangle {
         }
 
         ListView {
-            model: AccountModel
+            model: RingSession.accountModel
             interactive: false
             height: contentHeight
             implicitHeight: contentHeight

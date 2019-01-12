@@ -76,15 +76,15 @@ ListView {
             CheckBox {
                 id: customAccount
                 checked: obj && obj.account && visible
-                visible: AccountModel.size > 1
+                visible: RingSession.accountModel.size > 1
             }
 
             ComboBox {
                 id: numberAccount
-                model: AccountModel
+                model: RingSession.accountModel
                 enabled: customAccount.checked
                 textRole: "display"
-                visible: AccountModel.size > 1
+                visible: RingSession.accountModel.size > 1
                 currentIndex: (obj && obj.account) ? obj.account.index.row : 2
                 onActivated: {
                 }

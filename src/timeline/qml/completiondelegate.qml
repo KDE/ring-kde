@@ -21,13 +21,14 @@ import QtQuick.Controls 2.0
 import Ring 1.0
 import RingQmlWidgets 1.0
 import org.kde.playground.kquickitemviews 1.0 as KQuickItemViews
+import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 
 Item {
     id: componentItem
 
     height: content.implicitHeight
 
-    property bool showAccount: AccountModel.hasAmbiguousAccounts
+    property bool showAccount: RingSession.accountModel.hasAmbiguousAccounts
     property bool showPhoto: true
     property bool showControls: true
     property bool showSeparator: true

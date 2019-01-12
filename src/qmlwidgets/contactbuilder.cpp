@@ -24,6 +24,7 @@
 #include <numbercategorymodel.h>
 #include <phonedirectorymodel.h>
 #include <individual.h>
+#include <session.h>
 #include <accountmodel.h>
 
 class ContactBuilderPrivate
@@ -128,8 +129,8 @@ ContactMethod* ContactBuilder::updatePhoneNumber(ContactMethod* cm, Individual* 
 
     ContactMethod* newCM = PhoneDirectoryModel::instance().fromTemporary(cm);
 
-    Account* a = accountIdx == -1 ? nullptr : AccountModel::instance().getAccountByModelIndex(
-        AccountModel::instance().index(accountIdx, 0)
+    Account* a = accountIdx == -1 ? nullptr : Session::instance()->accountModel()->getAccountByModelIndex(
+        Session::instance()->accountModel()->index(accountIdx, 0)
     );
 
     // Create a person and add the CM to the phone numbers

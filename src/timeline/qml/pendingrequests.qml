@@ -21,6 +21,7 @@ import QtQuick.Layouts 1.0
 import QtQuick.Controls 2.2
 import org.kde.kirigami 2.2 as Kirigami
 import RingQmlWidgets 1.0
+import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 
 Dialog {
     id: dialog
@@ -33,7 +34,7 @@ Dialog {
     // As on Qt 5.9.5, QML crashes on a double free when Close is used
     standardButtons: Dialog.NoButton
 
-    property int rowCount: AccountModel.incomingContactRequestModel.size
+    property int rowCount: RingSession.accountModel.incomingContactRequestModel.size
 
     function selectContactRequest(index, obj, modelIndex) {
         contactInfo.individual = obj.peer.individual
@@ -57,7 +58,7 @@ Dialog {
                         text: i18n("Accept")
                         onClicked: {
                             object.accept()
-                            if (AccountModel.incomingContactRequestModel.size == 0)
+                            if (RingSession.accountModel.incomingContactRequestModel.size == 0)
                                 dialog.close()
                         }
                     }
@@ -88,7 +89,7 @@ Dialog {
             Layout.preferredHeight: contentHeight
             Layout.maximumHeight: 300
             Layout.fillWidth: true
-            model: AccountModel.incomingContactRequestModel
+            model: RingSession.accountModel.incomingContactRequestModel
             delegate: contactRequestDelegate
             currentIndex: 0
 

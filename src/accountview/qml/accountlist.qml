@@ -30,7 +30,7 @@ ListView {
     interactive: false
     height: totalHeight
     implicitHeight: totalHeight
-    model: AccountModel
+    model: RingQtQuick.session.accountModel
 
     property real totalHeight: footerItem + contentHeight + headerItem + 10
 
@@ -197,8 +197,8 @@ ListView {
 
             onAccepted: {
                 accountDeleter.active = false
-                AccountModel.remove(account)
-                AccountModel.save()
+                RingSession.accountModel.remove(account)
+                RingSession.accountModel.save()
                 accountDeleter.account = null
             }
 

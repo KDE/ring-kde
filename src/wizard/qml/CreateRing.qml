@@ -73,9 +73,9 @@ Item {
         var name = userName.text
 
         // Make sure they are unique
-        name = name + AccountModel.getSimilarAliasIndex(name)
+        name = name + RingSession.accountModel.getSimilarAliasIndex(name)
 
-        account = AccountModel.add(name, RingQtQuick.Account.RING);
+        account = RingSession.accountModel.add(name, RingQtQuick.Account.RING);
         account.displayName     = name
         account.archivePassword = password.text
         account.upnpEnabled     = true;

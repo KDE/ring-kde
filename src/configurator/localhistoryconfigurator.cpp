@@ -19,6 +19,7 @@
 #include "conf/dlggeneral.h"
 
 #include <categorizedhistorymodel.h>
+#include <session.h>
 
 #include <KLocalizedString>
 
@@ -54,11 +55,11 @@ void LocalHistoryConfigurator::loadCollection(CollectionInterface* col, QObject*
          QHBoxLayout* l = new QHBoxLayout(w);
          l->addWidget(m_pDialog);
 
-         m_pDialog->m_pKeepHistory->setChecked(CategorizedHistoryModel::instance().isHistoryLimited());
-         m_pDialog->m_pHistoryMax->setValue(CategorizedHistoryModel::instance().historyLimit());
+         m_pDialog->m_pKeepHistory->setChecked(Session::instance()->historyModel()->isHistoryLimited());
+         m_pDialog->m_pHistoryMax->setValue(Session::instance()->historyModel()->historyLimit());
 
-         connect(m_pDialog->m_pKeepHistory, &QCheckBox::toggled, &CategorizedHistoryModel::instance(), &CategorizedHistoryModel::setHistoryLimited);
-         connect(m_pDialog->m_pHistoryMax , SIGNAL(valueChanged(int)), &CategorizedHistoryModel::instance(), SLOT(setHistoryLimit(int)));
+         connect(m_pDialog->m_pKeepHistory, &QCheckBox::toggled, Session::instance()->historyModel(), &CategorizedHistoryModel::setHistoryLimited);
+         connect(m_pDialog->m_pHistoryMax , SIGNAL(valueChanged(int)), Session::instance()->historyModel(), SLOT(setHistoryLimit(int)));
          connect(m_pDialog, &DlgGeneral::updateButtons, this, [this]() {
             emit this->changed();
          });

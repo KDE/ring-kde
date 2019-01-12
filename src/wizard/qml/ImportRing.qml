@@ -46,7 +46,7 @@ Item {
         registrationTimeout.running = true
         registrationPopup.color     = "white"
 
-        account = AccountModel.add(WelcomeDialog.defaultUserName, RingQtQuick.Account.RING)
+        account = RingSession.accountModel.add(WelcomeDialog.defaultUserName, RingQtQuick.Account.RING)
         account.archivePassword = password.text
         account.archivePin      = pinField.text
         account.upnpEnabled     = true;

@@ -222,7 +222,7 @@ RingApplication::~RingApplication()
    delete &PersonModel::instance();
    delete Session::instance()->callModel();
    delete &ProfileModel::instance();
-   delete &AccountModel::instance();
+   delete Session::instance()->accountModel();
    delete &PhoneDirectoryModel::instance();
    delete &NumberCategoryModel::instance();
    m_spInstance = nullptr;
@@ -278,7 +278,7 @@ void RingApplication::initCollections()
 
    PersonModel::instance()             .registerConfigarator<PeerProfileCollection2  >    (new PeerProfileConfigurator   (this));
    PersonModel::instance()             .registerConfigarator<FallbackPersonCollection>    (new FallbackPersonConfigurator(this));
-   CategorizedHistoryModel::instance() .registerConfigarator<LocalHistoryCollection  >    (new LocalHistoryConfigurator  (this));
+   Session::instance()->historyModel()->registerConfigarator<LocalHistoryCollection  >    (new LocalHistoryConfigurator  (this));
    CategorizedBookmarkModel::instance().registerConfigarator<LocalBookmarkCollection >    (new BookmarkConfigurator      (this));
    Media::RecordingModel::instance()   .registerConfigarator<LocalRecordingCollection>    (new AudioRecordingConfigurator(this,
       AudioRecordingConfigurator::Mode::AUDIO
@@ -293,15 +293,15 @@ void RingApplication::initCollections()
 
    // Load the old phone call history and port it to the newer calendar events format.
    if (QFile::exists(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1Char('/') +"history.ini")) {
-      auto histo = CategorizedHistoryModel::instance().addCollection<LocalHistoryCollection>(LoadOptions::FORCE_ENABLED);
+      auto histo = Session::instance()->historyModel()->addCollection<LocalHistoryCollection>(LoadOptions::FORCE_ENABLED);
       HistoryImporter::importHistory(histo);
       histo->clear();
    }
 
    //HACK load the Calendar now to speedup everything else
-   const int accountCount = AccountModel::instance().size();
+   const int accountCount = Session::instance()->accountModel()->size();
    for (int i=0; i < accountCount; i++)
-      AccountModel::instance()[i]->calendar();
+      (*Session::instance()->accountModel())[i]->calendar();
 
    ProfileModel::instance().addCollection<LocalProfileCollection>(LoadOptions::FORCE_ENABLED);
 
@@ -369,7 +369,7 @@ int RingApplication::newInstance()
          QStringLiteral("wizardWelcomeOnly"), QVariant(!ConfigurationSkeleton::enableWizard())
       );
 
-      if (!AccountModel::instance().size())
+      if (!Session::instance()->accountModel()->size())
          showWizard();
 
       ConfigurationSkeleton::setEnableWizard(false);
@@ -454,8 +454,6 @@ QQmlApplicationEngine* RingApplication::engine()
       m_pDeclarative->setupBindings();
 
       try {
-         QML_SINGLETON( CategorizedHistoryModel  );
-         QML_SINGLETON( AccountModel             );
          QML_SINGLETON( AvailableAccountModel    );
          QML_SINGLETON( CategorizedContactModel  );
          QML_SINGLETON( CategorizedBookmarkModel );

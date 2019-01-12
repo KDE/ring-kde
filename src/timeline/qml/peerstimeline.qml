@@ -22,6 +22,7 @@ import QtQuick.Layouts 1.0
 import QtGraphicalEffects 1.0
 import org.kde.kirigami 2.2 as Kirigami
 import org.kde.playground.kquickitemviews 1.0 as KQuickItemViews
+import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 
 import RingQmlWidgets 1.0
 
@@ -103,10 +104,10 @@ Rectangle {
         }
     }
 
-    property bool displayNoAccount: AccountModel.size == 0
-    property bool displayDisabled: !AccountModel.hasEnabledAccounts
-    property bool displayNoRegAccounts: !AccountModel.hasAvailableAccounts
-    property bool displayContactRequests: AccountModel.incomingContactRequestModel.size > 0
+    property bool displayNoAccount: RingSession.accountModel.size == 0
+    property bool displayDisabled: !RingSession.accountModel.hasEnabledAccounts
+    property bool displayNoRegAccounts: !RingSession.accountModel.hasAvailableAccounts
+    property bool displayContactRequests: RingSession.accountModel.incomingContactRequestModel.size > 0
     property bool displayActionHeader: displayNoAccount || displayNoRegAccounts || displayDisabled || displayContactRequests
 
     Item {

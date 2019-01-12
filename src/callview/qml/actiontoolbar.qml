@@ -21,7 +21,6 @@ import Ring 1.0
 import QtQuick.Layouts 1.0
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 import net.lvindustries.ringqtquick.models 1.0 as RingQtModels
-
 import org.kde.playground.kquickitemviews 1.0 as KQuickItemViews
 
 Rectangle {
@@ -223,7 +222,7 @@ Rectangle {
     GridView  {
         id: actionGrid
         anchors.fill: parent
-        model: RingQtQuick.Session.callModel.userActionModel.activeActionModel
+        model: RingSession.callModel.userActionModel.activeActionModel
         delegate: actionDelegate
         cellWidth: 70; cellHeight: 60
 
@@ -276,11 +275,11 @@ Rectangle {
 
     onUserActionModelChanged: {
         if (!userActionModel) {
-            userActionModel = RingQtQuick.Session.callModel.userActionModel
+            userActionModel = RingSession.callModel.userActionModel
             return
         }
 
         actionGrid.model = (userActionModel && userActionModel.activeActionModel) ?
-            userActionModel.activeActionModel : RingQtQuick.Session.callModel.userActionModel.activeActionModel
+            userActionModel.activeActionModel : RingSession.callModel.userActionModel.activeActionModel
     }
 }
