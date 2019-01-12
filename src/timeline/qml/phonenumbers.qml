@@ -61,7 +61,7 @@ ListView {
             Layout.preferredHeight: 40
             ComboBox {
                 id: numbertype
-                model: NumberCategoryModel
+                model: RingSession.numberCategoryModel
                 textRole: "display"
                 onActivated: {
                 }

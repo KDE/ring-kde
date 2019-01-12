@@ -116,7 +116,7 @@ Person* ContactBuilder::fromScratch()
 
 ContactMethod* ContactBuilder::updatePhoneNumber(ContactMethod* cm, Individual* ind, Person* p, const QString& number, int categoryIndex, int accountIdx)
 {
-    auto catIndex = NumberCategoryModel::instance().index(categoryIndex, 0);
+    auto catIndex = Session::instance()->numberCategoryModel()->index(categoryIndex, 0);
 
     if (!catIndex.isValid())
         return nullptr;
