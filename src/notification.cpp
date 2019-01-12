@@ -39,7 +39,6 @@
 
 // Ring-KDE
 #include <ringapplication.h>
-#include <eventmanager.h>
 
 #define REGISTER_ACTION(list, var, name)  list << name;var = list.size();
 
