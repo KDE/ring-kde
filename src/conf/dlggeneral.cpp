@@ -36,14 +36,14 @@
 DlgGeneral::DlgGeneral(KConfigDialog *parent)
  : QWidget(parent),m_HasChanged(false)
 {
-   setupUi(this);
-   connect(toolButton_historyClear, &QAbstractButton::clicked, this, &DlgGeneral::slotClearCallHistoryAsked);
-   const bool isLimited = Session::instance()->historyModel()->isHistoryLimited();
-   m_pKeepHistory->setChecked(!isLimited);
-   m_pHistoryMax ->setEnabled(isLimited );
-
-   m_pHistoryMax->setValue(Session::instance()->historyModel()->historyLimit());
-   m_HasChanged = false;
+//    setupUi(this);
+//    connect(toolButton_historyClear, &QAbstractButton::clicked, this, &DlgGeneral::slotClearCallHistoryAsked);
+//    const bool isLimited = Session::instance()->historyModel()->isHistoryLimited();
+//    m_pKeepHistory->setChecked(!isLimited);
+//    m_pHistoryMax ->setEnabled(isLimited );
+//
+//    m_pHistoryMax->setValue(Session::instance()->historyModel()->historyLimit());
+//    m_HasChanged = false;
 }
 
 ///Destructor
@@ -72,17 +72,17 @@ void DlgGeneral::updateWidgets()
 ///Save current settings
 void DlgGeneral::updateSettings()
 {
-   Session::instance()->historyModel()->setHistoryLimited(!m_pKeepHistory->isChecked());
-
-   if (!m_pKeepHistory->isChecked())
-      Session::instance()->historyModel()->setHistoryLimit(m_pHistoryMax->value());
-
-   m_HasChanged = false;
+//    Session::instance()->historyModel()->setHistoryLimited(!m_pKeepHistory->isChecked());
+//
+//    if (!m_pKeepHistory->isChecked())
+//       Session::instance()->historyModel()->setHistoryLimit(m_pHistoryMax->value());
+//
+//    m_HasChanged = false;
 }
 
 void DlgGeneral::slotClearCallHistoryAsked()
 {
-   Session::instance()->historyModel()->clearAllCollections();
+//    Session::instance()->historyModel()->clearAllCollections();
 }
 
 // kate: space-indent on; indent-width 3; replace-tabs on;

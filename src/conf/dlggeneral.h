@@ -23,12 +23,12 @@
 #include <QWidget>
 #include <kconfigdialog.h>
 
-#include "ui_dlggeneralbase.h"
+// #include "ui_dlggeneralbase.h"
 
 /**
 	@author Jérémy Quentin <jeremy.quentin@gmail.com>
 */
-class DlgGeneral final : public QWidget, public Ui_DlgGeneralBase
+class DlgGeneral final : public QWidget
 {
 Q_OBJECT
 public:

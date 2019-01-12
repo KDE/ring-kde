@@ -47,24 +47,24 @@ QVariant LocalHistoryConfigurator::icon() const
 
 void LocalHistoryConfigurator::loadCollection(CollectionInterface* col, QObject* parent)
 {
-   Q_UNUSED(col)
-   if (parent && qobject_cast<QWidget*>(parent)) {
-      QWidget* w = qobject_cast<QWidget*>(parent);
-      if (!m_pDialog) {
-         m_pDialog = new DlgGeneral(nullptr);
-         QHBoxLayout* l = new QHBoxLayout(w);
-         l->addWidget(m_pDialog);
-
-         m_pDialog->m_pKeepHistory->setChecked(Session::instance()->historyModel()->isHistoryLimited());
-         m_pDialog->m_pHistoryMax->setValue(Session::instance()->historyModel()->historyLimit());
-
-         connect(m_pDialog->m_pKeepHistory, &QCheckBox::toggled, Session::instance()->historyModel(), &CategorizedHistoryModel::setHistoryLimited);
-         connect(m_pDialog->m_pHistoryMax , SIGNAL(valueChanged(int)), Session::instance()->historyModel(), SLOT(setHistoryLimit(int)));
-         connect(m_pDialog, &DlgGeneral::updateButtons, this, [this]() {
-            emit this->changed();
-         });
-      }
-   }
+//    Q_UNUSED(col)
+//    if (parent && qobject_cast<QWidget*>(parent)) {
+//       QWidget* w = qobject_cast<QWidget*>(parent);
+//       if (!m_pDialog) {
+//          m_pDialog = new DlgGeneral(nullptr);
+//          QHBoxLayout* l = new QHBoxLayout(w);
+//          l->addWidget(m_pDialog);
+//
+//          m_pDialog->m_pKeepHistory->setChecked(Session::instance()->historyModel()->isHistoryLimited());
+//          m_pDialog->m_pHistoryMax->setValue(Session::instance()->historyModel()->historyLimit());
+//
+//          connect(m_pDialog->m_pKeepHistory, &QCheckBox::toggled, Session::instance()->historyModel(), &CategorizedHistoryModel::setHistoryLimited);
+//          connect(m_pDialog->m_pHistoryMax , SIGNAL(valueChanged(int)), Session::instance()->historyModel(), SLOT(setHistoryLimit(int)));
+//          connect(m_pDialog, &DlgGeneral::updateButtons, this, [this]() {
+//             emit this->changed();
+//          });
+//       }
+//    }
 }
 
 // kate: space-indent on; indent-width 3; replace-tabs on;
