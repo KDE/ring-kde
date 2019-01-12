@@ -24,6 +24,7 @@ import Ring 1.0
 import "Pages/" as Pages
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 import org.kde.playground.kquickitemviews 1.0 as KQuickItemViews
+import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 
 Dialog {
     id: accountDialog
@@ -42,13 +43,13 @@ Dialog {
         if (accountTree.selectedAccount) {
             if (profilePage)
                 profilePage.save()
-            accountTree.selectedAccount.performAction(Account.SAVE)
+            accountTree.selectedAccount.performAction(RingQtQuick.Account.SAVE)
         }
     }
 
     onRejected: {
         if (accountTree.selectedAccount) {
-            accountTree.selectedAccount.performAction(Account.CANCEL)
+            accountTree.selectedAccount.performAction(RingQtQuick.Account.CANCEL)
         }
     }
 

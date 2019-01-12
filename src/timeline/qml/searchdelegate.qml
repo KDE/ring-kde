@@ -22,6 +22,8 @@ import QtQuick.Controls 2.0
 import Ring 1.0
 import ContactView 1.0
 import org.kde.kirigami 2.0 as Kirigami
+import net.lvindustries.ringqtquick 1.0 as RingQtQuick
+import net.lvindustries.ringqtquick.models 1.0 as RingQtModels
 
 Item {
     property QtObject contactMethod: object
@@ -39,15 +41,14 @@ Item {
         NumberAnimation {duration: 200}
     }
 
-
     function getSourceColor(src) {
-        if (src == NumberCompletionModel.FROM_BOOKMARKS)
+        if (src == RingQtModels.NumberCompletionModel.FROM_BOOKMARKS)
             return "#cfa02a"
-        if (src == NumberCompletionModel.FROM_HISTORY)
+        if (src == RingQtModels.NumberCompletionModel.FROM_HISTORY)
             return "#be3411"
-        if (src == NumberCompletionModel.FROM_CONTACTS)
+        if (src == RingQtModels.NumberCompletionModel.FROM_CONTACTS)
             return "#14883b"
-        if (src == NumberCompletionModel.FROM_WEB)
+        if (src == RingQtModels.NumberCompletionModel.FROM_WEB)
             return "#2c53bd"
 
         return "red"
@@ -128,7 +129,7 @@ Item {
 
                 BusyIndicator {
                     id: busyIndicator
-                    visible: nameStatus == NumberCompletionModel.IN_PROGRESS
+                    visible: nameStatus == RingQtModels.NumberCompletionModel.IN_PROGRESS
                     anchors.right: searchStatus.left
                     anchors.rightMargin: 2
                     height: searchStatus.implicitHeight * 2
@@ -140,8 +141,8 @@ Item {
                     id: searchStatus
                     anchors.right: parent.right
                     anchors.rightMargin: 5
-                    color: nameStatus == NumberCompletionModel.SUCCESS ?
-                        Kirigami.Theme.positiveTextColor : (nameStatus == NumberCompletionModel.IN_PROGRESS ?
+                    color: nameStatus == RingQtModels.NumberCompletionModel.SUCCESS ?
+                        Kirigami.Theme.positiveTextColor : (nameStatus == RingQtModels.NumberCompletionModel.IN_PROGRESS ?
                         Kirigami.Theme.neutralTextColor :
                         Kirigami.Theme.negativeTextColor)
                     visible: supportsRegistry

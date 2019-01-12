@@ -20,6 +20,8 @@ import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
 import Ring 1.0
 import org.kde.playground.kquickitemviews 1.0 as KQuickItemViews
+import net.lvindustries.ringqtquick 1.0 as RingQtQuick
+import net.lvindustries.ringqtquick.models 1.0 as RingQtModels
 
 import RingQmlWidgets 1.0
 
@@ -127,21 +129,21 @@ KQuickItemViews.HierarchyView {
             // Some elements don't have delegates because they are handled
             // by their parent delegates
             function selectDelegate() {
-                if (nodeType == IndividualTimelineModel.TIME_CATEGORY)
+                if (nodeType == RingQtModels.IndividualTimelineModel.TIME_CATEGORY)
                     return categoryDelegate
 
-                if (nodeType == IndividualTimelineModel.TEXT_MESSAGE)
+                if (nodeType == RingQtModels.IndividualTimelineModel.TEXT_MESSAGE)
                     return textDelegate
 
-                if (nodeType == IndividualTimelineModel.SNAPSHOT_GROUP)
+                if (nodeType == RingQtModels.IndividualTimelineModel.SNAPSHOT_GROUP)
                     return snapshotGroupDelegate
 
-                if (nodeType == IndividualTimelineModel.SECTION_DELIMITER)
+                if (nodeType == RingQtModels.IndividualTimelineModel.SECTION_DELIMITER)
                     return sectionDelegate
 
                 if (
-                    nodeType == IndividualTimelineModel.CALL_GROUP ||
-                    nodeType == IndividualTimelineModel.RECORDINGS
+                    nodeType == RingQtModels.IndividualTimelineModel.CALL_GROUP ||
+                    nodeType == RingQtModels.IndividualTimelineModel.RECORDINGS
                 )
                     return callDelegate
             }

@@ -144,7 +144,7 @@ ListView {
                             //TODO add a popup
                             if (accountList.selectedAccount) {
                                 accountList.selectedAccount.performAction(
-                                    Account.CANCEL
+                                    RingQtQuick.Account.CANCEL
                                 )
                             }
 

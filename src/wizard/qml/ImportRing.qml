@@ -18,6 +18,7 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
+import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 import Ring 1.0
 
 Item {
@@ -45,13 +46,13 @@ Item {
         registrationTimeout.running = true
         registrationPopup.color     = "white"
 
-        account = AccountModel.add(WelcomeDialog.defaultUserName, Account.RING)
+        account = AccountModel.add(WelcomeDialog.defaultUserName, RingQtQuick.Account.RING)
         account.archivePassword = password.text
         account.archivePin      = pinField.text
         account.upnpEnabled     = true;
 
-        account.performAction(Account.SAVE)
-        account.performAction(Account.RELOAD)
+        account.performAction(RingQtQuick.Account.SAVE)
+        account.performAction(RingQtQuick.Account.RELOAD)
     }
 
     ColumnLayout {
@@ -182,13 +183,13 @@ Item {
         target: account
         onStateChanged: {
             switch(state) {
-                case Account.ERROR:
+                case RingQtQuick.Account.ERROR:
                     registrationPopup.color = "red"
                     registrationStatus.text = i18n("Importing failed")
                     hidePopup.running = true
                     registrationTimeout.stop()
                     break
-                case Account.READY:
+                case RingQtQuick.Account.READY:
                     registrationPopup.visible = false
                     registrationTimeout.stop()
                     importRing.registrationCompleted()

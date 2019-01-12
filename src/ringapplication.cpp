@@ -439,25 +439,8 @@ QQmlApplicationEngine* RingApplication::engine()
       m_pCanvasIndicator = new CanvasIndicator;
       m_pCanvasIndicator->registerTypes("CanvasIndicator");
 
-      QML_TYPE( Account                    )
-      QML_TYPE( const Account              )
-      QML_TYPE( Call                       )
-      QML_TYPE( Person                     )
-      QML_TYPE( Individual                 )
-      QML_TYPE( ContactMethod              )
-      QML_TYPE( UserActionModel            )
-      QML_TYPE( IndividualTimelineModel    )
-      QML_TYPE( PendingContactRequestModel )
-      QML_TYPE( SecurityEvaluationModel    )
-      QML_TYPE( RingDeviceModel            )
-      QML_TYPE( CodecModel                 )
-      QML_TYPE( CredentialModel            )
-      QML_TYPE( Event                      )
-      QML_TYPE( ProtocolModel              )
-
       QML_TYPE( QAction)
 
-      QML_CRTYPE( NumberCompletionModel )
       QML_CRTYPE( QItemSelectionModel   )
 
       QML_NS(Ring)
@@ -494,21 +477,10 @@ QQmlApplicationEngine* RingApplication::engine()
          QML_ADD_OBJECT(VideoDeviceSelectionModel    , &Video::ConfigurationProxy::deviceSelectionModel    ());
          { using namespace Media;
             QML_SINGLETON( RecordingModel        );
-            QML_TYPE     ( Recording             );
-            QML_TYPE     ( TextRecording         );
-            QML_TYPE     ( AVRecording           );
-            QML_CRTYPE   ( AvailabilityTracker   );
          }
 
          { using namespace Video;
             QML_SINGLETON( PreviewManager        );
-            QML_TYPE     ( SourceModel           );
-            QML_TYPE     ( Renderer              );
-         }
-
-         { using namespace Troubleshoot;
-            QML_CRTYPE( Dispatcher )
-            QML_TYPE  ( Base       )
          }
 
          qmlRegisterUncreatableType<::Media::Media>(

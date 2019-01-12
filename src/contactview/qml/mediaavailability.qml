@@ -22,6 +22,7 @@ import QtQml.Models 2.2
 import RingQmlWidgets 1.0
 import Ring 1.0
 import ContactView 1.0
+import net.lvindustries.ringqtquick.media 1.0 as RingQtMedia
 
 Rectangle {
     id: mediaAvailability
@@ -30,7 +31,7 @@ Rectangle {
 
     property bool accountState: true
 
-    AvailabilityTracker {
+    RingQtMedia.AvailabilityTracker {
         id: availabilityTracker
         individual: currentIndividual
     }

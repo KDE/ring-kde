@@ -23,6 +23,8 @@ import ContactView 1.0
 
 import RingQmlWidgets 1.0
 import PhotoSelectorPlugin 1.0
+import net.lvindustries.ringqtquick 1.0 as RingQtQuick
+import net.lvindustries.ringqtquick.media 1.0 as RingQtMedia
 
 Grid {
     id: container
@@ -41,7 +43,6 @@ Grid {
     property real preferredWidth: Math.max(preferredWidth,
         button1IW + button2IW + button3IW + button4IW
     )
-
 
     property real minimumWidth: (button3.visible ? maximumButtonWidth * 2 : 0) + 15
 
@@ -191,7 +192,7 @@ Grid {
         return cm
     }
 
-    AvailabilityTracker {
+    RingQtMedia.AvailabilityTracker {
         id: availabilityTracker
         individual: currentIndividual
     }
@@ -202,7 +203,7 @@ Grid {
         visible: availabilityTracker.canCall
 
         checkable: checked
-        checked: availabilityTracker.audioCallControlState == AvailabilityTracker.CHECKED
+        checked: availabilityTracker.audioCallControlState == RingQtMedia.AvailabilityTracker.CHECKED
 
         onClicked: {
             focus = false
@@ -228,9 +229,9 @@ Grid {
 
                 var call = CallModel.dialingCall(cm)
 
-                call.removeMedia(Media.VIDEO)
+                call.removeMedia(RingQtMedia.Media.VIDEO)
 
-                call.performAction(Call.ACCEPT)
+                call.performAction(RingQtQuick.Call.ACCEPT)
             })
 
         }
@@ -266,7 +267,7 @@ Grid {
         visible: availabilityTracker.canVideoCall
 
         checkable: checked
-        checked: availabilityTracker.videoCallControlState == AvailabilityTracker.CHECKED
+        checked: availabilityTracker.videoCallControlState == RingQtMedia.AvailabilityTracker.CHECKED
 
         onClicked: {
             focus = false
@@ -292,7 +293,7 @@ Grid {
                 }
 
                 CallModel.dialingCall(cm)
-                    .performAction(Call.ACCEPT)
+                    .performAction(RingQtQuick.Call.ACCEPT)
             })
         }
 
@@ -324,7 +325,7 @@ Grid {
         id: button3
         implicitWidth: label3.implicitWidth + 20
         checkable: checked
-        checked: availabilityTracker.screenSharingControlState == AvailabilityTracker.CHECKED
+        checked: availabilityTracker.screenSharingControlState == RingQtMedia.AvailabilityTracker.CHECKED
 
         visible: availabilityTracker.canVideoCall
 
@@ -351,7 +352,7 @@ Grid {
                 }
 
                 CallModel.dialingCall(cm)
-                    .performAction(Call.ACCEPT)
+                    .performAction(RingQtQuick.Call.ACCEPT)
             })
         }
 
@@ -419,7 +420,7 @@ Grid {
         implicitWidth: label4.implicitWidth + 20
         text: i18n("Hang up")
 
-        visible: availabilityTracker.hangUpControlState == AvailabilityTracker.NORMAL
+        visible: availabilityTracker.hangUpControlState == RingQtMedia.AvailabilityTracker.NORMAL
 
         onClicked: {
             if (currentIndividual == null) return
@@ -429,7 +430,7 @@ Grid {
             if (!c)
                 return
 
-            c.performAction(Call.REFUSE)
+            c.performAction(RingQtQuick.Call.REFUSE)
         }
     }
     }

@@ -21,13 +21,14 @@ import QtQuick.Layouts 1.0
 import org.kde.kirigami 2.2 as Kirigami
 
 import RingQmlWidgets 1.0
+import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 
 FocusScope {
     id: dialView
     focus: true
     anchors.fill: parent
 
-    signal selectCall(Call call)
+    signal selectCall(RingQtQuick.Call call)
 
     SystemPalette {
         id: inactivePalette
@@ -68,7 +69,7 @@ FocusScope {
     }
 
     function selectPrevious(call) {
-        if (call.state == Call.DIALING && completionSelection.selectPrevious())
+        if (call.state == RingQtQuick.Call.DIALING && completionSelection.selectPrevious())
             return
 
         completionSelection.clearSelection()
@@ -91,7 +92,7 @@ FocusScope {
     }
 
     function selectNext(call) {
-        if (call.state == Call.DIALING && completionSelection.selectNext())
+        if (call.state == RingQtQuick.Call.DIALING && completionSelection.selectNext())
             return
 
         completionSelection.clearSelection()
@@ -122,10 +123,10 @@ FocusScope {
         }
 
         // Apply the auto completion
-        if (call.state == Call.DIALING && CompletionModel.selectedContactMethod)
+        if (call.state == RingQtQuick.Call.DIALING && CompletionModel.selectedContactMethod)
             call.peerContactMethod = CompletionModel.selectedContactMethod
 
-        call.performAction(Call.ACCEPT)
+        call.performAction(RingQtQuick.Call.ACCEPT)
     }
 
 
@@ -149,7 +150,7 @@ FocusScope {
                 selectNext(getCall())
                 break
             case Qt.Key_Escape:
-                getCall().performAction(Call.REFUSE)
+                getCall().performAction(RingQtQuick.Call.REFUSE)
                 break
             case Qt.Key_Backspace:
                 getCall().backspaceItemText()

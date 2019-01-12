@@ -19,6 +19,7 @@ import QtQuick 2.7
 import QtQuick.Layouts 1.0
 import Ring 1.0
 import org.kde.kirigami 2.2 as Kirigami
+import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 
 Item {
     property QtObject call: null
@@ -145,9 +146,9 @@ Item {
     property var counter: 0
 
     onCallChanged: {
-        if (call && (call.state == Call.RINGING || call.state == 1 /*Call.INCOMING*/))
+        if (call && (call.state == RingQtQuick.Call.RINGING || call.state == 1 /*Call.INCOMING*/))
             callStateGroup.state = "RINGING"
-        else if (call && call.state == Call.CONNECTED)
+        else if (call && call.state == RingQtQuick.Call.CONNECTED)
             callStateGroup.state = "CONNECTED"
         else
             callStateGroup.state = "INITIALIZATION"
@@ -183,7 +184,7 @@ Item {
             },
             State {
                 name: "CONNECTED"
-                when: call && call.state == Call.CONNECTED
+                when: call && call.state == RingQtQuick.Call.CONNECTED
                 extend: "INITIALIZATION"
                 PropertyChanges {
                     target: searchCircle
@@ -198,7 +199,7 @@ Item {
             State {
                 name: "RINGING"
                 extend: "CONNECTED"
-                when: call && (call.state == Call.RINGING || call.state == 1 /*Call.INCOMING*/)
+                when: call && (call.state == RingQtQuick.Call.RINGING || call.state == 1 /*Call.INCOMING*/)
                 PropertyChanges {
                     target: ringCircle
                     circleColor: "#298223"

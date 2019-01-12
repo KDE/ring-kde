@@ -20,6 +20,7 @@ import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
 import Ring 1.0
 import org.kde.playground.kquickitemviews 1.0 as KQuickItemViews
+import net.lvindustries.ringqtquick.video.models 1.0 as RingQtVideoModel
 
 Item {
     property QtObject call: null
@@ -184,13 +185,13 @@ Item {
                             videoSource.current = index
 
                             switch(index) {
-                                case SourceModel.NONE:
+                                case RingQtVideoModel.SourceModel.NONE:
                                     videoSource.call.sourceModel.switchTo(0)
                                     return
-                                case SourceModel.SCREEN:
+                                case RingQtVideoModel.SourceModel.SCREEN:
                                     screenPopup.show()
                                     return
-                                case SourceModel.FILE:
+                                case RingQtVideoModel.SourceModel.FILE:
                                     filePopup.show()
                                     return
                             }

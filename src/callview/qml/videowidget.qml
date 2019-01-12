@@ -17,6 +17,7 @@
  **************************************************************************/
 import QtQuick 2.0
 import Ring 1.0
+import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 
 Rectangle {
     property bool     stretch: false
@@ -52,7 +53,7 @@ Rectangle {
             // code helps cleanup the messes in case a new source of issues is introduced.
             // It was the case enough time I don't think ever removing this code is a good
             // idea.
-            if (rendererName == "peer" && ((!call) || (!call.lifeCycleState == Call.Finished)))
+            if (rendererName == "peer" && ((!call) || (!call.lifeCycleState == RingQtQuick.Call.Finished)))
                 _delay = _delay + 1
 
             if (_delay >= 10) {

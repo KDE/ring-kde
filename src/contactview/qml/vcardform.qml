@@ -20,6 +20,7 @@ import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
 
 import RingQmlWidgets 1.0
+import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 
 
 GridLayout {
@@ -53,7 +54,7 @@ GridLayout {
 //         var old_organization   = organization.text
 
         // Create a real contact method in case this is a temporary one
-        if (currentContactMethod && currentContactMethod.type == ContactMethod.TEMPORARY)
+        if (currentContactMethod && currentContactMethod.type == RingQtQuick.ContactMethod.TEMPORARY)
             currentContactMethod = PhoneDirectoryModel.getNumber(
                 currentContactMethod.uri,
                 null,

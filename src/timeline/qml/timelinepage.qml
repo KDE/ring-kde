@@ -20,6 +20,7 @@ import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
 import QtGraphicalEffects 1.0
 import Ring 1.0
+import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 
 import RingQmlWidgets 1.0
 
@@ -186,8 +187,8 @@ Rectangle {
             visible: canSendTexts
             MessageBuilder {id: builder}
             requireContactRequest: currentContactMethod &&
-                currentContactMethod.confirmationStatus == ContactMethod.UNCONFIRMED &&
-                currentContactMethod.confirmationStatus != ContactMethod.DISABLED
+                currentContactMethod.confirmationStatus == RingQtQuick.ContactMethod.UNCONFIRMED &&
+                currentContactMethod.confirmationStatus != RingQtQuick.ContactMethod.DISABLED
 
             textColor: activePalette.text
             backgroundColor: activePalette.window

@@ -22,6 +22,7 @@ import Ring 1.0
 import RingQmlWidgets 1.0
 import org.kde.kirigami 2.2 as Kirigami
 import org.kde.playground.kquickitemviews 1.0 as KQuickItemViews
+import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 
 ListView {
     id: numbers
@@ -128,7 +129,7 @@ ListView {
             Button {
                 text: i18n("Cancel")
                 onClicked: {
-                    if (cmType == ContactMethod.TEMPORARY)
+                    if (cmType == RingQtQuick.ContactMethod.TEMPORARY)
                         numbers.model.editRow = false
 
                     numbers.currentIndex = idx
@@ -217,19 +218,19 @@ ListView {
                 iconSource: "image://SymbolicColorizer/:/sharedassets/outline/call.svg"
                 text: i18n("Call")
                 visible: canCall
-                onTriggered: CallModel.dialingCall(object).performAction(Call.ACCEPT)
+                onTriggered: CallModel.dialingCall(object).performAction(RingQtQuick.Call.ACCEPT)
             },
             Kirigami.Action {
                 iconSource: "image://SymbolicColorizer/:/sharedassets/outline/camera.svg"
                 text: i18n("Video call")
                 visible: canVideoCall
-                onTriggered: CallModel.dialingCall(object).performAction(Call.ACCEPT)
+                onTriggered: CallModel.dialingCall(object).performAction(RingQtQuick.Call.ACCEPT)
             },
             Kirigami.Action {
                 iconSource: "image://SymbolicColorizer/:/sharedassets/outline/screen.svg"
                 text: i18n("Share screen")
                 visible: canVideoCall
-                onTriggered: CallModel.dialingCall(object).performAction(Call.ACCEPT)
+                onTriggered: CallModel.dialingCall(object).performAction(RingQtQuick.Call.ACCEPT)
             }
         ]
 
@@ -241,7 +242,7 @@ ListView {
 
             Loader {
                 id: editorLoader
-                property ContactMethod obj: object
+                property RingQtQuick.ContactMethod obj: object
                 property int idx: index
                 property string editUri: object ? object.uri : ""
                 property var cmType: type

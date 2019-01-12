@@ -20,6 +20,8 @@ import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
 import Ring 1.0
 import org.kde.playground.kquickitemviews 1.0 as KQuickItemViews
+import net.lvindustries.ringqtquick 1.0 as RingQtQuick
+import net.lvindustries.ringqtquick.models 1.0 as RingQtModels
 
 import RingQmlWidgets 1.0
 
@@ -403,22 +405,22 @@ KQuickItemViews.TreeView {
             // Some elements don't have delegates because they are handled
             // by their parent delegates
             function selectDelegate() {
-                if (nodeType == IndividualTimelineModel.TIME_CATEGORY)
+                if (nodeType == RingQtModels.IndividualTimelineModel.TIME_CATEGORY)
                     return categoryDelegate
 
-                if (nodeType == IndividualTimelineModel.SECTION_DELIMITER)
+                if (nodeType == RingQtModels.IndividualTimelineModel.SECTION_DELIMITER)
                     return sectionDelegate
 
-                if (nodeType == IndividualTimelineModel.CALL_GROUP)
+                if (nodeType == RingQtModels.IndividualTimelineModel.CALL_GROUP)
                     return callDelegate
 
-                if (nodeType == IndividualTimelineModel.RECORDINGS)
+                if (nodeType == RingQtModels.IndividualTimelineModel.RECORDINGS)
                     return recordingDelegate
 
-                if (nodeType == IndividualTimelineModel.CALL_GROUP)
+                if (nodeType == RingQtModels.IndividualTimelineModel.CALL_GROUP)
                     return callDelegate
 
-                if (nodeType == IndividualTimelineModel.CALL
+                if (nodeType == RingQtModels.IndividualTimelineModel.CALL
                   && chatView.parentTreeItem(rootIndex).showDetailed)
                     return singleCallDelegate
             }

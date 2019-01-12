@@ -19,6 +19,7 @@ import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
 import Ring 1.0
+import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 
 Rectangle {
     id: applicationWindow
@@ -156,7 +157,7 @@ Rectangle {
         onAccountChanged: {
             var acc = frontPage.createRing.account
 
-            if ((!acc) || cc.registrationType !=  Account.READY)
+            if ((!acc) || cc.registrationType != RingQtQuick.Account.READY)
                 return
 
             if (!acc.profile)

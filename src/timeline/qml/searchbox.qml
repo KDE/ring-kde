@@ -19,6 +19,7 @@ import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
 import org.kde.kirigami 2.2 as Kirigami
+import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 
 import Ring 1.0
 
@@ -36,7 +37,7 @@ Item {
         search.text = ""
         search.focus = false
         if (CallModel.hasDialingCall)
-            CallModel.dialingCall().performAction(Call.REFUSE)
+            CallModel.dialingCall().performAction(RingQtQuick.Call.REFUSE)
     }
 
     FontMetrics {

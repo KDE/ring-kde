@@ -23,6 +23,7 @@ import QtQuick.Controls 2.2
 import ContactView 1.0
 import org.kde.kirigami 2.2 as Kirigami
 import org.kde.playground.kquickitemviews 1.0 as KQuickItemViews
+import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 
 ListView {
     id: accountList
@@ -73,7 +74,7 @@ ListView {
                 checked: obj.enabled
                 onClicked: {
                     obj.enabled = checked
-                    obj.performAction(Account.SAVE)
+                    obj.performAction(RingQtQuick.Account.SAVE)
                 }
             }
 
@@ -81,9 +82,9 @@ ListView {
                 height: Kirigami.Units.fontMetrics.height * 0.66
                 width: Kirigami.Units.fontMetrics.height * 0.66
                 radius: 99
-                color: obj.registrationState == Account.READY ?
+                color: obj.registrationState == RingQtQuick.Account.READY ?
                     Kirigami.Theme.positiveTextColor : (
-                        obj.registrationState == Account.TRYING ?
+                        obj.registrationState == RingQtQuick.Account.TRYING ?
                             Kirigami.Theme.neutralTextColor : Kirigami.Theme.negativeTextColor
                     )
             }
@@ -123,7 +124,7 @@ ListView {
                 checked: obj.enabled
                 onClicked: {
                     obj.enabled = checked
-                    obj.performAction(Account.SAVE)
+                    obj.performAction(RingQtQuick.Account.SAVE)
                 }
             }
 
@@ -131,9 +132,9 @@ ListView {
                 height: Kirigami.Units.fontMetrics.height * 0.66
                 width: Kirigami.Units.fontMetrics.height * 0.66
                 radius: 99
-                color: obj.registrationState == Account.READY ?
+                color: obj.registrationState == RingQtQuick.Account.READY ?
                     Kirigami.Theme.positiveTextColor : (
-                        obj.registrationState == Account.TRYING ?
+                        obj.registrationState == RingQtQuick.Account.TRYING ?
                         Kirigami.Theme.neutralTextColor : Kirigami.Theme.negativeTextColor
                     )
             }
@@ -209,7 +210,7 @@ ListView {
     }
 
     delegate: Kirigami.SwipeListItem {
-        property bool hasProblems: object.enabled && registrationState != Account.READY
+        property bool hasProblems: object.enabled && registrationState != RingQtQuick.Account.READY
 
         height: Kirigami.Units.fontMetrics.height * (hasProblems ? 3.5 : 2)
         width: accountList.width
@@ -219,7 +220,7 @@ ListView {
                 iconName: "message-news"
                 text: i18n("Status logs")
                 onTriggered: {
-                    object.performAction(Account.RELOAD)
+                    object.performAction(RingQtQuick.Account.RELOAD)
                 }
             },
             Kirigami.Action {
@@ -244,7 +245,7 @@ ListView {
                 iconName: "view-refresh"
                 text: i18n("Reload")
                 onTriggered: {
-                    object.performAction(Account.RELOAD)
+                    object.performAction(RingQtQuick.Account.RELOAD)
                 }
             }
         ]

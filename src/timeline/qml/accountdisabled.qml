@@ -21,6 +21,7 @@ import QtQuick.Layouts 1.0
 import org.kde.kirigami 2.2 as Kirigami
 import RingQmlWidgets 1.0
 import QtQuick.Controls 2.2
+import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 
 /**
  * Add a very obvious warning and reload button to make the "/!\ No accounts"
@@ -86,7 +87,7 @@ Rectangle {
                     anchors.fill: parent
                     onClicked: {
                         object.enabled = true
-                        object.performAction(Account.SAVE)
+                        object.performAction(RingQtQuick.Account.SAVE)
                     }
                 }
             }

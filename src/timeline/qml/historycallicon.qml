@@ -19,17 +19,18 @@ import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
 import Ring 1.0
+import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 
 Item {
     width:  30
     height: 30
     Image {
         function selectIcon(isMissed, direction) {
-            if (isMissed && direction == Call.INCOMING)
+            if (isMissed && direction == RingQtQuick.Call.INCOMING)
                 return "sharedassets/phone_dark/missed_incoming.svg"
-            else if (isMissed && direction == Call.OUTGOING)
+            else if (isMissed && direction == RingQtQuick.Call.OUTGOING)
                 return "sharedassets/phone_dark/missed_outgoing.svg"
-            else if (direction == Call.INCOMING)
+            else if (direction == RingQtQuick.Call.INCOMING)
                 return "sharedassets/phone_dark/incoming.svg"
             else
                 return "sharedassets/phone_dark/outgoing.svg"

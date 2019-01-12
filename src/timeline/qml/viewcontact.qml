@@ -20,6 +20,8 @@ import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
 import Ring 1.0
 import org.kde.kirigami 2.2 as Kirigami
+import net.lvindustries.ringqtquick 1.0 as RingQtQuick
+import net.lvindustries.ringqtquick.media 1.0 as RingQtMedia
 
 Item {
     id: viewContact
@@ -102,7 +104,7 @@ Item {
         currentPage = ""
     }
 
-    AvailabilityTracker {
+    RingQtMedia.AvailabilityTracker {
         id: availabilityTracker
         individual: currentIndividual
     }
@@ -121,7 +123,7 @@ Item {
             if (currentContactMethod.person)
                 return
 
-            avView.call = call && call.lifeCycleState != Call.FINISHED ? call : null
+            avView.call = call && call.lifeCycleState != RingQtQuick.Call.FINISHED ? call : null
         }
     }
 
@@ -227,7 +229,7 @@ Item {
                             }
 
                             CallModel.dialingCall(cm)
-                                .performAction(Call.ACCEPT)
+                                .performAction(RingQtQuick.Call.ACCEPT)
                         }
                         onCallWithVideo: {
                             var cm = viewContact.getDefaultCm()
@@ -238,7 +240,7 @@ Item {
                             }
 
                             CallModel.dialingCall(cm)
-                                .performAction(Call.ACCEPT)
+                                .performAction(RingQtQuick.Call.ACCEPT)
                         }
                         onCallWithScreen: {
                             var cm = viewContact.getDefaultCm()
@@ -249,7 +251,7 @@ Item {
                             }
 
                             CallModel.dialingCall(cm)
-                                .performAction(Call.ACCEPT)
+                                .performAction(RingQtQuick.Call.ACCEPT)
                         }
                     }
                 }

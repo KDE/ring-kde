@@ -20,6 +20,7 @@ import QtQuick.Layouts 1.0
 import Ring 1.0
 import RingQmlWidgets 1.0
 import org.kde.kirigami 2.2 as Kirigami
+import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 import ContactView 1.0
 
 Rectangle {
@@ -78,7 +79,7 @@ Rectangle {
 
         icon: "image://SymbolicColorizer/?color="+colString+";:/sharedassets/outline/close.svg"
         onClicked: {
-            object.performAction(Call.REFUSE)
+            object.performAction(RingQtQuick.Call.REFUSE)
         }
     }
 
@@ -302,7 +303,7 @@ Rectangle {
             },
             State {
                 name: "dialing"
-                when: selected && object.state == Call.DIALING
+                when: selected && object.state == RingQtQuick.Call.DIALING
                 PropertyChanges {
                     target: callDelegateItem
                     border.width: 0
@@ -322,8 +323,8 @@ Rectangle {
             },
             State {
                 name: "error"
-                when: lifeCycleState == Call.FINISHED && object.state != Call.OVER
-                    && object.state != Call.ABORTED
+                when: lifeCycleState == RingQtQuick.Call.FINISHED && object.state != RingQtQuick.Call.OVER
+                    && object.state != RingQtQuick.Call.ABORTED
 
                 PropertyChanges {
                     target: errorMessage
@@ -344,7 +345,7 @@ Rectangle {
             },
             State {
                 name: "missed"
-                when: object.state == Call.OVER && object.missed
+                when: object.state == RingQtQuick.Call.OVER && object.missed
 
                 PropertyChanges {
                     target: missedMessage
@@ -389,7 +390,7 @@ Rectangle {
             },
             State {
                 name: "outgoing"
-                when: object.lifeCycleState == Call.INITIALIZATION && object.direction == 1/*OUTGOING*/
+                when: object.lifeCycleState == RingQtQuick.Call.INITIALIZATION && object.direction == 1/*OUTGOING*/
 
                 PropertyChanges {
                     target: callDelegateItem
@@ -408,7 +409,7 @@ Rectangle {
             },
             State {
                 name: "finished"
-                when: object.state == Call.OVER
+                when: object.state == RingQtQuick.Call.OVER
 
                 PropertyChanges {
                     target: callDelegateItem
@@ -427,7 +428,7 @@ Rectangle {
             },
             State {
                 name: "current"
-                when: object.lifeCycleState == Call.PROGRESS
+                when: object.lifeCycleState == RingQtQuick.Call.PROGRESS
 
                 PropertyChanges {
                     target: callDelegateItem

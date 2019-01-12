@@ -21,6 +21,7 @@ import QtQuick.Layouts 1.0
 import org.kde.kirigami 2.2 as Kirigami
 import RingQmlWidgets 1.0
 import QtQuick.Controls 2.2
+import net.lvindustries.ringqtquick.troubleshoot 1.0 as RingQtTroubleshoot
 
 /**
  * This is a frontend for the troubleshooting subsystem.
@@ -44,7 +45,7 @@ Rectangle {
     visible: troubleshootDispatcher.isActive || isActive
 
 
-    Dispatcher {
+    RingQtTroubleshoot.Dispatcher {
         id: troubleshootDispatcher
         call: placeholderMessage.call
     }

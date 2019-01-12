@@ -19,6 +19,7 @@ import QtQuick 2.0
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
 import Ring 1.0
+import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 
 Item {
     id: createRing
@@ -74,13 +75,13 @@ Item {
         // Make sure they are unique
         name = name + AccountModel.getSimilarAliasIndex(name)
 
-        account = AccountModel.add(name, Account.RING);
+        account = AccountModel.add(name, RingQtQuick.Account.RING);
         account.displayName     = name
         account.archivePassword = password.text
         account.upnpEnabled     = true;
 
-        account.performAction(Account.SAVE)
-        account.performAction(Account.RELOAD)
+        account.performAction(RingQtQuick.Account.SAVE)
+        account.performAction(RingQtQuick.Account.RELOAD)
         console.log("Account creation in progress")
     }
 
@@ -425,7 +426,7 @@ Item {
         onStateChanged: {
             // Assume UNREGISTERED accounts are ok, otherwise it will have
             // false negatives
-            if (state == Account.READY || state == Account.UNREGISTERED) {
+            if (state == RingQtQuick.Account.READY || state == RingQtQuick.Account.UNREGISTERED) {
                 if (registerUserName.checked) {
                     if (account.registerName(password.text, account.displayName)) {
                         registrationStatus.text = i18n("Registration")
@@ -445,7 +446,7 @@ Item {
                 }
                 account = null
             }
-            else if (state == Account.ERROR) {
+            else if (state == RingQtQuick.Account.ERROR) {
                 console.log("The account creation failed with an invalid state:",
                     account.lastErrorMessage)
             }

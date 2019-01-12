@@ -18,6 +18,7 @@
 import QtQuick 2.7
 import QtQuick.Layouts 1.0
 import Ring 1.0
+import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 
 Item {
     id: videoDock
@@ -254,7 +255,7 @@ Item {
         onLiveMediaIssuesChanaged: {
             // This isn't using properties because the renderer live in their
             // own thread and QML doesn't support this yet
-            videoWidget.hasFailed = call.hasIssue(Call.VIDEO_ACQUISITION_FAILED)
+            videoWidget.hasFailed = call.hasIssue(RingQtQuick.Call.VIDEO_ACQUISITION_FAILED)
         }
     }
 
@@ -271,7 +272,7 @@ Item {
     Connections {
         target: call
         onStateChanged: {
-            if (call == null || call.lifeCycleState == Call.FINISHED) {
+            if (call == null || call.lifeCycleState == RingQtQuick.Call.FINISHED) {
                 call = null
                 hideToolbars()
             }

@@ -18,6 +18,7 @@
 import QtQuick 2.7
 import RingQmlWidgets 1.0
 import Ring 1.0
+import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 
 Rectangle {
     property QtObject call: null;
@@ -93,9 +94,9 @@ Rectangle {
     }
 
     onCallChanged: {
-        if (call && (call.state == Call.RINGING || call.state == 1 /*Call.INCOMING*/))
+        if (call && (call.state == RingQtQuick.Call.RINGING || call.state == 1 /*Call.INCOMING*/))
             callStateGroup.state = "RINGING"
-        else if (call && (call.state == Call.CONNECTED || call.state == 14 /*Call.INITIALIZATION*/))
+        else if (call && (call.state == RingQtQuick.Call.CONNECTED || call.state == 14 /*Call.INITIALIZATION*/))
             callStateGroup.state = "CONNECTED"
         else
             callStateGroup.state = "DEFAULT"
@@ -110,7 +111,7 @@ Rectangle {
         running:  false
         repeat:   false
         onTriggered: {
-            if (call.lifeCycleState == Call.FINISHED)
+            if (call.lifeCycleState == RingQtQuick.Call.FINISHED)
                 call = null
         }
     }
@@ -133,7 +134,7 @@ Rectangle {
             },
             State {
                 name: "RINGING"
-                when: call && (call.state == Call.RINGING || call.state == 1 /*Call.INCOMING*/)
+                when: call && (call.state == RingQtQuick.Call.RINGING || call.state == 1 /*Call.INCOMING*/)
                 PropertyChanges {
                     target: ringingIndicator
                     visible:  true
@@ -142,7 +143,7 @@ Rectangle {
             },
             State {
                 name: "CONNECTED"
-                when: call && (call.state == Call.CONNECTED || call.state == 14 /*Call.INITIALIZATION*/)
+                when: call && (call.state == RingQtQuick.Call.CONNECTED || call.state == 14 /*Call.INITIALIZATION*/)
                 PropertyChanges {
                     target: searchingIndicator
                     visible:  true
@@ -151,7 +152,7 @@ Rectangle {
             },
             State {
                 name: "ENDED"
-                when: call.lifeCycleState == Call.FINISHED
+                when: call.lifeCycleState == RingQtQuick.Call.FINISHED
                 PropertyChanges {
                     target: callEnded
                     visible:  true
@@ -170,7 +171,7 @@ Rectangle {
         states: [
             State {
                 name: "CREATION"
-                when: call.lifeCycleState == Call.CREATION
+                when: call.lifeCycleState == RingQtQuick.Call.CREATION
                 PropertyChanges {
                     target: progresIndicator
                     visible:  true
@@ -178,7 +179,7 @@ Rectangle {
             },
             State {
                 name: "INITIALIZATION"
-                when: call.lifeCycleState == Call.INITIALIZATION
+                when: call.lifeCycleState == RingQtQuick.Call.INITIALIZATION
                 PropertyChanges {
                     target: progresIndicator
                     visible:  true
@@ -186,11 +187,11 @@ Rectangle {
             },
             State {
                 name: "PROGRESS"
-                when: call.lifeCycleState == Call.PROGRESS
+                when: call.lifeCycleState == RingQtQuick.Call.PROGRESS
             },
             State {
                 name: "FINISHED"
-                when: (!call) || call.lifeCycleState == Call.FINISHED
+                when: (!call) || call.lifeCycleState == RingQtQuick.Call.FINISHED
             }
         ]
     }
