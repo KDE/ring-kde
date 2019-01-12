@@ -21,6 +21,7 @@ import QtQuick.Layouts 1.0
 import QtQuick.Controls 2.0 as Controls
 import org.kde.kirigami 2.2 as Kirigami
 import QtQuick.Window 2.2
+import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 import ContactView 1.0
 
 import DesktopView 1.0
@@ -284,7 +285,7 @@ Item {
         anchors.fill: parent
         onContactMethodSelected: {
             mainPage.setContactMethod(cm)
-            setCurrentIndex(PeersTimelineModel.individualIndex(cm.individual))
+            setCurrentIndex(RingSession.peersTimelineModel.individualIndex(cm.individual))
         }
     }
 }

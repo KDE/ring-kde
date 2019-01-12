@@ -147,7 +147,7 @@ Rectangle {
             delegate: contactDelegate
             section.delegate: sectionDelegate
             section.property: "formattedLastUsed" // indexedLastUsed
-            section.model: PeersTimelineModel.timelineSummaryModel
+            section.model: RingSession.peersTimelineModel.timelineSummaryModel
 
             highlight: Item {
 
@@ -194,7 +194,7 @@ Rectangle {
                 widthHint: recentView.width
                 heightHint: (proxyModel.getRowCount(object)*2+1)*fmh + 13
 
-                sourceModel: PeersTimelineModel
+                sourceModel: RingSession.peersTimelineModel
             }
         }
 
@@ -204,7 +204,7 @@ Rectangle {
             anchors.top: parent.top
             anchors.right: parent.right
             width: 10
-            model: PeersTimelineModel.timelineSummaryModel
+            model: RingSession.peersTimelineModel.timelineSummaryModel
             z: 100
             display: recentView.moving || recentDock.state == ""
             view: recentView

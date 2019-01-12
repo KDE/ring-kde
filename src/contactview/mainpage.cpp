@@ -93,12 +93,12 @@ MainPage::MainPage(QQuickItem* parent) :
         if (d_ptr->m_Invididual)
             return;
 
-        auto i = PeersTimelineModel::instance().mostRecentIndividual();
+        auto i = Session::instance()->peersTimelineModel()->mostRecentIndividual();
 
         // Select whatever is first (if any)
-        if ((!i) && PeersTimelineModel::instance().rowCount())
+        if ((!i) && Session::instance()->peersTimelineModel()->rowCount())
             if (auto rawI = qvariant_cast<Individual*>(
-                PeersTimelineModel::instance().index(0,0).data((int)Ring::Role::Object)
+                Session::instance()->peersTimelineModel()->index(0,0).data((int)Ring::Role::Object)
             ))
                 i = rawI;
 
@@ -106,16 +106,16 @@ MainPage::MainPage(QQuickItem* parent) :
         if (!i) {
             QMetaObject::Connection c;
 
-            c = connect(&PeersTimelineModel::instance(), &QAbstractItemModel::rowsInserted, this, [c, this]() {
+            c = connect(Session::instance()->peersTimelineModel(), &QAbstractItemModel::rowsInserted, this, [c, this]() {
                 if (d_ptr->m_Invididual) {
                     disconnect(c);
                     return;
                 }
 
-                if (auto i = PeersTimelineModel::instance().mostRecentIndividual()) {
+                if (auto i = Session::instance()->peersTimelineModel()->mostRecentIndividual()) {
                     disconnect(c);
                     setIndividual(i);
-                    const auto idx = PeersTimelineModel::instance().individualIndex(i);
+                    const auto idx = Session::instance()->peersTimelineModel()->individualIndex(i);
                     emit suggestSelection(i, idx);
                 }
             });
@@ -126,7 +126,7 @@ MainPage::MainPage(QQuickItem* parent) :
         setIndividual(i);
 
         if (i) {
-            const auto idx = PeersTimelineModel::instance().individualIndex(i);
+            const auto idx = Session::instance()->peersTimelineModel()->individualIndex(i);
             emit suggestSelection(i, idx);
         }
     });
@@ -366,7 +366,7 @@ Individual* MainPage::individual() const
 QModelIndex MainPage::suggestedTimelineIndex() const
 {
     if (d_ptr->m_Invididual)
-        return PeersTimelineModel::instance().individualIndex(
+        return Session::instance()->peersTimelineModel()->individualIndex(
             qobject_cast<Individual*>(d_ptr->m_Invididual)
         );
 

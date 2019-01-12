@@ -217,7 +217,7 @@ RingApplication::~RingApplication()
    delete m_pPhotoSelector;
    delete m_pQmlWidget;
 
-   delete &PeersTimelineModel::instance();
+   delete Session::instance()->peersTimelineModel();
    delete &Media::RecordingModel::instance();
    delete &PersonModel::instance();
    delete Session::instance()->callModel();
@@ -454,8 +454,6 @@ QQmlApplicationEngine* RingApplication::engine()
       m_pDeclarative->setupBindings();
 
       try {
-         QML_SINGLETON( NameDirectory            );
-         QML_SINGLETON( PeersTimelineModel       );
          QML_SINGLETON( NumberCategoryModel      );
          QML_SINGLETON( PhoneDirectoryModel      );
          QML_SINGLETON( RecentFileModel          );

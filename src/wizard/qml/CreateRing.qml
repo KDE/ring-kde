@@ -354,7 +354,7 @@ Item {
 
     // After each username field change, check availability
     Connections {
-        target: NameDirectory
+        target: RingSession.nameDirectory
         onRegisteredNameFound: {
             //  Race conditions
             if (userName.text != name)

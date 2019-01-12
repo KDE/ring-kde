@@ -22,7 +22,7 @@ import QtGraphicalEffects 1.0
 import Ring 1.0
 import RingQmlWidgets 1.0
 import org.kde.kirigami 2.0 as Kirigami
-
+import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 import Ring 1.0
 
 Item {
@@ -309,7 +309,7 @@ Item {
             State {
                 name: ""
                 when: ((!wizardVisible) && (!seachOverlay.active) && (
-                    (!PeersTimelineModel.empty) || (!displayTips.showFirstTip)
+                    (!RingSession.peersTimelineModel.empty) || (!displayTips.showFirstTip)
                 )) || (!delayed)
 
                 ParentChange {
