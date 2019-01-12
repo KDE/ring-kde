@@ -214,20 +214,20 @@ ENDIF(${CMAKE_BUILD_TYPE} MATCHES Release)
 
 # Delegates
 SET(
-   ring_kde_DELEGATES
+   ring_kde_PROXIES
 #    delegates/conferencedelegate.cpp
 #    delegates/contactdelegate.cpp
 #    delegates/historydelegate.cpp
 #    delegates/phonenumberdelegate.cpp
 #    delegates/delegatedropoverlay.cpp
 #    delegates/dialpaddelegate.cpp
-   delegates/autocompletiondelegate.cpp
-   delegates/autocompletiondelegate2.cpp
-   delegates/toolbardelegate.cpp
-   delegates/accountinfodelegate.cpp
+#    delegates/autocompletiondelegate.cpp
+#    delegates/autocompletiondelegate2.cpp
+#    delegates/toolbardelegate.cpp
+#    delegates/accountinfodelegate.cpp
+#    delegates/categorizeddelegate.cpp
+#    delegates/righticondelegate.cpp
    delegates/kdepixmapmanipulation.cpp
-   delegates/categorizeddelegate.cpp
-   delegates/righticondelegate.cpp
    proxies/simplerotateproxy.cpp
    proxies/deduplicateproxy.cpp
    proxies/filtertoplevelproxy.cpp
@@ -238,66 +238,59 @@ SET(
 )
 
 # Configuration pages
-SET(
-   ring_kde_CONF
-   conf/accountserializationadapter.cpp
-   conf/configurationdialog.cpp
-   conf/dlggeneral.cpp
-   conf/dlgdisplay.cpp
-   conf/dlgaudio.cpp
-   conf/dlgaddressbook.cpp
-   conf/dlgaccessibility.cpp
-   conf/dlgpresence.cpp
-   conf/dlgaccount.cpp
-   configurator/localhistoryconfigurator.cpp
-   configurator/peerprofileconfigurator.cpp
-   configurator/bookmarkconfigurator.cpp
-   configurator/audiorecordingconfigurator.cpp
-   configurator/fallbackpersonconfigurator.cpp
-)
+# SET(
+#    ring_kde_CONF
+#    conf/accountserializationadapter.cpp
+#    conf/configurationdialog.cpp
+#    conf/dlgdisplay.cpp
+#    conf/dlgaudio.cpp
+#    conf/dlgaddressbook.cpp
+#    conf/dlgaccessibility.cpp
+#    conf/dlgpresence.cpp
+#    conf/dlgaccount.cpp
+# )
 
 # Account pages
-SET(
-   ring_kde_ACCOUNT
-   conf/accountpages/advanced.cpp
-   conf/accountpages/credentials.cpp
-   conf/accountpages/basic.cpp
-   conf/accountpages/network.cpp
-   conf/accountpages/codecs.cpp
-   conf/accountpages/ringtone.cpp
-   conf/accountpages/security.cpp
-   conf/accountpages/pagebase.cpp
-   conf/accountpages/account.cpp
-   conf/accountpages/devices.cpp
-   conf/accountpages/dlgprofiles.cpp
-)
+# SET(
+#    ring_kde_ACCOUNT
+#    conf/accountpages/advanced.cpp
+#    conf/accountpages/credentials.cpp
+#    conf/accountpages/basic.cpp
+#    conf/accountpages/network.cpp
+#    conf/accountpages/codecs.cpp
+#    conf/accountpages/ringtone.cpp
+#    conf/accountpages/security.cpp
+#    conf/accountpages/pagebase.cpp
+#    conf/accountpages/account.cpp
+#    conf/accountpages/devices.cpp
+#    conf/accountpages/dlgprofiles.cpp
+# )
 
 # Widgets
-SET(
-   ring_kde_WIDGETS
-   widgets/systray.cpp
-   widgets/categorizedtreeview.cpp
-   widgets/fileselector.cpp
-   widgets/filterlineedit.cpp
-   widgets/kphonenumberselector.cpp
-   widgets/directoryview.cpp
-   widgets/menumodelview.cpp
-   widgets/accountstatusviewer.cpp
-   widgets/autocombobox.cpp
-   widgets/categorizedtree.cpp
-   widgets/certificateviewer.cpp
-   widgets/contextlistview.cpp
-   widgets/groupedtoolbutton.cpp
-   widgets/securityprogress.cpp
-)
+# SET(
+#    ring_kde_WIDGETS
+#    widgets/systray.cpp
+#    widgets/categorizedtreeview.cpp
+#    widgets/fileselector.cpp
+#    widgets/kphonenumberselector.cpp
+#    widgets/directoryview.cpp
+#    widgets/menumodelview.cpp
+#    widgets/accountstatusviewer.cpp
+#    widgets/autocombobox.cpp
+#    widgets/categorizedtree.cpp
+#    widgets/certificateviewer.cpp
+#    widgets/contextlistview.cpp
+#    widgets/groupedtoolbutton.cpp
+#    widgets/securityprogress.cpp
+# )
 
 # Video Widgets
-IF(NOT (${ENABLE_VIDEO} MATCHES false))
-   SET(
-      ring_kde_VIDEO
-      conf/dlgvideo.cpp
-   )
-ENDIF(NOT (${ENABLE_VIDEO} MATCHES false))
+# IF(NOT (${ENABLE_VIDEO} MATCHES false))
+#    SET(
+#       ring_kde_VIDEO
+#       conf/dlgvideo.cpp
+#    )
+# ENDIF(NOT (${ENABLE_VIDEO} MATCHES false))
 
 SET(
    ring_kde_SRCS
@@ -311,11 +304,19 @@ SET(
    actioncollection.cpp
    implementation.cpp
    model/extendedprotocolmodel.cpp
-   ${ring_kde_DELEGATES}
-   ${ring_kde_CONF}
-   ${ring_kde_WIDGETS}
-   ${ring_kde_ACCOUNT}
-   ${ring_kde_VIDEO}
+   ${ring_kde_PROXIES}
+#    ${ring_kde_CONF}
+#    ${ring_kde_WIDGETS}
+#    ${ring_kde_ACCOUNT}
+#    ${ring_kde_VIDEO}
+   widgets/systray.cpp
+   configurator/localhistoryconfigurator.cpp
+   configurator/peerprofileconfigurator.cpp
+   configurator/bookmarkconfigurator.cpp
+   configurator/audiorecordingconfigurator.cpp
+   configurator/fallbackpersonconfigurator.cpp
+   conf/dlggeneral.cpp
+   widgets/filterlineedit.cpp
 )
 
 
@@ -338,32 +339,32 @@ QT5_ADD_RESOURCES(QtApp_RCC_SRCS ${QtApp_RCCS})
 
 
 # kde4_automoc(${ring_kde_SRCS})
-SET(
-   config_ui_files
-   conf/dlggeneralbase.ui
-   conf/dlgdisplaybase.ui
-   conf/dlgaudiobase.ui
-   conf/dlgaddressbookbase.ui
-   conf/dlgaccessibility.ui
-   conf/dlgaudiorecording.ui
-   conf/dlgpresence.ui
-   conf/dlgfallbackperson.ui
-   conf/accountdlg.ui
-   conf/accountpages/advanced.ui
-   conf/accountpages/credentials.ui
-   conf/accountpages/basic.ui
-   conf/accountpages/network.ui
-   conf/accountpages/codecs.ui
-   conf/accountpages/ringtone.ui
-   conf/accountpages/security.ui
-   conf/accountpages/tabs.ui
-   widgets/ui/directoryview.ui
-   widgets/ui/accountcreator.ui
-   widgets/ui/fileselect.ui
-   configurator/peerprofile.ui
-   configurator/bookmark.ui
-   configurator/recording.ui
-)
+# SET(
+#    config_ui_files
+#    conf/dlggeneralbase.ui
+#    conf/dlgdisplaybase.ui
+#    conf/dlgaudiobase.ui
+#    conf/dlgaddressbookbase.ui
+#    conf/dlgaccessibility.ui
+#    conf/dlgaudiorecording.ui
+#    conf/dlgpresence.ui
+#    conf/dlgfallbackperson.ui
+#    conf/accountdlg.ui
+#    conf/accountpages/advanced.ui
+#    conf/accountpages/credentials.ui
+#    conf/accountpages/basic.ui
+#    conf/accountpages/network.ui
+#    conf/accountpages/codecs.ui
+#    conf/accountpages/ringtone.ui
+#    conf/accountpages/security.ui
+#    conf/accountpages/tabs.ui
+#    widgets/ui/directoryview.ui
+#    widgets/ui/accountcreator.ui
+#    widgets/ui/fileselect.ui
+#    configurator/peerprofile.ui
+#    configurator/bookmark.ui
+#    configurator/recording.ui
+# )
 
 # add_subdirectory( test   ) #Enable again some day, it cause compile problems for some users
 

@@ -19,6 +19,7 @@
 #define CMD_H
 
 #include <QtCore/QObject>
+#include <QtCore/QUrl>
 
 //KDE
 class KAboutData;

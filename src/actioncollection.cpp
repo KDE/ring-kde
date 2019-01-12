@@ -41,7 +41,6 @@
 //Ring
 #include "globalinstances.h"
 #include "ringapplication.h"
-#include "conf/configurationdialog.h"
 #include "icons/icons.h"
 #include "klib/kcfg_settings.h"
 #include <call.h>
@@ -53,7 +52,7 @@
 #include <audio/settings.h>
 #include <personmodel.h>
 #include <delegates/kdepixmapmanipulation.h>
-#include "widgets/directoryview.h"
+// #include "widgets/directoryview.h"
 
 #ifdef HAVE_SPEECH
  #include "accessibility.h"
@@ -159,13 +158,9 @@ void ActionCollection::setupAction()
 
    // Import standard actions
    action_quit          = KStandardAction::quit       ( RingApplication::instance(), SLOT(quit())   , this);
-   action_configureRing = KStandardAction::preferences( this             , SLOT(slotConfigureRing()), this);
-Q_ASSERT(action_configureRing );
-   action_configureRing->setText(i18n("Configure Ring-KDE"));
 
    action_quit          ->setObjectName( QStringLiteral("action_quit")          );
    action_close         ->setObjectName( QStringLiteral("action_close")          );
-   action_configureRing ->setObjectName( QStringLiteral("action_configureRing") );
 
    action_quit->setText(i18n("Quit"));
 
@@ -323,7 +318,7 @@ Q_ASSERT(action_configureRing );
       action_accept            , action_new_call          , action_hold              ,
       action_transfer          , action_record            , action_new_contact       ,
       action_quit              , action_displayDialpad    , action_showDialDock      ,
-      action_displayAccountCbb , action_close             , action_configureRing     ,
+      action_displayAccountCbb , action_close             ,
       action_configureShortcut , action_pastenumber       , action_showContactDock   ,
       action_showHistoryDock   , action_showBookmarkDock  , action_editToolBar       ,
       action_addPerson         , action_mute_capture      , action_mute_playback     ,
@@ -378,16 +373,6 @@ void ActionCollection::setupPhoneAction(PhoneWindow* mw)
 
 }
 
-///Show the configuration dialog
-void ActionCollection::slotConfigureRing()
-{
-   QPointer<ConfigurationDialog> configDialog = new ConfigurationDialog(nullptr);
-   configDialog->setModal(true);
-
-   configDialog->exec();
-   delete configDialog;
-}
-
 ///Display the shortcuts dialog
 void ActionCollection::showShortCutEditor()
 {
@@ -401,7 +386,7 @@ void ActionCollection::showShortCutEditor()
 ///Display the shortcuts dialog
 void ActionCollection::showDirectory()
 {
-   new DirectoryView(nullptr);
+//    new DirectoryView(nullptr);
 }
 
 ///Display the notification manager
@@ -553,7 +538,6 @@ GETTER(focusBookmark                , action_focus_bookmark        )
 GETTER(showWizard                   , action_show_wizard           )
 GETTER(showMenu                     , action_show_menu             )
 GETTER(newContact                   , action_new_contact           )
-GETTER(configureRing                , action_configureRing         )
 GETTER(configureShortcut            , action_configureShortcut     )
 GETTER(configureNotification        , action_configureNotifications)
 GETTER(configureAccount             , action_configureAccount)

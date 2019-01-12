@@ -29,6 +29,7 @@
 #include <QtCore/QDir>
 #include <QtCore/QMimeData>
 #include <QtCore/QPointer>
+#include <QtCore/QUrl>
 #include <QtGui/QClipboard>
 #include <QtGui/QIcon>
 #include <QQuickView>

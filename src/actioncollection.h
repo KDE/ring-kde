@@ -70,7 +70,6 @@ public:
    Q_PROPERTY(QAction* showWizard                  READ showWizard                  CONSTANT)
    Q_PROPERTY(QAction* showMenu                    READ showMenu                    CONSTANT)
    Q_PROPERTY(QAction* newContact                  READ newContact                  CONSTANT)
-   Q_PROPERTY(QAction* configureRing               READ configureRing               CONSTANT)
    Q_PROPERTY(QAction* configureShortcut           READ configureShortcut           CONSTANT)
    Q_PROPERTY(QAction* configureNotification       READ configureNotification       CONSTANT)
    Q_PROPERTY(QAction* configureAccount            READ configureAccount            CONSTANT)
@@ -115,7 +114,6 @@ public:
    QAction* showWizard                  ();
    QAction* showMenu                    ();
    QAction* newContact                  ();
-   QAction* configureRing               ();
    QAction* configureShortcut           ();
    QAction* configureNotification       ();
    QAction* configureAccount            ();
@@ -177,7 +175,6 @@ private:
    QAction * action_displayVolumeControls  {nullptr};
    QAction * action_displayDialpad         {nullptr};
    QAction * action_displayAccountCbb      {nullptr};
-   QAction * action_configureRing          {nullptr};
    QAction * action_configureShortcut      {nullptr};
    QAction * action_configureNotifications {nullptr};
    QAction * action_configureAccount       {nullptr};
@@ -202,7 +199,6 @@ private:
    QObject* kactionCollection() const;
 
 public Q_SLOTS:
-   void slotConfigureRing         ();
    void slotRaiseClient           ( bool focus = false );
 
 private Q_SLOTS:
