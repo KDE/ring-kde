@@ -47,8 +47,8 @@ private Q_SLOTS:
 private:
     bool m_Init {false};
     Mode m_Mode;
-    QLabel* m_pLastUpdated {nullptr};
-    QLabel* m_pLength {nullptr};
+//     QLabel* m_pLastUpdated {nullptr};
+//     QLabel* m_pLength {nullptr};
 };
 
 // kate: space-indent on; indent-width 4; replace-tabs on;

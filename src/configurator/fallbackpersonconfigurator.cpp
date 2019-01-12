@@ -16,9 +16,10 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
 #include "fallbackpersonconfigurator.h"
-#include "ui_dlgfallbackperson.h"
+// #include "ui_dlgfallbackperson.h"
 
 #include <KLocalizedString>
+#include <QtWidgets/QWidget>
 
 FallbackPersonConfigurator::FallbackPersonConfigurator(QObject* parent) : CollectionConfigurationInterface(parent),m_pDialog(nullptr)
 {
@@ -44,14 +45,14 @@ void FallbackPersonConfigurator::loadCollection(CollectionInterface* col, QObjec
 {
    Q_UNUSED(col)
    if (parent && qobject_cast<QWidget*>(parent)) {
-      QWidget* w = qobject_cast<QWidget*>(parent);
-      if (!m_pDialog) {
-         m_pDialog = new QWidget();
-         Ui_DlgFallbackPerson ui;
-         ui.setupUi(m_pDialog);
-         QHBoxLayout* l = new QHBoxLayout(w);
-         l->addWidget(m_pDialog);
-      }
+//       QWidget* w = qobject_cast<QWidget*>(parent);
+//       if (!m_pDialog) {
+//          m_pDialog = new QWidget();
+//          Ui_DlgFallbackPerson ui;
+//          ui.setupUi(m_pDialog);
+//          QHBoxLayout* l = new QHBoxLayout(w);
+//          l->addWidget(m_pDialog);
+//       }
    }
 }
 

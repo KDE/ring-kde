@@ -20,10 +20,11 @@
 #include <media/recordingmodel.h>
 #include <call.h>
 #include <QtCore/QSortFilterProxyModel>
+#include <QtWidgets/QWidget>
 
 #include <KLocalizedString>
 
-#include "ui_recording.h"
+// #include "ui_recording.h"
 
 AudioRecordingConfigurator::AudioRecordingConfigurator(QObject* parent, AudioRecordingConfigurator::Mode mode)
     : CollectionConfigurationInterface(parent), m_Mode(mode)
@@ -52,8 +53,8 @@ void AudioRecordingConfigurator::slotSelectionChanged(const QModelIndex& idx)
     if (date.isNull())
         date = idx.data((int)Call::Role::FormattedDate);
 
-    m_pLastUpdated->setText(date.toString());
-    m_pLength->setText(idx.data((int)Ring::Role::Length).toString());
+//     m_pLastUpdated->setText(date.toString());
+//     m_pLength->setText(idx.data((int)Ring::Role::Length).toString());
 }
 
 void AudioRecordingConfigurator::loadCollection(CollectionInterface* col, QObject* parent)
@@ -64,34 +65,34 @@ void AudioRecordingConfigurator::loadCollection(CollectionInterface* col, QObjec
         return;
 
     if (auto w = qobject_cast<QWidget*>(parent)) {
-        Ui_Recording ui;
-        ui.setupUi(w);
-        m_pLastUpdated = ui.lastUpdated;
-        m_pLength      = ui.length;
-
-        QAbstractItemModel* m = nullptr;
-
-        if (m_Mode == Mode::AUDIO)
-            m = Media::RecordingModel::instance().audioRecordingModel();
-        else
-            m = Media::RecordingModel::instance().textRecordingModel();
-
-        auto p = new QSortFilterProxyModel(this);
-        connect(ui.lineEdit ,SIGNAL(filterStringChanged(QString)), p, SLOT(setFilterRegExp(QString)));
-        p->setSourceModel(m);
-        p->setFilterRole(Qt::DisplayRole);
-        p->setFilterCaseSensitivity( Qt::CaseInsensitive );
-        p->setSortCaseSensitivity  ( Qt::CaseInsensitive );
-
-        ui.tableView->setModel(p);
-        connect(ui.tableView->selectionModel(), &QItemSelectionModel::currentChanged,
-            this, &AudioRecordingConfigurator::slotSelectionChanged);
-
-        if (p->rowCount())
-            ui.tableView->selectionModel()->setCurrentIndex(
-                p->index(0,0),
-                QItemSelectionModel::ClearAndSelect
-            );
+//         Ui_Recording ui;
+//         ui.setupUi(w);
+//         m_pLastUpdated = ui.lastUpdated;
+//         m_pLength      = ui.length;
+//
+//         QAbstractItemModel* m = nullptr;
+//
+//         if (m_Mode == Mode::AUDIO)
+//             m = Media::RecordingModel::instance().audioRecordingModel();
+//         else
+//             m = Media::RecordingModel::instance().textRecordingModel();
+//
+//         auto p = new QSortFilterProxyModel(this);
+//         connect(ui.lineEdit ,SIGNAL(filterStringChanged(QString)), p, SLOT(setFilterRegExp(QString)));
+//         p->setSourceModel(m);
+//         p->setFilterRole(Qt::DisplayRole);
+//         p->setFilterCaseSensitivity( Qt::CaseInsensitive );
+//         p->setSortCaseSensitivity  ( Qt::CaseInsensitive );
+//
+//         ui.tableView->setModel(p);
+//         connect(ui.tableView->selectionModel(), &QItemSelectionModel::currentChanged,
+//             this, &AudioRecordingConfigurator::slotSelectionChanged);
+//
+//         if (p->rowCount())
+//             ui.tableView->selectionModel()->setCurrentIndex(
+//                 p->index(0,0),
+//                 QItemSelectionModel::ClearAndSelect
+//             );
     }
 
     m_Init = true;

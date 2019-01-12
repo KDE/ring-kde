@@ -23,8 +23,7 @@
 
 #include <KLocalizedString>
 
-#include <QtWidgets/QSpinBox>
-#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QWidget>
 
 LocalHistoryConfigurator::LocalHistoryConfigurator(QObject* parent) : CollectionConfigurationInterface(parent),m_pDialog(nullptr)
 {

@@ -22,7 +22,8 @@
 #include <categorizedbookmarkmodel.h>
 #include <session.h>
 
-#include "ui_bookmark.h"
+// #include "ui_bookmark.h"
+#include <QtWidgets/QWidget>
 
 BookmarkConfigurator::BookmarkConfigurator(QObject* parent) : CollectionConfigurationInterface(parent)
 {
@@ -30,7 +31,7 @@ BookmarkConfigurator::BookmarkConfigurator(QObject* parent) : CollectionConfigur
 
 BookmarkConfigurator::~BookmarkConfigurator()
 {
-    delete m_pUi;
+//     delete m_pUi;
 }
 
 QByteArray BookmarkConfigurator::id() const
@@ -56,15 +57,15 @@ void BookmarkConfigurator::loadCollection(CollectionInterface* col, QObject* par
         return;
 
     if (auto w = qobject_cast<QWidget*>(parent)) {
-        m_pUi = new Ui_Bookmark();
-        m_pUi->setupUi(w);
-        connect(m_pUi->pushButton, &QPushButton::clicked, Session::instance()->bookmarkModel(), &CategorizedBookmarkModel::clear);
-        connect(m_pUi->pushButton, &QPushButton::clicked, this, [this]() {
-            m_HasChanged = true;
-        });
-        connect(m_pUi->kcfg_displayPopularAsBookmark, &QPushButton::toggled, this, [this]() {
-            m_HasChanged = true;
-        });
+//         m_pUi = new Ui_Bookmark();
+//         m_pUi->setupUi(w);
+//         connect(m_pUi->pushButton, &QPushButton::clicked, Session::instance()->bookmarkModel(), &CategorizedBookmarkModel::clear);
+//         connect(m_pUi->pushButton, &QPushButton::clicked, this, [this]() {
+//             m_HasChanged = true;
+//         });
+//         connect(m_pUi->kcfg_displayPopularAsBookmark, &QPushButton::toggled, this, [this]() {
+//             m_HasChanged = true;
+//         });
     }
 
     m_Init = true;
@@ -77,12 +78,12 @@ bool BookmarkConfigurator::hasChanged()
 
 void BookmarkConfigurator::save()
 {
-    if (!m_pUi)
-        return;
-
-    Session::instance()->bookmarkModel()->setDisplayPopular(
-        m_pUi->kcfg_displayPopularAsBookmark->isChecked()
-    );
+//     if (!m_pUi)
+//         return;
+//
+//     Session::instance()->bookmarkModel()->setDisplayPopular(
+//         m_pUi->kcfg_displayPopularAsBookmark->isChecked()
+//     );
 
     m_HasChanged = false;
 }

@@ -256,7 +256,7 @@ ENDIF()
 # generate rules for building source files from the resources
 SET(QtApp_RCCS
    qrc/resources.qrc
-   conf/confresources.qrc
+#    conf/confresources.qrc
    ../data/appicon.qrc
 )
 QT5_ADD_RESOURCES(QtApp_RCC_SRCS ${QtApp_RCCS})
