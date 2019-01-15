@@ -158,7 +158,7 @@ Item {
             if (!cm)
                 return
 
-            cm = PhoneDirectoryModel.fromTemporary(cm)
+            cm = RingSession.individualDirectory.fromTemporary(cm)
 
             contactMethodSelected(cm)
             searchBox.hide()

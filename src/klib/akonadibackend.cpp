@@ -56,7 +56,7 @@
 #include "call.h"
 #include "callmodel.h"
 #include "contactmethod.h"
-#include "phonedirectorymodel.h"
+#include "individualdirectory.h"
 #include "numbercategorymodel.h"
 #include "collectioninterface.h"
 #include "numbercategory.h"
@@ -408,7 +408,7 @@ void AkonadiBackend::fillPerson(Person* c, const KContacts::Addressee& addr)
    const KContacts::PhoneNumber::List numbers = addr.phoneNumbers();
    QVector<ContactMethod*> newNumbers;
    foreach (const KContacts::PhoneNumber& number, numbers) {
-      ContactMethod* cm = PhoneDirectoryModel::instance().getNumber(number.number(),c,nullptr,number.typeLabel());
+      ContactMethod* cm = Session::instance()->individualDirectory()->getNumber(number.number(),c,nullptr,number.typeLabel());
 
       newNumbers << cm;
    }

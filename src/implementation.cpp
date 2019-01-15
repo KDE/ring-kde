@@ -35,9 +35,10 @@
 
 //Ring
 #include <person.h>
+#include <session.h>
 #include <contactmethod.h>
 #include <presencestatusmodel.h>
-#include <phonedirectorymodel.h>
+#include <individualdirectory.h>
 #include <individual.h>
 #include <media/textrecording.h>
 #include <securityevaluationmodel.h>
@@ -131,7 +132,7 @@ void KDEActionExtender::viewChatHistory(ContactMethod* cm)
 
    // Get a real contact method when necessary
    if (cm->type() == ContactMethod::Type::TEMPORARY) {
-      cm = PhoneDirectoryModel::instance().getExistingNumberIf(
+      cm = Session::instance()->individualDirectory()->getExistingNumberIf(
          cm->uri(),
          [](const ContactMethod* cm) -> bool {
             return cm->textRecording() && !cm->textRecording()->isEmpty();

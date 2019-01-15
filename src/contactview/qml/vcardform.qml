@@ -55,7 +55,7 @@ GridLayout {
 
         // Create a real contact method in case this is a temporary one
         if (currentContactMethod && currentContactMethod.type == RingQtQuick.ContactMethod.TEMPORARY)
-            currentContactMethod = PhoneDirectoryModel.getNumber(
+            currentContactMethod = RingSession.individualDirectory.getNumber(
                 currentContactMethod.uri,
                 null,
                 currentContactMethod.account

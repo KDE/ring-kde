@@ -189,7 +189,7 @@ Item {
                     return
                 }
 
-                contactMethodSelected(PhoneDirectoryModel.fromTemporary(contactMethod))
+                contactMethodSelected(RingSession.individualDirectory.fromTemporary(contactMethod))
                 hide()
             }
         }

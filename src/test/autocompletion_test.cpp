@@ -18,7 +18,7 @@
 #include <QtCore/QString>
 #include <QtTest/QtTest>
 
-#include "../lib/phonedirectorymodel.h"
+#include "../lib/individualdirectory.h"
 #include "../lib/phonenumber.h"
 #include "../lib/numbercompletionmodel.h"
 

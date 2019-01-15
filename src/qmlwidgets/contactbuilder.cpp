@@ -22,7 +22,7 @@
 #include <personmodel.h>
 #include <collectioninterface.h>
 #include <numbercategorymodel.h>
-#include <phonedirectorymodel.h>
+#include <individualdirectory.h>
 #include <individual.h>
 #include <session.h>
 #include <accountmodel.h>
@@ -127,7 +127,7 @@ ContactMethod* ContactBuilder::updatePhoneNumber(ContactMethod* cm, Individual* 
         qobject_cast<TemporaryContactMethod*>(cm)->setUri(number);
     }
 
-    ContactMethod* newCM = PhoneDirectoryModel::instance().fromTemporary(cm);
+    ContactMethod* newCM = Session::instance()->individualDirectory()->fromTemporary(cm);
 
     Account* a = accountIdx == -1 ? nullptr : Session::instance()->accountModel()->getAccountByModelIndex(
         Session::instance()->accountModel()->index(accountIdx, 0)
@@ -138,7 +138,7 @@ ContactMethod* ContactBuilder::updatePhoneNumber(ContactMethod* cm, Individual* 
         ind->addPhoneNumber(number, a, catIndex.data().toString());
     }
     else if (!cm) {
-        newCM = PhoneDirectoryModel::instance().getNumber(
+        newCM = Session::instance()->individualDirectory()->getNumber(
             number, a, catIndex.data().toString()
         );
 
@@ -165,7 +165,7 @@ ContactMethod* ContactBuilder::updatePhoneNumber(ContactMethod* cm, Individual* 
     }
 
     if (!newCM) {
-        newCM = PhoneDirectoryModel::instance().getNumber(
+        newCM = Session::instance()->individualDirectory()->getNumber(
             number, p, a, catIndex.data().toString()
         );
         p->individual()->addPhoneNumber(newCM);
@@ -173,7 +173,7 @@ ContactMethod* ContactBuilder::updatePhoneNumber(ContactMethod* cm, Individual* 
     else if (wasTemporary)
         p->individual()->addPhoneNumber(newCM);
     else {
-        auto newCM2 = PhoneDirectoryModel::instance().getNumber(
+        auto newCM2 = Session::instance()->individualDirectory()->getNumber(
             number, p, newCM->account(), catIndex.data().toString()
         );
         p->individual()->replacePhoneNumber(newCM, newCM2);

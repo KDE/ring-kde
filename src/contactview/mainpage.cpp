@@ -31,7 +31,7 @@
 
 #include <../ringapplication.h>
 #include "peerstimelinemodel.h"
-#include "phonedirectorymodel.h"
+#include "individualdirectory.h"
 #include <contactmethod.h>
 #include <libcard/eventaggregate.h>
 #include <individual.h>
@@ -193,7 +193,7 @@ void MainPage::setContactMethod(ContactMethod* cm)
         return;
 
 
-    cm = PhoneDirectoryModel::instance().fromTemporary(cm);
+    cm = Session::instance()->individualDirectory()->fromTemporary(cm);
 
     // Keep a reference for 5 minutes to avoid double free from QML
     for (auto ptr : {d_ptr->m_CallsModel, d_ptr->m_TimelineModel})

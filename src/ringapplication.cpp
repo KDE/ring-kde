@@ -49,7 +49,7 @@
 #include <account.h>
 #include <individual.h>
 #include <contactmethod.h>
-#include <phonedirectorymodel.h>
+#include <individualdirectory.h>
 #include <categorizedhistorymodel.h>
 #include <categorizedcontactmodel.h>
 #include <ringdevicemodel.h>
@@ -223,7 +223,7 @@ RingApplication::~RingApplication()
    delete Session::instance()->callModel();
    delete &ProfileModel::instance();
    delete Session::instance()->accountModel();
-   delete &PhoneDirectoryModel::instance();
+   delete Session::instance()->individualDirectory();
    delete Session::instance()->numberCategoryModel();
    m_spInstance = nullptr;
 }
@@ -452,9 +452,7 @@ QQmlApplicationEngine* RingApplication::engine()
       m_pDeclarative = new KDeclarative::KDeclarative;
       m_pDeclarative->setDeclarativeEngine(e);
       m_pDeclarative->setupBindings();
-
       try {
-         QML_SINGLETON( PhoneDirectoryModel      );
          QML_SINGLETON( RecentFileModel          );
          QML_SINGLETON( ProfileModel             );
          QML_SINGLETON( PresenceStatusModel      );
