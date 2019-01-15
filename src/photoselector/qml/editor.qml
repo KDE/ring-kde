@@ -22,6 +22,7 @@ import RingQmlWidgets 1.0
 
 import PhotoSelectorPlugin 1.0
 import org.kde.playground.kquickitemviews 1.0 as KQuickItemViews
+import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 
 import Ring 1.0
 
@@ -209,12 +210,12 @@ Dialog {
                     videoWidget.visible = true
                     fromFile.visible = false
 
-                    if (!PreviewManager.previewing) {
-                        PreviewManager.startPreview()
+                    if (!RingSession.previewManager.previewing) {
+                        RingSession.previewManager.startPreview()
                         videoWidget.started = true
                     }
                     else {
-                        PreviewManager.stopPreview()
+                        RingSession.previewManager.stopPreview()
                         videoWidget.started = false
                         videoWidget.started = false
                     }
@@ -250,8 +251,8 @@ Dialog {
             selector.setToIndividual(person)
 
         videoWidget.started = false
-        if (PreviewManager.previewing)
-            PreviewManager.stopPreview()
+        if (RingSession.previewManager.previewing)
+            RingSession.previewManager.stopPreview()
     }
 
     onAccepted: {
@@ -279,8 +280,8 @@ Dialog {
 
     onRejected: {
         videoWidget.started = false
-        if (PreviewManager.previewing)
-            PreviewManager.stopPreview()
+        if (RingSession.previewManager.previewing)
+            RingSession.previewManager.stopPreview()
 
         done()
     }

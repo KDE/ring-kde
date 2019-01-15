@@ -103,7 +103,7 @@ Item {
                     ListView {
                         y: 5
                         id: availableAccounts
-                        model: ProfileModel.availableProfileModel
+                        model: RingSession.profileModel.availableProfileModel
                         height: 200
                         spacing: 5
                         interactive: false
@@ -131,7 +131,7 @@ Item {
                     }
 
                     Loader {
-                        active: availableAccounts.count == 0 || !ProfileModel.hasAvailableProfiles
+                        active: availableAccounts.count == 0 || !RingSession.profileModel.hasAvailableProfiles
                         anchors.centerIn: parent
                         sourceComponent: Rectangle {
                             height: 48

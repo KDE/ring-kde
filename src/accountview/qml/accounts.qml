@@ -29,7 +29,7 @@ ListView {
     property QtObject selectedAccount: null
 
     spacing : 10
-    model: ProfileModel
+    model: RingSession.profileModel
     delegate: codecDelegate
 
     Component {
@@ -41,7 +41,7 @@ ListView {
             height: content.height + 20
             implicitHeight: content.height + 20
 
-            property var pModel : ProfileModel.profilesForPerson(model.object)
+            property var pModel : RingSession.profileModel.profilesForPerson(model.object)
 
             ColumnLayout {
                 id: content

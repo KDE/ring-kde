@@ -111,10 +111,10 @@ ImageProvider::ImageProvider()
     QObject::connect(Session::instance()->callModel(), &CallModel::rendererRemoved,
         d_ptr, &ImageProviderPrivate::removeRenderer);
 
-    QObject::connect(&Video::PreviewManager::instance(), &Video::PreviewManager::previewStarted,
+    QObject::connect(Session::instance()->previewManager(), &Video::PreviewManager::previewStarted,
         d_ptr, &ImageProviderPrivate::previewStarted);
 
-    QObject::connect(&Video::PreviewManager::instance(), &Video::PreviewManager::previewStopped,
+    QObject::connect(Session::instance()->previewManager(), &Video::PreviewManager::previewStopped,
         d_ptr, &ImageProviderPrivate::previewStopped);
 
     // Check if there is active renderers
@@ -124,8 +124,8 @@ ImageProvider::ImageProvider()
             d_ptr->addRenderer(c, c->videoRenderer());
     }
 
-    if (Video::PreviewManager::instance().isPreviewing())
-        d_ptr->previewStarted(Video::PreviewManager::instance().previewRenderer());
+    if (Session::instance()->previewManager()->isPreviewing())
+        d_ptr->previewStarted(Session::instance()->previewManager()->previewRenderer());
 }
 
 ImageProvider::~ImageProvider()

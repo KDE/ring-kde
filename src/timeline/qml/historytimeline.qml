@@ -23,6 +23,7 @@ import RingQmlWidgets 1.0
 import Ring 1.0
 import ContactView 1.0
 import org.kde.kirigami 2.2 as Kirigami
+import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 
 Kirigami.Page {
     id: bookmarkList
@@ -57,7 +58,7 @@ Kirigami.Page {
             width: parent.width
             highlightFollowsCurrentItem: true
 
-            model: EventModel
+            model: RingSession.eventModel
 
 
             section.property: "formattedLastUsed"

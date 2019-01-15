@@ -19,7 +19,7 @@
 
 #include <KLocalizedString>
 
-#include <categorizedbookmarkmodel.h>
+#include <bookmarkmodel.h>
 #include <session.h>
 
 // #include "ui_bookmark.h"

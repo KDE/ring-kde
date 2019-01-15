@@ -40,7 +40,7 @@ Item {
     property QtObject renderer       : call ? call.renderer : null
 
     property bool previewVisible: mode != "PREVIEW" &&
-        call && PreviewManager.previewing
+        call && RingSession.previewManager.previewing
 
     Connections {
         target: renderer
@@ -213,7 +213,7 @@ Item {
             videoWidget.rendererName = "preview"
         }
         else if (mode == "CONVERSATION") {
-            videoPreview.started = PreviewManager.previewing
+            videoPreview.started = RingSession.previewManager.previewing
             videoWidget.rendererName = "peer"
         }
         placeholderMessage.mode = mode
@@ -231,12 +231,12 @@ Item {
     }
 
     Connections {
-        target: PreviewManager
+        target: RingSession.previewManager
         onPreviewingChanged: {
             if (mode == "PREVIEW")
-                videoWidget.started = PreviewManager.previewing
+                videoWidget.started = RingSession.previewManager.previewing
 
-            videoPreview.started = PreviewManager.previewing
+            videoPreview.started = RingSession.previewManager.previewing
         }
     }
 

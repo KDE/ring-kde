@@ -49,7 +49,7 @@ ListView {
         }
     }
 
-    model: CompletionModel
+    model: RingSession.numberCompletionModel
     delegate: searchDelegate
 //     add: Transition {
 //         NumberAnimation {

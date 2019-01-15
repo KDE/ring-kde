@@ -60,7 +60,7 @@
 #include "numbercategorymodel.h"
 #include "collectioninterface.h"
 #include "numbercategory.h"
-#include "personmodel.h"
+#include "persondirectory.h"
 #include "interfaces/itemmodelstateserializeri.h"
 #include "globalinstances.h"
 
@@ -102,7 +102,7 @@ void AkonadiBackend::digg(QAbstractItemModel* model, const QModelIndex& idx)
       auto col = idx.data( Akonadi::EntityTreeModel::CollectionRole ).value<Akonadi::Collection>();
 
       if (col.isValid()) {
-         auto col2 = PersonModel::instance().addCollection<AkonadiBackend,Akonadi::Collection*>(&col);
+         auto col2 = Session::instance()->personDirectory()->addCollection<AkonadiBackend,Akonadi::Collection*>(&col);
          if (col2 && col2->isEnabled())
             col2->load();
       }
@@ -461,7 +461,7 @@ void AkonadiBackend::slotJobCompleted(KJob* job)
       const Akonadi::Item::List items = akojob->items();
       foreach ( const Akonadi::Item &item, items ) {
          Person* c = addItem(item,onlyWithNumber);
-         PersonModel::instance().addPerson(c);
+         Session::instance()->personDirectory()->addPerson(c);
       }
    }
 }
@@ -574,7 +574,7 @@ void AkonadiBackend::slotItemChanged(const Akonadi::Item &item, const QSet< QByt
    Q_UNUSED(part)
    if (item.hasPayload<KContacts::Addressee>()) {
       KContacts::Addressee tmp = item.payload<KContacts::Addressee>();
-      Person* c = PersonModel::instance().getPersonByUid(tmp.uid().toUtf8());
+      Person* c = Session::instance()->personDirectory()->getPersonByUid(tmp.uid().toUtf8());
       if (c)
          fillPerson(c,tmp);
    }
@@ -583,13 +583,13 @@ void AkonadiBackend::slotItemChanged(const Akonadi::Item &item, const QSet< QByt
 ///Callback when a contact is removed
 void AkonadiBackend::slotItemRemoved(const Akonadi::Item &item)
 {
-   Person* c = PersonModel::instance().getPersonByUid(item.remoteId().toUtf8());
+   Person* c = Session::instance()->personDirectory()->getPersonByUid(item.remoteId().toUtf8());
 
    if (c)
       deactivate(c);
    else
       qDebug() << "A contact was deleted, but Ring-KDE can't find it";
-   //PersonModel::instance().disablePerson(c);
+   //Session::instance()->personDirectory()->disablePerson(c);
 }
 
 // kate: space-indent on; indent-width 3; replace-tabs on;

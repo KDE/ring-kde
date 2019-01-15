@@ -44,10 +44,10 @@ Page {
 //             KQuickItemViews.RoleBinder.modelRole: "profile"
 //             KQuickItemViews.RoleBinder.objectProperty: "text"
             id: profile
-//             model: ProfileModel
+//             model: RingSession.profileModel
             Kirigami.FormData.label: i18n("Profile")
 //             textRole: "display"
-            selectionModel: ProfileModel.getAccountSelectionModel(object)
+            selectionModel: RingSession.profileModel.getAccountSelectionModel(object)
         }
 
         KQuickItemViews.ComboBoxView {

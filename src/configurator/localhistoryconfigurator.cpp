@@ -18,7 +18,7 @@
 #include "localhistoryconfigurator.h"
 #include "conf/dlggeneral.h"
 
-#include <categorizedhistorymodel.h>
+#include <callhistorymodel.h>
 #include <session.h>
 
 #include <KLocalizedString>

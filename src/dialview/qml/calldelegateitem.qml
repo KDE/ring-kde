@@ -176,7 +176,7 @@ Rectangle {
                 anchors.fill: parent
                 anchors.margins: 10
                 spacing: 10
-                model: CompletionModel
+                model: RingSession.numberCompletionModel
                 currentIndex: completionSelection.currentIndex
                 delegate: Rectangle {
                     property bool selected: ListView.isCurrentItem

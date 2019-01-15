@@ -73,9 +73,9 @@ void AudioRecordingConfigurator::loadCollection(CollectionInterface* col, QObjec
 //         QAbstractItemModel* m = nullptr;
 //
 //         if (m_Mode == Mode::AUDIO)
-//             m = Media::RecordingModel::instance().audioRecordingModel();
+//             m = Media::Session::instance()->recordingModel()->audioRecordingModel();
 //         else
-//             m = Media::RecordingModel::instance().textRecordingModel();
+//             m = Media::Session::instance()->recordingModel()->textRecordingModel();
 //
 //         auto p = new QSortFilterProxyModel(this);
 //         connect(ui.lineEdit ,SIGNAL(filterStringChanged(QString)), p, SLOT(setFilterRegExp(QString)));

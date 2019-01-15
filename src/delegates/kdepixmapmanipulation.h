@@ -49,9 +49,9 @@ public:
 
    virtual QVariant securityLevelIcon(const SecurityEvaluationModel::SecurityLevel level) const override;
 
-   virtual QVariant historySortingCategoryIcon(const CategorizedHistoryModel::SortedProxy::Categories cat) const override;
+   virtual QVariant historySortingCategoryIcon(const CallHistoryModel::SortedProxy::Categories cat) const override;
 
-   virtual QVariant contactSortingCategoryIcon(const CategorizedContactModel::SortedProxy::Categories cat) const override;
+   virtual QVariant contactSortingCategoryIcon(const ContactModel::SortedProxy::Categories cat) const override;
 
    virtual QVariant videoDeviceIcon(const QModelIndex& idx) const override;
 

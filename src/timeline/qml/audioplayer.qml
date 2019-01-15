@@ -19,6 +19,7 @@ import QtQuick 2.7
 import QtQuick.Controls 2.0 as Controls2
 import QtQuick.Layouts 1.0
 import Ring 1.0
+import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 
 Item {
     property QtObject recording: audioRecording
@@ -89,7 +90,7 @@ Item {
         MouseArea {
             anchors.fill: parent
             onClicked: {
-                RecordingModel.currentRecording = recording
+                RingSession.recordingModel.currentRecording = recording
             }
         }
     }
@@ -100,11 +101,11 @@ Item {
             // Hide all buttons
             State {
                 name: "disabled"
-                when: !recording == RecordingModel.currentRecording
+                when: !recording == RingSession.recordingModel.currentRecording
             },
             State {
                 name: "enabled"
-                when: recording == RecordingModel.currentRecording
+                when: recording == RingSession.recordingModel.currentRecording
 
                 PropertyChanges {
                     target: reset
@@ -121,7 +122,7 @@ Item {
                 PropertyChanges {
                     target: progress
                     enabled: true
-                    value: RecordingModel.currentRecording.position
+                    value: RingSession.recordingModel.currentRecording.position
                 }
                 PropertyChanges {
                     target: end

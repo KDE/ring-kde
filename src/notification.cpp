@@ -217,7 +217,7 @@ Notification::Notification(QObject* parent) : QObject(parent)
 {
    connect(Session::instance()->callModel(), &CallModel::incomingCall, this, &Notification::incomingCall);
    connect(Session::instance()->accountModel(), &AccountModel::accountStateChanged, this, &Notification::accountStatus);
-   connect(&Media::RecordingModel::instance(), &Media::RecordingModel::mimeMessageInserted, this, &Notification::incomingText);
+   connect(Session::instance()->recordingModel(), &Media::RecordingModel::mimeMessageInserted, this, &Notification::incomingText);
 }
 
 Notification* Notification::instance()

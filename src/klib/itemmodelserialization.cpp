@@ -17,7 +17,7 @@
  ***************************************************************************/
 #include "itemmodelserialization.h"
 
-#include <personmodel.h>
+#include <persondirectory.h>
 
 
 #ifdef ENABLE_AKONADI
@@ -72,8 +72,8 @@ CollectionInterface* ItemModelStateSerialization::preferredCollection(Collection
    Q_UNUSED(hints)
 
 #ifdef ENABLE_AKONADI
-   if (manager == &PersonModel::instance()) {
-      foreach(CollectionInterface* i, PersonModel::instance().collections(features)) {
+   if (manager == Session::instance()->personDirectory()) {
+      foreach(CollectionInterface* i, Session::instance()->personDirectory()->collections(features)) {
          if (dynamic_cast<AkonadiBackend*>(i)) //TODO use something better
             return i;
       }

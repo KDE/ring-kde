@@ -46,7 +46,7 @@ FocusScope {
 
     TreeHelper {
         id: completionSelection
-        selectionModel: CompletionModel.selectionModel
+        selectionModel: RingSession.numberCompletionModel.selectionModel
     }
 
     CallList {
@@ -123,8 +123,8 @@ FocusScope {
         }
 
         // Apply the auto completion
-        if (call.state == RingQtQuick.Call.DIALING && CompletionModel.selectedContactMethod)
-            call.peerContactMethod = CompletionModel.selectedContactMethod
+        if (call.state == RingQtQuick.Call.DIALING && RingSession.numberCompletionModell.selectedContactMethod)
+            call.peerContactMethod = RingSession.ompletionModel.selectedContactMethod
 
         call.performAction(RingQtQuick.Call.ACCEPT)
     }

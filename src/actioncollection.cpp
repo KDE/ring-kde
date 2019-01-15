@@ -45,7 +45,7 @@
 #include <implementation.h>
 #include <useractionmodel.h>
 #include <audio/settings.h>
-#include <personmodel.h>
+#include <persondirectory.h>
 #include <delegates/kdepixmapmanipulation.h>
 
 #ifdef HAVE_SPEECH
@@ -370,7 +370,7 @@ void ActionCollection::showNotificationEditor()
 void ActionCollection::slotAddPerson()
 {
    Person* aPerson = new Person();
-   PersonModel::instance().addNewPerson(aPerson);
+   Session::instance()->personDirectory()->addNewPerson(aPerson);
 }
 
 ///Change icon of the record button
@@ -406,7 +406,7 @@ void ActionCollection::updateVolumeButton()
 void ActionCollection::slotNewContact()
 {
    // Find a suitable collection
-   auto cols = PersonModel::instance().enabledCollections(
+   auto cols = Session::instance()->personDirectory()->enabledCollections(
       CollectionInterface::SupportedFeatures::ADD |
       CollectionInterface::SupportedFeatures::EDIT
    );

@@ -296,34 +296,34 @@ QVariant KDEPixmapManipulation::securityLevelIcon(const SecurityEvaluationModel:
    return QVariant();
 }
 
-QVariant KDEPixmapManipulation::historySortingCategoryIcon(const CategorizedHistoryModel::SortedProxy::Categories cat) const
+QVariant KDEPixmapManipulation::historySortingCategoryIcon(const CallHistoryModel::SortedProxy::Categories cat) const
 {
    switch(cat) {
-      case CategorizedHistoryModel::SortedProxy::Categories::DATE      :
+      case CallHistoryModel::SortedProxy::Categories::DATE      :
          break;
-      case CategorizedHistoryModel::SortedProxy::Categories::NAME      :
+      case CallHistoryModel::SortedProxy::Categories::NAME      :
          return QIcon::fromTheme(QStringLiteral("folder-publicshare"));
-      case CategorizedHistoryModel::SortedProxy::Categories::POPULARITY:
+      case CallHistoryModel::SortedProxy::Categories::POPULARITY:
          return QIcon::fromTheme(QStringLiteral("folder-bookmark"));
-      case CategorizedHistoryModel::SortedProxy::Categories::LENGTH    :
-      case CategorizedHistoryModel::SortedProxy::Categories::SPENT_TIME:
-      case CategorizedHistoryModel::SortedProxy::Categories::COUNT__   :
+      case CallHistoryModel::SortedProxy::Categories::LENGTH    :
+      case CallHistoryModel::SortedProxy::Categories::SPENT_TIME:
+      case CallHistoryModel::SortedProxy::Categories::COUNT__   :
          break;
    }
    return QVariant();
 }
 
-QVariant KDEPixmapManipulation::contactSortingCategoryIcon(const CategorizedContactModel::SortedProxy::Categories cat) const
+QVariant KDEPixmapManipulation::contactSortingCategoryIcon(const ContactModel::SortedProxy::Categories cat) const
 {
    switch(cat) {
-      case CategorizedContactModel::SortedProxy::Categories::NAME        :
+      case ContactModel::SortedProxy::Categories::NAME        :
          return QIcon::fromTheme(QStringLiteral("folder-publicshare"));
-      case CategorizedContactModel::SortedProxy::Categories::RECENTLYUSED:
+      case ContactModel::SortedProxy::Categories::RECENTLYUSED:
          return QIcon::fromTheme(QStringLiteral("view-history"));
-      case CategorizedContactModel::SortedProxy::Categories::ORGANIZATION:
-      case CategorizedContactModel::SortedProxy::Categories::GROUP       :
-      case CategorizedContactModel::SortedProxy::Categories::DEPARTMENT  :
-      case CategorizedContactModel::SortedProxy::Categories::COUNT__     :
+      case ContactModel::SortedProxy::Categories::ORGANIZATION:
+      case ContactModel::SortedProxy::Categories::GROUP       :
+      case ContactModel::SortedProxy::Categories::DEPARTMENT  :
+      case ContactModel::SortedProxy::Categories::COUNT__     :
          break;
    }
    return QVariant();

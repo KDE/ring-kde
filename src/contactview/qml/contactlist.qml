@@ -73,7 +73,7 @@ Kirigami.Page {
             id: sorting
             height: 32
             width: parent.width
-            model: ContactCategoryModel
+            model: RingSession.sontactCategoryModel
             orientation: ListView.Horizontal
             delegate: MouseArea {
                 height: 32
@@ -94,8 +94,8 @@ Kirigami.Page {
 
             TreeHelper {
                 id: helper
-                model: ContactCategoryModel
-                selectionModel: ContactCategorySelectionModel
+                model: RingSession.sontactCategoryModel
+                selectionModel: RingSession.contactCategorySelectionModel
             }
 
             highlight: Item {
@@ -126,7 +126,7 @@ Kirigami.Page {
                 treeView.currentIndex = index
             }
 
-            model: SortedContactModel
+            model: RingSession.sortedContactModel
             delegate: masterComponent
             sortingEnabled: true
 

@@ -50,11 +50,11 @@
 #include <individual.h>
 #include <contactmethod.h>
 #include <individualdirectory.h>
-#include <categorizedhistorymodel.h>
-#include <categorizedcontactmodel.h>
+#include <callhistorymodel.h>
+#include <contactmodel.h>
 #include <ringdevicemodel.h>
 #include <namedirectory.h>
-#include <categorizedbookmarkmodel.h>
+#include <bookmarkmodel.h>
 #include <numbercompletionmodel.h>
 #include <useractionmodel.h>
 #include <protocolmodel.h>
@@ -94,7 +94,7 @@
 #include <codecmodel.h>
 #include <credentialmodel.h>
 #include <presencestatusmodel.h>
-#include <personmodel.h>
+#include <persondirectory.h>
 #include <infotemplatemanager.h>
 
 //Collections
@@ -218,10 +218,10 @@ RingApplication::~RingApplication()
    delete m_pQmlWidget;
 
    delete Session::instance()->peersTimelineModel();
-   delete &Media::RecordingModel::instance();
-   delete &PersonModel::instance();
+   delete Session::instance()->recordingModel();
+   delete Session::instance()->personDirectory();
    delete Session::instance()->callModel();
-   delete &ProfileModel::instance();
+   delete Session::instance()->profileModel();
    delete Session::instance()->accountModel();
    delete Session::instance()->individualDirectory();
    delete Session::instance()->numberCategoryModel();
@@ -270,20 +270,18 @@ void RingApplication::initCollections()
 
    Session::instance()->callModel()->setAudoCleanDelay(5000);
 
-   InfoTemplateManager::instance();
-
    /*******************************************
       *           Set the configurator          *
       ******************************************/
 
-   PersonModel::instance()             .registerConfigarator<PeerProfileCollection2  >    (new PeerProfileConfigurator   (this));
-   PersonModel::instance()             .registerConfigarator<FallbackPersonCollection>    (new FallbackPersonConfigurator(this));
+   Session::instance()->personDirectory()->registerConfigarator<PeerProfileCollection2  >    (new PeerProfileConfigurator   (this));
+   Session::instance()->personDirectory()->registerConfigarator<FallbackPersonCollection>    (new FallbackPersonConfigurator(this));
    Session::instance()->historyModel()->registerConfigarator<LocalHistoryCollection  >    (new LocalHistoryConfigurator  (this));
    Session::instance()->bookmarkModel()->registerConfigarator<LocalBookmarkCollection >    (new BookmarkConfigurator      (this));
-   Media::RecordingModel::instance()   .registerConfigarator<LocalRecordingCollection>    (new AudioRecordingConfigurator(this,
+   Session::instance()->recordingModel()->registerConfigarator<LocalRecordingCollection>    (new AudioRecordingConfigurator(this,
       AudioRecordingConfigurator::Mode::AUDIO
    ));
-   Media::RecordingModel::instance()   .registerConfigarator<LocalTextRecordingCollection>(new AudioRecordingConfigurator(this,
+   Session::instance()->recordingModel()->registerConfigarator<LocalTextRecordingCollection>(new AudioRecordingConfigurator(this,
       AudioRecordingConfigurator::Mode::TEXT
    ));
 
@@ -303,7 +301,7 @@ void RingApplication::initCollections()
    for (int i=0; i < accountCount; i++)
       (*Session::instance()->accountModel())[i]->calendar();
 
-   ProfileModel::instance().addCollection<LocalProfileCollection>(LoadOptions::FORCE_ENABLED);
+   Session::instance()->profileModel()->addCollection<LocalProfileCollection>(LoadOptions::FORCE_ENABLED);
 
 #ifdef Q_OS_LINUX
    CertificateModel::instance().addCollection<FolderCertificateCollection,QString, FlagPack<FolderCertificateCollection::Options>,QString>(
@@ -321,8 +319,8 @@ void RingApplication::initCollections()
       ConfigurationSkeleton::displayPopularAsBookmark()
    );
 
-   PersonModel::instance().addCollection<FallbackPersonCollection>(LoadOptions::FORCE_ENABLED);
-   auto ppc = PersonModel::instance().addCollection<PeerProfileCollection2>(LoadOptions::FORCE_ENABLED);
+   Session::instance()->personDirectory()->addCollection<FallbackPersonCollection>(LoadOptions::FORCE_ENABLED);
+   auto ppc = Session::instance()->personDirectory()->addCollection<PeerProfileCollection2>(LoadOptions::FORCE_ENABLED);
 
    const auto m = static_cast<PeerProfileCollection2::DefaultMode>(ConfigurationSkeleton::defaultPeerProfileMode());
    ppc->setDefaultMode(m);
@@ -335,9 +333,9 @@ void RingApplication::initCollections()
 #endif
 
 //       PresenceCollectionModelExtension* ext = new PresenceCollectionModelExtension(this);
-//       PersonModel::instance().backendModel()->addExtension(ext); //FIXME
+//       Session::instance()->personDirectory()->backendModel()->addExtension(ext); //FIXME
 
-   ProfileModel::instance();
+   Session::instance()->profileModel();
 
    Notification::instance();
 }
@@ -454,49 +452,17 @@ QQmlApplicationEngine* RingApplication::engine()
       m_pDeclarative->setupBindings();
       try {
          QML_SINGLETON( RecentFileModel          );
-         QML_SINGLETON( ProfileModel             );
-         QML_SINGLETON( PresenceStatusModel      );
-         QML_SINGLETON( EventModel               );
-         QML_SINGLETON( RingtoneModel            );
-
          QML_SINGLETON2( ActionCollection        );
 
          QML_ADD_OBJECT(VideoRateSelectionModel      , &Video::ConfigurationProxy::rateSelectionModel      ());
          QML_ADD_OBJECT(VideoResolutionSelectionModel, &Video::ConfigurationProxy::resolutionSelectionModel());
          QML_ADD_OBJECT(VideoChannelSelectionModel   , &Video::ConfigurationProxy::channelSelectionModel   ());
          QML_ADD_OBJECT(VideoDeviceSelectionModel    , &Video::ConfigurationProxy::deviceSelectionModel    ());
-         { using namespace Media;
-            QML_SINGLETON( RecordingModel        );
-         }
-
-         { using namespace Video;
-            QML_SINGLETON( PreviewManager        );
-         }
 
          qmlRegisterUncreatableType<::Media::Media>(
             AppName, 1,0, "Media", QStringLiteral("cannot be instantiated")
          );
 
-         RingApplication::engine()->rootContext()->setContextProperty(
-            QStringLiteral("SortedContactModel"),
-            CategorizedContactModel::SortedProxy::instance().model()
-         );
-
-         RingApplication::engine()->rootContext()->setContextProperty(
-            QStringLiteral("ContactCategoryModel"),
-            CategorizedContactModel::SortedProxy::instance().categoryModel()
-         );
-
-         RingApplication::engine()->rootContext()->setContextProperty(
-            QStringLiteral("ContactCategorySelectionModel"),
-            CategorizedContactModel::SortedProxy::instance().categorySelectionModel()
-         );
-
-         auto completionModel = new NumberCompletionModel();
-
-         RingApplication::engine()->rootContext()->setContextProperty(
-            QStringLiteral("CompletionModel"), completionModel
-         );
          auto im = new RingingImageProvider();
          e->addImageProvider( QStringLiteral("RingingImageProvider"), im );
          e->addImportPath(QStringLiteral("qrc:/"));

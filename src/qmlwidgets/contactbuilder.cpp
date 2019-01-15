@@ -19,7 +19,7 @@
 
 #include <contactmethod.h>
 #include <person.h>
-#include <personmodel.h>
+#include <persondirectory.h>
 #include <collectioninterface.h>
 #include <numbercategorymodel.h>
 #include <individualdirectory.h>
@@ -50,7 +50,7 @@ Person* ContactBuilder::from(Individual* ind, const QString& name)
     if (ind->phoneNumbers().isEmpty())
         return nullptr;
 
-    auto cols = PersonModel::instance().enabledCollections(
+    auto cols = Session::instance()->personDirectory()->enabledCollections(
         CollectionInterface::SupportedFeatures::ADD |
         CollectionInterface::SupportedFeatures::EDIT|
         CollectionInterface::SupportedFeatures::SAVE
@@ -94,7 +94,7 @@ Person* ContactBuilder::from(ContactMethod* cm)
 
 Person* ContactBuilder::fromScratch()
 {
-    auto cols = PersonModel::instance().enabledCollections(
+    auto cols = Session::instance()->personDirectory()->enabledCollections(
         CollectionInterface::SupportedFeatures::ADD |
         CollectionInterface::SupportedFeatures::EDIT|
         CollectionInterface::SupportedFeatures::SAVE

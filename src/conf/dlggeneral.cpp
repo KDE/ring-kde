@@ -29,7 +29,7 @@
 
 //Ring
 #include "klib/kcfg_settings.h"
-#include "categorizedhistorymodel.h"
+#include "callhistorymodel.h"
 #include "session.h"
 
 ///Constructor
