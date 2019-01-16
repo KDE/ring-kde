@@ -30,6 +30,7 @@
 
 #include <interfaces/shortcutcreatori.h>
 #include <interfaces/actionextenderi.h>
+#include <interfaces/fileprovideri.h>
 
 class Macro;
 
@@ -78,6 +79,19 @@ public:
    virtual ContactMethod* selectContactMethod(FlagPack<ActionExtenderI::SelectContactMethodHint>, const QVariant& hintVar) const override;
 };
 
+class KDEDesktopFileProvider : public Interfaces::FileProviderI
+{
+public:
+    explicit KDEDesktopFileProvider() = default;
+
+    virtual QUrl getAnyFile(const QStringList& extensions) const override;
+
+    virtual QList<QUrl> recentFiles() const override;
+
+    virtual void addRecentFile(const QUrl& path) const override;
+
+};
+
 #endif
 
-// kate: space-indent on; indent-width 3; replace-tabs on;
+// kate: space-indent on; indent-width 4; replace-tabs on;

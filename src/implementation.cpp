@@ -28,6 +28,7 @@
 #include <QQuickView>
 #include <QQuickItem>
 #include <QQmlApplicationEngine>
+#include <QtWidgets/QFileDialog>
 
 //KDE
 #include <klocalizedstring.h>
@@ -195,4 +196,34 @@ ContactMethod* KDEActionExtender::selectContactMethod(FlagPack<ActionExtenderI::
    return nullptr;
 }
 
-// kate: space-indent on; indent-width 3; replace-tabs on;
+QUrl KDEDesktopFileProvider::getAnyFile(const QStringList& extensions) const
+{
+    return QFileDialog::getOpenFileName(
+        nullptr,
+        QStringLiteral("Open File"),
+        QDir::currentPath(),
+        QStringLiteral("Media Files (*.png *.jpg *.gif *.mp4 *.mkv *.webm *.txt *.avi *.mpg)")
+    );
+}
+
+QList<QUrl> KDEDesktopFileProvider::recentFiles() const
+{
+    const QStringList files = ConfigurationSkeleton::recentStreamedFiles();
+    QList<QUrl> ret;
+
+    for (const auto& f : qAsConst(files))
+        ret << f;
+
+    return ret;
+}
+
+void KDEDesktopFileProvider::addRecentFile(const QUrl& path) const
+{
+    QStringList files = ConfigurationSkeleton::recentStreamedFiles();
+    files << path.path();
+
+    ConfigurationSkeleton::setRecentStreamedFiles(files);
+
+}
+
+// kate: space-indent on; indent-width 4; replace-tabs on;

@@ -117,7 +117,6 @@
 //QML
 #include <KQuickItemViews/plugin.h>
 #include "qmlwidgets/plugin.h"
-#include "qmlwidgets/recentfilemodel.h"
 #include "qmlwidgets/symboliccolorizer.h"
 #include "photoselector/photoplugin.h"
 #include "canvasindicators/canvasindicator.h"
@@ -444,7 +443,6 @@ QQmlApplicationEngine* RingApplication::engine()
       m_pDeclarative->setDeclarativeEngine(e);
       m_pDeclarative->setupBindings();
       try {
-         QML_SINGLETON( RecentFileModel          );
          QML_SINGLETON2( ActionCollection        );
 
          QML_ADD_OBJECT(VideoRateSelectionModel      , &Video::ConfigurationProxy::rateSelectionModel      ());

@@ -19,6 +19,7 @@ import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
 import Ring 1.0
+import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 
 ColumnLayout {
     id: streaming
@@ -39,7 +40,7 @@ ColumnLayout {
     }
 
     ListView {
-        model: RecentFileModel
+        model: RingSession.recentFileModel
         Layout.fillWidth: true
         Layout.fillHeight: true
         delegate: fileDelegate
@@ -48,7 +49,7 @@ ColumnLayout {
         Layout.fillWidth: true
         text: i18n("Select file")
         onClicked: {
-            streaming.currentFile = RecentFileModel.addFile()
+            streaming.currentFile = RingSession.recentFileModel.addFile()
         }
     }
     Item {

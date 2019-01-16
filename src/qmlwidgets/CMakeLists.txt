@@ -54,7 +54,6 @@ SET( libqmlwidgets_LIB_SRCS
     personiconengine.cpp
     treehelper.cpp
     multicall.cpp
-    recentfilemodel.cpp
     snapshotadapter.cpp
     timelinedots.cpp
     qmlaction.cpp
