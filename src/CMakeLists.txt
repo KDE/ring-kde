@@ -234,13 +234,6 @@ SET(
    model/extendedprotocolmodel.cpp
    ${ring_kde_PROXIES}
    widgets/systray.cpp
-   configurator/localhistoryconfigurator.cpp
-   configurator/peerprofileconfigurator.cpp
-   configurator/bookmarkconfigurator.cpp
-   configurator/audiorecordingconfigurator.cpp
-   configurator/fallbackpersonconfigurator.cpp
-   conf/dlggeneral.cpp
-   widgets/filterlineedit.cpp
 )
 
 

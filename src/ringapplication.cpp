@@ -20,9 +20,7 @@
 #include "ringapplication.h"
 
 //Qt
-#include <QtCore/QDir>
 #include <QtCore/QTimer>
-#include <QtCore/QCommandLineParser>
 #include <QtCore/QDebug>
 #include <QtCore/QStandardPaths>
 #include <QtCore/QItemSelectionModel>
@@ -44,30 +42,10 @@
 #include <itemdataroles.h>
 #include <session.h>
 #include <callmodel.h>
-#include <eventmodel.h>
 #include <accountmodel.h>
 #include <account.h>
-#include <individual.h>
-#include <contactmethod.h>
-#include <individualdirectory.h>
-#include <callhistorymodel.h>
-#include <contactmodel.h>
-#include <ringdevicemodel.h>
-#include <namedirectory.h>
 #include <bookmarkmodel.h>
-#include <numbercompletionmodel.h>
-#include <useractionmodel.h>
-#include <protocolmodel.h>
-#include <video/configurationproxy.h>
-#include <contactmethod.h>
-#include <media/recordingmodel.h>
-#include <peerstimelinemodel.h>
-#include <media/recording.h>
-#include <media/textrecording.h>
-#include <media/media.h>
-#include <video/renderer.h>
 #include <libcard/historyimporter.h>
-#include <troubleshoot/dispatcher.h>
 
 //Ring
 #include "klib/kcfg_settings.h"
@@ -82,13 +60,8 @@
 //Models
 #include <profilemodel.h>
 #include <certificatemodel.h>
-#include <availableaccountmodel.h>
 #include <numbercategorymodel.h>
-#include <codecmodel.h>
-#include <credentialmodel.h>
-#include <presencestatusmodel.h>
 #include <persondirectory.h>
-#include <infotemplatemanager.h>
 
 //Collections
 #include <foldercertificatecollection.h>
@@ -100,13 +73,6 @@
 #include <localprofilecollection.h>
 #include <localtextrecordingcollection.h>
 #include <globalinstances.h>
-
-//Configurators
-#include "configurator/localhistoryconfigurator.h"
-#include "configurator/audiorecordingconfigurator.h"
-#include "configurator/fallbackpersonconfigurator.h"
-#include "configurator/peerprofileconfigurator.h"
-#include "configurator/bookmarkconfigurator.h"
 
 //Delegates
 #include <delegates/kdepixmapmanipulation.h>
@@ -129,9 +95,6 @@
 
 //Widgets
 #include "widgets/systray.h"
-
-//Other
-#include <unistd.h>
 
 KDeclarative::KDeclarative* RingApplication::m_pDeclarative {nullptr};
 RingQmlWidgets* RingApplication::m_pQmlWidget {nullptr};
@@ -208,15 +171,6 @@ RingApplication::~RingApplication()
    delete m_pCanvasIndicator;
    delete m_pPhotoSelector;
    delete m_pQmlWidget;
-
-   delete Session::instance()->peersTimelineModel();
-   delete Session::instance()->recordingModel();
-   delete Session::instance()->personDirectory();
-   delete Session::instance()->callModel();
-   delete Session::instance()->profileModel();
-   delete Session::instance()->accountModel();
-   delete Session::instance()->individualDirectory();
-   delete Session::instance()->numberCategoryModel();
    m_spInstance = nullptr;
 }
 
@@ -261,21 +215,6 @@ void RingApplication::initCollections()
    loadNumberCategories();
 
    Session::instance()->callModel()->setAudoCleanDelay(5000);
-
-   /*******************************************
-      *           Set the configurator          *
-      ******************************************/
-
-   Session::instance()->personDirectory()->registerConfigarator<PeerProfileCollection2  >    (new PeerProfileConfigurator   (this));
-   Session::instance()->personDirectory()->registerConfigarator<FallbackPersonCollection>    (new FallbackPersonConfigurator(this));
-   Session::instance()->historyModel()->registerConfigarator<LocalHistoryCollection  >    (new LocalHistoryConfigurator  (this));
-   Session::instance()->bookmarkModel()->registerConfigarator<LocalBookmarkCollection >    (new BookmarkConfigurator      (this));
-   Session::instance()->recordingModel()->registerConfigarator<LocalRecordingCollection>    (new AudioRecordingConfigurator(this,
-      AudioRecordingConfigurator::Mode::AUDIO
-   ));
-   Session::instance()->recordingModel()->registerConfigarator<LocalTextRecordingCollection>(new AudioRecordingConfigurator(this,
-      AudioRecordingConfigurator::Mode::TEXT
-   ));
 
    /*******************************************
       *           Load the collections          *
@@ -380,22 +319,10 @@ void RingApplication::setIconify(bool iconify)
    m_StartIconified = iconify;
 }
 
-void RingApplication::setStartTimeline(bool value)
-{
-   m_StartTimeLine = value;
-}
-
-void RingApplication::setStartPhone(bool value)
-{
-   m_StartPhone = value;
-}
-
 #define QML_TYPE(name) qmlRegisterUncreatableType<name>(AppName, 1,0, #name, #name "cannot be instantiated");
 #define QML_NS(name) qmlRegisterUncreatableMetaObject( name :: staticMetaObject, #name, 1, 0, #name, "Namespaces cannot be instantiated" );
 #define QML_CRTYPE(name) qmlRegisterType<name>(AppName, 1,0, #name);
-#define QML_SINGLETON(name) RingApplication::engine()->rootContext()->setContextProperty(QStringLiteral(#name), &name::instance());
 #define QML_SINGLETON2(name) RingApplication::engine()->rootContext()->setContextProperty(QStringLiteral(#name), name::instance());
-#define QML_ADD_OBJECT(name, obj) RingApplication::engine()->rootContext()->setContextProperty(QStringLiteral(#name), obj);
 
 constexpr static const char AppName[]= "Ring";
 
@@ -441,18 +368,8 @@ QQmlApplicationEngine* RingApplication::engine()
       // Setup the icon theme provider and ki18n
       m_pDeclarative = new KDeclarative::KDeclarative;
       m_pDeclarative->setDeclarativeEngine(e);
-      m_pDeclarative->setupBindings();
       try {
          QML_SINGLETON2( ActionCollection        );
-
-         QML_ADD_OBJECT(VideoRateSelectionModel      , &Video::ConfigurationProxy::rateSelectionModel      ());
-         QML_ADD_OBJECT(VideoResolutionSelectionModel, &Video::ConfigurationProxy::resolutionSelectionModel());
-         QML_ADD_OBJECT(VideoChannelSelectionModel   , &Video::ConfigurationProxy::channelSelectionModel   ());
-         QML_ADD_OBJECT(VideoDeviceSelectionModel    , &Video::ConfigurationProxy::deviceSelectionModel    ());
-
-         qmlRegisterUncreatableType<::Media::Media>(
-            AppName, 1,0, "Media", QStringLiteral("cannot be instantiated")
-         );
 
          auto im = new RingingImageProvider();
          e->addImageProvider( QStringLiteral("RingingImageProvider"), im );
@@ -477,8 +394,6 @@ QQmlApplicationEngine* RingApplication::engine()
 }
 
 #undef QML_TYPE
-#undef QML_SINGLETON
-#undef QML_ADD_OBJECT
 #undef QML_CRTYPE
 
 QQuickWindow* RingApplication::desktopWindow() const

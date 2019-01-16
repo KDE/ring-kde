@@ -21,6 +21,7 @@ import QtQuick.Layouts 1.0
 import RingQmlWidgets 1.0
 import Ring 1.0
 import org.kde.playground.kquickitemviews 1.0 as KQuickItemViews
+import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 
 GridLayout {
     property alias deviceSelectionModel    : device.selectionModel
@@ -37,7 +38,7 @@ GridLayout {
     KQuickItemViews.ComboBoxView {
         id: device
         Layout.fillWidth: true
-        selectionModel: VideoDeviceSelectionModel
+        selectionModel: RingSession.deviceModel.configurationProxy.deviceSelectionModel
     }
 
     Text {
@@ -46,7 +47,7 @@ GridLayout {
     }
     KQuickItemViews.ComboBoxView {
         id: channel
-        selectionModel: VideoChannelSelectionModel
+        selectionModel: RingSession.deviceModel.configurationProxy.channelSelectionModel
         Layout.fillWidth: true
     }
 
@@ -56,7 +57,7 @@ GridLayout {
     }
     KQuickItemViews.ComboBoxView {
         id: resolution
-        selectionModel: VideoResolutionSelectionModel
+        selectionModel: RingSession.deviceModel.configurationProxy.resolutionSelectionModel
         Layout.fillWidth: true
     }
 
@@ -66,7 +67,7 @@ GridLayout {
     }
     KQuickItemViews.ComboBoxView {
         id: rate
-        selectionModel: VideoRateSelectionModel
+        selectionModel: RingSession.deviceModel.configurationProxy.rateSelectionModel
         Layout.fillWidth: true
     }
     //I got no idea why. If there is no extra row, the column width is wrong

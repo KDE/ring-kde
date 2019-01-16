@@ -145,16 +145,12 @@ void Cmd::iconify()
 
 void Cmd::phoneInterface()
 {
-   if (RingApplication::instance()) {
-      RingApplication::instance()->setStartPhone(true);
-   }
+   //FIXME
 }
 
 void Cmd::timelineInterface()
 {
-   if (RingApplication::instance()) {
-      RingApplication::instance()->setStartTimeline(true);
-   }
+   //FIXME
 }
 
 void Cmd::slotActivateActionRequested (const QString&, const QVariant&)

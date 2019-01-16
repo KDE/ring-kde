@@ -198,6 +198,7 @@ ContactMethod* KDEActionExtender::selectContactMethod(FlagPack<ActionExtenderI::
 
 QUrl KDEDesktopFileProvider::getAnyFile(const QStringList& extensions) const
 {
+    Q_UNUSED(extensions)
     return QFileDialog::getOpenFileName(
         nullptr,
         QStringLiteral("Open File"),

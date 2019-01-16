@@ -82,8 +82,6 @@ public:
 
    //Setter
    void setIconify(bool iconify);
-   void setStartTimeline(bool value);
-   void setStartPhone(bool value);
 
    bool m_HasFocus       {false};
 private:
