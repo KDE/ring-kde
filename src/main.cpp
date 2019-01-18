@@ -60,6 +60,12 @@ Q_IMPORT_PLUGIN(JamiAccountView)
 #include <accountview/accountviewplugin.h>
 #endif
 
+#ifdef JAMIACCOUNTVIEW_USE_STATIC_PLUGIN
+Q_IMPORT_PLUGIN(JamiCallView)
+#else
+#include <callview/callviewplugin.h>
+#endif
+
 Q_IMPORT_PLUGIN(RingQtQuick)
 
 constexpr static const char version[] = "3.1.0";
@@ -112,6 +118,15 @@ int main(int argc, char **argv)
       JamiAccountView v4;
       v4.registerTypes("org.kde.ringkde.jamiaccountview");
       v4.initializeEngine(app.engine(), "org.kde.ringkde.jamiaccountview");
+#endif
+
+#ifdef JAMIACCOUNTVIEW_USE_STATIC_PLUGIN
+      qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiCallView().instance())->registerTypes("org.kde.ringkde.jamicallview");
+      qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiCallView().instance())->initializeEngine(app.engine(), "org.kde.ringkde.jamicallview");
+#else
+      JamiCallViewPlugin v5;
+      v5.registerTypes("org.kde.ringkde.jamicallview");
+      v5.initializeEngine(app.engine(), "org.kde.ringkde.jamicallview");
 #endif
 
       KAboutData about(QStringLiteral("ring-kde"),

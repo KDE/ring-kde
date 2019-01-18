@@ -18,6 +18,7 @@
 import QtQuick 2.0
 import Ring 1.0
 import RingQmlWidgets 1.0
+import org.kde.ringkde.jamicallview 1.0 as JamiCallView
 
 Rectangle {
     property QtObject call: null
@@ -200,7 +201,7 @@ Rectangle {
                 snapshotButton.color = containsMouse ? "#466eff" : "transparent"
             }
 
-            SnapshotAdapter {
+            JamiCallView.SnapshotAdapter {
                 id: snapshotAdapter
             }
 

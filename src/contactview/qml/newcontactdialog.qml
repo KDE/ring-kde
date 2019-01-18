@@ -19,6 +19,7 @@ import QtQuick 2.7
 import org.kde.kirigami 2.2 as Kirigami
 import QtQuick.Controls 2.2
 import RingQmlWidgets 1.0
+import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 
 Dialog {
     standardButtons: Dialog.Save | Dialog.Cancel
@@ -30,7 +31,7 @@ Dialog {
     width: applicationWindow().contentItem.width * 0.85
     height: applicationWindow().contentItem.height * 0.85
 
-    ContactBuilder {
+    RingQtQuick.ContactBuilder {
         id: contactBuilder
     }
 

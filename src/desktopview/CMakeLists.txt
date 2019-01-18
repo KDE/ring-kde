@@ -18,6 +18,8 @@ SET(desktopview_LIB_SRCS
     desktopviewplugin.cpp
     dockmodel.cpp
     tipmodel.cpp
+    qmlaction.cpp
+    qactionbinder.cpp
 )
 
 QT5_ADD_RESOURCES(desktopview_LIB_SRCS

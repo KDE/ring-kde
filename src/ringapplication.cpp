@@ -53,7 +53,6 @@
 #include "errormessage.h"
 #include "wizard/welcome.h"
 #include "jamikdeintegration/src/windowevent.h"
-#include "callview/videowidget.h"
 
 //Models
 #include <profilemodel.h>
@@ -254,7 +253,6 @@ QQmlApplicationEngine* RingApplication::engine()
          auto im2 = new SymbolicColorizer();
          e->addImageProvider( QStringLiteral("SymbolicColorizer"), im2 );
 
-         VideoWidget3::initProvider();
       }
       catch(char const* e) {
          qDebug() << "Failed to connect to the daemon" << e;

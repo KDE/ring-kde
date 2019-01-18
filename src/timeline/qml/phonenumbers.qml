@@ -302,7 +302,7 @@ ListView {
         }
     }
 
-    ContactBuilder {
+    RingQtQuick.ContactBuilder {
         id: contactBuilder
     }
 }

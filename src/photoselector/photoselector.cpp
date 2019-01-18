@@ -29,7 +29,7 @@
 #include <person.h>
 #include <contactmethod.h>
 #include <individual.h>
-#include <../qmlwidgets/contactbuilder.h>
+#include <contactbuilder.h>
 
 class PhotoSelectorPrivate final
 {

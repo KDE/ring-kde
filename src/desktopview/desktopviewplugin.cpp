@@ -22,6 +22,8 @@
 
 #include "dockmodel.h"
 #include "tipmodel.h"
+#include "qmlaction.h"
+#include "qactionbinder.h"
 
 #include <qrc_desktopview.cpp>
 
@@ -29,4 +31,6 @@ void DesktopView::registerTypes(const char *uri)
 {
     qmlRegisterType<DockModel>(uri, 1, 0, "DockModel");
     qmlRegisterType<TipModel>(uri, 1, 0, "TipModel");
+    qmlRegisterType<QmlAction>(uri, 1, 0, "QmlAction");
+    qmlRegisterType<QActionBinder>(uri, 1, 0, "QActionBinder");
 }

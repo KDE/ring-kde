@@ -23,6 +23,7 @@ import PhotoSelectorPlugin 1.0
 import RingQmlWidgets 1.0
 import org.kde.kirigami 2.2 as Kirigami
 import ContactView 1.0
+import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 
 Kirigami.ScrollablePage {
     id: contactViewPage
@@ -221,7 +222,7 @@ Kirigami.ScrollablePage {
         }
     }
 
-    ContactBuilder {
+    RingQtQuick.ContactBuilder {
         id: contactBuilder
     }
 

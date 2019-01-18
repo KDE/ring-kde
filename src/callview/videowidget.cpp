@@ -42,7 +42,6 @@ class VideoWidget3Private final : public QObject
 public:
     explicit VideoWidget3Private(VideoWidget3* parent) : QObject(parent), q_ptr(parent) {}
     VideoWidget3::Mode m_Mode {VideoWidget3::Mode::CONVERSATION};
-    static ImageProvider* m_spProvider;
     Video::SourceModel* m_pSourceModel {nullptr};
 
     VideoWidget3* q_ptr;
@@ -52,9 +51,6 @@ public Q_SLOTS:
     void slotRendererRestored();
 };
 
-// Only one must exist per context, better not try to regenerate it
-ImageProvider* VideoWidget3Private::m_spProvider = nullptr;
-
 VideoWidget3::VideoWidget3(QWidget* parent) :
     VideoWidget3(VideoWidget3::Mode::CONVERSATION, parent)
 {
@@ -63,16 +59,6 @@ VideoWidget3::VideoWidget3(QWidget* parent) :
 
     connect(Session::instance()->callModel(), &CallModel::rendererRemoved,
         this, &VideoWidget3::removeRenderer);
-}
-
-void VideoWidget3::initProvider()
-{
-    if (!VideoWidget3Private::m_spProvider) {
-        VideoWidget3Private::m_spProvider = new ImageProvider();
-        RingApplication::engine()->addImageProvider(
-            QStringLiteral("VideoFrame"), VideoWidget3Private::m_spProvider
-        );
-    }
 }
 
 VideoWidget3::VideoWidget3(VideoWidget3::Mode mode, QWidget* parent) :

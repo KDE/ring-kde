@@ -20,14 +20,9 @@
 #include <QtCore/QDebug>
 
 #include "bubble.h"
-#include "messagebuilder.h"
-#include "contactbuilder.h"
 #include "treehelper.h"
 #include "multicall.h"
-#include "snapshotadapter.h"
 #include "timelinedots.h"
-#include "qmlaction.h"
-#include "qactionbinder.h"
 
 #include "qrc_qmlwidgets.cpp"
 
@@ -37,13 +32,8 @@ void RingQmlWidgets::registerTypes(const char *uri)
 
     qmlRegisterType<Bubble>(uri, 1, 0, "Bubble");
     qmlRegisterType<MultiCall>(uri, 1, 0, "MultiCall");
-    qmlRegisterType<MessageBuilder>(uri, 1, 0, "MessageBuilder");
-    qmlRegisterType<ContactBuilder>(uri, 1, 0, "ContactBuilder");
     qmlRegisterType<TreeHelper>(uri, 1, 0, "TreeHelper");
-    qmlRegisterType<SnapshotAdapter>(uri, 1, 0, "SnapshotAdapter");
     qmlRegisterType<TimelineDots>(uri, 1, 0, "TimelineDots");
-    qmlRegisterType<QmlAction>(uri, 1, 0, "QmlAction");
-    qmlRegisterType<QActionBinder>(uri, 1, 0, "QActionBinder");
     qmlRegisterType(QStringLiteral("qrc:/OutlineButton.qml"), uri, 1, 0, "OutlineButton");
     qmlRegisterType(QStringLiteral("qrc:/OutlineButtons.qml"), uri, 1, 0, "OutlineButtons");
 }

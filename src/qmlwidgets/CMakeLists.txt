@@ -48,14 +48,9 @@ SET(GENERIC_LIB_VERSION "1.0.0")
 SET( libqmlwidgets_LIB_SRCS
     bubble.cpp
     plugin.cpp
-    messagebuilder.cpp
-    contactbuilder.cpp
     treehelper.cpp
     multicall.cpp
-    snapshotadapter.cpp
     timelinedots.cpp
-    qmlaction.cpp
-    qactionbinder.cpp
     symboliccolorizer.cpp
 )
 
@@ -83,5 +78,4 @@ target_link_libraries( libqmlwidgets
 SET( libqmlwidgets_LIB_HDRS
     bubble.h
     plugin.h
-    messagebuilder.h
 )

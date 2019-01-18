@@ -185,7 +185,7 @@ Rectangle {
             Layout.fillWidth: true
             height: 90
             visible: canSendTexts
-            MessageBuilder {id: builder}
+            RingQtQuick.MessageBuilder {id: builder}
             requireContactRequest: currentContactMethod &&
                 currentContactMethod.confirmationStatus == RingQtQuick.ContactMethod.UNCONFIRMED &&
                 currentContactMethod.confirmationStatus != RingQtQuick.ContactMethod.DISABLED
