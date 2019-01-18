@@ -20,7 +20,7 @@ import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 import org.kde.ringkde.jamiwizard 1.0 as JamiWizard
-import Ring 1.0
+
 
 Item {
     id: importRing

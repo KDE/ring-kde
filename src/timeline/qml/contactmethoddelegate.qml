@@ -17,7 +17,7 @@
  **************************************************************************/
 import QtQuick 2.7
 import QtQuick.Layouts 1.0
-import Ring 1.0
+
 import RingQmlWidgets 1.0
 import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 // import org.kde.kirigami 2.0 as Kirigami

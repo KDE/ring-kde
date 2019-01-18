@@ -18,7 +18,7 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
-import Ring 1.0
+
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 
 Item {

@@ -22,19 +22,14 @@
 //Qt
 #include <QtCore/QTimer>
 #include <QtCore/QDebug>
-#include <QtCore/QStandardPaths>
-#include <QtCore/QItemSelectionModel>
-#include <QtWidgets/QAction>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QQuickItem>
 #include <QQuickWindow>
-#include <QQmlExtensionPlugin>
 #include <QQmlComponent>
 
 //KDE
 #include <KIconLoader>
-#include <KActionCollection>
 #include <kmessagebox.h>
 #include <KDeclarative/KDeclarative>
 #include <KLocalizedString>
@@ -42,30 +37,14 @@
 //LRC
 #include <itemdataroles.h>
 #include <session.h>
-#include <callmodel.h>
 #include <accountmodel.h>
-#include <account.h>
-#include <bookmarkmodel.h>
-#include <libcard/historyimporter.h>
 
 //Ring
 #include "kcfg_settings.h"
 #include "cmd.h"
-#include "wizard/welcome.h"
 #include "jamikdeintegration/src/windowevent.h"
 
-//Models
-#include <profilemodel.h>
-#include <callhistorymodel.h>
-#include <certificatemodel.h>
-#include <numbercategorymodel.h>
-#include <persondirectory.h>
-
-//Delegates
-#include "extensions/presencecollectionextension.h"
-
 //QML
-#include <KQuickItemViews/plugin.h>
 #include "qmlwidgets/plugin.h"
 #include "qmlwidgets/symboliccolorizer.h"
 #include "desktopview/desktopviewplugin.h"
@@ -186,12 +165,6 @@ void RingApplication::setIconify(bool iconify)
    m_StartIconified = iconify;
 }
 
-#define QML_TYPE(name) qmlRegisterUncreatableType<name>(AppName, 1,0, #name, #name "cannot be instantiated");
-#define QML_NS(name) qmlRegisterUncreatableMetaObject( name :: staticMetaObject, #name, 1, 0, #name, "Namespaces cannot be instantiated" );
-#define QML_CRTYPE(name) qmlRegisterType<name>(AppName, 1,0, #name);
-
-constexpr static const char AppName[]= "Ring";
-
 /// Create a QML engine for various canvas widgets
 QQmlApplicationEngine* RingApplication::engine()
 {
@@ -205,37 +178,17 @@ QQmlApplicationEngine* RingApplication::engine()
       m_pDesktopView = new DesktopView;
       m_pDesktopView->registerTypes("DesktopView");
 
-      QML_TYPE( QAction)
-
-      QML_CRTYPE( QItemSelectionModel )
-
-      QML_NS(Ring)
-
       e = new QQmlApplicationEngine(QGuiApplication::instance());
 
       // Setup the icon theme provider and ki18n
       m_pDeclarative = new KDeclarative::KDeclarative;
       m_pDeclarative->setDeclarativeEngine(e);
-      try {
-         auto im2 = new SymbolicColorizer();
-         e->addImageProvider( QStringLiteral("SymbolicColorizer"), im2 );
 
-      }
-      catch(char const* e) {
-         qDebug() << "Failed to connect to the daemon" << e;
-         sync();
-         ::exit(1);
-      }
-      catch(...) {
-         qDebug() << "Failed to connect to the daemon with an unknown problem";
-         ::exit(2);
-      }
+      auto im2 = new SymbolicColorizer();
+      e->addImageProvider( QStringLiteral("SymbolicColorizer"), im2 );
    }
    return e;
 }
-
-#undef QML_TYPE
-#undef QML_CRTYPE
 
 QQuickWindow* RingApplication::desktopWindow() const
 {

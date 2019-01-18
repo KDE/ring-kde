@@ -18,6 +18,7 @@
 #include "plugin.h"
 
 #include <QtCore/QDebug>
+#include <QtWidgets/QAction>
 
 #include "bubble.h"
 #include "treehelper.h"
@@ -29,6 +30,8 @@
 void RingQmlWidgets::registerTypes(const char *uri)
 {
     Q_ASSERT(uri == QLatin1String("RingQmlWidgets"));
+
+    qmlRegisterType<QAction>(uri, 1, 0, "QAction");
 
     qmlRegisterType<Bubble>(uri, 1, 0, "Bubble");
     qmlRegisterType<MultiCall>(uri, 1, 0, "MultiCall");

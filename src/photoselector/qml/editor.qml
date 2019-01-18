@@ -24,7 +24,7 @@ import PhotoSelectorPlugin 1.0
 import org.kde.playground.kquickitemviews 1.0 as KQuickItemViews
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 
-import Ring 1.0
+
 
 Dialog {
     property QtObject person: null

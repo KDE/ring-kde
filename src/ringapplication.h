@@ -36,7 +36,6 @@ namespace KDeclarative {
 class RingQmlWidgets;
 class DesktopView;
 class DialView;
-class Call;
 class PhoneWindowEvent;
 
 ///RingApplication: Main application

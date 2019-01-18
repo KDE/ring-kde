@@ -16,7 +16,7 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.    *
  *****************************************************************************/
 import QtQuick 2.0
-import Ring 1.0
+
 
 /*
  * This module display a 5 seconds message before the call is removed.
