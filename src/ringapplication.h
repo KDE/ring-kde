@@ -38,7 +38,6 @@ class PhotoSelectorPlugin;
 class CanvasIndicator;
 class DesktopView;
 class DialView;
-class TimelinePlugin;
 class Call;
 class PhoneWindowEvent;
 
@@ -93,7 +92,6 @@ private:
    static CanvasIndicator* m_pCanvasIndicator;
    static RingApplication* m_spInstance;
    static DesktopView* m_pDesktopView;
-   static TimelinePlugin* m_pTimeline;
    PhoneWindowEvent* m_pEventFilter {nullptr};
 
 private Q_SLOTS:

@@ -72,13 +72,11 @@
 #include "canvasindicators/canvasindicator.h"
 #include "canvasindicators/ringingimageprovider.h"
 #include "desktopview/desktopviewplugin.h"
-#include "timeline/timelineplugin.h"
 
 KDeclarative::KDeclarative* RingApplication::m_pDeclarative {nullptr};
 RingQmlWidgets* RingApplication::m_pQmlWidget {nullptr};
 PhotoSelectorPlugin* RingApplication::m_pPhotoSelector {nullptr};
 DesktopView* RingApplication::m_pDesktopView {nullptr};
-TimelinePlugin* RingApplication::m_pTimeline {nullptr};
 CanvasIndicator* RingApplication::m_pCanvasIndicator {nullptr};
 RingApplication* RingApplication::m_spInstance {nullptr};
 
@@ -216,9 +214,6 @@ QQmlApplicationEngine* RingApplication::engine()
 
       m_pDesktopView = new DesktopView;
       m_pDesktopView->registerTypes("DesktopView");
-
-      m_pTimeline = new TimelinePlugin;
-      m_pTimeline->registerTypes("TimeLine");
 
       m_pCanvasIndicator = new CanvasIndicator;
       m_pCanvasIndicator->registerTypes("CanvasIndicator");

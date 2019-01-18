@@ -78,6 +78,12 @@ Q_IMPORT_PLUGIN(JamiDialView)
 #include <dialview/dialviewplugin.h>
 #endif
 
+#ifdef JAMIACCOUNTVIEW_USE_STATIC_PLUGIN
+Q_IMPORT_PLUGIN(JamiTimelineView)
+#else
+#include <timeline/timelineplugin.h>
+#endif
+
 Q_IMPORT_PLUGIN(RingQtQuick)
 
 constexpr static const char version[] = "3.1.0";
@@ -157,6 +163,15 @@ int main(int argc, char **argv)
       JamiDialView v7;
       v7.registerTypes("org.kde.ringkde.jamidialview");
       v7.initializeEngine(app.engine(), "org.kde.ringkde.jamidialview");
+#endif
+
+#ifdef JAMITIMELINEVIEW_USE_STATIC_PLUGIN
+      qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiTimelineView().instance())->registerTypes("org.kde.ringkde.jamitimelineview");
+      qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiTimelineView().instance())->initializeEngine(app.engine(), "org.kde.ringkde.jamitimelineview");
+#else
+      JamiTimelineView v8;
+      v8.registerTypes("org.kde.ringkde.jamitimelineview");
+      v8.initializeEngine(app.engine(), "org.kde.ringkde.jamitimelineview");
 #endif
 
       KAboutData about(QStringLiteral("ring-kde"),
