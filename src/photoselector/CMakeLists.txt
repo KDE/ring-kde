@@ -63,6 +63,5 @@ target_link_libraries( libphotoselector
     Qt5::Gui
     Qt5::Quick
     Qt5::Widgets
-    Qt5::QuickWidgets
     Qt5::QuickControls2
 )

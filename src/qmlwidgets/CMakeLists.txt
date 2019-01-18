@@ -66,7 +66,6 @@ target_link_libraries( libqmlwidgets
     Qt5::Core
     Qt5::Gui
     Qt5::Quick
-    Qt5::QuickWidgets
     Qt5::QuickControls2
 
     KF5::ConfigCore

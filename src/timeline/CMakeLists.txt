@@ -71,7 +71,6 @@ target_link_libraries( libtimeline
    Qt5::Core
    Qt5::Gui
    Qt5::Quick
-   Qt5::QuickWidgets
    Qt5::QuickControls2
 
    KF5::I18n

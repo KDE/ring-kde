@@ -285,7 +285,7 @@ QT5_ADD_DBUS_ADAPTOR(ring_kde_SRCS ../data/org.kde.kuiserver.xml cmd.h Cmd )
 TARGET_LINK_LIBRARIES(ring-kde
   jamiwizard
   jamicallview
-  dialview
+  jamidialview
   libtimeline
   libphotoselector
   libcanvasindicator

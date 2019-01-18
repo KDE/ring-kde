@@ -72,6 +72,12 @@ Q_IMPORT_PLUGIN(JamiContactView)
 #include <contactview/contactviewplugin.h>
 #endif
 
+#ifdef JAMIACCOUNTVIEW_USE_STATIC_PLUGIN
+Q_IMPORT_PLUGIN(JamiDialView)
+#else
+#include <dialview/dialviewplugin.h>
+#endif
+
 Q_IMPORT_PLUGIN(RingQtQuick)
 
 constexpr static const char version[] = "3.1.0";
@@ -142,6 +148,15 @@ int main(int argc, char **argv)
       JamiContactViewPlugin v6;
       v6.registerTypes("org.kde.ringkde.jamicontactview");
       v6.initializeEngine(app.engine(), "org.kde.ringkde.jamicontactview");
+#endif
+
+#ifdef JAMIDIALVIEW_USE_STATIC_PLUGIN
+      qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiDialView().instance())->registerTypes("org.kde.ringkde.jamidialview");
+      qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiDialView().instance())->initializeEngine(app.engine(), "org.kde.ringkde.jamidialview");
+#else
+      JamiDialView v7;
+      v7.registerTypes("org.kde.ringkde.jamidialview");
+      v7.initializeEngine(app.engine(), "org.kde.ringkde.jamidialview");
 #endif
 
       KAboutData about(QStringLiteral("ring-kde"),

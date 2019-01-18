@@ -93,7 +93,6 @@ private:
    static CanvasIndicator* m_pCanvasIndicator;
    static RingApplication* m_spInstance;
    static DesktopView* m_pDesktopView;
-   static DialView* m_pDialView;
    static TimelinePlugin* m_pTimeline;
    PhoneWindowEvent* m_pEventFilter {nullptr};
 
