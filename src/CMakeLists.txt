@@ -214,7 +214,6 @@ SET(
    main.cpp
    cmd.cpp
    ringapplication.cpp
-   errormessage.cpp
 )
 
 # generate rules for building source files from the resources
@@ -287,7 +286,7 @@ TARGET_LINK_LIBRARIES(ring-kde
   jamicallview
   jamidialview
   jamitimelineview
-  libphotoselector
+  jamiphotoselector
   jamicanvasindicator
   desktopview
   jamicontactview

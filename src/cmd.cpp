@@ -81,8 +81,6 @@ bool Cmd::parseCmd(int argc, char **argv, KAboutData& about)
    if (parser.isSet(versionOption) || parser.isSet(helpOption))
       return false;
 
-   RingApplication::instance()->init();
-
    if (parser.isSet(call))
       placeCall(parser.value(call));
 

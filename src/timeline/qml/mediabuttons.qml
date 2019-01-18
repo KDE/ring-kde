@@ -22,7 +22,6 @@ import Ring 1.0
 import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 
 import RingQmlWidgets 1.0
-import PhotoSelectorPlugin 1.0
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 import net.lvindustries.ringqtquick.media 1.0 as RingQtMedia
 

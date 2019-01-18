@@ -37,6 +37,7 @@
 #include <KActionCollection>
 #include <kmessagebox.h>
 #include <KDeclarative/KDeclarative>
+#include <KLocalizedString>
 
 //LRC
 #include <itemdataroles.h>
@@ -50,7 +51,6 @@
 //Ring
 #include "kcfg_settings.h"
 #include "cmd.h"
-#include "errormessage.h"
 #include "wizard/welcome.h"
 #include "jamikdeintegration/src/windowevent.h"
 
@@ -68,12 +68,17 @@
 #include <KQuickItemViews/plugin.h>
 #include "qmlwidgets/plugin.h"
 #include "qmlwidgets/symboliccolorizer.h"
-#include "photoselector/photoplugin.h"
 #include "desktopview/desktopviewplugin.h"
+
+
+///Error to display when there is nothing else to say
+static const QString GENERIC_ERROR = i18n("An unknown error occurred. Ring KDE will now exit. If the problem persist, please report a bug.\n\n"
+      "It is known that this message can be caused by trying to open Ring KDE while the Ring daemon is exiting. If so, waiting 15 seconds and "
+      "trying again will solve the issue.");
+
 
 KDeclarative::KDeclarative* RingApplication::m_pDeclarative {nullptr};
 RingQmlWidgets* RingApplication::m_pQmlWidget {nullptr};
-PhotoSelectorPlugin* RingApplication::m_pPhotoSelector {nullptr};
 DesktopView* RingApplication::m_pDesktopView {nullptr};
 RingApplication* RingApplication::m_spInstance {nullptr};
 
@@ -119,13 +124,6 @@ RingApplication::RingApplication(int & argc, char ** argv) : QApplication(argc,a
    m_spInstance = this;
 }
 
-void RingApplication::init()
-{
-   if ((!Session::instance()->callModel()->isConnected()) || (!Session::instance()->callModel()->isValid())) {
-      QTimer::singleShot(5000,this,&RingApplication::daemonTimeout);
-   }
-}
-
 /**
  * Destructor
  */
@@ -133,7 +131,6 @@ RingApplication::~RingApplication()
 {
    delete m_pDeclarative;
    delete engine();
-   delete m_pPhotoSelector;
    delete m_pQmlWidget;
    m_spInstance = nullptr;
 }
@@ -205,9 +202,6 @@ QQmlApplicationEngine* RingApplication::engine()
       m_pQmlWidget = new RingQmlWidgets;
       m_pQmlWidget->registerTypes("RingQmlWidgets");
 
-      m_pPhotoSelector = new PhotoSelectorPlugin;
-      m_pPhotoSelector->registerTypes("PhotoSelectorPlugin");
-
       m_pDesktopView = new DesktopView;
       m_pDesktopView->registerTypes("DesktopView");
 
@@ -270,44 +264,16 @@ QQuickWindow* RingApplication::desktopWindow() const
    return dw;
 }
 
-///The daemon is not found
-void RingApplication::daemonTimeout()
-{
-   if ((!Session::instance()->callModel()->isConnected()) || (!Session::instance()->callModel()->isValid())) {
-      KMessageBox::error(nullptr, ErrorMessage::NO_DAEMON_ERROR);
-      exit(1);
-   }
-}
-
 ///Exit gracefully
 bool RingApplication::notify (QObject* receiver, QEvent* e)
 {
    try {
       return QApplication::notify(receiver,e);
    }
-   catch (const Call::State& state) {
-      qDebug() << ErrorMessage::GENERIC_ERROR << "CallState" << state;
-      QTimer::singleShot(2500, this, &RingApplication::daemonTimeout);
-   }
-   catch (const Call::Action& state) {
-      qDebug() << ErrorMessage::GENERIC_ERROR << "Call Action" << state;
-      QTimer::singleShot(2500, this, &RingApplication::daemonTimeout);
-   }
-   catch (const QString& errorMessage) {
-      KMessageBox::error(nullptr,errorMessage);
-      QTimer::singleShot(2500, this, &RingApplication::daemonTimeout);
-   }
-   catch (const std::exception& e) {
-      qDebug() << ErrorMessage::GENERIC_ERROR << e.what();
-      KMessageBox::error(nullptr,ErrorMessage::GENERIC_ERROR);
-      QTimer::singleShot(2500, this, &RingApplication::daemonTimeout);
-
-   }
    catch (...) {
       Q_ASSERT(false);
-      qDebug() << ErrorMessage::GENERIC_ERROR;
-      KMessageBox::error(nullptr, ErrorMessage::GENERIC_ERROR);
-      QTimer::singleShot(2500, this, &RingApplication::daemonTimeout);
+      qDebug() << GENERIC_ERROR;
+      KMessageBox::error(nullptr, GENERIC_ERROR);
    }
    return false;
 }

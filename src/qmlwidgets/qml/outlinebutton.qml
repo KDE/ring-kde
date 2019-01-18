@@ -18,12 +18,7 @@
 import QtQuick 2.0
 import Ring 1.0
 import org.kde.kirigami 2.2 as Kirigami
-// import RingQmlWidgets 1.0
-import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
-
 import RingQmlWidgets 1.0
-import PhotoSelectorPlugin 1.0
-
 
 Item {
     id: button

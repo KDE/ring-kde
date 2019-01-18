@@ -90,6 +90,12 @@ Q_IMPORT_PLUGIN(JamiCanvasIndicator)
 #include <canvasindicators/canvasindicator.h>
 #endif
 
+#ifdef JAMIPHOTOSELECTOR_USE_STATIC_PLUGIN
+Q_IMPORT_PLUGIN(JamiPhotoSelector)
+#else
+#include <photoselector/photoplugin.h>
+#endif
+
 Q_IMPORT_PLUGIN(RingQtQuick)
 
 constexpr static const char version[] = "3.1.0";
@@ -187,6 +193,15 @@ int main(int argc, char **argv)
       JamiCanvasIndicator v9;
       v9.registerTypes("org.kde.ringkde.jamicanvasindicator");
       v9.initializeEngine(app.engine(), "org.kde.ringkde.jamicanvasindicator");
+#endif
+
+#ifdef JAMIPHOTOSELECTOR_USE_STATIC_PLUGIN
+      qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiPhotoSelector().instance())->registerTypes("org.kde.ringkde.jamiphotoselector");
+      qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiPhotoSelector().instance())->initializeEngine(app.engine(), "org.kde.ringkde.jamiphotoselector");
+#else
+      JamiPhotoSelector v10;
+      v10.registerTypes("org.kde.ringkde.jamiphotoselector");
+      v10.initializeEngine(app.engine(), "org.kde.ringkde.jamiphotoselector");
 #endif
 
       KAboutData about(QStringLiteral("ring-kde"),

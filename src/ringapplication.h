@@ -34,7 +34,6 @@ namespace KDeclarative {
 
 //Ring
 class RingQmlWidgets;
-class PhotoSelectorPlugin;
 class DesktopView;
 class DialView;
 class Call;
@@ -66,7 +65,6 @@ public:
    static QQmlApplicationEngine* engine();
 
    static RingApplication* instance();
-   void init();
 
    /**
     * An unreliable way to track the application focus
@@ -82,18 +80,12 @@ public:
 private:
    //Attributes
    bool m_StartIconified {false};
-   bool m_StartPhone     {false};
-   bool m_StartTimeLine  {false};
 
    static KDeclarative::KDeclarative* m_pDeclarative;
    static RingQmlWidgets* m_pQmlWidget;
-   static PhotoSelectorPlugin* m_pPhotoSelector;
    static RingApplication* m_spInstance;
    static DesktopView* m_pDesktopView;
    PhoneWindowEvent* m_pEventFilter {nullptr};
-
-private Q_SLOTS:
-   void daemonTimeout();
 };
 
 #endif // RINGAPPLICATION_H
