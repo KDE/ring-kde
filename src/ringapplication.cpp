@@ -72,7 +72,6 @@
 #include "canvasindicators/canvasindicator.h"
 #include "canvasindicators/ringingimageprovider.h"
 #include "desktopview/desktopviewplugin.h"
-#include "contactview/contactviewplugin.h"
 #include "dialview/dialviewplugin.h"
 #include "timeline/timelineplugin.h"
 
@@ -80,7 +79,6 @@ KDeclarative::KDeclarative* RingApplication::m_pDeclarative {nullptr};
 RingQmlWidgets* RingApplication::m_pQmlWidget {nullptr};
 PhotoSelectorPlugin* RingApplication::m_pPhotoSelector {nullptr};
 DesktopView* RingApplication::m_pDesktopView {nullptr};
-ContactView* RingApplication::m_pContactView {nullptr};
 DialView* RingApplication::m_pDialView {nullptr};
 TimelinePlugin* RingApplication::m_pTimeline {nullptr};
 CanvasIndicator* RingApplication::m_pCanvasIndicator {nullptr};
@@ -220,9 +218,6 @@ QQmlApplicationEngine* RingApplication::engine()
 
       m_pDesktopView = new DesktopView;
       m_pDesktopView->registerTypes("DesktopView");
-
-      m_pContactView = new ContactView;
-      m_pContactView->registerTypes("ContactView");
 
       m_pDialView = new DialView;
       m_pDialView->registerTypes("DialView");

@@ -20,10 +20,11 @@ import QtQuick.Layouts 1.0
 import RingQmlWidgets 1.0
 import QtQuick.Controls 2.0
 import Ring 1.0
-import ContactView 1.0
+import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 import org.kde.kirigami 2.0 as Kirigami
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 import net.lvindustries.ringqtquick.models 1.0 as RingQtModels
+import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 
 Item {
     property QtObject contactMethod: object
@@ -91,7 +92,7 @@ Item {
                     }
                 }
 
-                ContactPhoto {
+                JamiContactView.ContactPhoto {
                     width:  32
                     height: 32
                     implicitHeight: 32

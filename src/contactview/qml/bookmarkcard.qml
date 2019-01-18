@@ -19,7 +19,7 @@ import QtQuick 2.7
 import QtQuick.Layouts 1.0
 import RingQmlWidgets 1.0
 import Ring 1.0
-import ContactView 1.0
+import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 
 Item {
     height: rows.implicitHeight + 10 //10 == 2*margins
@@ -41,7 +41,7 @@ Item {
             Item {
                 Layout.preferredWidth: 48
                 Layout.fillHeight: true
-                ContactPhoto {
+                JamiContactView.ContactPhoto {
                     width:  36
                     height: 36
 

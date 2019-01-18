@@ -22,7 +22,8 @@ import QtQuick.Controls 2.0 as Controls
 import org.kde.kirigami 2.2 as Kirigami
 import QtQuick.Window 2.2
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
-import ContactView 1.0
+import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
+import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 
 import DesktopView 1.0
 
@@ -110,7 +111,7 @@ Item {
                         delegate: MouseArea {
                             width: dockBar.width
                             height: dockBar.width
-                            ContactPhoto {
+                            JamiContactView.ContactPhoto {
                                 anchors.centerIn: parent
                                 width: dockBar.width - 3
                                 height: dockBar.width - 3

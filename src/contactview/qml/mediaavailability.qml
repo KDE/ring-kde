@@ -21,7 +21,7 @@ import QtQuick.Controls 2.0
 import QtQml.Models 2.2
 import RingQmlWidgets 1.0
 import Ring 1.0
-import ContactView 1.0
+import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 import net.lvindustries.ringqtquick.media 1.0 as RingQtMedia
 
 Rectangle {

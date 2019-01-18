@@ -21,7 +21,8 @@ import QtQuick.Controls 2.0
 import QtQml.Models 2.2
 import RingQmlWidgets 1.0
 import Ring 1.0
-import ContactView 1.0
+import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
+import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 
 Item {
     width: parent.width
@@ -64,7 +65,7 @@ Item {
             Item {
                 Layout.preferredWidth: 48
                 Layout.fillHeight: true
-                ContactPhoto {
+                JamiContactView.ContactPhoto {
                     width:  36
                     height: 36
 

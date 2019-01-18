@@ -19,11 +19,12 @@ import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
 import Ring 1.0
-import ContactView 1.0
+import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 
 import RingQmlWidgets 1.0
 import PhotoSelectorPlugin 1.0
 import org.kde.kirigami 2.2 as Kirigami
+import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 
 Rectangle {
     id: contactHeader
@@ -92,7 +93,7 @@ Rectangle {
         width: contactHeader.height
         height: contactHeader.height
 
-        ContactPhoto {
+        JamiContactView.ContactPhoto {
             id: contactPhoto
             anchors.fill: parent
             anchors.verticalCenter: contactHeader.verticalCenter

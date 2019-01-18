@@ -45,7 +45,7 @@
 #include <QStandardPaths>
 #include "cmiconengine.h"
 #include "personiconengine.h"
-// #include <qrc_assets.cpp>
+
 #include "../callview/imageprovider.h"
 
 namespace RingIcons {

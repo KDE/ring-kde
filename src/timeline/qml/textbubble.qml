@@ -19,10 +19,11 @@ import QtQuick 2.7
 import QtQuick.Layouts 1.2
 import Ring 1.0
 import RingQmlWidgets 1.0
-import ContactView 1.0
+import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 import QtGraphicalEffects 1.0
 import Style 1.0
 import org.kde.kirigami 2.2 as Kirigami
+import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 
 Item {
     id: chatMessage
@@ -47,7 +48,7 @@ Item {
     RowLayout {
         anchors.fill: parent
 
-        ContactPhoto {
+        JamiContactView.ContactPhoto {
             width: 50
             height: 50
             visible: direction == 0
@@ -112,7 +113,7 @@ Item {
             }
         }
 
-        ContactPhoto {
+        JamiContactView.ContactPhoto {
             width: 50
             height: 50
             visible: direction == 1

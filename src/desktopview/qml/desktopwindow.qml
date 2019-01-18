@@ -21,10 +21,10 @@ import RingQmlWidgets 1.0
 import QtQuick.Layouts 1.0
 import QtQuick.Controls 2.0 as Controls
 import org.kde.kirigami 2.2 as Kirigami
-import ContactView 1.0
 import DesktopView 1.0
 import org.kde.ringkde.jamikdeintegration 1.0 as JamiKDEIntegration
 import org.kde.ringkde.jamiwizard 1.0 as JamiWizard
+import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 // import org.kde.ringkde.jamiaccountview 1.0 as JamiAccountView
 
 Kirigami.ApplicationWindow {
@@ -426,7 +426,7 @@ Kirigami.ApplicationWindow {
                 }
             }
 
-            MainPage {
+            JamiContactView.MainPage {
                 id: mainPage
                 header: contactHeader
                 Layout.fillHeight: true

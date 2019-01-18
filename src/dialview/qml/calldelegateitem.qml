@@ -21,7 +21,8 @@ import Ring 1.0
 import RingQmlWidgets 1.0
 import org.kde.kirigami 2.2 as Kirigami
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
-import ContactView 1.0
+import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
+import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 
 Rectangle {
     id: callDelegateItem
@@ -88,7 +89,7 @@ Rectangle {
         spacing: 10
         width: parent.width - 4
 
-        ContactPhoto {
+        JamiContactView.ContactPhoto {
             contactMethod: object.peerContactMethod
             height:40
             width:40

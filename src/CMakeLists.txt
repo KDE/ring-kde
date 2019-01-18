@@ -290,7 +290,7 @@ TARGET_LINK_LIBRARIES(ring-kde
   libphotoselector
   libcanvasindicator
   desktopview
-  contactview
+  jamicontactview
   jamiaccountview
   libqmlwidgets
   kquickitemviews

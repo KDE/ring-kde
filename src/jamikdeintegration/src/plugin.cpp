@@ -62,6 +62,8 @@
 #include "systray.h"
 #include "kcfg_settings.h"
 
+#include "sharedassets/qrc_assets.cpp"
+
 static QQmlEngine* e = nullptr;
 
 static void loadNumberCategories()

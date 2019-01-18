@@ -22,8 +22,9 @@ import Ring 1.0
 import PhotoSelectorPlugin 1.0
 import RingQmlWidgets 1.0
 import org.kde.kirigami 2.2 as Kirigami
-import ContactView 1.0
+import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
+import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 
 Kirigami.ScrollablePage {
     id: contactViewPage
@@ -275,7 +276,7 @@ Kirigami.ScrollablePage {
             implicitHeight: showImage ? 90 : 0
             Layout.fillWidth: true
 
-            ContactPhoto {
+            JamiContactView.ContactPhoto {
                 id: photoRect
 
                 tracked: false
