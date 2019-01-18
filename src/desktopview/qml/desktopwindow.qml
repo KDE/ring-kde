@@ -23,6 +23,9 @@ import QtQuick.Controls 2.0 as Controls
 import org.kde.kirigami 2.2 as Kirigami
 import ContactView 1.0
 import DesktopView 1.0
+import org.kde.ringkde.jamikdeintegration 1.0 as JamiKDEIntegration
+import org.kde.ringkde.jamiwizard 1.0 as JamiWizard
+// import org.kde.ringkde.jamiaccountview 1.0 as JamiAccountView
 
 Kirigami.ApplicationWindow {
     id: root
@@ -31,17 +34,39 @@ Kirigami.ApplicationWindow {
     height: 768
 
     property bool wizardVisible: false
-    property bool accountMode: false
 
     TipModel {
         id: displayTips
     }
 
-    function showWizard() {
-        wizardVisible = true
-        globalDrawer.drawerOpen = false
-        wizardLoader.visible    = true
-        wizardLoader.active     = true
+    /*
+     * This is an abstraction mechanism to avoid coupling QML code with the
+     * remaining KDE (Desktop) integration code written in C++
+     */
+    JamiKDEIntegration.WindowEvent {
+        id: events
+
+        onRequestsConfigureAccounts: {
+            var component = Qt.createComponent("AccountDialog.qml")
+            if (component.status == Component.Ready) {
+                var window = component.createObject(applicationWindow().contentItem)
+                window.open()
+            }
+            else
+                console.log("ERROR", component.status, component.errorString())
+
+        }
+
+        onRequestsHideWindow: {
+            hide()
+        }
+
+        onRequestsWizard: {
+            wizardVisible = true
+            globalDrawer.drawerOpen = false
+            wizardLoader.visible    = true
+            wizardLoader.active     = true
+        }
     }
 
     function showContactRequests() {
@@ -96,7 +121,6 @@ Kirigami.ApplicationWindow {
         var actions = [
             "ActionCollection.showWizard",
             "ActionCollection.configureAccount",
-            "ActionCollection.configureRing",
             "ActionCollection.configureShortcut",
             "ActionCollection.configureNotification",
             "ActionCollection.quitAction"
@@ -126,7 +150,7 @@ Kirigami.ApplicationWindow {
 
         var actions = [
             "ActionCollection.showWizard",
-            "ActionCollection.configureRing",
+            "ActionCollection.configureAccount",
             "ActionCollection.configureShortcut",
             "ActionCollection.configureNotification",
             "ActionCollection.quitAction"
@@ -326,7 +350,7 @@ Kirigami.ApplicationWindow {
         anchors.fill: parent
         z: 999999
         visible: false
-        sourceComponent: Wizard {
+        sourceComponent: JamiWizard.Wizard {
             anchors.fill: parent
             z: 999999
             onVisibleChanged: {
@@ -420,20 +444,6 @@ Kirigami.ApplicationWindow {
             }
         }
 
-    }
-
-    onAccountModeChanged: {
-        if (accountMode == true) {
-            var component = Qt.createComponent("AccountDialog.qml")
-            if (component.status == Component.Ready) {
-                var window = component.createObject(applicationWindow().contentItem)
-                window.open()
-            }
-            else
-                console.log("ERROR", component.status, component.errorString())
-        }
-
-        accountMode = false
     }
 
     onClosing: {

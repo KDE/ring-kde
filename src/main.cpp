@@ -30,7 +30,7 @@
 
 //Ring
 #include "ringapplication.h"
-#include "klib/kcfg_settings.h"
+#include "kcfg_settings.h"
 #include "cmd.h"
 #include <QQmlDebuggingEnabler>
 
@@ -40,6 +40,24 @@
 Q_IMPORT_PLUGIN(KQuickItemViews)
 #else
 #include <KQuickItemViews/plugin.h>
+#endif
+
+#ifdef JAMIKDEINTEGRATION_USE_STATIC_PLUGIN
+Q_IMPORT_PLUGIN(JamiKDEIntegration)
+#else
+#include <jamikdeintegration/src/plugin.h>
+#endif
+
+#ifdef JAMIWIZARD_USE_STATIC_PLUGIN
+Q_IMPORT_PLUGIN(JamiWizard)
+#else
+#include <wizard/plugin.h>
+#endif
+
+#ifdef JAMIACCOUNTVIEW_USE_STATIC_PLUGIN
+Q_IMPORT_PLUGIN(JamiAccountView)
+#else
+#include <accountview/accountviewplugin.h>
 #endif
 
 Q_IMPORT_PLUGIN(RingQtQuick)
@@ -68,6 +86,33 @@ int main(int argc, char **argv)
 
       qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_RingQtQuick().instance())->registerTypes("net.lvindustries.ringqtquick");
       qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_RingQtQuick().instance())->initializeEngine(app.engine(), "net.lvindustries.ringqtquick");
+
+#ifdef JAMIKDEINTEGRATION_USE_STATIC_PLUGIN
+      qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiKDEIntegration().instance())->registerTypes("org.kde.ringkde.jamikdeintegration");
+      qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiKDEIntegration().instance())->initializeEngine(app.engine(), "org.kde.ringkde.jamikdeintegration");
+#else
+      JamiKDEIntegration v2;
+      v2.registerTypes("org.kde.ringkde.jamikdeintegration");
+      v2.initializeEngine(app.engine(), "org.kde.ringkde.jamikdeintegration");
+#endif
+
+#ifdef JAMIWIZARD_USE_STATIC_PLUGIN
+      qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiWizard().instance())->registerTypes("org.kde.ringkde.jamiwizard");
+      qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiWizard().instance())->initializeEngine(app.engine(), "org.kde.ringkde.jamiwizard");
+#else
+      JamiWizard v3;
+      v3.registerTypes("org.kde.ringkde.jamiwizard");
+      v3.initializeEngine(app.engine(), "org.kde.ringkde.jamiwizard");
+#endif
+
+#ifdef JAMIACCOUNTVIEW_USE_STATIC_PLUGIN
+      qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiAccountView().instance())->registerTypes("org.kde.ringkde.jamiaccountview");
+      qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiAccountView().instance())->initializeEngine(app.engine(), "org.kde.ringkde.jamiaccountview");
+#else
+      JamiAccountView v4;
+      v4.registerTypes("org.kde.ringkde.jamiaccountview");
+      v4.initializeEngine(app.engine(), "org.kde.ringkde.jamiaccountview");
+#endif
 
       KAboutData about(QStringLiteral("ring-kde"),
          i18n("ring-kde"),

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2018 by Bluesystems                                     *
+ *   Copyright (C) 2013-2015 by Savoir-Faire Linux                         *
  *   Author : Emmanuel Lepage Vallee <elv1313@gmail.com>                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,13 +17,19 @@
  **************************************************************************/
 #pragma once
 
-#include <QQmlExtensionPlugin>
+#include <interfaces/fileprovideri.h>
 
-class Q_DECL_EXPORT JamiAccountView final : public QQmlExtensionPlugin
+class FileProviderInterface : public Interfaces::FileProviderI
 {
-    Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.kde.ringkde.jamiaccountview" FILE "jamiaccountview.json")
-
 public:
-    void registerTypes(const char* uri) override;
+    explicit FileProviderInterface() = default;
+
+    virtual QUrl getAnyFile(const QStringList& extensions) const override;
+
+    virtual QList<QUrl> recentFiles() const override;
+
+    virtual void addRecentFile(const QUrl& path) const override;
+
 };
+
+// kate: space-indent on; indent-width 4; replace-tabs on;

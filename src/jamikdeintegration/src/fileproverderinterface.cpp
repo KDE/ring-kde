@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2018 by Bluesystems                                     *
+ *   Copyright (C) 2013-2015 by Savoir-Faire Linux                         *
  *   Author : Emmanuel Lepage Vallee <elv1313@gmail.com>                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -15,15 +15,40 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#pragma once
+#include "fileproverderinterface.h"
 
-#include <QQmlExtensionPlugin>
+#include <QtWidgets/QFileDialog>
+#include <QtCore/QDir>
 
-class Q_DECL_EXPORT JamiAccountView final : public QQmlExtensionPlugin
+#include <kcfg_settings.h>
+
+QUrl FileProviderInterface::getAnyFile(const QStringList& extensions) const
 {
-    Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.kde.ringkde.jamiaccountview" FILE "jamiaccountview.json")
+    Q_UNUSED(extensions)
+    return QFileDialog::getOpenFileName(
+        nullptr,
+        QStringLiteral("Open File"),
+        QDir::currentPath(),
+        QStringLiteral("Media Files (*.png *.jpg *.gif *.mp4 *.mkv *.webm *.txt *.avi *.mpg)")
+    );
+}
 
-public:
-    void registerTypes(const char* uri) override;
-};
+QList<QUrl> FileProviderInterface::recentFiles() const
+{
+    const QStringList files = ConfigurationSkeleton::recentStreamedFiles();
+    QList<QUrl> ret;
+
+    for (const auto& f : qAsConst(files))
+        ret << f;
+
+    return ret;
+}
+
+void FileProviderInterface::addRecentFile(const QUrl& path) const
+{
+    QStringList files = ConfigurationSkeleton::recentStreamedFiles();
+    files << path.path();
+
+    ConfigurationSkeleton::setRecentStreamedFiles(files);
+
+}

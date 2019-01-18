@@ -27,8 +27,6 @@
 
 #include <../ringapplication.h>
 
-#include <qrc_wizard.cpp>
-
 WelcomeDialog::WelcomeDialog(QObject* parent) : QObject(parent)
 {
 

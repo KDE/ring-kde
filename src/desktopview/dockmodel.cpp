@@ -22,7 +22,7 @@
 #include <callmodel.h>
 #include <session.h>
 
-#include "../actioncollection.h"
+#include "../jamikdeintegration/src/actioncollection.h" //FIXME
 
 class DockModelPrivate final : public QObject
 {
@@ -46,6 +46,8 @@ DockModel::DockModel(QObject* parent) : QAbstractListModel(parent), d_ptr(new Do
         std::make_tuple(ActionCollection::instance()->showHistoryDockAction (), "/toolbar/history.svg" , "history" ),
         std::make_tuple(ActionCollection::instance()->showDialDockAction    (), "/toolbar/call.svg"    , "call"    ),
     }) {
+        qDebug() << std::get<0>(tuple) << std::get<1>(tuple);
+        Q_ASSERT(std::get<0>(tuple));
         connect(std::get<0>(tuple), &QAction::toggled, d_ptr, &DockModelPrivate::reload);
         std::get<0>(tuple)->setProperty("iconpath"  , std::get<1>(tuple));
         std::get<0>(tuple)->setProperty("identifier", std::get<2>(tuple));

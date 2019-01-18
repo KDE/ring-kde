@@ -1,86 +1,120 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
+cmake_minimum_required(VERSION 3.0)
 
-ADD_DEFINITIONS("-std=c++11")
+project(jamiwizard)
 
-PROJECT(libwizard)
-
-IF(POLICY CMP0063)
+if(POLICY CMP0063)
    CMAKE_POLICY(SET CMP0063 NEW)
-ENDIF(POLICY CMP0063)
+endif(POLICY CMP0063)
 
-IF(POLICY CMP0048)
-   CMAKE_POLICY(SET CMP0048 NEW)
-ENDIF(POLICY CMP0048)
+find_package(ECM 1.1.0 REQUIRED NO_MODULE)
+list(APPEND CMAKE_MODULE_PATH "${ECM_MODULE_PATH}")
 
-IF(POLICY CMP0017)
-   CMAKE_POLICY(SET CMP0017 NEW)
-ENDIF(POLICY CMP0017)
+include(ECMInstallIcons)
+include(ECMOptionalAddSubdirectory)
+include(CMakePackageConfigHelpers)
 
-IF(POLICY CMP0028)
-   CMAKE_POLICY(SET CMP0028 NEW)
-ENDIF(POLICY CMP0028)
+include(KDEInstallDirs)
+include(KDECMakeSettings)
+include(KDECompilerSettings)
 
-FIND_PACKAGE(ECM 1.1.0 REQUIRED NO_MODULE)
+SET(CMAKE_C_VISIBILITY_PRESET hidden)
+SET(CMAKE_CXX_VISIBILITY_PRESET hidden)
+SET(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
 
-INCLUDE(ECMInstallIcons)
-INCLUDE(ECMOptionalAddSubdirectory)
+# When used with `add_subdirectory`, assume it is a static Qt plugin
+get_directory_property(USES_ADD_SUBDIRECTORY PARENT_DIRECTORY)
+if(USES_ADD_SUBDIRECTORY)
+   set(BUILD_SHARED_LIBS OFF)
+endif()
 
-INCLUDE(KDEInstallDirs)
-INCLUDE(KDECMakeSettings)
-INCLUDE(KDECompilerSettings)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
 
-SET(CMAKE_AUTOMOC ON)
-SET(CMAKE_AUTORCC ON)
-SET(CMAKE_AUTOUIC ON)
+set(CMAKE_CXX_STANDARD 14)
 
-FIND_PACKAGE ( LibRingQt QUIET )
+if(NOT BUILD_SHARED_LIBS)
+    set(ENABLE_STATIC_PLUGIN 1) # Used in Config.cmake.in
+    add_definitions(-DQT_PLUGIN)
+    add_definitions(-DQT_STATICPLUGIN=1)
+    add_definitions(-DJAMIWIZARD_USE_STATIC_PLUGIN=1)
+endif()
 
-FIND_PACKAGE(Qt5 CONFIG REQUIRED
-    Core
-    Gui
-
-    Quick
-    QuickWidgets
-    QuickControls2
+find_package(Qt5 CONFIG REQUIRED
+    Core Gui Quick QuickControls2
 )
 
-FIND_PACKAGE(KF5 REQUIRED COMPONENTS
-  I18n
-)
-
-INCLUDE_DIRECTORIES(SYSTEM ${Qt5Widgets_INCLUDES} ${Qt5Core_INCLUDES} ${ringqt_INCLUDE_DIR})
-
-ADD_DEFINITIONS(${Qt5Core_DEFINITIONS})
-
-SET(GENERIC_LIB_VERSION "1.0.0")
+set(GENERIC_LIB_VERSION "1.0.0")
 
 #File to compile
-SET( libwizard_LIB_SRCS
-   welcome.cpp
+set( jamiwizard_LIB_SRCS
+    welcome.cpp
+    plugin.cpp
 )
 
-QT5_ADD_RESOURCES(libwizard_LIB_SRCS
+qt5_add_resources(jamiwizard_LIB_SRCS
    wizard.qrc
 )
 
-ADD_LIBRARY( libwizard  STATIC ${libwizard_LIB_SRCS} )
+set(AUTOMOC_MOC_OPTIONS -Muri=org.kde.ringkde.jamiwizard)
 
-target_link_libraries( libwizard
-   ringqt
+add_library(jamiwizard ${jamiwizard_LIB_SRCS} )
 
-   Qt5::Widgets
-   Qt5::Core
-   Qt5::Gui
-   Qt5::Quick
-   Qt5::QuickWidgets
-   Qt5::QuickControls2
+target_link_libraries( jamiwizard
+    # Project
+    ringqt
+    ringqtquick
 
-   KF5::I18n
-   KF5::WidgetsAddons
-   KF5::ConfigCore
-   KF5::ConfigGui
+    # Qt
+    Qt5::Core
+    Qt5::Gui
+    Qt5::Quick
+    Qt5::QuickControls2
 )
 
-SET( libwizard_LIB_HDRS
-   welcome.h
+# Configure the target config
+set(jamiwizard_CONFIG_PATH "${CMAKE_CURRENT_BINARY_DIR}/JamiWizardConfig.cmake")
+
+if(USES_ADD_SUBDIRECTORY)
+   set(JamiWizard_DIR ${CMAKE_CURRENT_BINARY_DIR} PARENT_SCOPE)
+endif()
+
+configure_package_config_file(
+   "${CMAKE_CURRENT_SOURCE_DIR}/cmake/JamiWizardConfig.cmake.in" ${jamiwizard_CONFIG_PATH}
+   INSTALL_DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}/cmake/JamiWizard/
+   PATH_VARS INCLUDE_INSTALL_DIR
+)
+
+install( FILES ${jamiwizard_CONFIG_PATH}
+    DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}/cmake/JamiWizard/
+    COMPONENT Devel
+)
+
+# Create the target
+target_include_directories(jamiwizard
+    PUBLIC
+        $<INSTALL_INTERFACE:include/JamiWizard>
+    PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/
+)
+
+set_target_properties(jamiwizard PROPERTIES
+    PUBLIC_HEADER
+    "${jamiwizard_EXPORT_HDRS}"
+)
+
+export(TARGETS jamiwizard
+    FILE "${PROJECT_BINARY_DIR}/cmake/JamiWizardTargets.cmake"
+)
+
+install(TARGETS jamiwizard
+    EXPORT JamiWizardTargets
+    LIBRARY DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}" COMPONENT jamiwizard
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/bin
+    COMPONENT Devel
+)
+
+install(EXPORT JamiWizardTargets
+    DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}/cmake/JamiWizard
+    COMPONENT Devel
 )

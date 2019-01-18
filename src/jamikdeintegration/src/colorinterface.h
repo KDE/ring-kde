@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2018 by Bluesystems                                     *
+ *   Copyright (C) 2013-2015 by Savoir-Faire Linux                         *
  *   Author : Emmanuel Lepage Vallee <elv1313@gmail.com>                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,13 +17,27 @@
  **************************************************************************/
 #pragma once
 
-#include <QQmlExtensionPlugin>
+// Qt
+#include <QtGui/QPalette>
 
-class Q_DECL_EXPORT JamiAccountView final : public QQmlExtensionPlugin
+// LibRingQt
+#include <interfaces/accountlistcolorizeri.h>
+
+class ColorInterface final : public QObject, public Interfaces::AccountListColorizerI
 {
-    Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.kde.ringkde.jamiaccountview" FILE "jamiaccountview.json")
-
+   Q_OBJECT
 public:
-    void registerTypes(const char* uri) override;
+    explicit ColorInterface();
+
+    ColorInterface(const ColorInterface&) = delete;
+    ColorInterface& operator=(const ColorInterface&) = delete;
+
+    virtual Q_INVOKABLE QVariant color(const Account* a) override;
+
+    virtual Q_INVOKABLE QVariant icon(const Account* a) override;
+private:
+    QPalette m_Pal;
+    QColor   m_Green;
+    QColor   m_Yellow;
+    QColor   m_Red;
 };

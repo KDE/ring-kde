@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2018 by Bluesystems                                     *
+ *   Copyright (C) 2017 by Bluesystems                                     *
  *   Author : Emmanuel Lepage Vallee <elv1313@gmail.com>                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -15,15 +15,66 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#pragma once
+#include "windowevent.h"
 
-#include <QQmlExtensionPlugin>
+#include <QtCore/QList>
+#include <QtCore/QCoreApplication>
 
-class Q_DECL_EXPORT JamiAccountView final : public QQmlExtensionPlugin
+static QList<WindowEvent*>& instances()
 {
-    Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.kde.ringkde.jamiaccountview" FILE "jamiaccountview.json")
+    static QList<WindowEvent*> l;
 
-public:
-    void registerTypes(const char* uri) override;
-};
+    return l;
+}
+
+WindowEvent::WindowEvent(QObject* parent) : QObject(parent)
+{
+    instances() << this;
+}
+
+WindowEvent::~WindowEvent()
+{
+    instances().removeAll(this);
+}
+
+WindowEvent* WindowEvent::instance()
+{
+    static WindowEvent e(QCoreApplication::instance());
+
+    return &e;
+}
+
+void WindowEvent::raiseWindow()
+{
+    for (auto o : qAsConst(instances())) {
+        emit o->requestsWindowRaised();
+    }
+}
+
+void WindowEvent::quit()
+{
+    for (auto o : qAsConst(instances())) {
+        emit o->requestsQuit();
+    }
+}
+
+void WindowEvent::showWizard()
+{
+    for (auto o : qAsConst(instances())) {
+        emit o->requestsWizard();
+    }
+}
+
+void WindowEvent::configureAccounts()
+{
+    for (auto o : qAsConst(instances())) {
+        emit o->requestsConfigureAccounts();
+    }
+}
+
+void WindowEvent::hideWindow()
+{
+    for (auto o : qAsConst(instances())) {
+        emit o->requestsHideWindow();
+    }
+}

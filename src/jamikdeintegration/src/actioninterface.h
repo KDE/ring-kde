@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2018 by Bluesystems                                     *
+ *   Copyright (C) 2013-2015 by Savoir-Faire Linux                         *
  *   Author : Emmanuel Lepage Vallee <elv1313@gmail.com>                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,13 +17,21 @@
  **************************************************************************/
 #pragma once
 
-#include <QQmlExtensionPlugin>
+#include <interfaces/actionextenderi.h>
 
-class Q_DECL_EXPORT JamiAccountView final : public QQmlExtensionPlugin
+class ActionInterface final : public Interfaces::ActionExtenderI
 {
-    Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.kde.ringkde.jamiaccountview" FILE "jamiaccountview.json")
-
 public:
-    void registerTypes(const char* uri) override;
+    explicit ActionInterface() = default;
+    ActionInterface(const ActionInterface&) = delete;
+    ActionInterface& operator=(const ActionInterface&) = delete;
+
+    virtual void editPerson(Person* p) override;
+    virtual void viewChatHistory(ContactMethod* cm) override;
+    virtual void viewChatHistory(Person* p) override;
+    virtual void copyInformation(QMimeData* data) override;
+    virtual bool warnDeletePerson(Person* p) override;
+    virtual bool warnDeleteCall(Call* c) override;
+    virtual Person* selectPerson(FlagPack<SelectPersonHint> hints, const QVariant& hintVar) const override;
+    virtual ContactMethod* selectContactMethod(FlagPack<ActionExtenderI::SelectContactMethodHint>, const QVariant& hintVar) const override;
 };

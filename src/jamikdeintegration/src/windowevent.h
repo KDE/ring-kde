@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2018 by Bluesystems                                     *
+ *   Copyright (C) 2017 by Bluesystems                                     *
  *   Author : Emmanuel Lepage Vallee <elv1313@gmail.com>                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,13 +17,39 @@
  **************************************************************************/
 #pragma once
 
-#include <QQmlExtensionPlugin>
+#include <QtCore/QObject>
 
-class Q_DECL_EXPORT JamiAccountView final : public QQmlExtensionPlugin
+/**
+ * This class offers a proxy between the code unaware of how windows are
+ * handled and the code unaware of the events it needs to handle.
+ *
+ * This way they can communicate with each other without knowing the
+ * implementation details. This is useful to support Android and Plasma Mobile.
+ * Their window model is very different from classic floating and tiling WMs.
+ *
+ * Note that there can be many instances of this class. The signals will be
+ * emitted in all of them.
+ */
+class Q_DECL_EXPORT WindowEvent : public QObject
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.kde.ringkde.jamiaccountview" FILE "jamiaccountview.json")
-
 public:
-    void registerTypes(const char* uri) override;
+    Q_INVOKABLE WindowEvent(QObject* parent = nullptr);
+    virtual ~WindowEvent();
+
+    static WindowEvent* instance();
+
+public Q_SLOTS:
+    void raiseWindow();
+    void quit();
+    void showWizard();
+    void configureAccounts();
+    void hideWindow();
+
+Q_SIGNALS:
+    void requestsWindowRaised();
+    void requestsQuit();
+    void requestsWizard();
+    void requestsConfigureAccounts();
+    void requestsHideWindow();
 };

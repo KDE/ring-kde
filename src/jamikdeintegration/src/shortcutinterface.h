@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2018 by Bluesystems                                     *
+ *   Copyright (C) 2013-2015 by Savoir-Faire Linux                         *
  *   Author : Emmanuel Lepage Vallee <elv1313@gmail.com>                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,13 +17,14 @@
  **************************************************************************/
 #pragma once
 
-#include <QQmlExtensionPlugin>
+class Macro;
 
-class Q_DECL_EXPORT JamiAccountView final : public QQmlExtensionPlugin
+#include <interfaces/shortcutcreatori.h>
+
+class ShortcutInterface final : public Interfaces::ShortcutCreatorI
 {
-    Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.kde.ringkde.jamiaccountview" FILE "jamiaccountview.json")
-
 public:
-    void registerTypes(const char* uri) override;
+    virtual ~ShortcutInterface(){}
+    virtual QVariant createAction(Macro* macro) override;
 };
+

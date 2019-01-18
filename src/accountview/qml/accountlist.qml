@@ -30,7 +30,7 @@ ListView {
     interactive: false
     height: totalHeight
     implicitHeight: totalHeight
-    model: RingQtQuick.session.accountModel
+    model: RingSession.accountModel
 
     property real totalHeight: footerItem + contentHeight + headerItem + 10
 

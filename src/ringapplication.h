@@ -38,7 +38,6 @@ class PhotoSelectorPlugin;
 class CanvasIndicator;
 class DesktopView;
 class ContactView;
-class AccountView;
 class DialView;
 class TimelinePlugin;
 class Call;
@@ -58,7 +57,6 @@ public:
 
    // Manage new instances
    Q_INVOKABLE virtual int newInstance();
-   void initCollections();
 
    // Exit gracefully
    virtual bool notify (QObject* receiver, QEvent* e) override;
@@ -97,17 +95,12 @@ private:
    static RingApplication* m_spInstance;
    static DesktopView* m_pDesktopView;
    static ContactView* m_pContactView;
-   static AccountView* m_pAccountView;
    static DialView* m_pDialView;
    static TimelinePlugin* m_pTimeline;
    PhoneWindowEvent* m_pEventFilter {nullptr};
 
 private Q_SLOTS:
    void daemonTimeout();
-
-public Q_SLOTS:
-   void showWizard();
-   void configureAccounts();
 };
 
 #endif // RINGAPPLICATION_H

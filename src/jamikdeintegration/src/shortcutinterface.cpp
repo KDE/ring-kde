@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2018 by Bluesystems                                     *
+ *   Copyright (C) 2013-2015 by Savoir-Faire Linux                         *
  *   Author : Emmanuel Lepage Vallee <elv1313@gmail.com>                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -15,15 +15,10 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#pragma once
+#include "shortcutinterface.h"
 
-#include <QQmlExtensionPlugin>
-
-class Q_DECL_EXPORT JamiAccountView final : public QQmlExtensionPlugin
+QVariant ShortcutInterface::createAction(Macro* macro)
 {
-    Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.kde.ringkde.jamiaccountview" FILE "jamiaccountview.json")
-
-public:
-    void registerTypes(const char* uri) override;
-};
+   Q_UNUSED(macro)
+   return {};
+}

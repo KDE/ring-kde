@@ -17,7 +17,7 @@
  **************************************************************************/
 #include "tipmodel.h"
 
-#include "../klib/kcfg_settings.h"
+#include "kcfg_settings.h"
 
 bool TipModel::showSearchTip() const
 {

@@ -33,7 +33,7 @@
 #include <session.h>
 #include <media/text.h>
 #include "ringapplication.h"
-#include "klib/kcfg_settings.h"
+#include "kcfg_settings.h"
 
 //Static definition
 Cmd* Cmd::m_spSelf = nullptr;

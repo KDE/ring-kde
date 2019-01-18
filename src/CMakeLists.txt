@@ -170,11 +170,8 @@ INCLUDE_DIRECTORIES(SYSTEM
 # Shared C++ QML components
 ADD_SUBDIRECTORY( qmlwidgets )
 
-# Pack the icons shared by various components
-ADD_SUBDIRECTORY( sharedassets )
-
 #Build KDE specific files
-ADD_SUBDIRECTORY( klib )
+ADD_SUBDIRECTORY( jamikdeintegration )
 
 # Build the QML based first run Wizard
 ADD_SUBDIRECTORY( wizard )
@@ -203,6 +200,8 @@ ADD_SUBDIRECTORY( accountview )
 # Build the main desktop component
 ADD_SUBDIRECTORY( desktopview )
 
+# ADD_DEPENDENCIES(desktopview DEPENDS jamikdeintegration)
+
 IF(${CMAKE_BUILD_TYPE} MATCHES Release)
    MESSAGE("NO DEBUG OUTPUT")
    ADD_DEFINITIONS( -DQT_NO_DEBUG_OUTPUT)
@@ -210,41 +209,13 @@ ELSE()
 
 ENDIF(${CMAKE_BUILD_TYPE} MATCHES Release)
 
-# Delegates
-SET(
-   ring_kde_PROXIES
-   delegates/kdepixmapmanipulation.cpp
-   proxies/simplerotateproxy.cpp
-   proxies/deduplicateproxy.cpp
-   proxies/filtertoplevelproxy.cpp
-   proxies/roletransformationproxy.cpp
-   proxies/flagsfilterproxy.cpp
-   proxies/pollingproxy.cpp
-)
-
 SET(
    ring_kde_SRCS
    main.cpp
    cmd.cpp
-   notification.cpp
    ringapplication.cpp
    errormessage.cpp
-   actioncollection.cpp
-   implementation.cpp
-   model/extendedprotocolmodel.cpp
-   ${ring_kde_PROXIES}
-   widgets/systray.cpp
 )
-
-
-IF (Qt5TextToSpeech_FOUND)
-
-SET(
-   ring_kde_SRCS
-   ${ring_kde_SRCS}
-   accessibility.cpp
-)
-ENDIF()
 
 # generate rules for building source files from the resources
 SET(QtApp_RCCS
@@ -312,8 +283,7 @@ ENDIF()
 QT5_ADD_DBUS_ADAPTOR(ring_kde_SRCS ../data/org.kde.kuiserver.xml cmd.h Cmd )
 
 TARGET_LINK_LIBRARIES(ring-kde
-  libkring
-  libwizard
+  jamiwizard
   libcallview
   dialview
   libtimeline
@@ -321,9 +291,10 @@ TARGET_LINK_LIBRARIES(ring-kde
   libcanvasindicator
   desktopview
   contactview
-  accountview
+  jamiaccountview
   libqmlwidgets
   kquickitemviews
+  jamikdeintegration
 
   # RingQt
   ringqtquick

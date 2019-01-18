@@ -48,36 +48,21 @@
 #include <libcard/historyimporter.h>
 
 //Ring
-#include "klib/kcfg_settings.h"
+#include "kcfg_settings.h"
 #include "cmd.h"
 #include "errormessage.h"
-#include "implementation.h"
 #include "wizard/welcome.h"
+#include "jamikdeintegration/src/windowevent.h"
 #include "callview/videowidget.h"
-#include "notification.h"
-#include "actioncollection.h"
 
 //Models
 #include <profilemodel.h>
+#include <callhistorymodel.h>
 #include <certificatemodel.h>
 #include <numbercategorymodel.h>
 #include <persondirectory.h>
 
-//Collections
-#include <foldercertificatecollection.h>
-#include <fallbackpersoncollection.h>
-#include <peerprofilecollection2.h>
-#include <localhistorycollection.h>
-#include <localbookmarkcollection.h>
-#include <localrecordingcollection.h>
-#include <localprofilecollection.h>
-#include <localtextrecordingcollection.h>
-#include <globalinstances.h>
-
 //Delegates
-#include <delegates/kdepixmapmanipulation.h>
-#include <interfaces/itemmodelstateserializeri.h>
-#include "klib/itemmodelserialization.h"
 #include "extensions/presencecollectionextension.h"
 
 //QML
@@ -89,19 +74,14 @@
 #include "canvasindicators/ringingimageprovider.h"
 #include "desktopview/desktopviewplugin.h"
 #include "contactview/contactviewplugin.h"
-#include "accountview/accountviewplugin.h"
 #include "dialview/dialviewplugin.h"
 #include "timeline/timelineplugin.h"
-
-//Widgets
-#include "widgets/systray.h"
 
 KDeclarative::KDeclarative* RingApplication::m_pDeclarative {nullptr};
 RingQmlWidgets* RingApplication::m_pQmlWidget {nullptr};
 PhotoSelectorPlugin* RingApplication::m_pPhotoSelector {nullptr};
 DesktopView* RingApplication::m_pDesktopView {nullptr};
 ContactView* RingApplication::m_pContactView {nullptr};
-AccountView* RingApplication::m_pAccountView {nullptr};
 DialView* RingApplication::m_pDialView {nullptr};
 TimelinePlugin* RingApplication::m_pTimeline {nullptr};
 CanvasIndicator* RingApplication::m_pCanvasIndicator {nullptr};
@@ -141,10 +121,7 @@ Q_SIGNALS:
 RingApplication::RingApplication(int & argc, char ** argv) : QApplication(argc,argv),m_StartIconified(false)
 {
    Q_ASSERT(argc != -1);
-#ifdef ENABLE_VIDEO
-   //Necessary to draw OpenGL from a separated thread
-   setAttribute(Qt::AA_X11InitThreads,true);
-#endif
+
    setAttribute(Qt::AA_EnableHighDpiScaling);
 
    m_pEventFilter = new PhoneWindowEvent(this);
@@ -157,8 +134,6 @@ void RingApplication::init()
    if ((!Session::instance()->callModel()->isConnected()) || (!Session::instance()->callModel()->isValid())) {
       QTimer::singleShot(5000,this,&RingApplication::daemonTimeout);
    }
-
-   initCollections();
 }
 
 /**
@@ -180,97 +155,6 @@ RingApplication* RingApplication::instance()
    return m_spInstance;
 }
 
-static void loadNumberCategories()
-{
-   auto model = Session::instance()->numberCategoryModel();
-   static const QString pathTemplate = QStringLiteral(":/mini/icons/miniicons/%1.png");
-#define ICN(name) QPixmap(QString(pathTemplate).arg(QStringLiteral(name)))
-   model->addCategory(i18n("Home")     ,ICN("home")     , 1 /*KABC::PhoneNumber::Home */);
-   model->addCategory(i18n("Work")     ,ICN("work")     , 2 /*KABC::PhoneNumber::Work */);
-   model->addCategory(i18n("Msg")      ,ICN("mail")     , 3 /*KABC::PhoneNumber::Msg  */);
-   model->addCategory(i18n("Pref")     ,ICN("call")     , 4 /*KABC::PhoneNumber::Pref */);
-   model->addCategory(i18n("Voice")    ,ICN("video")    , 5 /*KABC::PhoneNumber::Voice*/);
-   model->addCategory(i18n("Fax")      ,ICN("call")     , 6 /*KABC::PhoneNumber::Fax  */);
-   model->addCategory(i18n("Cell")     ,ICN("mobile")   , 7 /*KABC::PhoneNumber::Cell */);
-   model->addCategory(i18n("Video")    ,ICN("call")     , 8 /*KABC::PhoneNumber::Video*/);
-   model->addCategory(i18n("Bbs")      ,ICN("call")     , 9 /*KABC::PhoneNumber::Bbs  */);
-   model->addCategory(i18n("Modem")    ,ICN("call")     , 10/*KABC::PhoneNumber::Modem*/);
-   model->addCategory(i18n("Car")      ,ICN("car")      , 11/*KABC::PhoneNumber::Car  */);
-   model->addCategory(i18n("Isdn")     ,ICN("call")     , 12/*KABC::PhoneNumber::Isdn */);
-   model->addCategory(i18n("Pcs")      ,ICN("call")     , 13/*KABC::PhoneNumber::Pcs  */);
-   model->addCategory(i18n("Pager")    ,ICN("pager")    , 14/*KABC::PhoneNumber::Pager*/);
-   model->addCategory(i18n("Preferred"),ICN("preferred"), 10000                         );
-#undef ICN
-#undef IS_ENABLED
-}
-
-void RingApplication::initCollections()
-{
-   GlobalInstances::setInterface<KDEActionExtender>();
-
-   GlobalInstances::setInterface<ColorDelegate>();
-
-   GlobalInstances::setInterface<KDEPixmapManipulation>();
-
-   loadNumberCategories();
-
-   Session::instance()->callModel()->setAudoCleanDelay(5000);
-
-   /*******************************************
-      *           Load the collections          *
-      ******************************************/
-
-   // Load the old phone call history and port it to the newer calendar events format.
-   if (QFile::exists(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1Char('/') +"history.ini")) {
-      auto histo = Session::instance()->historyModel()->addCollection<LocalHistoryCollection>(LoadOptions::FORCE_ENABLED);
-      HistoryImporter::importHistory(histo);
-      histo->clear();
-   }
-
-   //HACK load the Calendar now to speedup everything else
-   const int accountCount = Session::instance()->accountModel()->size();
-   for (int i=0; i < accountCount; i++)
-      (*Session::instance()->accountModel())[i]->calendar();
-
-   Session::instance()->profileModel()->addCollection<LocalProfileCollection>(LoadOptions::FORCE_ENABLED);
-
-#ifdef Q_OS_LINUX
-   CertificateModel::instance().addCollection<FolderCertificateCollection,QString, FlagPack<FolderCertificateCollection::Options>,QString>(
-      QStringLiteral("/usr/share/ca-certificates/"),
-      FolderCertificateCollection::Options::ROOT
-         | FolderCertificateCollection::Options::RECURSIVE
-         | FolderCertificateCollection::Options::READ_ONLY,
-      i18n("System root certificates"),
-      LoadOptions::FORCE_ENABLED
-   );
-#endif
-
-   Session::instance()->bookmarkModel()->addCollection<LocalBookmarkCollection>();
-   Session::instance()->bookmarkModel()->setDisplayPopular(
-      ConfigurationSkeleton::displayPopularAsBookmark()
-   );
-
-   Session::instance()->personDirectory()->addCollection<FallbackPersonCollection>(LoadOptions::FORCE_ENABLED);
-   auto ppc = Session::instance()->personDirectory()->addCollection<PeerProfileCollection2>(LoadOptions::FORCE_ENABLED);
-
-   const auto m = static_cast<PeerProfileCollection2::DefaultMode>(ConfigurationSkeleton::defaultPeerProfileMode());
-   ppc->setDefaultMode(m);
-
-   GlobalInstances::setInterface<ItemModelStateSerialization>();
-   GlobalInstances::itemModelStateSerializer().load();
-
-#ifdef ENABLE_AKONADI
-   AkonadiBackend::initCollections();
-#endif
-
-//       PresenceCollectionModelExtension* ext = new PresenceCollectionModelExtension(this);
-//       Session::instance()->personDirectory()->backendModel()->addExtension(ext); //FIXME
-
-   Session::instance()->profileModel();
-
-   Notification::instance();
-}
-
 ///Parse command line arguments
 int RingApplication::newInstance()
 {
@@ -282,9 +166,7 @@ int RingApplication::newInstance()
    if (init) {
       init = false;
 
-      ActionCollection::instance()->setupAction();
       desktopWindow();
-      new SysTray(QIcon(QStringLiteral(":appicon/icons/64-apps-ring-kde.png")));
    }
 
    // The first run wizard
@@ -294,12 +176,11 @@ int RingApplication::newInstance()
          QStringLiteral("RingApplication"), this
       );
 
-      engine()->rootContext()->setContextProperty(
-         QStringLiteral("wizardWelcomeOnly"), QVariant(!ConfigurationSkeleton::enableWizard())
-      );
+      if (ConfigurationSkeleton::enableWizard())
+         WindowEvent::instance()->showWizard();
 
       if (!Session::instance()->accountModel()->size())
-         showWizard();
+         WindowEvent::instance()->showWizard();
 
       ConfigurationSkeleton::setEnableWizard(false);
       displayWizard = false;
@@ -322,7 +203,6 @@ void RingApplication::setIconify(bool iconify)
 #define QML_TYPE(name) qmlRegisterUncreatableType<name>(AppName, 1,0, #name, #name "cannot be instantiated");
 #define QML_NS(name) qmlRegisterUncreatableMetaObject( name :: staticMetaObject, #name, 1, 0, #name, "Namespaces cannot be instantiated" );
 #define QML_CRTYPE(name) qmlRegisterType<name>(AppName, 1,0, #name);
-#define QML_SINGLETON2(name) RingApplication::engine()->rootContext()->setContextProperty(QStringLiteral(#name), name::instance());
 
 constexpr static const char AppName[]= "Ring";
 
@@ -345,9 +225,6 @@ QQmlApplicationEngine* RingApplication::engine()
       m_pContactView = new ContactView;
       m_pContactView->registerTypes("ContactView");
 
-      m_pAccountView = new AccountView;
-      m_pAccountView->registerTypes("AccountView");
-
       m_pDialView = new DialView;
       m_pDialView->registerTypes("DialView");
 
@@ -369,7 +246,6 @@ QQmlApplicationEngine* RingApplication::engine()
       m_pDeclarative = new KDeclarative::KDeclarative;
       m_pDeclarative->setDeclarativeEngine(e);
       try {
-         QML_SINGLETON2( ActionCollection        );
 
          auto im = new RingingImageProvider();
          e->addImageProvider( QStringLiteral("RingingImageProvider"), im );
@@ -430,23 +306,6 @@ void RingApplication::daemonTimeout()
       KMessageBox::error(nullptr, ErrorMessage::NO_DAEMON_ERROR);
       exit(1);
    }
-}
-
-void RingApplication::showWizard()
-{
-   RingApplication::engine()->rootContext()->setContextProperty(
-      QStringLiteral("wizardWelcomeOnly"), QVariant(false)
-   );
-
-   auto wiz = new WelcomeDialog();
-   wiz->show();
-}
-
-void RingApplication::configureAccounts()
-{
-   desktopWindow()->setProperty(
-      "accountMode", true
-   );
 }
 
 ///Exit gracefully

@@ -21,6 +21,7 @@
 
 #include <qrc_accountview.cpp>
 
-void AccountView::registerTypes(const char *)
+void JamiAccountView::registerTypes(const char *)
 {
+
 }

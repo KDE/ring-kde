@@ -19,6 +19,7 @@ import QtQuick 2.0
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
+import org.kde.ringkde.jamiwizard 1.0 as JamiWizard
 import Ring 1.0
 
 Item {
@@ -31,6 +32,10 @@ Item {
 
     width: Math.min(createForm.implicitWidth, parent.width - 20)
     height: createForm.implicitHeight
+
+    JamiWizard.WelcomeDialog {
+        id: welcomeDialog
+    }
 
     function isNextAvailable() {
         nextAvailable = pinField.text.length > 0 && password.text.length > 0
@@ -46,7 +51,7 @@ Item {
         registrationTimeout.running = true
         registrationPopup.color     = "white"
 
-        account = RingSession.accountModel.add(WelcomeDialog.defaultUserName, RingQtQuick.Account.RING)
+        account = RingSession.accountModel.add(welcomeDialog.defaultUserName, RingQtQuick.Account.RING)
         account.archivePassword = password.text
         account.archivePin      = pinField.text
         account.upnpEnabled     = true;

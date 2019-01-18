@@ -50,8 +50,6 @@ SET( libqmlwidgets_LIB_SRCS
     plugin.cpp
     messagebuilder.cpp
     contactbuilder.cpp
-    cmiconengine.cpp
-    personiconengine.cpp
     treehelper.cpp
     multicall.cpp
     snapshotadapter.cpp
@@ -69,7 +67,6 @@ ADD_LIBRARY( libqmlwidgets  STATIC ${libqmlwidgets_LIB_SRCS} )
 
 target_link_libraries( libqmlwidgets
     ringqt
-    libkring
 
     Qt5::Core
     Qt5::Gui
