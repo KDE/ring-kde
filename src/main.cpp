@@ -84,6 +84,12 @@ Q_IMPORT_PLUGIN(JamiTimelineView)
 #include <timeline/timelineplugin.h>
 #endif
 
+#ifdef JAMICANVASINDICATOR_USE_STATIC_PLUGIN
+Q_IMPORT_PLUGIN(JamiCanvasIndicator)
+#else
+#include <canvasindicators/canvasindicator.h>
+#endif
+
 Q_IMPORT_PLUGIN(RingQtQuick)
 
 constexpr static const char version[] = "3.1.0";
@@ -172,6 +178,15 @@ int main(int argc, char **argv)
       JamiTimelineView v8;
       v8.registerTypes("org.kde.ringkde.jamitimelineview");
       v8.initializeEngine(app.engine(), "org.kde.ringkde.jamitimelineview");
+#endif
+
+#ifdef JAMICANVASINDICATOR_USE_STATIC_PLUGIN
+      qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiCanvasIndicator().instance())->registerTypes("org.kde.ringkde.jamicanvasindicator");
+      qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiCanvasIndicator().instance())->initializeEngine(app.engine(), "org.kde.ringkde.jamicanvasindicator");
+#else
+      JamiCanvasIndicator v9;
+      v9.registerTypes("org.kde.ringkde.jamicanvasindicator");
+      v9.initializeEngine(app.engine(), "org.kde.ringkde.jamicanvasindicator");
 #endif
 
       KAboutData about(QStringLiteral("ring-kde"),

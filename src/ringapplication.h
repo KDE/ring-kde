@@ -35,7 +35,6 @@ namespace KDeclarative {
 //Ring
 class RingQmlWidgets;
 class PhotoSelectorPlugin;
-class CanvasIndicator;
 class DesktopView;
 class DialView;
 class Call;
@@ -89,7 +88,6 @@ private:
    static KDeclarative::KDeclarative* m_pDeclarative;
    static RingQmlWidgets* m_pQmlWidget;
    static PhotoSelectorPlugin* m_pPhotoSelector;
-   static CanvasIndicator* m_pCanvasIndicator;
    static RingApplication* m_spInstance;
    static DesktopView* m_pDesktopView;
    PhoneWindowEvent* m_pEventFilter {nullptr};

@@ -69,15 +69,12 @@
 #include "qmlwidgets/plugin.h"
 #include "qmlwidgets/symboliccolorizer.h"
 #include "photoselector/photoplugin.h"
-#include "canvasindicators/canvasindicator.h"
-#include "canvasindicators/ringingimageprovider.h"
 #include "desktopview/desktopviewplugin.h"
 
 KDeclarative::KDeclarative* RingApplication::m_pDeclarative {nullptr};
 RingQmlWidgets* RingApplication::m_pQmlWidget {nullptr};
 PhotoSelectorPlugin* RingApplication::m_pPhotoSelector {nullptr};
 DesktopView* RingApplication::m_pDesktopView {nullptr};
-CanvasIndicator* RingApplication::m_pCanvasIndicator {nullptr};
 RingApplication* RingApplication::m_spInstance {nullptr};
 
 //This code detect if the window is active, innactive or minimzed
@@ -136,7 +133,6 @@ RingApplication::~RingApplication()
 {
    delete m_pDeclarative;
    delete engine();
-   delete m_pCanvasIndicator;
    delete m_pPhotoSelector;
    delete m_pQmlWidget;
    m_spInstance = nullptr;
@@ -215,9 +211,6 @@ QQmlApplicationEngine* RingApplication::engine()
       m_pDesktopView = new DesktopView;
       m_pDesktopView->registerTypes("DesktopView");
 
-      m_pCanvasIndicator = new CanvasIndicator;
-      m_pCanvasIndicator->registerTypes("CanvasIndicator");
-
       QML_TYPE( QAction)
 
       QML_CRTYPE( QItemSelectionModel )
@@ -230,11 +223,6 @@ QQmlApplicationEngine* RingApplication::engine()
       m_pDeclarative = new KDeclarative::KDeclarative;
       m_pDeclarative->setDeclarativeEngine(e);
       try {
-
-         auto im = new RingingImageProvider();
-         e->addImageProvider( QStringLiteral("RingingImageProvider"), im );
-         e->addImportPath(QStringLiteral("qrc:/"));
-
          auto im2 = new SymbolicColorizer();
          e->addImageProvider( QStringLiteral("SymbolicColorizer"), im2 );
 

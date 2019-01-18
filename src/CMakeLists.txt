@@ -288,7 +288,7 @@ TARGET_LINK_LIBRARIES(ring-kde
   jamidialview
   jamitimelineview
   libphotoselector
-  libcanvasindicator
+  jamicanvasindicator
   desktopview
   jamicontactview
   jamiaccountview
