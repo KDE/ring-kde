@@ -22,6 +22,7 @@ import org.kde.kirigami 2.2 as Kirigami
 
 import RingQmlWidgets 1.0
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
+import org.kde.ringkde.jamidialview 1.0 as JamiDialView
 
 FocusScope {
     id: dialView
@@ -49,11 +50,11 @@ FocusScope {
         selectionModel: RingSession.numberCompletionModel.selectionModel
     }
 
-    CallList {
+    JamiDialView.CallList {
         anchors.fill: parent
     }
 
-    DialPad {
+    JamiDialView.DialPad {
         width: parent.width
         visible: RingSession.callModel.supportsDTMF
         height: 200
@@ -62,7 +63,7 @@ FocusScope {
         anchors.bottomMargin: 50
     }
 
-    ActionToolbar {
+    JamiDialView.ActionToolbar {
         id: actionToolbar
         width: parent.width
         anchors.bottom: parent.bottom

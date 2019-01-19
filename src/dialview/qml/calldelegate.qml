@@ -19,6 +19,7 @@ import QtQuick 2.0
 
 import org.kde.playground.kquickitemviews 1.0 as KQuickItemViews
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
+import org.kde.ringkde.jamidialview 1.0 as JamiDialView
 
 Item {
     id: item
@@ -29,7 +30,7 @@ Item {
     property bool selected: object == RingSession.callModel.selectedCall
 
     //If it is not a conference, use this delegate
-    CallDelegateItem {
+    JamiDialView.CallDelegateItem {
         id: callDelegateItem
 
         //Geometry
@@ -55,7 +56,7 @@ Item {
 
         Component {
             id:confItemDelegate
-            CallDelegateItem {
+            JamiDialView.CallDelegateItem {
                 width: isConference ? item.width - 40 : item.width - 20
             }
         }

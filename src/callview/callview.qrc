@@ -1,17 +1,16 @@
 <RCC>
-    <qresource prefix="/">
-        <file alias="CallView.qml">qml/callview.qml</file>
-        <file alias="VideoWidget.qml">qml/videowidget.qml</file>
-        <file alias="ActionToolbar.qml">qml/actiontoolbar.qml</file>
-        <file alias="VideoControlToolbar.qml">qml/videocontroltoolbar.qml</file>
-        <file alias="CallBackground.qml">qml/callbackground.qml</file>
-        <file alias="DeviceSetting.qml">qml/devicesetting.qml</file>
-        <file alias="VideoSource.qml">qml/videosource.qml</file>
-        <file alias="CanvasPopup.qml">qml/canvaspopup.qml</file>
-        <file alias="ScreenSharing.qml">qml/screensharing.qml</file>
-        <file alias="Streaming.qml">qml/streaming.qml</file>
-        <file alias="CMSelector.qml">qml/cmselector.qml</file>
-        <file alias="Troubleshoot.qml">qml/troubleshoot.qml</file>
-        <file alias="RecordingIcon.qml">qml/recordingicon.qml</file>
+    <qresource prefix="/callview/">
+        <file>qml/callview.qml</file>
+        <file>qml/videowidget.qml</file>
+        <file>qml/videocontroltoolbar.qml</file>
+        <file>qml/callbackground.qml</file>
+        <file>qml/devicesetting.qml</file>
+        <file>qml/videosource.qml</file>
+        <file>qml/canvaspopup.qml</file>
+        <file>qml/screensharing.qml</file>
+        <file>qml/streaming.qml</file>
+        <file>qml/cmselector.qml</file>
+        <file>qml/troubleshoot.qml</file>
+        <file>qml/recordingicon.qml</file>
     </qresource>
 </RCC>

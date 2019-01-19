@@ -22,6 +22,7 @@ import QtQuick.Layouts 1.0
 import org.kde.kirigami 2.2 as Kirigami
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 import net.lvindustries.ringqtquick.media 1.0 as RingQtMedia
+import org.kde.ringkde.jamicallview 1.0 as JamiCallView
 
 Item {
     id: viewContact
@@ -215,7 +216,7 @@ Item {
                             callViewWidget.call = call
                     }
 
-                    CallView {
+                    JamiCallView.CallView {
                         id: callViewWidget
                         mode: "CONVERSATION"
                         anchors.fill: parent

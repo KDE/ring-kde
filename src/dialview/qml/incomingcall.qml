@@ -16,6 +16,7 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.    *
  *****************************************************************************/
 import QtQuick 2.0
+import org.kde.ringkde.jamicanvasindicator 1.0 as JamiCanvasIndicator
 
 
 Column {
@@ -24,7 +25,7 @@ Column {
 
     spacing: 6
 
-    Ringing {
+    JamiCanvasIndicator.Ringing {
         height: 32
         width: 32
         anchors.horizontalCenter: parent.horizontalCenter

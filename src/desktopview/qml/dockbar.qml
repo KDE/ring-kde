@@ -23,7 +23,7 @@ import org.kde.kirigami 2.2 as Kirigami
 import QtQuick.Window 2.2
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
-import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
+import org.kde.ringkde.jamidialview 1.0 as JamiDialView
 
 import DesktopView 1.0
 
@@ -217,7 +217,7 @@ Item {
         }
         Component {
             id: dialViewComponent
-            DialView {
+            JamiDialView.DialView {
                 anchors.fill: parent
                 onSelectCall: {
                     mainPage.showVideo(call)

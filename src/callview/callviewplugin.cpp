@@ -36,7 +36,20 @@ void JamiCallViewPlugin::registerTypes(const char *uri)
 
     qmlRegisterType<SnapshotAdapter>(uri, 1, 0, "SnapshotAdapter");
 
-//     qmlRegisterType(QStringLiteral("qrc:/ButtonBar.qml"), uri, 1, 0, "ButtonBar");
+    qmlRegisterType(QStringLiteral("qrc:/callview/qml/callview.qml"), uri, 1, 0, "CallView");
+    qmlRegisterType(QStringLiteral("qrc:/callview/qml/videowidget.qml"), uri, 1, 0, "VideoWidget");
+    qmlRegisterType(QStringLiteral("qrc:/callview/qml/videocontroltoolbar.qml"), uri, 1, 0, "VideoControlToolbar");
+    qmlRegisterType(QStringLiteral("qrc:/callview/qml/callbackground.qml"), uri, 1, 0, "CallBackground");
+    qmlRegisterType(QStringLiteral("qrc:/callview/qml/devicesetting.qml"), uri, 1, 0, "DeviceSetting");
+    qmlRegisterType(QStringLiteral("qrc:/callview/qml/videosource.qml"), uri, 1, 0, "VideoSource");
+    qmlRegisterType(QStringLiteral("qrc:/callview/qml/canvaspopup.qml"), uri, 1, 0, "CanvasPopup");
+    qmlRegisterType(QStringLiteral("qrc:/callview/qml/screensharing.qml"), uri, 1, 0, "ScreenSharing");
+    qmlRegisterType(QStringLiteral("qrc:/callview/qml/streaming.qml"), uri, 1, 0, "Streaming");
+    qmlRegisterType(QStringLiteral("qrc:/callview/qml/cmselector.qml"), uri, 1, 0, "CMSelector");
+    qmlRegisterType(QStringLiteral("qrc:/callview/qml/troubleshoot.qml"), uri, 1, 0, "Troubleshoot");
+    qmlRegisterType(QStringLiteral("qrc:/callview/qml/recordingicon.qml"), uri, 1, 0, "RecordingIcon");
+
+
 }
 
 void JamiCallViewPlugin::initializeEngine(QQmlEngine *engine, const char *uri)

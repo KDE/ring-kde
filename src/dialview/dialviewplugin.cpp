@@ -28,6 +28,23 @@
 void JamiDialView::registerTypes(const char *uri)
 {
     Q_ASSERT(uri == QByteArray("org.kde.ringkde.jamidialview"));
+
+    qmlRegisterType(QStringLiteral("qrc:/dialview/qml/dialview.qml"),         uri, 1, 0, "DialView"        );
+    qmlRegisterType(QStringLiteral("qrc:/dialview/qml/dialpad.qml"),          uri, 1, 0, "DialPad"         );
+    qmlRegisterType(QStringLiteral("qrc:/dialview/qml/calllist.qml"),         uri, 1, 0, "CallList"        );
+    qmlRegisterType(QStringLiteral("qrc:/dialview/qml/calldelegate.qml"),     uri, 1, 0, "CallDelegate"    );
+    qmlRegisterType(QStringLiteral("qrc:/dialview/qml/calldelegateitem.qml"), uri, 1, 0, "CallDelegateItem");
+    qmlRegisterType(QStringLiteral("qrc:/dialview/qml/addcall.qml"),          uri, 1, 0, "AddCall"         );
+    qmlRegisterType(QStringLiteral("qrc:/dialview/qml/mergecall.qml"),        uri, 1, 0, "MergeCall"       );
+    qmlRegisterType(QStringLiteral("qrc:/dialview/qml/callerror.qml"),        uri, 1, 0, "CallError"       );
+    qmlRegisterType(QStringLiteral("qrc:/dialview/qml/missedcall.qml"),       uri, 1, 0, "MissedCall"      );
+    qmlRegisterType(QStringLiteral("qrc:/dialview/qml/outgoingcall.qml"),     uri, 1, 0, "OutgoingCall"    );
+    qmlRegisterType(QStringLiteral("qrc:/dialview/qml/incomingcall.qml"),     uri, 1, 0, "IncomingCall"    );
+    qmlRegisterType(QStringLiteral("qrc:/dialview/qml/finishedcall.qml"),     uri, 1, 0, "FinishedCall"    );
+    qmlRegisterType(QStringLiteral("qrc:/dialview/qml/currentcall.qml"),      uri, 1, 0, "CurrentCall"     );
+    qmlRegisterType(QStringLiteral("qrc:/dialview/qml/completiondelegate.qml"),      uri, 1, 0, "CompletionDelegate");
+
+    qmlRegisterType(QStringLiteral("qrc:/dialview/qml/actiontoolbar.qml"), uri, 1, 0, "ActionToolbar");
 }
 
 void JamiDialView::initializeEngine(QQmlEngine *engine, const char *uri)

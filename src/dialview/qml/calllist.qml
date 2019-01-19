@@ -18,15 +18,16 @@
 import QtQuick 2.0
 
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
+import org.kde.ringkde.jamidialview 1.0 as JamiDialView
 
 ListView {
     Component {
         id: callDelegate
-        CallDelegate {}
+        JamiDialView.CallDelegate {}
     }
 
-    header: MergeCall {}
-    footer: AddCall {}
+    header: JamiDialView.MergeCall {}
+    footer: JamiDialView.AddCall {}
 
     id: callList
     spacing: 10

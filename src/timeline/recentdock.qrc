@@ -25,7 +25,6 @@
         <file alias="Addresses.qml">qml/addresses.qml</file>
         <file alias="PhoneNumbers.qml">qml/phonenumbers.qml</file>
         <file alias="SearchDelegate.qml">qml/searchdelegate.qml</file>
-        <file alias="CompletionDelegate.qml">qml/completiondelegate.qml</file>
         <file alias="FindPeers.qml">qml/findpeers.qml</file>
         <file alias="Snapshots.qml">qml/snapshots.qml</file>
         <file alias="Slideshow.qml">qml/slideshow.qml</file>

@@ -31,6 +31,11 @@
 void JamiCanvasIndicator::registerTypes(const char *uri)
 {
     Q_ASSERT(uri == QByteArray("org.kde.ringkde.jamicanvasindicator"));
+
+    qmlRegisterType(QStringLiteral("qrc:/canvasassets/qml/ringing.qml"),   uri, 1, 0, "Ringing"  );
+    qmlRegisterType(QStringLiteral("qrc:/canvasassets/qml/searching.qml"), uri, 1, 0, "Searching");
+    qmlRegisterType(QStringLiteral("qrc:/canvasassets/qml/progress.qml"),  uri, 1, 0, "Progress" );
+    qmlRegisterType(QStringLiteral("qrc:/canvasassets/qml/newcall.qml"),   uri, 1, 0, "NewCall"  );
 }
 
 void JamiCanvasIndicator::initializeEngine(QQmlEngine *engine, const char *uri)

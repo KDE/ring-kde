@@ -21,6 +21,7 @@ import QtQuick.Layouts 1.0
 
 import org.kde.playground.kquickitemviews 1.0 as KQuickItemViews
 import net.lvindustries.ringqtquick.video.models 1.0 as RingQtVideoModel
+import org.kde.ringkde.jamicallview 1.0 as JamiCallView
 
 Item {
     property QtObject call: null
@@ -30,7 +31,7 @@ Item {
     height: elements.implicitHeight
 
     // Camera popup
-    CanvasPopup {
+    JamiCallView.CanvasPopup {
         id: sourcePopup
         parent: videoSource.parent
         width: 400
@@ -42,7 +43,7 @@ Item {
         contentItem: Component {
             ColumnLayout {
                 anchors.fill: parent
-                DeviceSetting {
+                JamiCallView.DeviceSetting {
                     id: deviceSettings
                     Layout.fillHeight: true
                     Layout.fillWidth: true
@@ -69,7 +70,7 @@ Item {
     }
 
     // Screen sharing popup
-    CanvasPopup {
+    JamiCallView.CanvasPopup {
         id: screenPopup
         parent: videoSource.parent
         width: 400
@@ -79,7 +80,7 @@ Item {
         title: "Screen sharing"
 
         contentItem: Component {
-            ScreenSharing {
+            JamiCallView.ScreenSharing {
                 id: deviceSettings
                 call: videoSource.call
                 anchors.fill: parent
@@ -88,7 +89,7 @@ Item {
     }
 
     // Streaming popup
-    CanvasPopup {
+    JamiCallView.CanvasPopup {
         id: filePopup
         parent: videoSource.parent
         width: 400
@@ -98,7 +99,7 @@ Item {
         title: "Camera settings"
 
         contentItem: Component {
-            Streaming {
+            JamiCallView.Streaming {
                 id: deviceSettings
                 call: videoSource.call
                 anchors.fill: parent

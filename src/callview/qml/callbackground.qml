@@ -19,6 +19,8 @@ import QtQuick 2.7
 import RingQmlWidgets 1.0
 
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
+import org.kde.ringkde.jamicanvasindicator 1.0 as JamiCanvasIndicator
+import org.kde.ringkde.jamicallview 1.0 as JamiCallView
 
 Rectangle {
     property QtObject call: null;
@@ -37,7 +39,7 @@ Rectangle {
         visible: false
     }
 
-    Troubleshoot {
+    JamiCallView.Troubleshoot {
         id: troubleshootDispatcher
         call: placeholderMessage.call
         anchors.horizontalCenter: parent.horizontalCenter
@@ -46,27 +48,27 @@ Rectangle {
         z: 100000
     }
 
-    NewCall {
+    JamiCanvasIndicator.NewCall {
         id: newCall
         visible: false
         anchors.centerIn: parent
     }
 
-    Ringing {
+    JamiCanvasIndicator.Ringing {
         id: ringingIndicator
         anchors.centerIn: parent
         running: false
         visible: false
     }
 
-    Searching {
+    JamiCanvasIndicator.Searching {
         id: searchingIndicator
         anchors.centerIn: parent
         visible: false
         running: false
     }
 
-    Progress {
+    JamiCanvasIndicator.Progress {
         id: progresIndicator
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom

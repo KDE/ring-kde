@@ -22,7 +22,7 @@ import RingQmlWidgets 1.0
 import org.kde.kirigami 2.2 as Kirigami
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
-import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
+import org.kde.ringkde.jamidialview 1.0 as JamiDialView
 
 Rectangle {
     id: callDelegateItem
@@ -188,7 +188,7 @@ Rectangle {
                     border.color: activePalette.highlightedText
                     radius: 5
                     clip: true
-                    CompletionDelegate {
+                    JamiDialView.CompletionDelegate {
                         id: searchDelegate
                         showPhoto: false
                         showControls: false
@@ -213,7 +213,7 @@ Rectangle {
         width: parent.width
         height: active ? item.implicitHeight : 0
         sourceComponent: Component {
-            CallError {
+            JamiDialView.CallError {
                 call: object
                 width: errorMessage.width
             }
@@ -227,7 +227,7 @@ Rectangle {
         width: parent.width
         height: active ? item.implicitHeight : 0
         sourceComponent: Component {
-            OutgoingCall {
+            JamiDialView.OutgoingCall {
                 call: object
                 width: outgoingMessage.width
             }
@@ -241,7 +241,7 @@ Rectangle {
         width: parent.width
         height: active ? item.implicitHeight : 0
         sourceComponent: Component {
-            FinishedCall {
+            JamiDialView.FinishedCall {
                 call: object
                 width: finishedMessage.width
             }
@@ -255,7 +255,7 @@ Rectangle {
         width: parent.width
         height: active ? item.implicitHeight : 0
         sourceComponent: Component {
-            CurrentCall {
+            JamiDialView.CurrentCall {
                 call: object
                 width: currentMessage.width
             }
@@ -268,7 +268,7 @@ Rectangle {
         width: parent.width
         height: active ? item.implicitHeight : 0
         sourceComponent: Component {
-            MissedCall {
+            JamiDialView.MissedCall {
                 call: object
                 width: missedMessage.width
             }
@@ -283,7 +283,7 @@ Rectangle {
         anchors.top: content.bottom
         anchors.horizontalCenter: parent.horizontalCenter
         sourceComponent: Component {
-            IncomingCall {
+            JamiDialView.IncomingCall {
                 //call: object
                 width: rigningAnimation.width
             }

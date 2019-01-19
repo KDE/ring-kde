@@ -1,17 +1,19 @@
 <RCC>
-    <qresource prefix="/">
-        <file alias="DialView.qml">qml/dialview.qml</file>
-        <file alias="DialPad.qml">qml/dialpad.qml</file>
-        <file alias="CallList.qml">qml/calllist.qml</file>
-        <file alias="CallDelegate.qml">qml/calldelegate.qml</file>
-        <file alias="CallDelegateItem.qml">qml/calldelegateitem.qml</file>
-        <file alias="AddCall.qml">qml/addcall.qml</file>
-        <file alias="MergeCall.qml">qml/mergecall.qml</file>
-        <file alias="CallError.qml">qml/callerror.qml</file>
-        <file alias="MissedCall.qml">qml/missedcall.qml</file>
-        <file alias="OutgoingCall.qml">qml/outgoingcall.qml</file>
-        <file alias="IncomingCall.qml">qml/incomingcall.qml</file>
-        <file alias="FinishedCall.qml">qml/finishedcall.qml</file>
-        <file alias="CurrentCall.qml">qml/currentcall.qml</file>
+    <qresource prefix="/dialview">
+        <file>qml/dialview.qml</file>
+        <file>qml/dialpad.qml</file>
+        <file>qml/calllist.qml</file>
+        <file>qml/calldelegate.qml</file>
+        <file>qml/calldelegateitem.qml</file>
+        <file>qml/addcall.qml</file>
+        <file>qml/mergecall.qml</file>
+        <file>qml/callerror.qml</file>
+        <file>qml/missedcall.qml</file>
+        <file>qml/outgoingcall.qml</file>
+        <file>qml/incomingcall.qml</file>
+        <file>qml/finishedcall.qml</file>
+        <file>qml/currentcall.qml</file>
+        <file>qml/completiondelegate.qml</file>
+        <file>qml/actiontoolbar.qml</file>
     </qresource>
 </RCC>

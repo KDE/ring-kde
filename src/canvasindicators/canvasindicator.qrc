@@ -1,14 +1,14 @@
 <RCC>
-    <qresource prefix="/">
-        <file alias="Ringing.qml">qml/ringing.qml</file>
-        <file alias="Searching.qml">qml/searching.qml</file>
-        <file alias="Progress.qml">qml/progress.qml</file>
-        <file alias="NewCall.qml">qml/newcall.qml</file>
+    <qresource prefix="/canvasassets/">
+        <file>qml/ringing.qml</file>
+        <file>qml/searching.qml</file>
+        <file>qml/progress.qml</file>
+        <file>qml/newcall.qml</file>
 
-        <file alias="canvasassets/PhoneDown.svg">icons/phoneDown.svg</file>
-        <file alias="canvasassets/Ring1.svg">icons/ring3.svg</file>
-        <file alias="canvasassets/Ring2.svg">icons/ring2.svg</file>
-        <file alias="canvasassets/Ring3.svg">icons/ring1.svg</file>
-        <file alias="canvasassets/Searching.svg">icons/searching.svg</file>
+        <file alias="PhoneDown.svg">icons/phoneDown.svg</file>
+        <file alias="Ring1.svg">icons/ring3.svg</file>
+        <file alias="Ring2.svg">icons/ring2.svg</file>
+        <file alias="Ring3.svg">icons/ring1.svg</file>
+        <file alias="Searching.svg">icons/searching.svg</file>
     </qresource>
 </RCC>
