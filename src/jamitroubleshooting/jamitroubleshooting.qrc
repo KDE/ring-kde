@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/jamitroubleshooting/">
+        <file>qml/troubleshoot.qml</file>
+    </qresource>
+</RCC>

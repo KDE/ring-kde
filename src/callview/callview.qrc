@@ -3,7 +3,6 @@
         <file>qml/callview.qml</file>
         <file>qml/callbackground.qml</file>
         <file>qml/cmselector.qml</file>
-        <file>qml/troubleshoot.qml</file>
         <file>qml/recordingicon.qml</file>
     </qresource>
 </RCC>

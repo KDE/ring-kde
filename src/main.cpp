@@ -108,6 +108,12 @@ Q_IMPORT_PLUGIN(JamiVideoView)
 #include <jamivideoview/plugin.h>
 #endif
 
+#ifdef JAMITROUBLESHOOTING_USE_STATIC_PLUGIN
+Q_IMPORT_PLUGIN(JamiTroubleshooting)
+#else
+#include <jamitroubleshooting/plugin.h>
+#endif
+
 Q_IMPORT_PLUGIN(RingQtQuick)
 
 constexpr static const char version[] = "3.1.0";
@@ -232,6 +238,15 @@ int main(int argc, char **argv)
       JamiVideoView v12;
       v12.registerTypes("org.kde.ringkde.jamivideoview");
       v12.initializeEngine(app.engine(), "org.kde.ringkde.jamivideoview");
+#endif
+
+#ifdef JAMITROUBLESHOOTING_USE_STATIC_PLUGIN
+      qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiTroubleshooting().instance())->registerTypes("org.kde.ringkde.jamitroubleshooting");
+      qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiTroubleshooting().instance())->initializeEngine(app.engine(), "org.kde.ringkde.jamitroubleshooting");
+#else
+      JamiTroubleshooting v13;
+      v13.registerTypes("org.kde.ringkde.jamitroubleshooting");
+      v13.initializeEngine(app.engine(), "org.kde.ringkde.jamitroubleshooting");
 #endif
 
       KAboutData about(QStringLiteral("ring-kde"),

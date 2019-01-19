@@ -1,5 +1,5 @@
 /************************************************************************************
- *   Copyright (C) 2018 by BlueSystems GmbH                                         *
+ *   Copyright (C) 2019 by BlueSystems GmbH                                         *
  *   Author : Emmanuel Lepage Vallee <elv1313@gmail.com>                            *
  *                                                                                  *
  *   This library is free software; you can redistribute it and/or                  *
@@ -16,28 +16,16 @@
  *   License along with this library; if not, write to the Free Software            *
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA *
  ***********************************************************************************/
-#include "callviewplugin.h"
+#pragma once
 
-// Qt
-#include <QQmlEngine>
-#include <QQmlContext>
-#include <QtGui/QIcon>
+#include <QQmlExtensionPlugin>
 
-// QRC
-#include <qrc_callview.cpp>
-
-void JamiCallViewPlugin::registerTypes(const char *uri)
+class Q_DECL_EXPORT JamiTroubleshooting final : public QQmlExtensionPlugin
 {
-    Q_ASSERT(uri == QByteArray("org.kde.ringkde.jamicallview"));
+    Q_OBJECT
+    Q_PLUGIN_METADATA(IID "org.kde.ringkde.jamitroubleshooting" FILE "jamitroubleshooting.json")
 
-    qmlRegisterType(QStringLiteral("qrc:/callview/qml/callview.qml"), uri, 1, 0, "CallView");
-    qmlRegisterType(QStringLiteral("qrc:/callview/qml/cmselector.qml"), uri, 1, 0, "CMSelector");
-    qmlRegisterType(QStringLiteral("qrc:/callview/qml/recordingicon.qml"), uri, 1, 0, "RecordingIcon");
-    qmlRegisterType(QStringLiteral("qrc:/callview/qml/callbackground.qml"), uri, 1, 0, "CallBackground");
-}
-
-void JamiCallViewPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
-{
-    Q_UNUSED(engine)
-    Q_UNUSED(uri)
-}
+public:
+    void registerTypes(const char* uri) override;
+    virtual void initializeEngine(QQmlEngine* engine, const char* uri) override;
+};

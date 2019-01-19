@@ -21,6 +21,7 @@ import RingQmlWidgets 1.0
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 import org.kde.ringkde.jamicanvasindicator 1.0 as JamiCanvasIndicator
 import org.kde.ringkde.jamicallview 1.0 as JamiCallView
+import org.kde.ringkde.jamitroubleshooting 1.0 as JamiTroubleshooting
 
 Rectangle {
     property QtObject call: null;
@@ -39,7 +40,7 @@ Rectangle {
         visible: false
     }
 
-    JamiCallView.Troubleshoot {
+    JamiTroubleshooting.Troubleshoot {
         id: troubleshootDispatcher
         call: placeholderMessage.call
         anchors.horizontalCenter: parent.horizontalCenter

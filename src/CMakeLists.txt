@@ -204,6 +204,9 @@ ADD_SUBDIRECTORY( jaminotification )
 ADD_SUBDIRECTORY( jamivideoview )
 
 # Build the main desktop component
+ADD_SUBDIRECTORY( jamitroubleshooting )
+
+# Build the main desktop component
 ADD_SUBDIRECTORY( desktopview )
 
 # ADD_DEPENDENCIES(desktopview DEPENDS jamikdeintegration)
@@ -302,6 +305,7 @@ TARGET_LINK_LIBRARIES(ring-kde
   kquickitemviews
   jamikdeintegration
   jamivideoview
+  jamitroubleshooting
 
   # RingQt
   ringqtquick

@@ -16,27 +16,23 @@
  *   License along with this library; if not, write to the Free Software            *
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA *
  ***********************************************************************************/
-#include "callviewplugin.h"
+#include "plugin.h"
 
 // Qt
 #include <QQmlEngine>
 #include <QQmlContext>
-#include <QtGui/QIcon>
 
 // QRC
-#include <qrc_callview.cpp>
+#include <qrc_jamitroubleshooting.cpp>
 
-void JamiCallViewPlugin::registerTypes(const char *uri)
+void JamiTroubleshooting::registerTypes(const char *uri)
 {
-    Q_ASSERT(uri == QByteArray("org.kde.ringkde.jamicallview"));
+    Q_ASSERT(uri == QByteArray("org.kde.ringkde.jamitroubleshooting"));
 
-    qmlRegisterType(QStringLiteral("qrc:/callview/qml/callview.qml"), uri, 1, 0, "CallView");
-    qmlRegisterType(QStringLiteral("qrc:/callview/qml/cmselector.qml"), uri, 1, 0, "CMSelector");
-    qmlRegisterType(QStringLiteral("qrc:/callview/qml/recordingicon.qml"), uri, 1, 0, "RecordingIcon");
-    qmlRegisterType(QStringLiteral("qrc:/callview/qml/callbackground.qml"), uri, 1, 0, "CallBackground");
+    qmlRegisterType(QStringLiteral("qrc:/jamitroubleshooting/qml/troubleshoot.qml"), uri, 1, 0, "Troubleshoot");
 }
 
-void JamiCallViewPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
+void JamiTroubleshooting::initializeEngine(QQmlEngine *engine, const char *uri)
 {
     Q_UNUSED(engine)
     Q_UNUSED(uri)
