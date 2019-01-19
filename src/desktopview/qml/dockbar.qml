@@ -25,6 +25,7 @@ import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 import org.kde.ringkde.jamidialview 1.0 as JamiDialView
 import org.kde.ringkde.jamitimeline 1.0 as JamiTimeline
+import org.kde.ringkde.jamihistoryview 1.0 as JamiHistoryView
 
 import DesktopView 1.0
 
@@ -245,7 +246,7 @@ Item {
         }
         Component {
             id: historyViewComponent
-            JamiTimeline.HistoryTimeline {
+            JamiHistoryView.HistoryTimeline {
                 anchors.fill: parent
                 onContactMethodSelected: {
                     mainPage.setContactMethod(cm)

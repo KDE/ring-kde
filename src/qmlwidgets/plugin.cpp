@@ -19,11 +19,9 @@
 
 #include <QtCore/QDebug>
 #include <QtWidgets/QAction>
+#include <QQmlEngine>
 
-#include "bubble.h"
 #include "treehelper.h"
-#include "multicall.h"
-#include "timelinedots.h"
 
 #include "qrc_qmlwidgets.cpp"
 
@@ -33,10 +31,7 @@ void RingQmlWidgets::registerTypes(const char *uri)
 
     qmlRegisterType<QAction>(uri, 1, 0, "QAction");
 
-    qmlRegisterType<Bubble>(uri, 1, 0, "Bubble");
-    qmlRegisterType<MultiCall>(uri, 1, 0, "MultiCall");
     qmlRegisterType<TreeHelper>(uri, 1, 0, "TreeHelper");
-    qmlRegisterType<TimelineDots>(uri, 1, 0, "TimelineDots");
     qmlRegisterType(QStringLiteral("qrc:/OutlineButton.qml"), uri, 1, 0, "OutlineButton");
     qmlRegisterType(QStringLiteral("qrc:/OutlineButtons.qml"), uri, 1, 0, "OutlineButtons");
 }

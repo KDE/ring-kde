@@ -114,6 +114,30 @@ Q_IMPORT_PLUGIN(JamiTroubleshooting)
 #include <jamitroubleshooting/plugin.h>
 #endif
 
+#ifdef JAMICHATVIEW_USE_STATIC_PLUGIN
+Q_IMPORT_PLUGIN(JamiChatView)
+#else
+#include <jamichatview/plugin.h>
+#endif
+
+#ifdef JAMIHISTORYVIEW_USE_STATIC_PLUGIN
+Q_IMPORT_PLUGIN(JamiHistoryView)
+#else
+#include <jamihistoryview/plugin.h>
+#endif
+
+#ifdef JAMITIMELINEBASE_USE_STATIC_PLUGIN
+Q_IMPORT_PLUGIN(JamiTimelineBase)
+#else
+#include <jamitimelinebase/plugin.h>
+#endif
+
+#ifdef JAMIAUDIOPLAYER_USE_STATIC_PLUGIN
+Q_IMPORT_PLUGIN(JamiAudioPlayer)
+#else
+#include <jamiaudioplayer/plugin.h>
+#endif
+
 Q_IMPORT_PLUGIN(RingQtQuick)
 
 constexpr static const char version[] = "3.1.0";
@@ -247,6 +271,42 @@ int main(int argc, char **argv)
       JamiTroubleshooting v13;
       v13.registerTypes("org.kde.ringkde.jamitroubleshooting");
       v13.initializeEngine(app.engine(), "org.kde.ringkde.jamitroubleshooting");
+#endif
+
+#ifdef JAMITIMELINEBASE_USE_STATIC_PLUGIN
+      qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiTimelineBase().instance())->registerTypes("org.kde.ringkde.jamitimelinebase");
+      qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiTimelineBase().instance())->initializeEngine(app.engine(), "org.kde.ringkde.jamitimelinebase");
+#else
+      JamiTimelineBase v14;
+      v14.registerTypes("org.kde.ringkde.jamitimelinebase");
+      v14.initializeEngine(app.engine(), "org.kde.ringkde.jamitimelinebase");
+#endif
+
+#ifdef JAMIHISTORYVIEW_USE_STATIC_PLUGIN
+      qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiHistoryView().instance())->registerTypes("org.kde.ringkde.jamihistoryview");
+      qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiHistoryView().instance())->initializeEngine(app.engine(), "org.kde.ringkde.jamihistoryview");
+#else
+      JamiHistoryView v15;
+      v15.registerTypes("org.kde.ringkde.jamihistoryview");
+      v15.initializeEngine(app.engine(), "org.kde.ringkde.jamihistoryview");
+#endif
+
+#ifdef JAMICHATVIEW_USE_STATIC_PLUGIN
+      qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiChatView().instance())->registerTypes("org.kde.ringkde.jamichatview");
+      qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiChatView().instance())->initializeEngine(app.engine(), "org.kde.ringkde.jamichatview");
+#else
+      JamiChatView v16;
+      v16.registerTypes("org.kde.ringkde.jamichatview");
+      v16.initializeEngine(app.engine(), "org.kde.ringkde.jamichatview");
+#endif
+
+#ifdef JAMIAUDIOPLAYER_USE_STATIC_PLUGIN
+      qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiAudioPlayer().instance())->registerTypes("org.kde.ringkde.jamiaudioplayer");
+      qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiAudioPlayer().instance())->initializeEngine(app.engine(), "org.kde.ringkde.jamiaudioplayer");
+#else
+      JamiAudioPlayer v17;
+      v17.registerTypes("org.kde.ringkde.jamiaudioplayer");
+      v17.initializeEngine(app.engine(), "org.kde.ringkde.jamiaudioplayer");
 #endif
 
       KAboutData about(QStringLiteral("ring-kde"),

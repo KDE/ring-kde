@@ -1,0 +1,8 @@
+@PACKAGE_INIT@
+
+#Allow users to when to use Q_IMPORT_PLUGIN in main.cpp
+if(@ENABLE_STATIC_PLUGIN@ MATCHES 1)
+    add_definitions(-DJAMIJAMIAUDIOPLAYER_USE_STATIC_PLUGIN=1)
+endif()
+
+include("${CMAKE_CURRENT_LIST_DIR}/JamiAudioPlayerTargets.cmake")

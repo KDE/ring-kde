@@ -13,5 +13,10 @@
         <file>qml/viewcontactrequests.qml</file>
         <file>qml/contactinfo.qml</file>
         <file>qml/phonenumbers.qml</file>
+        <file>qml/contactdialog.qml</file>
+        <file>qml/addresses.qml</file>
+    </qresource>
+    <qresource prefix="/">
+        <file>assets/welcome.html</file>
     </qresource>
 </RCC>

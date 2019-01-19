@@ -16,31 +16,25 @@
  *   License along with this library; if not, write to the Free Software            *
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA *
  ***********************************************************************************/
-#include "timelineplugin.h"
+#include "plugin.h"
 
 // Qt
 #include <QQmlEngine>
+#include <QQmlContext>
 
 // QRC
-#include <qrc_recentdock.cpp>
+#include <qrc_jamihistoryview.cpp>
 
-void JamiTimelineView::registerTypes(const char *uri)
+void JamiHistoryView::registerTypes(const char *uri)
 {
-    Q_ASSERT(uri == QByteArray("org.kde.ringkde.jamitimeline"));
+    Q_ASSERT(uri == QByteArray("org.kde.ringkde.jamihistoryview"));
 
-    qmlRegisterType(QStringLiteral("qrc:/qml/firstrun.qml")                  , uri, 1, 0, "FirstRun");
-    qmlRegisterType(QStringLiteral("qrc:/qml/searchtip.qml")                 , uri, 1, 0, "SearchTip");
-    qmlRegisterType(QStringLiteral("qrc:/qml/searchbox.qml")                 , uri, 1, 0, "SearchBox");
-    qmlRegisterType(QStringLiteral("qrc:/qml/searchoverlay.qml")             , uri, 1, 0, "SearchOverlay");
-    qmlRegisterType(QStringLiteral("qrc:/qml/peerstimeline.qml")             , uri, 1, 0, "PeersTimeline");
-    qmlRegisterType(QStringLiteral("qrc:/qml/findpeers.qml")                 , uri, 1, 0, "FindPeers");
-    qmlRegisterType(QStringLiteral("qrc:/qml/timelinepage.qml")              , uri, 1, 0, "TimelinePage");
-    qmlRegisterType(QStringLiteral("qrc:/qml/contactmethoddelegate.qml")     , uri, 1, 0, "ContactMethodDelegate");
-    qmlRegisterType(QStringLiteral("qrc:/qml/peerstimelinecategories.qml")   , uri, 1, 0, "PeersTimelineCategories");
-    qmlRegisterType(QStringLiteral("qrc:/qml/searchdelegate.qml")            , uri, 1, 0, "SearchDelegate");
+    qmlRegisterType(QStringLiteral("qrc:/jamihistoryview/qml/callhistory.qml")               , uri, 1, 0, "CallHistory");
+    qmlRegisterType(QStringLiteral("qrc:/jamihistoryview/qml/historytimeline.qml")           , uri, 1, 0, "HistoryTimeline");
+    qmlRegisterType(QStringLiteral("qrc:/jamihistoryview/qml/recordinghistory.qml")          , uri, 1, 0, "RecordingHistory");
 }
 
-void JamiTimelineView::initializeEngine(QQmlEngine *engine, const char *uri)
+void JamiHistoryView::initializeEngine(QQmlEngine *engine, const char *uri)
 {
     Q_UNUSED(engine)
     Q_UNUSED(uri)

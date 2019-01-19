@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/jamitimelinebase/">
+        <file>qml/scrollbar.qml</file>
+    </qresource>
+</RCC>

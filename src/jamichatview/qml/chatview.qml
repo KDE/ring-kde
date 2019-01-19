@@ -21,8 +21,8 @@ import QtQuick.Layouts 1.0
 
 import org.kde.playground.kquickitemviews 1.0 as KQuickItemViews
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
-import org.kde.ringkde.jamitimeline 1.0 as JamiTimeline
 import net.lvindustries.ringqtquick.models 1.0 as RingQtModels
+import org.kde.ringkde.jamichatview 1.0 as JamiChatView
 
 import RingQmlWidgets 1.0
 
@@ -60,7 +60,7 @@ KQuickItemViews.HierarchyView {
         return base1
     }
 
-    JamiTimeline.Slideshow {
+    JamiChatView.Slideshow {
         id: slideshow
     }
 
@@ -81,14 +81,14 @@ KQuickItemViews.HierarchyView {
             // Create a delegate for each type
             Component {
                 id: sectionDelegate
-                JamiTimeline.TextMessageGroup {
+                JamiChatView.TextMessageGroup {
                     width: chatView.width
                 }
             }
 
             Component {
                 id: snapshotGroupDelegate
-                JamiTimeline.Snapshots {
+                JamiChatView.Snapshots {
                     width: chatView.width
                     onViewImage: {
                         chatView.slideshow.active = true
@@ -100,21 +100,21 @@ KQuickItemViews.HierarchyView {
 
             Component {
                 id: callDelegate
-                JamiTimeline.CallGroup {
+                JamiChatView.CallGroup {
                     width: chatView.width
                 }
             }
 
             Component {
                 id: categoryDelegate
-                JamiTimeline.CategoryHeader {
+                JamiChatView.CategoryHeader {
                     width: chatView.width
                 }
             }
 
             Component {
                 id: textDelegate
-                JamiTimeline.TextBubble {
+                JamiChatView.TextBubble {
 
                     background: isRead ?
                         chatView.bubbleBackground : chatView.unreadBackground

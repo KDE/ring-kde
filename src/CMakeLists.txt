@@ -209,6 +209,18 @@ ADD_SUBDIRECTORY( jamitroubleshooting )
 # Build the main desktop component
 ADD_SUBDIRECTORY( desktopview )
 
+# Build the main desktop component
+ADD_SUBDIRECTORY( jamihistoryview )
+
+# Build the main desktop component
+ADD_SUBDIRECTORY( jamichatview )
+
+# Build the main desktop component
+ADD_SUBDIRECTORY( jamitimelinebase )
+
+# Build the main desktop component
+ADD_SUBDIRECTORY( jamiaudioplayer )
+
 # ADD_DEPENDENCIES(desktopview DEPENDS jamikdeintegration)
 
 IF(${CMAKE_BUILD_TYPE} MATCHES Release)
@@ -306,6 +318,10 @@ TARGET_LINK_LIBRARIES(ring-kde
   jamikdeintegration
   jamivideoview
   jamitroubleshooting
+  jamihistoryview
+  jamichatview
+  jamitimelinebase
+  jamiaudioplayer
 
   # RingQt
   ringqtquick

@@ -50,6 +50,8 @@ void JamiContactViewPlugin::registerTypes(const char *uri)
     qmlRegisterType(QStringLiteral("qrc:/contactview/qml/pendingrequests.qml")           , uri, 1, 0, "PendingRequests");
     qmlRegisterType(QStringLiteral("qrc:/contactview/qml/sendrequest.qml")               , uri, 1, 0, "SendRequest");
     qmlRegisterType(QStringLiteral("qrc:/contactview/qml/viewcontactrequests.qml")       , uri, 1, 0, "ViewContactRequests");
+    qmlRegisterType(QStringLiteral("qrc:/contactview/qml/addresses.qml")                 , uri, 1, 0, "Addresses");
+    qmlRegisterType(QStringLiteral("qrc:/contactview/qml/contactdialog.qml")             , uri, 1, 0, "ContactDialog");
 }
 
 void JamiContactViewPlugin::initializeEngine(QQmlEngine *engine, const char *uri)

@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/jamihistoryview/">
+        <file>qml/recordinghistory.qml</file>
+        <file>qml/callhistory.qml</file>
+        <file>qml/historytimeline.qml</file>
+    </qresource>
+</RCC>

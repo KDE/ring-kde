@@ -16,30 +16,26 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
 import QtQuick 2.7
-import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
+import org.kde.ringkde.jamichatview 1.0 as JamiChatView
 
-import net.lvindustries.ringqtquick 1.0 as RingQtQuick
+
+import RingQmlWidgets 1.0
 
 Item {
-    width:  30
-    height: 30
-    Image {
-        function selectIcon(isMissed, direction) {
-            if (isMissed && direction == RingQtQuick.Call.INCOMING)
-                return "sharedassets/phone_dark/missed_incoming.svg"
-            else if (isMissed && direction == RingQtQuick.Call.OUTGOING)
-                return "sharedassets/phone_dark/missed_outgoing.svg"
-            else if (direction == RingQtQuick.Call.INCOMING)
-                return "sharedassets/phone_dark/incoming.svg"
-            else
-                return "sharedassets/phone_dark/outgoing.svg"
-        }
+    id: textGroupDelegate
+    width: parent.width
+    height: 50
 
-        source: selectIcon(object.missed, object.direction)
-        asynchronous: true
-        Layout.fillHeight: true
-        width:  30
-        height: 30
+    JamiChatView.GroupHeader {
+        type: "text"
+        anchors.margins: 4
+        height: 38
+    }
+
+    JamiChatView.GroupFooter {
+        anchors.horizontalCenter: parent.horizontalCenter
+        y: (parent.parent && parent.parent.parent && parent.parent.parent.height) ?
+            parent.parent.parent.height - height : 0
     }
 }

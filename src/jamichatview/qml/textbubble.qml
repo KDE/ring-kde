@@ -22,6 +22,7 @@ import RingQmlWidgets 1.0
 import QtGraphicalEffects 1.0
 import org.kde.kirigami 2.2 as Kirigami
 import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
+import org.kde.ringkde.jamichatview 1.0 as JamiChatView
 
 Item {
     id: chatMessage
@@ -61,7 +62,7 @@ Item {
             Layout.fillWidth: true
             Layout.fillHeight: true
 
-            Bubble {
+            JamiChatView.Bubble {
                 id: bubble
                 anchors.margins: 5
                 anchors.right: direction == 1 ? parent.right : undefined

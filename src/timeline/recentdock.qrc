@@ -1,36 +1,16 @@
 <RCC>
     <qresource prefix="/">
         <file>qml/peerstimeline.qml</file>
-        <file>qml/historytimeline.qml</file>
-        <file>qml/contactdialog.qml</file>
-        <file>qml/callhistory.qml</file>
-        <file>qml/recordinghistory.qml</file>
-        <file>qml/audioplayer.qml</file>
-        <file>qml/chatbox.qml</file>
-        <file>qml/chatview.qml</file>
-        <file>qml/timelinepage.qml</file>
-        <file>qml/timelinescrollbar.qml</file>
-        <file>qml/textbubble.qml</file>
-        <file>qml/categoryheader.qml</file>
-        <file>qml/textmessagegroup.qml</file>
-        <file>qml/callgroup.qml</file>
-        <file>qml/groupheader.qml</file>
-        <file>qml/groupfooter.qml</file>
         <file>qml/contactmethoddelegate.qml</file>
         <file>qml/peerstimelinecategories.qml</file>
-        <file>qml/addresses.qml</file>
         <file>qml/searchdelegate.qml</file>
         <file>qml/findpeers.qml</file>
-        <file>qml/snapshots.qml</file>
-        <file>qml/slideshow.qml</file>
-        <file>qml/thumbnail.qml</file>
-        <file>qml/historycallicon.qml</file>
         <file>qml/firstrun.qml</file>
         <file>qml/searchtip.qml</file>
         <file>qml/searchbox.qml</file>
         <file>qml/searchoverlay.qml</file>
         <file>icons/bookmarked.svg</file>
         <file>icons/not_bookmarked.svg</file>
-        <file>assets/welcome.html</file>
+
     </qresource>
 </RCC>

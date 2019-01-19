@@ -22,6 +22,7 @@ import QtQuick.Layouts 1.0
 import RingQmlWidgets 1.0
 import org.kde.kirigami 2.2 as Kirigami
 import org.kde.playground.kquickitemviews 1.0 as KQuickItemViews
+import org.kde.ringkde.jamitimelinebase 1.0 as JamiTimelineBase
 
 KQuickItemViews.FlickableScrollBar {
     id: scrollbar
@@ -207,7 +208,7 @@ KQuickItemViews.FlickableScrollBar {
                     currentItem.selected = true
             }
 
-            TimelineDots {
+            JamiTimelineBase.TimelineDots {
                 height: parent.height
                 width: 16
                 z: -1

@@ -26,6 +26,7 @@ import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 import org.kde.ringkde.jamitimeline 1.0 as JamiTimeline
 import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 import org.kde.ringkde.jamitroubleshooting 1.0 as JamiTroubleShooting
+import org.kde.ringkde.jamitimelinebase 1.0 as JamiTimelineBase
 
 import RingQmlWidgets 1.0
 
@@ -201,7 +202,7 @@ Rectangle {
             }
         }
 
-        JamiTimeline.TimelineScrollbar {
+        JamiTimelineBase.Scrollbar {
             id: scrollBar
             height: parent.height
             anchors.top: parent.top

@@ -20,7 +20,10 @@ import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
 import QtGraphicalEffects 1.0
 import org.kde.ringkde.jamitimeline 1.0 as JamiTimeline
+import org.kde.ringkde.jamitimelinebase 1.0 as JamiTimelineBase
+import org.kde.ringkde.jamichatview 1.0 as JamiChatView
 
+import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 
 import RingQmlWidgets 1.0
 
@@ -30,6 +33,10 @@ Rectangle {
 
     function focusEdit() {
         chatBox.focusEdit()
+    }
+
+    function showNewContent() {
+        chatView.moveTo(Qt.BottomEdge)
     }
 
     function setContactMethod() {
@@ -100,11 +107,9 @@ Rectangle {
                 Layout.fillHeight: true
                 Layout.fillWidth: true
 
-                JamiTimeline.RecordingHistory {
+                JamiChatView.ChatView {
                     id: chatView
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    width: parent.width*0.66
-                    height: parent.height
+                    anchors.fill: parent
                     model: null//FIXME timelinePage.timelineModel
 
                     // Due to a race condition, wait a bit, it should be fixed elsewhere,
@@ -156,7 +161,7 @@ Rectangle {
                 }
             }
 
-            JamiTimeline.TimelineScrollbar {
+            JamiTimelineBase.Scrollbar {
                 id: scrollbar
                 z: 1000
                 bottomUp: true
@@ -175,6 +180,41 @@ Rectangle {
                     burryOverlay.opacity = overlayVisible ? 1 : 0
                     effectSource.visible = overlayVisible
                 }
+            }
+        }
+
+        JamiChatView.ChatBox {
+            id: chatBox
+            Layout.fillWidth: true
+            height: 90
+            visible: canSendTexts
+            RingQtQuick.MessageBuilder {id: builder}
+            requireContactRequest: currentContactMethod &&
+                currentContactMethod.confirmationStatus == RingQtQuick.ContactMethod.UNCONFIRMED &&
+                currentContactMethod.confirmationStatus != RingQtQuick.ContactMethod.DISABLED
+
+            textColor: activePalette.text
+            backgroundColor: activePalette.window
+            emojiColor: activePalette.highlight
+
+            onDisableContactRequests: {
+                if (timelinePage.setContactMethod()) {
+                    currentContactMethod.confirmationEnabled = false
+                }
+            }
+        }
+    }
+
+    Connections {
+        target: chatBox
+        onSendMessage: {
+            timelinePage.setContactMethod()
+            if (currentContactMethod) {
+                if (currentContactMethod.account && currentContactMethod.confirmationStatus == ContactMethod.UNCONFIRMED)
+                    currentContactMethod.sendContactRequest()
+
+                builder.addPayload("text/plain", message)
+                builder.sendWidth(currentContactMethod)
             }
         }
     }

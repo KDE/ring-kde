@@ -25,6 +25,8 @@ import net.lvindustries.ringqtquick.media 1.0 as RingQtMedia
 import org.kde.ringkde.jamicallview 1.0 as JamiCallView
 import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 import org.kde.ringkde.jamitimeline 1.0 as JamiTimeline
+import org.kde.ringkde.jamihistoryview 1.0 as JamiHistoryView
+import org.kde.ringkde.jamichatview 1.0 as JamiChatView
 
 Item {
     id: viewContact
@@ -191,7 +193,7 @@ Item {
                     id: timelinePage
                     property bool showScrollbar: true
 
-                    sourceComponent: JamiTimeline.TimelinePage {
+                    sourceComponent: JamiChatView.ChatPage {
                         showScrollbar: timelinePage.showScrollbar
                         timelineModel: viewContact.timelineModel
                         currentContactMethod: viewContact.currentContactMethod
@@ -268,7 +270,7 @@ Item {
                     id: callHistory
                     asynchronous: true
                     active: false
-                    sourceComponent: JamiTimeline.CallHistory {
+                    sourceComponent: JamiHistoryView.CallHistory {
                         showScrollbar: timelinePage.showScrollbar
                         timelineModel: viewContact.timelineModel
                         currentContactMethod: viewContact.currentContactMethod
