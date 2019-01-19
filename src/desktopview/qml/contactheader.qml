@@ -23,6 +23,7 @@ import RingQmlWidgets 1.0
 import org.kde.kirigami 2.2 as Kirigami
 import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 import org.kde.ringkde.jamiphotoselector 1.0 as JamiPhotoSelector
+import org.kde.ringkde.jamitroubleshooting 1.0 as JamiTroubleshooting
 
 Rectangle {
     id: contactHeader
@@ -229,7 +230,7 @@ Rectangle {
         anchors.leftMargin: 5
 
         // Display reasons why the media buttons are not present
-        MediaAvailability {
+        JamiTroubleshooting.MediaAvailability {
             defaultSize: parent.height < 48 ? parent.height : 48
             currentIndividual: contactHeader.currentIndividual
             anchors.verticalCenter: parent.verticalCenter

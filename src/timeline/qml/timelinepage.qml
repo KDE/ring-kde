@@ -19,6 +19,7 @@ import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
 import QtGraphicalEffects 1.0
+import org.kde.ringkde.jamitimeline 1.0 as JamiTimeline
 
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 
@@ -104,7 +105,7 @@ Rectangle {
                 Layout.fillHeight: true
                 Layout.fillWidth: true
 
-                ChatView {
+                JamiTimeline.ChatView {
                     id: chatView
                     anchors.fill: parent
                     model: null//FIXME timelinePage.timelineModel
@@ -158,7 +159,7 @@ Rectangle {
                 }
             }
 
-            TimelineScrollbar {
+            JamiTimeline.TimelineScrollbar {
                 id: scrollbar
                 z: 1000
                 bottomUp: true
@@ -180,7 +181,7 @@ Rectangle {
             }
         }
 
-        ChatBox {
+        JamiTimeline.ChatBox {
             id: chatBox
             Layout.fillWidth: true
             height: 90

@@ -29,7 +29,11 @@ void JamiTroubleshooting::registerTypes(const char *uri)
 {
     Q_ASSERT(uri == QByteArray("org.kde.ringkde.jamitroubleshooting"));
 
-    qmlRegisterType(QStringLiteral("qrc:/jamitroubleshooting/qml/troubleshoot.qml"), uri, 1, 0, "Troubleshoot");
+    qmlRegisterType(QStringLiteral("qrc:/jamitroubleshooting/qml/troubleshoot.qml")   , uri, 1, 0, "Troubleshoot");
+    qmlRegisterType(QStringLiteral("qrc:/jamitroubleshooting/qml/noaccount.qml")      , uri, 1, 0, "NoAccount");
+    qmlRegisterType(QStringLiteral("qrc:/jamitroubleshooting/qml/accounterror.qml")   , uri, 1, 0, "AccountError");
+    qmlRegisterType(QStringLiteral("qrc:/jamitroubleshooting/qml/accountdisabled.qml"), uri, 1, 0, "AccountDisabled");
+    qmlRegisterType(QStringLiteral("qrc:/jamitroubleshooting/qml/mediaavailability.qml"), uri, 1, 0, "MediaAvailability");
 }
 
 void JamiTroubleshooting::initializeEngine(QQmlEngine *engine, const char *uri)

@@ -17,7 +17,9 @@
  **************************************************************************/
 import QtQuick 2.4
 
-ContactInfo {
+import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
+
+JamiContactView.ContactInfo {
     id: contactInfo
     showStat: false
     showImage: true

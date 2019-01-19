@@ -20,11 +20,12 @@ import QtQuick.Layouts 1.0
 
 
 import RingQmlWidgets 1.0
+import org.kde.ringkde.jamitimeline 1.0 as JamiTimeline
 
 ColumnLayout {
     id: textGroupDelegate
 
-    GroupHeader {
+    JamiTimeline.GroupHeader {
         type: "call"
         anchors.margins: 4
         Layout.fillWidth: true
@@ -42,7 +43,7 @@ ColumnLayout {
         height: 3
     }
 
-    GroupFooter {
+    JamiTimeline.GroupFooter {
         Layout.fillWidth: true
     }
 }

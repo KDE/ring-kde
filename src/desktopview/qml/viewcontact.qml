@@ -23,6 +23,8 @@ import org.kde.kirigami 2.2 as Kirigami
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 import net.lvindustries.ringqtquick.media 1.0 as RingQtMedia
 import org.kde.ringkde.jamicallview 1.0 as JamiCallView
+import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
+import org.kde.ringkde.jamitimeline 1.0 as JamiTimeline
 
 Item {
     id: viewContact
@@ -189,7 +191,7 @@ Item {
                     id: timelinePage
                     property bool showScrollbar: true
 
-                    sourceComponent: TimelinePage {
+                    sourceComponent: JamiTimeline.TimelinePage {
                         showScrollbar: timelinePage.showScrollbar
                         timelineModel: viewContact.timelineModel
                         currentContactMethod: viewContact.currentContactMethod
@@ -266,7 +268,7 @@ Item {
                     id: callHistory
                     asynchronous: true
                     active: false
-                    sourceComponent: CallHistory {
+                    sourceComponent: JamiTimeline.CallHistory {
                         showScrollbar: timelinePage.showScrollbar
                         timelineModel: viewContact.timelineModel
                         currentContactMethod: viewContact.currentContactMethod
@@ -279,7 +281,7 @@ Item {
             Page {
                 id: contactInfoPage
                 background: Rectangle { color: activePalette.base }
-                ContactInfo {
+                JamiContactView.ContactInfo {
                     id: contactInfo
                     individual: viewContact.currentIndividual
                     anchors.fill: parent

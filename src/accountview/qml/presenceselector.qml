@@ -33,7 +33,7 @@ Dialog {
 
     property QtObject individual: null
 
-    ContactInfo {
+    JamiContactView.ContactInfo {
         id: contactInfo
         anchors.fill: parent
         showStat: false

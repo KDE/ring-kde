@@ -22,6 +22,7 @@ import QtQuick.Layouts 1.0
 import org.kde.playground.kquickitemviews 1.0 as KQuickItemViews
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 import net.lvindustries.ringqtquick.models 1.0 as RingQtModels
+import org.kde.ringkde.jamitimeline 1.0 as JamiTimeline
 
 import RingQmlWidgets 1.0
 
@@ -278,7 +279,7 @@ KQuickItemViews.TreeView {
                 id: categoryDelegate
                 Item {
                     height: rect.height
-                    PeersTimelineCategories {
+                    JamiTimeline.PeersTimelineCategories {
                         id: rect
                         property var section: display
                         property var recentDate: formattedDate
@@ -389,7 +390,7 @@ KQuickItemViews.TreeView {
                                 Layout.fillWidth: true
                             }
 
-                            AudioPlayer {
+                            JamiTimeline.AudioPlayer {
                                 id: rect
                                 Layout.minimumWidth: box.width - 10
                             }

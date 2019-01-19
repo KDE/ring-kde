@@ -16,6 +16,7 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
 import QtQuick 2.7
+import org.kde.ringkde.jamitimeline 1.0 as JamiTimeline
 
 ListView {
     clip: true
@@ -26,7 +27,7 @@ ListView {
 
     Component {
         id: searchDelegate
-        SearchDelegate {
+        JamiTimeline.SearchDelegate {
             width: parent.width
             buttonHeight: fontMetrics.height + 12
             labelHeight: fontMetrics.height

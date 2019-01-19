@@ -4,5 +4,7 @@
         <file alias="DockBar.qml">qml/dockbar.qml</file>
         <file alias="Drawer.qml">qml/drawer.qml</file>
         <file alias="ViewContact.qml">qml/viewcontact.qml</file>
+        <file alias="ContactHeader.qml">qml/contactheader.qml</file>
+        <file alias="MediaButtons.qml">qml/mediabuttons.qml</file>
     </qresource>
 </RCC>

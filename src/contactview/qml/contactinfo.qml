@@ -163,7 +163,7 @@ Kirigami.ScrollablePage {
                     Layout.fillHeight: true
                     id: tabbedContactInfoPage1
 
-                    VCardForm {
+                    JamiContactView.VCardForm {
                         id: vCardForm
                         height: preferredHeight
                         editing: contactViewPage.editing
@@ -180,7 +180,7 @@ Kirigami.ScrollablePage {
                     id: phoneNumbersPage
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    PhoneNumbers {
+                    JamiContactView.PhoneNumbers {
                         id: phoneNumbers
                         width: parent.width
                         model: contactViewPage.individual
@@ -208,7 +208,7 @@ Kirigami.ScrollablePage {
                     Layout.fillHeight: true
                     background: Rectangle { color: activePalette.base }
                     id: tabbedContactInfoPage4
-                    Statistics {
+                    JamiContactView.Statistics {
                         id: statistics
                         Layout.fillWidth: true
                         visible: showStat

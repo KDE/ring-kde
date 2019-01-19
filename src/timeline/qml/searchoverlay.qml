@@ -23,6 +23,7 @@ import QtGraphicalEffects 1.0
 import RingQmlWidgets 1.0
 import org.kde.kirigami 2.0 as Kirigami
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
+import org.kde.ringkde.jamitimeline 1.0 as JamiTimeline
 
 
 Item {
@@ -90,7 +91,7 @@ Item {
         }
     }
 
-    FirstRun {
+    JamiTimeline.FirstRun {
         id: firstRun
         visible: active
         active: searchStateGroup.state == "firstSearch"
@@ -99,7 +100,7 @@ Item {
         height: parent.height* 0.4
     }
 
-    SearchBox {
+    JamiTimeline.SearchBox {
         id: searchBox
         searchView: searchView
         width: topLevel.width
@@ -222,7 +223,7 @@ Item {
     }
 
     // Display some tips and help to new users
-    SearchTip {
+    JamiTimeline.SearchTip {
         active: seachOverlay.active
             && (!filterList.active)
             && searchStateGroup.state != "firstSearch"
@@ -232,7 +233,7 @@ Item {
         width: parent.width
     }
 
-    FindPeers {
+    JamiTimeline.FindPeers {
         id: searchView
         visible: false
         anchors.fill: parent

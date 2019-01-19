@@ -19,6 +19,7 @@ import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
 
+import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 
 Rectangle {
     property QtObject call: null
@@ -232,7 +233,7 @@ Rectangle {
             active: chatBox.requireContactRequest
             Layout.minimumHeight: active && item ? item.implicitHeight : 0
             Layout.maximumHeight: active && item ? item.implicitHeight : 0
-            sourceComponent: SendRequest {
+            sourceComponent: JamiContactView.SendRequest {
                 width: sendRequestLoader.width
                 onDisableContactRequests: {
                     chatBox.disableContactRequests()

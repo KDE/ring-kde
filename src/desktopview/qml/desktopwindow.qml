@@ -25,6 +25,7 @@ import DesktopView 1.0
 import org.kde.ringkde.jamikdeintegration 1.0 as JamiKDEIntegration
 import org.kde.ringkde.jamiwizard 1.0 as JamiWizard
 import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
+import org.kde.ringkde.jamitimeline 1.0 as JamiTimeline
 // import org.kde.ringkde.jamiaccountview 1.0 as JamiAccountView
 
 Kirigami.ApplicationWindow {
@@ -257,7 +258,7 @@ Kirigami.ApplicationWindow {
                 width: globalDrawer.width
                 anchors.fill: drawerContainer
 
-                PeersTimeline {
+                JamiTimeline.PeersTimeline {
                     Layout.fillHeight: true
                     Layout.fillWidth: true
                     width: globalDrawer.width

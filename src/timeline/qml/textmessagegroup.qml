@@ -17,6 +17,7 @@
  **************************************************************************/
 import QtQuick 2.7
 import QtQuick.Layouts 1.0
+import org.kde.ringkde.jamitimeline 1.0 as JamiTimeline
 
 
 import RingQmlWidgets 1.0
@@ -26,13 +27,13 @@ Item {
     width: parent.width
     height: 50
 
-    GroupHeader {
+    JamiTimeline.GroupHeader {
         type: "text"
         anchors.margins: 4
         height: 38
     }
 
-    GroupFooter {
+    JamiTimeline.GroupFooter {
         anchors.horizontalCenter: parent.horizontalCenter
         y: (parent.parent && parent.parent.parent && parent.parent.parent.height) ?
             parent.parent.parent.height - height : 0

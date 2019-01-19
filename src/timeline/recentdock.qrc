@@ -1,44 +1,34 @@
 <RCC>
     <qresource prefix="/">
-        <file alias="PeersTimeline.qml">qml/peerstimeline.qml</file>
-        <file alias="HistoryTimeline.qml">qml/historytimeline.qml</file>
-        <file alias="MediaButtons.qml">qml/mediabuttons.qml</file>
-        <file alias="ContactHeader.qml">qml/contactheader.qml</file>
-        <file alias="ContactInfo.qml">qml/contactinfo.qml</file>
-        <file alias="ContactDialog.qml">qml/contactdialog.qml</file>
-        <file alias="CallHistory.qml">qml/callhistory.qml</file>
-        <file alias="RecordingHistory.qml">qml/recordinghistory.qml</file>
-        <file alias="AudioPlayer.qml">qml/audioplayer.qml</file>
-        <file alias="ChatBox.qml">qml/chatbox.qml</file>
-        <file alias="ChatView.qml">qml/chatview.qml</file>
-        <file alias="TimelinePage.qml">qml/timelinepage.qml</file>
-        <file alias="TimelineScrollbar.qml">qml/timelinescrollbar.qml</file>
-        <file alias="TextBubble.qml">qml/textbubble.qml</file>
-        <file alias="CategoryHeader.qml">qml/categoryheader.qml</file>
-        <file alias="TextMessageGroup.qml">qml/textmessagegroup.qml</file>
-        <file alias="CallGroup.qml">qml/callgroup.qml</file>
-        <file alias="GroupHeader.qml">qml/groupheader.qml</file>
-        <file alias="GroupFooter.qml">qml/groupfooter.qml</file>
-        <file alias="ContactMethodDelegate.qml">qml/contactmethoddelegate.qml</file>
-        <file alias="PeersTimelineCategories.qml">qml/peerstimelinecategories.qml</file>
-        <file alias="Addresses.qml">qml/addresses.qml</file>
-        <file alias="PhoneNumbers.qml">qml/phonenumbers.qml</file>
-        <file alias="SearchDelegate.qml">qml/searchdelegate.qml</file>
-        <file alias="FindPeers.qml">qml/findpeers.qml</file>
-        <file alias="Snapshots.qml">qml/snapshots.qml</file>
-        <file alias="Slideshow.qml">qml/slideshow.qml</file>
-        <file alias="Thumbnail.qml">qml/thumbnail.qml</file>
-        <file alias="HistoryCallIcon.qml">qml/historycallicon.qml</file>
-        <file alias="AccountError.qml">qml/accounterror.qml</file>
-        <file alias="AccountDisabled.qml">qml/accountdisabled.qml</file>
-        <file alias="PendingRequests.qml">qml/pendingrequests.qml</file>
-        <file alias="SendRequest.qml">qml/sendrequest.qml</file>
-        <file alias="ViewContactRequests.qml">qml/viewcontactrequests.qml</file>
-        <file alias="NoAccount.qml">qml/noaccount.qml</file>
-        <file alias="FirstRun.qml">qml/firstrun.qml</file>
-        <file alias="SearchTip.qml">qml/searchtip.qml</file>
-        <file alias="SearchBox.qml">qml/searchbox.qml</file>
-        <file alias="SearchOverlay.qml">qml/searchoverlay.qml</file>
+        <file>qml/peerstimeline.qml</file>
+        <file>qml/historytimeline.qml</file>
+        <file>qml/contactdialog.qml</file>
+        <file>qml/callhistory.qml</file>
+        <file>qml/recordinghistory.qml</file>
+        <file>qml/audioplayer.qml</file>
+        <file>qml/chatbox.qml</file>
+        <file>qml/chatview.qml</file>
+        <file>qml/timelinepage.qml</file>
+        <file>qml/timelinescrollbar.qml</file>
+        <file>qml/textbubble.qml</file>
+        <file>qml/categoryheader.qml</file>
+        <file>qml/textmessagegroup.qml</file>
+        <file>qml/callgroup.qml</file>
+        <file>qml/groupheader.qml</file>
+        <file>qml/groupfooter.qml</file>
+        <file>qml/contactmethoddelegate.qml</file>
+        <file>qml/peerstimelinecategories.qml</file>
+        <file>qml/addresses.qml</file>
+        <file>qml/searchdelegate.qml</file>
+        <file>qml/findpeers.qml</file>
+        <file>qml/snapshots.qml</file>
+        <file>qml/slideshow.qml</file>
+        <file>qml/thumbnail.qml</file>
+        <file>qml/historycallicon.qml</file>
+        <file>qml/firstrun.qml</file>
+        <file>qml/searchtip.qml</file>
+        <file>qml/searchbox.qml</file>
+        <file>qml/searchoverlay.qml</file>
         <file>icons/bookmarked.svg</file>
         <file>icons/not_bookmarked.svg</file>
         <file>assets/welcome.html</file>

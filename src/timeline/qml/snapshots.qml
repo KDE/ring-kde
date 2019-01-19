@@ -17,6 +17,7 @@
  **************************************************************************/
 import QtQuick 2.7
 import QtQml.Models 2.2
+import org.kde.ringkde.jamitimeline 1.0 as JamiTimeline
 
 Item {
     id: snapshots
@@ -27,7 +28,7 @@ Item {
 
     height: Math.ceil(rowCount/4)*96 + 40 // 1 inch + margins
 
-    Thumbnail {
+    JamiTimeline.Thumbnail {
         id: delegateModel
         rootIndex_: snapshots.rootIndex_
         model_: snapshots.model_

@@ -196,12 +196,12 @@ int main(int argc, char **argv)
 #endif
 
 #ifdef JAMITIMELINEVIEW_USE_STATIC_PLUGIN
-      qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiTimelineView().instance())->registerTypes("org.kde.ringkde.jamitimelineview");
-      qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiTimelineView().instance())->initializeEngine(app.engine(), "org.kde.ringkde.jamitimelineview");
+      qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiTimelineView().instance())->registerTypes("org.kde.ringkde.jamitimeline");
+      qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiTimelineView().instance())->initializeEngine(app.engine(), "org.kde.ringkde.jamitimeline");
 #else
       JamiTimelineView v8;
-      v8.registerTypes("org.kde.ringkde.jamitimelineview");
-      v8.initializeEngine(app.engine(), "org.kde.ringkde.jamitimelineview");
+      v8.registerTypes("org.kde.ringkde.jamitimeline");
+      v8.initializeEngine(app.engine(), "org.kde.ringkde.jamitimeline");
 #endif
 
 #ifdef JAMICANVASINDICATOR_USE_STATIC_PLUGIN

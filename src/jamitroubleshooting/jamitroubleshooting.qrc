@@ -1,5 +1,9 @@
 <RCC>
     <qresource prefix="/jamitroubleshooting/">
         <file>qml/troubleshoot.qml</file>
+        <file>qml/accounterror.qml</file>
+        <file>qml/accountdisabled.qml</file>
+        <file>qml/noaccount.qml</file>
+        <file>qml/mediaavailability.qml</file>
     </qresource>
 </RCC>

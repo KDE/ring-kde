@@ -19,6 +19,7 @@ import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
 import QtGraphicalEffects 1.0
+import org.kde.ringkde.jamitimeline 1.0 as JamiTimeline
 
 
 import RingQmlWidgets 1.0
@@ -99,7 +100,7 @@ Rectangle {
                 Layout.fillHeight: true
                 Layout.fillWidth: true
 
-                RecordingHistory {
+                JamiTimeline.RecordingHistory {
                     id: chatView
                     anchors.horizontalCenter: parent.horizontalCenter
                     width: parent.width*0.66
@@ -155,7 +156,7 @@ Rectangle {
                 }
             }
 
-            TimelineScrollbar {
+            JamiTimeline.TimelineScrollbar {
                 id: scrollbar
                 z: 1000
                 bottomUp: true

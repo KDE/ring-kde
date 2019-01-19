@@ -36,6 +36,20 @@ void JamiContactViewPlugin::registerTypes(const char *uri)
 
     qmlRegisterType<MainPage>(uri, 1, 0, "MainPage");
     qmlRegisterType<ContactPhoto>(uri, 1, 0, "ContactPhoto");
+
+    qmlRegisterType(QStringLiteral("qrc:/contactview/qml/pendingrequest.qml")   , uri, 1, 0, "PendingRequest");
+    qmlRegisterType(QStringLiteral("qrc:/contactview/qml/contactlist.qml")      , uri, 1, 0, "ContactList");
+    qmlRegisterType(QStringLiteral("qrc:/contactview/qml/bookmarklist.qml")     , uri, 1, 0, "BookmarkList");
+    qmlRegisterType(QStringLiteral("qrc:/contactview/qml/contactcard.qml")      , uri, 1, 0, "ContactCard");
+    qmlRegisterType(QStringLiteral("qrc:/contactview/qml/bookmarkcard.qml")     , uri, 1, 0, "BookmarkCard");
+    qmlRegisterType(QStringLiteral("qrc:/contactview/qml/vcardform.qml")        , uri, 1, 0, "VCardForm");
+    qmlRegisterType(QStringLiteral("qrc:/contactview/qml/statistics.qml")       , uri, 1, 0, "Statistics");
+    qmlRegisterType(QStringLiteral("qrc:/contactview/qml/newcontactdialog.qml") , uri, 1, 0, "NewContactDialog");
+    qmlRegisterType(QStringLiteral("qrc:/contactview/qml/phonenumbers.qml")              , uri, 1, 0, "PhoneNumbers");
+    qmlRegisterType(QStringLiteral("qrc:/contactview/qml/contactinfo.qml")               , uri, 1, 0, "ContactInfo");
+    qmlRegisterType(QStringLiteral("qrc:/contactview/qml/pendingrequests.qml")           , uri, 1, 0, "PendingRequests");
+    qmlRegisterType(QStringLiteral("qrc:/contactview/qml/sendrequest.qml")               , uri, 1, 0, "SendRequest");
+    qmlRegisterType(QStringLiteral("qrc:/contactview/qml/viewcontactrequests.qml")       , uri, 1, 0, "ViewContactRequests");
 }
 
 void JamiContactViewPlugin::initializeEngine(QQmlEngine *engine, const char *uri)

@@ -24,6 +24,7 @@ import QtQuick.Window 2.2
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 import org.kde.ringkde.jamidialview 1.0 as JamiDialView
+import org.kde.ringkde.jamitimeline 1.0 as JamiTimeline
 
 import DesktopView 1.0
 
@@ -207,7 +208,7 @@ Item {
 
         Component {
             id: timelineViewComponent
-            PeersTimeline {
+            JamiTimeline.PeersTimeline {
                 anchors.fill: parent
                 state: ""
                 onIndividualSelected: {
@@ -226,7 +227,7 @@ Item {
         }
         Component {
             id: contactViewComponent
-            ContactList {
+            JamiContactView.ContactList {
                 anchors.fill: parent
                 onIndividualSelected: {
                     mainPage.setIndividual(ind)
@@ -235,7 +236,7 @@ Item {
         }
         Component {
             id: bookmarkViewComponent
-            BookmarkList {
+            JamiContactView.BookmarkList {
                 anchors.fill: parent
                 onContactMethodSelected: {
                     mainPage.setContactMethod(cm)
@@ -244,7 +245,7 @@ Item {
         }
         Component {
             id: historyViewComponent
-            HistoryTimeline {
+            JamiTimeline.HistoryTimeline {
                 anchors.fill: parent
                 onContactMethodSelected: {
                     mainPage.setContactMethod(cm)
@@ -280,7 +281,7 @@ Item {
         }
     }
 
-    SearchOverlay {
+    JamiTimeline.SearchOverlay {
         id: searchView
         source: parent
         anchors.fill: parent

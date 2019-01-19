@@ -23,6 +23,9 @@ import QtGraphicalEffects 1.0
 import org.kde.kirigami 2.2 as Kirigami
 import org.kde.playground.kquickitemviews 1.0 as KQuickItemViews
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
+import org.kde.ringkde.jamitimeline 1.0 as JamiTimeline
+import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
+import org.kde.ringkde.jamitroubleshooting 1.0 as JamiTroubleShooting
 
 import RingQmlWidgets 1.0
 
@@ -56,17 +59,17 @@ Rectangle {
 
     Component {
         id: contactDelegate
-        ContactMethodDelegate {}
+        JamiTimeline.ContactMethodDelegate {}
     }
 
     Component {
         id: sectionDelegate
-        PeersTimelineCategories {}
+        JamiTimeline.PeersTimelineCategories {}
     }
 
     Component {
         id: noRegisteredAccounts
-        AccountError {
+        JamiTroubleShooting.AccountError {
             Component.onCompleted: {
                 implicitHeight = height + 20
                 accountError.height = height + 20
@@ -76,7 +79,7 @@ Rectangle {
 
     Component {
         id: noEnabledAccounts
-        AccountDisabled {
+        JamiTroubleShooting.AccountDisabled {
             Component.onCompleted: {
                 implicitHeight = height
                 accountError.height = height
@@ -86,7 +89,7 @@ Rectangle {
 
     Component {
         id: noAccounts
-        NoAccount {
+        JamiTroubleShooting.NoAccount {
             Component.onCompleted: {
                 implicitHeight = height
                 accountError.height = height
@@ -96,7 +99,7 @@ Rectangle {
 
     Component {
         id: pendingContactRequests
-        ViewContactRequests {
+        JamiContactView.ViewContactRequests {
             Component.onCompleted: {
                 implicitHeight = height
                 accountError.height = height
@@ -198,7 +201,7 @@ Rectangle {
             }
         }
 
-        TimelineScrollbar {
+        JamiTimeline.TimelineScrollbar {
             id: scrollBar
             height: parent.height
             anchors.top: parent.top
