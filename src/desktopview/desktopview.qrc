@@ -3,5 +3,6 @@
         <file alias="DesktopWindow.qml">qml/desktopwindow.qml</file>
         <file alias="DockBar.qml">qml/dockbar.qml</file>
         <file alias="Drawer.qml">qml/drawer.qml</file>
+        <file alias="ViewContact.qml">qml/viewcontact.qml</file>
     </qresource>
 </RCC>
