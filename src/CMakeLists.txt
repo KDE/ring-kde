@@ -197,6 +197,9 @@ ADD_SUBDIRECTORY( contactview )
 # Build the account manager subsystem
 ADD_SUBDIRECTORY( accountview )
 
+# Build the account manager subsystem
+ADD_SUBDIRECTORY( jaminotification )
+
 # Build the main desktop component
 ADD_SUBDIRECTORY( desktopview )
 
@@ -291,6 +294,7 @@ TARGET_LINK_LIBRARIES(ring-kde
   desktopview
   jamicontactview
   jamiaccountview
+  jaminotification
   libqmlwidgets
   kquickitemviews
   jamikdeintegration

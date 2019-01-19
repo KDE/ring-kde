@@ -52,7 +52,6 @@
 #include <localtextrecordingcollection.h>
 
 // Ring-KDE
-#include "notification.h"
 #include "actioncollection.h"
 #include "actioninterface.h"
 #include "colorinterface.h"
@@ -159,7 +158,6 @@ void JamiKDEIntegration::registerTypes(const char *uri)
 void JamiKDEIntegration::initializeEngine(QQmlEngine *engine, const char *uri)
 {
     e = engine;
-    Notification::instance();
     ActionCollection::instance()->setupAction();
 
     initCollections();

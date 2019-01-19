@@ -61,33 +61,7 @@ RingQmlWidgets* RingApplication::m_pQmlWidget {nullptr};
 DesktopView* RingApplication::m_pDesktopView {nullptr};
 RingApplication* RingApplication::m_spInstance {nullptr};
 
-//This code detect if the window is active, innactive or minimzed
-class PhoneWindowEvent final : public QObject {
-   Q_OBJECT
-public:
-   PhoneWindowEvent(RingApplication* ev) : QObject(ev),m_pParent(ev) {
-      QTimer::singleShot(0, [this]() {
-         m_pParent->desktopWindow()->installEventFilter(this);
-      });
-   }
-protected:
-   virtual bool eventFilter(QObject *obj, QEvent *event)  override {
-      Q_UNUSED(obj)
-      if (event->type() == QEvent::WindowDeactivate) {
-         m_pParent->m_HasFocus = false;
-      }
-      else if (event->type() == QEvent::WindowActivate) {
-         m_pParent->m_HasFocus = true;
-      }
-      return false;
-   }
 
-private:
-   RingApplication* m_pParent;
-
-Q_SIGNALS:
-   void minimized(bool);
-};
 
 /**
  * The application constructor
@@ -97,8 +71,6 @@ RingApplication::RingApplication(int & argc, char ** argv) : QApplication(argc,a
    Q_ASSERT(argc != -1);
 
    setAttribute(Qt::AA_EnableHighDpiScaling);
-
-   m_pEventFilter = new PhoneWindowEvent(this);
 
    m_spInstance = this;
 }

@@ -96,6 +96,12 @@ Q_IMPORT_PLUGIN(JamiPhotoSelector)
 #include <photoselector/photoplugin.h>
 #endif
 
+#ifdef JAMINOTIFICATION_USE_STATIC_PLUGIN
+Q_IMPORT_PLUGIN(JamiNotification)
+#else
+#include <jaminotification/plugin.h>
+#endif
+
 Q_IMPORT_PLUGIN(RingQtQuick)
 
 constexpr static const char version[] = "3.1.0";
@@ -202,6 +208,15 @@ int main(int argc, char **argv)
       JamiPhotoSelector v10;
       v10.registerTypes("org.kde.ringkde.jamiphotoselector");
       v10.initializeEngine(app.engine(), "org.kde.ringkde.jamiphotoselector");
+#endif
+
+#ifdef JAMINOTIFICATION_USE_STATIC_PLUGIN
+      qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiNotification().instance())->registerTypes("org.kde.ringkde.jaminotification");
+      qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiNotification().instance())->initializeEngine(app.engine(), "org.kde.ringkde.jaminotification");
+#else
+      JamiNotification v11;
+      v11.registerTypes("org.kde.ringkde.jaminotification");
+      v11.initializeEngine(app.engine(), "org.kde.ringkde.jaminotification");
 #endif
 
       KAboutData about(QStringLiteral("ring-kde"),

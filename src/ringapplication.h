@@ -36,7 +36,6 @@ namespace KDeclarative {
 class RingQmlWidgets;
 class DesktopView;
 class DialView;
-class PhoneWindowEvent;
 
 ///RingApplication: Main application
 class RingApplication final : public QApplication
@@ -84,7 +83,6 @@ private:
    static RingQmlWidgets* m_pQmlWidget;
    static RingApplication* m_spInstance;
    static DesktopView* m_pDesktopView;
-   PhoneWindowEvent* m_pEventFilter {nullptr};
 };
 
 #endif // RINGAPPLICATION_H

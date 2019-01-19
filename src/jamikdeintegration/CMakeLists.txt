@@ -68,7 +68,6 @@ set( jamikdeintegration_LIB_SRCS
     src/pixmapinterface.cpp
     src/serializationinterface.cpp
     src/actioncollection.cpp
-    src/notification.cpp
     src/systray.cpp
     src/windowevent.cpp
     src/cmiconengine.cpp
@@ -114,7 +113,7 @@ target_link_libraries( jamikdeintegration
     Qt5::QuickControls2
 
     # KF5
-    KF5::Notifications
+    KF5::Notifications # the Systray
     KF5::I18n
     KF5::ConfigCore
     KF5::ConfigGui
