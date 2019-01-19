@@ -18,9 +18,10 @@
 import QtQuick 2.7
 import QtQuick.Layouts 1.0
 
-import net.lvindustries.ringqtquick 1.0 as RingQtQuick
-import org.kde.ringkde.jamicallview 1.0 as JamiCallView
-import org.kde.ringkde.jamidialview 1.0 as JamiDialView
+import net.lvindustries.ringqtquick  1.0 as RingQtQuick
+import org.kde.ringkde.jamicallview  1.0 as JamiCallView
+import org.kde.ringkde.jamivideoview 1.0 as JamiVideoView
+import org.kde.ringkde.jamidialview  1.0 as JamiDialView
 
 Item {
     id: videoDock
@@ -93,7 +94,7 @@ Item {
         toolbarTimer.running = true
     }
 
-    JamiCallView.VideoWidget {
+    JamiVideoView.VideoWidget {
         id: videoWidget
         anchors.fill: parent
         z: -100
@@ -102,7 +103,7 @@ Item {
         call: videoDock.call
     }
 
-    JamiCallView.VideoWidget {
+    JamiVideoView.VideoWidget {
         id: videoPreview
         z: -95
         started: false
@@ -113,7 +114,7 @@ Item {
         height: 108
     }
 
-    JamiCallView.VideoControlToolbar {
+    JamiVideoView.VideoControlToolbar {
         id: controlToolbar
         anchors.top: parent.top
         visible: false
@@ -142,7 +143,7 @@ Item {
         anchors.top: controlToolbar.bottom
     }
 
-    JamiCallView.DeviceSetting {
+    JamiVideoView.DeviceSetting {
         id: deviceSettings
         visible: mode == "PREVIEW"
         width: parent.width
@@ -155,7 +156,7 @@ Item {
         }
     }
 
-    JamiCallView.VideoSource {
+    JamiVideoView.VideoSource {
         id: videoSource
         z: 101
         visible: false

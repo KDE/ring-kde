@@ -102,6 +102,12 @@ Q_IMPORT_PLUGIN(JamiNotification)
 #include <jaminotification/plugin.h>
 #endif
 
+#ifdef JAMIVIDEOVIEW_USE_STATIC_PLUGIN
+Q_IMPORT_PLUGIN(JamiVideoView)
+#else
+#include <jamivideoview/plugin.h>
+#endif
+
 Q_IMPORT_PLUGIN(RingQtQuick)
 
 constexpr static const char version[] = "3.1.0";
@@ -217,6 +223,15 @@ int main(int argc, char **argv)
       JamiNotification v11;
       v11.registerTypes("org.kde.ringkde.jaminotification");
       v11.initializeEngine(app.engine(), "org.kde.ringkde.jaminotification");
+#endif
+
+#ifdef JAMIVIDEOVIEW_USE_STATIC_PLUGIN
+      qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiNotification().instance())->registerTypes("org.kde.ringkde.jamivideoview");
+      qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiNotification().instance())->initializeEngine(app.engine(), "org.kde.ringkde.jamivideoview");
+#else
+      JamiVideoView v12;
+      v12.registerTypes("org.kde.ringkde.jamivideoview");
+      v12.initializeEngine(app.engine(), "org.kde.ringkde.jamivideoview");
 #endif
 
       KAboutData about(QStringLiteral("ring-kde"),

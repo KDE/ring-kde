@@ -1,14 +1,7 @@
 <RCC>
     <qresource prefix="/callview/">
         <file>qml/callview.qml</file>
-        <file>qml/videowidget.qml</file>
-        <file>qml/videocontroltoolbar.qml</file>
         <file>qml/callbackground.qml</file>
-        <file>qml/devicesetting.qml</file>
-        <file>qml/videosource.qml</file>
-        <file>qml/canvaspopup.qml</file>
-        <file>qml/screensharing.qml</file>
-        <file>qml/streaming.qml</file>
         <file>qml/cmselector.qml</file>
         <file>qml/troubleshoot.qml</file>
         <file>qml/recordingicon.qml</file>

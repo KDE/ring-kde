@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/jamivideoview/">
+        <file>qml/videowidget.qml</file>
+        <file>qml/videocontroltoolbar.qml</file>
+        <file>qml/screensharing.qml</file>
+        <file>qml/canvaspopup.qml</file>
+        <file>qml/videosource.qml</file>
+        <file>qml/streaming.qml</file>
+        <file>qml/devicesetting.qml</file>
+    </qresource>
+</RCC>

@@ -46,7 +46,7 @@
 #include "cmiconengine.h"
 #include "personiconengine.h"
 
-#include "../callview/imageprovider.h"
+#include "../jamivideoview/imageprovider.h" //FIXME
 
 namespace RingIcons {
     constexpr static const char* INCOMING                 = ":/sharedassets/phone_dark/ringing.svg"         ;

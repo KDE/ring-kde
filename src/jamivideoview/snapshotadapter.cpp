@@ -17,7 +17,7 @@
  **************************************************************************/
 #include "snapshotadapter.h"
 
-#include "../callview/imageprovider.h"
+#include "imageprovider.h"
 
 #include <call.h>
 #include <media/video.h>

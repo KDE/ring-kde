@@ -16,31 +16,39 @@
  *   License along with this library; if not, write to the Free Software            *
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA *
  ***********************************************************************************/
-#include "callviewplugin.h"
+#include "plugin.h"
 
 // Qt
 #include <QQmlEngine>
 #include <QQmlContext>
-#include <QtGui/QIcon>
 
 // QRC
-#include <qrc_callview.cpp>
+#include <qrc_jamivideo.cpp>
 
-void JamiCallViewPlugin::registerTypes(const char *uri)
+// VideoView
+#include "snapshotadapter.h"
+#include "imageprovider.h"
+
+void JamiVideoView::registerTypes(const char *uri)
 {
-    Q_ASSERT(uri == QByteArray("org.kde.ringkde.jamicallview"));
+    Q_ASSERT(uri == QByteArray("org.kde.ringkde.jamivideoview"));
 
-    qmlRegisterType(QStringLiteral("qrc:/callview/qml/callview.qml"), uri, 1, 0, "CallView");
-    qmlRegisterType(QStringLiteral("qrc:/callview/qml/cmselector.qml"), uri, 1, 0, "CMSelector");
-    qmlRegisterType(QStringLiteral("qrc:/callview/qml/troubleshoot.qml"), uri, 1, 0, "Troubleshoot");
-    qmlRegisterType(QStringLiteral("qrc:/callview/qml/recordingicon.qml"), uri, 1, 0, "RecordingIcon");
-    qmlRegisterType(QStringLiteral("qrc:/callview/qml/callbackground.qml"), uri, 1, 0, "CallBackground");
+    qmlRegisterType<SnapshotAdapter>(uri, 1, 0, "SnapshotAdapter");
 
-
+    qmlRegisterType(QStringLiteral("qrc:/jamivideoview/qml/videowidget.qml"), uri, 1, 0, "VideoWidget");
+    qmlRegisterType(QStringLiteral("qrc:/jamivideoview/qml/videocontroltoolbar.qml"), uri, 1, 0, "VideoControlToolbar");
+    qmlRegisterType(QStringLiteral("qrc:/jamivideoview/qml/devicesetting.qml"), uri, 1, 0, "DeviceSetting");
+    qmlRegisterType(QStringLiteral("qrc:/jamivideoview/qml/videosource.qml"), uri, 1, 0, "VideoSource");
+    qmlRegisterType(QStringLiteral("qrc:/jamivideoview/qml/canvaspopup.qml"), uri, 1, 0, "CanvasPopup");
+    qmlRegisterType(QStringLiteral("qrc:/jamivideoview/qml/screensharing.qml"), uri, 1, 0, "ScreenSharing");
+    qmlRegisterType(QStringLiteral("qrc:/jamivideoview/qml/streaming.qml"), uri, 1, 0, "Streaming");
 }
 
-void JamiCallViewPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
+void JamiVideoView::initializeEngine(QQmlEngine *engine, const char *uri)
 {
     Q_UNUSED(engine)
     Q_UNUSED(uri)
+
+    static ImageProvider p;
+    engine->addImageProvider( QStringLiteral("VideoFrame"), &p );
 }
