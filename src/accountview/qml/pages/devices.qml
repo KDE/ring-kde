@@ -19,9 +19,7 @@ import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
 
-
 import RingQmlWidgets 1.0
-import PhotoSelectorPlugin 1.0
 
 Page {
     id: deviceList

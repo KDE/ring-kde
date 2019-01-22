@@ -37,11 +37,6 @@ StartingPageForm {
     MouseArea {
         anchors.fill: parent
         onClicked: {
-            if (wizardWelcomeOnly == true) {
-                quit()
-                return
-            }
-
             x = 0
             y = 0
             width = parent.width

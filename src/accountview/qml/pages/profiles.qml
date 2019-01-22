@@ -20,7 +20,7 @@ import org.kde.kirigami 2.5 as Kirigami
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
 import RingQmlWidgets 1.0
-import TimeLine 1.0
+import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 import org.kde.playground.kquickitemviews 1.0 as KQuickItemViews
 
 Page {
@@ -30,7 +30,7 @@ Page {
         }
     }
 
-    ContactInfo {
+    JamiContactView.ContactInfo {
         id: contactInfo
         anchors.fill: parent
         showStat: false

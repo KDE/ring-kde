@@ -127,7 +127,7 @@ Kirigami.ApplicationWindow {
             "ActionCollection.quitAction"
         ]
 
-        var viewCode = "import RingQmlWidgets 1.0\n QmlAction {text: \"View\" \n"
+        var viewCode = "import RingQmlWidgets 1.0\n import DesktopView 1.0 \n QmlAction {text: \"View\" \n"
         for (var i = 0; i < view.length; i++)
             viewCode = viewCode + "QmlAction { action:"+view[i]+"} \n"
         viewCode += "}"
@@ -135,7 +135,7 @@ Kirigami.ApplicationWindow {
         _regularActions.push(Qt.createQmlObject(viewCode, root, "dynamicSnippet1"))
 
         for (var i = 0; i < actions.length; i++) {
-            _regularActions.push(Qt.createQmlObject("import RingQmlWidgets 1.0; QmlAction {
+            _regularActions.push(Qt.createQmlObject("import RingQmlWidgets 1.0;import DesktopView 1.0; QmlAction {
                 action: "+actions[i]+"
             }", root, "dynamicSnippet2"))
         }

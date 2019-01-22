@@ -184,15 +184,6 @@ Rectangle {
         }
     }
 
-    Timer {
-        interval: 3000
-        repeat: false
-        running: wizardWelcomeOnly
-        onTriggered: {
-            applicationWindow.visible = false
-        }
-    }
-
     StateGroup {
         id: stateGroup
         states: [
