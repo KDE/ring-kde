@@ -15,7 +15,8 @@
          <!-- %%INSERT_QT_LIBS%% -->
      </array>
 
-    <array name="bundled_in_lib">
+     <array name="bundled_in_lib">
+        <item>libring.so:qml/libring.so</item>
         <!-- %%INSERT_BUNDLED_IN_LIB%% -->
     </array>
     <array name="bundled_in_assets">
