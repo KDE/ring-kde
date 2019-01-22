@@ -155,5 +155,4 @@ ENDIF()
 
 ########### install files ###############
 
-INSTALL( TARGETS ring-kde                     DESTINATION ${BIN_INSTALL_DIR}           )
-INSTALL( FILES wizard/assets/beta_logo.svg    DESTINATION ${DATA_INSTALL_DIR}/ring-kde )
+INSTALL( TARGETS ring-kde DESTINATION ${BIN_INSTALL_DIR})
