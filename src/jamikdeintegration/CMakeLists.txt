@@ -9,11 +9,12 @@ endif(POLICY CMP0063)
 find_package(ECM 1.1.0 REQUIRED NO_MODULE)
 list(APPEND CMAKE_MODULE_PATH "${ECM_MODULE_PATH}")
 
-find_package(KF5 QUIET COMPONENTS
-    Akonadi
-    AkonadiContact
-    Contacts
-)
+#FIXME
+# find_package(KF5 QUIET COMPONENTS
+#     Akonadi
+#     AkonadiContact
+#     Contacts
+# )
 
 include(ECMInstallIcons)
 include(ECMOptionalAddSubdirectory)
@@ -125,13 +126,14 @@ target_link_libraries( jamikdeintegration
     KF5::GlobalAccel # (DESKTOP)
 )
 
-if ( ${AKONADI_FOUND} )
-    target_link_libraries( jamikdeintegration
-        KF5::AkonadiCore
-        KF5::AkonadiContact
-        KF5::Contacts
-    )
-endif()
+#FIXME
+# if ( ${AKONADI_FOUND} )
+#     target_link_libraries( jamikdeintegration
+#         KF5::AkonadiCore
+#         KF5::AkonadiContact
+#         KF5::Contacts
+#     )
+# endif()
 
 set(jamikdeintegration_EXPORT_HDRS
     src/actioncollection.h
