@@ -153,7 +153,7 @@ void JamiKDEIntegration::registerTypes(const char *uri)
     GlobalInstances::setInterface<PixmapInterface>();
 
     GlobalInstances::setInterface<SerializationInterface>();
-    GlobalInstances::itemModelStateSerializer().load();
+    GlobalInstances::itemModelStateSerializer()->load();
 
     qmlRegisterType<WindowEvent>(uri, 1, 0, "WindowEvent");
 }
