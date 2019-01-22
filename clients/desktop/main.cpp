@@ -24,10 +24,15 @@
 #include <QQmlApplicationEngine>
 
 //KDE
-#include <KDBusService>
 #include <KAboutData>
 #include <KLocalizedString>
 #include <KCrash>
+
+#ifndef Q_OS_ANDROID
+#ifdef Q_OS_LINUX
+ #include <KDBusService>
+#endif
+#endif
 
 //Ring
 #include "ringapplication.h"
@@ -340,11 +345,13 @@ int main(int argc, char **argv)
 
     //Only start the application once
 #ifdef Q_OS_LINUX
+#ifndef Q_OS_ANDROID
 #ifndef DISABLE_KDBUS_SERVICE
     KDBusService service(KDBusService::Unique);
     QObject::connect(&service, &KDBusService::activateActionRequested, Cmd::instance(), &Cmd::slotActivateActionRequested);
     QObject::connect(&service, &KDBusService::activateRequested      , Cmd::instance(), &Cmd::slotActivateRequested      );
     QObject::connect(&service, &KDBusService::openRequested          , Cmd::instance(), &Cmd::slotOpenRequested          );
+#endif
 #endif
 #endif
 
