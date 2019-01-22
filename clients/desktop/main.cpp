@@ -27,6 +27,7 @@
 #include <KDBusService>
 #include <KAboutData>
 #include <KLocalizedString>
+#include <KCrash>
 
 //Ring
 #include "ringapplication.h"
@@ -334,6 +335,7 @@ int main(int argc, char **argv)
 
     KAboutData::setApplicationData(about);
 
+    KCrash::initialize();
 
     app.setOrganizationDomain(QStringLiteral("ring.cx"));
 
