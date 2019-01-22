@@ -81,6 +81,7 @@ IF(LibRingQt_SRC)
 
     ADD_SUBDIRECTORY(${LibRingQt_SRC} build/build_libringqt)
 
+    SET(ringqt_INCLUDE_DIR ${LibRingQt_SRC}/src ${LibRingQt_SRC}/libringqtquick/src )
     INCLUDE_DIRECTORIES(${LibRingQt_SRC}/src)
 ENDIF()
 
