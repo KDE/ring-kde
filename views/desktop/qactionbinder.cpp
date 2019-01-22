@@ -26,8 +26,6 @@
 
 #include <kactioncollection.h>
 
-#include <../ringapplication.h> //FIXME
-
 struct ActionBinder {
     QAction*     m_pAction;
     QKeySequence m_CurrentShortcut;
@@ -44,6 +42,7 @@ public:
     QQuickItem*                    m_pParent           {nullptr};
     QQmlComponent*                 m_pComponent        {nullptr};
 
+    QActionBinder* q_ptr;
 public Q_SLOTS:
     void slotActionInserted(QAction* a);
     void slotActionRemoved(QAction* a);
@@ -54,6 +53,7 @@ public Q_SLOTS:
 QActionBinder::QActionBinder(QObject* p) :
     QObject(p), d_ptr(new QActionBinderPrivate)
 {
+    d_ptr->q_ptr = this;
 }
 
 QActionBinder::~QActionBinder()
@@ -72,9 +72,9 @@ void QActionBinderPrivate::slotActionInserted(QAction* a)
         nullptr
     };
 
-    //auto ctx    = QQmlEngine::contextForObject(m_pParent);
-    //Q_ASSERT(ctx);
-    auto engine = RingApplication::engine(); //ctx->engine();
+    const auto ctx = QQmlEngine::contextForObject(q_ptr);
+    Q_ASSERT(ctx && ctx->engine());
+    auto engine = ctx->engine();
 
     if (!m_pComponent) {
         m_pComponent = new QQmlComponent(engine, m_pParent);

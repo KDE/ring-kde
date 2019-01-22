@@ -57,6 +57,8 @@ qt5_add_resources(jamiphotoselector_LIB_SRCS
 
 set(AUTOMOC_MOC_OPTIONS -Muri=org.kde.ringkde.jamiphotoselector)
 
+include_directories(SYSTEM ${ringqt_INCLUDE_DIR})
+
 add_library(jamiphotoselector ${jamiphotoselector_LIB_SRCS} )
 
 target_link_libraries( jamiphotoselector

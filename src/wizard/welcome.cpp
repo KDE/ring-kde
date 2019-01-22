@@ -25,8 +25,6 @@
 #include <QtGui/QGuiApplication>
 #include <QQuickWindow>
 
-#include <../ringapplication.h>
-
 WelcomeDialog::WelcomeDialog(QObject* parent) : QObject(parent)
 {
 
@@ -37,18 +35,9 @@ WelcomeDialog::~WelcomeDialog()
 
 }
 
-void WelcomeDialog::show()
-{
-   RingApplication::engine()->rootContext()->setContextProperty(
-      QStringLiteral("WelcomeDialog"), this
-   );
-
-   QMetaObject::invokeMethod(RingApplication::instance()->desktopWindow(), "showWizard");
-}
-
 QString WelcomeDialog::defaultUserName() const
 {
-   return qgetenv("USER");
+    return qgetenv("USER");
 }
 
-// kate: space-indent on; indent-width 3; replace-tabs on;
+// kate: space-indent on; indent-width 4; replace-tabs on;

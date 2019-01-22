@@ -94,6 +94,8 @@ if( ${AKONADI_FOUND} )
     )
 endif()
 
+include_directories(SYSTEM ${ringqt_INCLUDE_DIR})
+
 kconfig_add_kcfg_files (jamikdeintegration_LIB_SRCS kcfg_settings.kcfgc)
 
 set(AUTOMOC_MOC_OPTIONS -Muri=org.kde.ringkde.jamikdeintegration)
@@ -134,6 +136,7 @@ endif()
 set(jamikdeintegration_EXPORT_HDRS
     src/actioncollection.h
     src/windowevent.h
+    src/plugin.h
 )
 
 # Configure the target config

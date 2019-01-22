@@ -15,25 +15,34 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#include "plugin.h"
+#pragma once
 
-#include <QtCore/QDebug>
-#include <QtWidgets/QAction>
-#include <QQmlEngine>
+#include <QtCore/QObject>
 
-#include "treehelper.h"
-#include "fileloader.h"
+class FileLoaderPrivate;
 
-#include "qrc_qmlwidgets.cpp"
-
-void RingQmlWidgets::registerTypes(const char *uri)
+/**
+ * Set "path" in and get "content" out. Simple, right?
+ */
+class Q_DECL_EXPORT FileLoader : public QObject
 {
-    Q_ASSERT(uri == QLatin1String("RingQmlWidgets"));
+    Q_OBJECT
+public:
+    Q_PROPERTY(QString path READ path WRITE setPath)
+    Q_PROPERTY(QString content READ content NOTIFY contentChanged)
 
-    qmlRegisterType<QAction>(uri, 1, 0, "QAction");
+    Q_INVOKABLE explicit FileLoader(QObject* parent = nullptr);
+    virtual ~FileLoader();
 
-    qmlRegisterType<TreeHelper>(uri, 1, 0, "TreeHelper");
-    qmlRegisterType<FileLoader>(uri, 1, 0, "FileLoader");
-    qmlRegisterType(QStringLiteral("qrc:/OutlineButton.qml"), uri, 1, 0, "OutlineButton");
-    qmlRegisterType(QStringLiteral("qrc:/OutlineButtons.qml"), uri, 1, 0, "OutlineButtons");
-}
+    QString path() const;
+    void setPath(const QString& path);
+
+    QString content() const;
+
+Q_SIGNALS:
+    void contentChanged();
+
+private:
+    FileLoaderPrivate *d_ptr;
+    Q_DECLARE_PRIVATE(FileLoader)
+};

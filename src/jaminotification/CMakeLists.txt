@@ -54,6 +54,8 @@ set( jaminotification_LIB_SRCS
 
 set(AUTOMOC_MOC_OPTIONS -Muri=org.kde.ringkde.jaminotification)
 
+include_directories(SYSTEM ${ringqt_INCLUDE_DIR})
+
 add_library(jaminotification ${jaminotification_LIB_SRCS} )
 
 target_link_libraries( jaminotification

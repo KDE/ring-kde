@@ -12,8 +12,6 @@ public:
    virtual ~WelcomeDialog();
 
    QString defaultUserName() const;
-
-   void show();
 };
 
 Q_DECLARE_METATYPE(WelcomeDialog*)

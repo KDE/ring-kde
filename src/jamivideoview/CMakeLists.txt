@@ -56,6 +56,8 @@ qt5_add_resources(jamivideoview_LIB_SRCS
    jamivideo.qrc
 )
 
+include_directories(SYSTEM ${ringqt_INCLUDE_DIR})
+
 set(AUTOMOC_MOC_OPTIONS -Muri=org.kde.ringkde.jamivideoview)
 
 add_library(jamivideoview ${jamivideoview_LIB_SRCS} )

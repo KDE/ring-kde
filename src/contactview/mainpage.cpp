@@ -17,6 +17,7 @@
  **************************************************************************/
 #include "mainpage.h"
 
+// Qt
 #include <QQmlApplicationEngine>
 #include <QQuickPaintedItem>
 #include <QQuickWindow>
@@ -29,7 +30,7 @@
 #include <QtCore/QSortFilterProxyModel>
 #include <QQmlContext>
 
-#include <../ringapplication.h>
+// LibRingQt
 #include "peerstimelinemodel.h"
 #include "individualdirectory.h"
 #include <contactmethod.h>
@@ -75,12 +76,6 @@ MainPage::MainPage(QQuickItem* parent) :
     d_ptr->q_ptr = this;
     auto cp = new ActiveCallProxy2(Session::instance()->callModel());
     cp->setSourceModel(Session::instance()->callModel());
-
-    QFile file(QStringLiteral(":/assets/welcome.html"));
-    if (file.open(QIODevice::ReadOnly))
-        RingApplication::engine()->rootContext()->setContextProperty(QStringLiteral("welcomeMessage"), file.readAll());
-
-    RingApplication::engine()->rootContext()->setContextProperty(QStringLiteral("ActiveCallProxyModel"), cp);
 
     connect(this, &QQuickItem::windowChanged, d_ptr, &MainPagePrivate::slotWindowChanged);
     connect(Session::instance()->callModel(), &CallModel::callAttentionRequest, this, &MainPage::showVideo);

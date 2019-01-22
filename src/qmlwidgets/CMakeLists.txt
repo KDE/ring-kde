@@ -48,6 +48,7 @@ SET(GENERIC_LIB_VERSION "1.0.0")
 SET( libqmlwidgets_LIB_SRCS
     plugin.cpp
     treehelper.cpp
+    fileloader.cpp
     symboliccolorizer.cpp
 )
 

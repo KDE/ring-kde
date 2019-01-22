@@ -22,12 +22,9 @@
 #include <QtWidgets/QApplication>
 
 //Qt
-class QEvent;
 class QQmlApplicationEngine;
-class QQuickWindow;
 
 //KF5
-
 namespace KDeclarative {
    class KDeclarative;
 }
@@ -35,7 +32,6 @@ namespace KDeclarative {
 //Ring
 class RingQmlWidgets;
 class DesktopView;
-class DialView;
 
 ///RingApplication: Main application
 class RingApplication final : public QApplication
@@ -52,30 +48,18 @@ public:
    // Manage new instances
    Q_INVOKABLE virtual int newInstance();
 
-   // Exit gracefully
-   virtual bool notify (QObject* receiver, QEvent* e) override;
-
    //Getter
    bool startIconified() const;
 
-   QQuickWindow* desktopWindow() const;
-
-   static QQmlApplicationEngine* engine();
+   QQmlApplicationEngine* engine();
 
    static RingApplication* instance();
 
-   /**
-    * An unreliable way to track the application focus
-    *
-    * It is better than nothing
-    */
-   bool mayHaveFocus();
-
    //Setter
    void setIconify(bool iconify);
-
-   bool m_HasFocus       {false};
 private:
+   void initDesktopWindow();
+
    //Attributes
    bool m_StartIconified {false};
 
@@ -87,4 +71,4 @@ private:
 
 #endif // RINGAPPLICATION_H
 
-// kate: space-indent on; indent-width 3; replace-tabs on;
+// kate: space-indent on; indent-width 4; replace-tabs on;

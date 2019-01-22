@@ -1,0 +1,20 @@
+<RCC>
+    <qresource prefix="/">
+        <file alias="DesktopWindow.qml">qml/desktopwindow.qml</file>
+        <file alias="DockBar.qml">qml/dockbar.qml</file>
+        <file alias="Drawer.qml">qml/drawer.qml</file>
+        <file alias="ViewContact.qml">qml/viewcontact.qml</file>
+        <file alias="ContactHeader.qml">qml/contactheader.qml</file>
+        <file alias="MediaButtons.qml">qml/mediabuttons.qml</file>
+    </qresource>
+    <qresource prefix="gui">
+        <file>./icons/assets/toolbar_bg.png</file>
+    </qresource>
+    <qresource prefix="toolbar">
+        <file alias="history.svg">./icons/toolbar/history.svg</file>
+        <file alias="contact.svg">./icons/toolbar/contact.svg</file>
+        <file alias="bookmark.svg">./icons/toolbar/bookmark.svg</file>
+        <file alias="call.svg">./icons/toolbar/call.svg</file>
+        <file alias="timeline.svg">./icons/toolbar/timeline.svg</file>
+    </qresource>
+</RCC>

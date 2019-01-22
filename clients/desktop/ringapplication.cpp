@@ -47,7 +47,7 @@
 //QML
 #include "qmlwidgets/plugin.h"
 #include "qmlwidgets/symboliccolorizer.h"
-#include "desktopview/desktopviewplugin.h"
+#include "desktopviewplugin.h"
 
 
 ///Error to display when there is nothing else to say
@@ -103,7 +103,7 @@ int RingApplication::newInstance()
    if (init) {
       init = false;
 
-      desktopWindow();
+      initDesktopWindow();
    }
 
    // The first run wizard
@@ -162,7 +162,7 @@ QQmlApplicationEngine* RingApplication::engine()
    return e;
 }
 
-QQuickWindow* RingApplication::desktopWindow() const
+void RingApplication::initDesktopWindow()
 {
    static QQuickWindow* dw = nullptr;
    if (!dw) {
@@ -185,29 +185,6 @@ QQuickWindow* RingApplication::desktopWindow() const
    }
 
    Q_ASSERT(dw);
-
-   return dw;
 }
-
-///Exit gracefully
-bool RingApplication::notify (QObject* receiver, QEvent* e)
-{
-   try {
-      return QApplication::notify(receiver,e);
-   }
-   catch (...) {
-      Q_ASSERT(false);
-      qDebug() << GENERIC_ERROR;
-      KMessageBox::error(nullptr, GENERIC_ERROR);
-   }
-   return false;
-}
-
-bool RingApplication::mayHaveFocus()
-{
-   return m_HasFocus;
-}
-
-#include <ringapplication.moc>
 
 // kate: space-indent on; indent-width 3; replace-tabs on;

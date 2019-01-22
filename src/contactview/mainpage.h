@@ -41,8 +41,8 @@ public:
     };
     Q_ENUM(Pages);
 
-    Q_PROPERTY(QQuickItem* page READ page CONSTANT)
-    Q_PROPERTY(QQuickItem* header READ header WRITE setHeader CONSTANT)
+    Q_PROPERTY(QQuickItem* page READ page CONSTANT) //FIXME remove
+    Q_PROPERTY(QQuickItem* header READ header WRITE setHeader CONSTANT) //FIXME remove
     Q_PROPERTY(bool mobile READ isMobile WRITE setMobile CONSTANT)
     Q_PROPERTY(Individual* individual READ individual)
     Q_PROPERTY(QModelIndex suggestedTimelineIndex READ suggestedTimelineIndex)
@@ -50,12 +50,12 @@ public:
     Q_INVOKABLE explicit MainPage(QQuickItem* parent = nullptr);
     virtual ~MainPage();
 
-    Q_INVOKABLE void setCurrentPage(Pages page);
+    Q_INVOKABLE void setCurrentPage(Pages page); //FIXME remove
 
-    QQuickItem* page() const;
+    QQuickItem* page() const; //FIXME remove
 
-    QQuickItem* header() const;
-    void setHeader(QQuickItem* item);
+    QQuickItem* header() const; //FIXME remove
+    void setHeader(QQuickItem* item); //FIXME remove
 
     Individual* individual() const;
     QModelIndex suggestedTimelineIndex() const;

@@ -56,6 +56,8 @@ qt5_add_resources(jamicontactview_LIB_SRCS
    contactview.qrc
 )
 
+include_directories(SYSTEM ${ringqt_INCLUDE_DIR})
+
 set(AUTOMOC_MOC_OPTIONS -Muri=org.kde.ringkde.jamicontactview)
 
 add_library(jamicontactview ${jamicontactview_LIB_SRCS} )

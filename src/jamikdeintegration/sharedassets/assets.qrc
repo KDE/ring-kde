@@ -42,4 +42,23 @@
         <file>./outline/web.svg</file>
         <file>./outline/close.svg</file>
     </qresource>
+    <qresource prefix="images">
+        <file>./icons/conf-small.svg</file>
+        <file>./icons/icon_dialpad.svg</file>
+        <file>./icons/mic.svg</file>
+        <file>./icons/mic_25.svg</file>
+        <file>./icons/mic_50.svg</file>
+        <file>./icons/mic_75.svg</file>
+    </qresource>
+    <qresource prefix="mini">
+        <file>./icons/miniicons/call.png</file>
+        <file>./icons/miniicons/car.png</file>
+        <file>./icons/miniicons/home.png</file>
+        <file>./icons/miniicons/mail.png</file>
+        <file>./icons/miniicons/mobile.png</file>
+        <file>./icons/miniicons/pager.png</file>
+        <file>./icons/miniicons/preferred.png</file>
+        <file>./icons/miniicons/video.png</file>
+        <file>./icons/miniicons/work.png</file>
+    </qresource>
 </RCC>

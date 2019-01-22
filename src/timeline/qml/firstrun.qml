@@ -16,14 +16,21 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
 import QtQuick 2.7
+import RingQmlWidgets 1.0 as RingQmlWidgets
 
 Loader {
     clip: true
+
+    RingQmlWidgets.FileLoader {
+        id: welcomeMessage
+        path: ":/assets/welcome.html"
+    }
+
     sourceComponent: Text {
         anchors.fill: parent
         color: activePalette.text
         textFormat: Text.RichText
         wrapMode: Text.WordWrap
-        text: welcomeMessage
+        text: welcomeMessage.content
     }
 }

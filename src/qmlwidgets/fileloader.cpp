@@ -15,25 +15,43 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#include "plugin.h"
-
-#include <QtCore/QDebug>
-#include <QtWidgets/QAction>
-#include <QQmlEngine>
-
-#include "treehelper.h"
 #include "fileloader.h"
 
-#include "qrc_qmlwidgets.cpp"
+// Qt
+#include <QtCore/QFile>
 
-void RingQmlWidgets::registerTypes(const char *uri)
+class FileLoaderPrivate
 {
-    Q_ASSERT(uri == QLatin1String("RingQmlWidgets"));
+public:
+    QString m_Path;
+    QString m_Content;
+};
 
-    qmlRegisterType<QAction>(uri, 1, 0, "QAction");
+FileLoader::FileLoader(QObject* parent) :
+    QObject(parent), d_ptr(new FileLoaderPrivate())
+{}
 
-    qmlRegisterType<TreeHelper>(uri, 1, 0, "TreeHelper");
-    qmlRegisterType<FileLoader>(uri, 1, 0, "FileLoader");
-    qmlRegisterType(QStringLiteral("qrc:/OutlineButton.qml"), uri, 1, 0, "OutlineButton");
-    qmlRegisterType(QStringLiteral("qrc:/OutlineButtons.qml"), uri, 1, 0, "OutlineButtons");
+FileLoader::~FileLoader()
+{
+    delete d_ptr;
+}
+
+QString FileLoader::path() const
+{
+    return d_ptr->m_Path;
+}
+
+void FileLoader::setPath(const QString& path)
+{
+    d_ptr->m_Path = path;
+
+    QFile file(path);
+    d_ptr->m_Content = file.open(QIODevice::ReadOnly) ? file.readAll() : "";
+
+    emit contentChanged();
+}
+
+QString FileLoader::content() const
+{
+    return d_ptr->m_Content;
 }

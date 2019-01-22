@@ -56,6 +56,8 @@ qt5_add_resources(jamitimelinebase_LIB_SRCS
    jamitimelinebase.qrc
 )
 
+include_directories(SYSTEM ${ringqt_INCLUDE_DIR})
+
 set(AUTOMOC_MOC_OPTIONS -Muri=org.kde.ringkde.jamitimelinebase)
 
 add_library(jamitimelinebase ${jamitimelinebase_LIB_SRCS} )
