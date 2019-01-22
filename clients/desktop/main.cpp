@@ -96,10 +96,13 @@ Q_IMPORT_PLUGIN(JamiPhotoSelector)
 #include <photoselector/photoplugin.h>
 #endif
 
+
+#ifndef DISABLE_NOTIFICATION
 #ifdef JAMINOTIFICATION_USE_STATIC_PLUGIN
 Q_IMPORT_PLUGIN(JamiNotification)
 #else
 #include <jaminotification/plugin.h>
+#endif
 #endif
 
 #ifdef JAMIVIDEOVIEW_USE_STATIC_PLUGIN
@@ -244,6 +247,7 @@ int main(int argc, char **argv)
     v10.initializeEngine(app.engine(), "org.kde.ringkde.jamiphotoselector");
 #endif
 
+#ifndef DISABLE_NOTIFICATION
 #ifdef JAMINOTIFICATION_USE_STATIC_PLUGIN
     qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiNotification().instance())->registerTypes("org.kde.ringkde.jaminotification");
     qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiNotification().instance())->initializeEngine(app.engine(), "org.kde.ringkde.jaminotification");
@@ -252,10 +256,11 @@ int main(int argc, char **argv)
     v11.registerTypes("org.kde.ringkde.jaminotification");
     v11.initializeEngine(app.engine(), "org.kde.ringkde.jaminotification");
 #endif
+#endif
 
 #ifdef JAMIVIDEOVIEW_USE_STATIC_PLUGIN
-    qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiNotification().instance())->registerTypes("org.kde.ringkde.jamivideoview");
-    qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiNotification().instance())->initializeEngine(app.engine(), "org.kde.ringkde.jamivideoview");
+    qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_VideoView().instance())->registerTypes("org.kde.ringkde.jamivideoview");
+    qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_VideoView().instance())->initializeEngine(app.engine(), "org.kde.ringkde.jamivideoview");
 #else
     JamiVideoView v12;
     v12.registerTypes("org.kde.ringkde.jamivideoview");

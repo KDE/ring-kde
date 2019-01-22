@@ -28,9 +28,6 @@ ADD_SUBDIRECTORY( contactview )
 # Build the account manager subsystem
 ADD_SUBDIRECTORY( accountview )
 
-# Build the account manager subsystem
-ADD_SUBDIRECTORY( jaminotification )
-
 # Build the main desktop component
 ADD_SUBDIRECTORY( jamivideoview )
 
@@ -48,3 +45,9 @@ ADD_SUBDIRECTORY( jamitimelinebase )
 
 # Build the audio player widget
 ADD_SUBDIRECTORY( jamiaudioplayer )
+
+
+if(ENABLE_NOTIFICATIONS)
+    # Build the account manager subsystem
+    ADD_SUBDIRECTORY( jaminotification )
+endif()

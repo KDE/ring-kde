@@ -58,8 +58,11 @@
 #include "pixmapinterface.h"
 #include "serializationinterface.h"
 #include "windowevent.h"
-#include "systray.h"
 #include "kcfg_settings.h"
+
+#ifndef DISABLE_NOTIFICATION
+ #include "systray.h"
+#endif
 
 #include "sharedassets/qrc_assets.cpp"
 
@@ -166,7 +169,9 @@ void JamiKDEIntegration::initializeEngine(QQmlEngine *engine, const char *uri)
         QStringLiteral("ActionCollection"), ActionCollection::instance()
     );
 
+#ifndef DISABLE_NOTIFICATION
     new SysTray(QIcon(QStringLiteral(":appicon/icons/64-apps-ring-kde.png")));
+#endif
 }
 
 QQmlEngine* JamiKDEIntegration::engine()

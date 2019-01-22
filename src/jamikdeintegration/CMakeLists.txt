@@ -69,12 +69,18 @@ set( jamikdeintegration_LIB_SRCS
     src/pixmapinterface.cpp
     src/serializationinterface.cpp
     src/actioncollection.cpp
-    src/systray.cpp
     src/windowevent.cpp
     src/cmiconengine.cpp
     src/personiconengine.cpp
     src/plugin.cpp
 )
+
+
+if(ENABLE_NOTIFICATIONS)
+    set( jamikdeintegration_LIB_SRCS
+        src/systray.cpp
+    )
+endif()
 
 if(Qt5TextToSpeech_FOUND)
     set(
@@ -97,6 +103,10 @@ endif()
 
 include_directories(SYSTEM ${ringqt_INCLUDE_DIR})
 
+if(NOT ENABLE_NOTIFICATIONS)
+    add_definitions(-DDISABLE_NOTIFICATION=1)
+endif()
+
 kconfig_add_kcfg_files (jamikdeintegration_LIB_SRCS kcfg_settings.kcfgc)
 
 set(AUTOMOC_MOC_OPTIONS -Muri=org.kde.ringkde.jamikdeintegration)
@@ -116,15 +126,20 @@ target_link_libraries( jamikdeintegration
     Qt5::QuickControls2
 
     # KF5
-    KF5::Notifications # the Systray
     KF5::I18n
     KF5::ConfigCore
     KF5::ConfigGui
     KF5::ConfigWidgets # KColorScheme
     KF5::XmlGui # KSortcutdialog # (DESKTOP)
-    KF5::NotifyConfig # the notification dialog # (DESKTOP)
     KF5::GlobalAccel # (DESKTOP)
 )
+
+if(ENABLE_NOTIFICATIONS)
+    target_link_libraries( jamikdeintegration
+        KF5::NotifyConfig # the notification dialog # (DESKTOP)
+        KF5::Notifications # the Systray
+    )
+endif()
 
 #FIXME
 # if ( ${AKONADI_FOUND} )

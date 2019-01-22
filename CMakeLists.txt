@@ -28,6 +28,7 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "Android")
 ENDIF()
 
 OPTION(ENABLE_SINGLE_INSTANCE  "Reuse instances of Ring-KDE when possible" ON)
+OPTION(ENABLE_NOTIFICATIONS "Enable the notifications on supported platgorms" ON)
 
 SET(LOCAL_CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/" )
 LIST(APPEND CMAKE_MODULE_PATH "${LOCAL_CMAKE_MODULE_PATH}")
@@ -103,6 +104,7 @@ INCLUDE(FeatureSummary)
 # On Android, the executable is treated as a library, this is not what's
 # normally expected.
 IF(NOT DEFINED OS_ANDROID)
+    SET(ENABLE_NOTIFICATIONS OFF)
     INCLUDE(KDECompilerSettings)
 ENDIF()
 
@@ -150,14 +152,20 @@ FIND_PACKAGE(KF5 "${KF5_DEP_VERSION}" REQUIRED COMPONENTS
     I18n
     WindowSystem
     XmlGui
-    Notifications
     IconThemes
     Crash
-    NotifyConfig
     GlobalAccel
     Declarative
     Kirigami2
 )
+
+# Notifications are not supported on all platforms
+IF(ENABLE_NOTIFICATIONS)
+    FIND_PACKAGE(KF5 "${KF5_DEP_VERSION}" REQUIRED COMPONENTS
+        Notifications
+        NotifyConfig
+    )
+ENDIF()
 
 FIND_PACKAGE(KF5 "${AKO_DEP_VERSION}" QUIET COMPONENTS
     DocTools

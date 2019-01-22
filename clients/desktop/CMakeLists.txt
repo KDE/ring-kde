@@ -28,11 +28,13 @@ INCLUDE_DIRECTORIES(SYSTEM ${ringqt_INCLUDE_DIR})
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/src)
 
 IF(${CMAKE_BUILD_TYPE} MATCHES Release)
-   MESSAGE("NO DEBUG OUTPUT")
-   ADD_DEFINITIONS( -DQT_NO_DEBUG_OUTPUT)
-ELSE()
-
+    MESSAGE("NO DEBUG OUTPUT")
+    ADD_DEFINITIONS( -DQT_NO_DEBUG_OUTPUT)
 ENDIF(${CMAKE_BUILD_TYPE} MATCHES Release)
+
+IF(NOT ENABLE_NOTIFICATIONS)
+    ADD_DEFINITIONS(-DDISABLE_NOTIFICATION=1)
+ENDIF()
 
 SET(
    ring_kde_SRCS
@@ -110,7 +112,6 @@ TARGET_LINK_LIBRARIES(ring-kde
   desktopview
   jamicontactview
   jamiaccountview
-  jaminotification
   libqmlwidgets
   kquickitemviews
   jamikdeintegration
@@ -138,14 +139,22 @@ TARGET_LINK_LIBRARIES(ring-kde
   KF5::ConfigGui
   KF5::DBusAddons
   KF5::XmlGui
-  KF5::Notifications
   KF5::IconThemes
   KF5::Crash
-  KF5::NotifyConfig
   KF5::GlobalAccel
   KF5::Declarative
   KF5::Kirigami2
 )
+
+IF(ENABLE_NOTIFICATIONS)
+    TARGET_LINK_LIBRARIES(ring-kde
+        jaminotification
+
+        # KF5
+        KF5::Notifications
+        KF5::NotifyConfig
+    )
+ENDIF()
 
 IF (Qt5TextToSpeech_FOUND)
    TARGET_LINK_LIBRARIES(ring-kde

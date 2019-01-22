@@ -30,9 +30,12 @@
 #include <KShortcutsDialog>
 #include <KActionCollection>
 #include <KSharedConfig>
-#include <KNotifyConfigWidget>
 #include <KGlobalAccel>
 #include <KXmlGuiWindow>
+
+#ifndef DISABLE_NOTIFICATION
+ #include <KNotifyConfigWidget>
+#endif
 
 //Ring
 #include "globalinstances.h"
@@ -362,7 +365,9 @@ void ActionCollection::showShortCutEditor()
 ///Display the notification manager
 void ActionCollection::showNotificationEditor()
 {
+#ifndef DISABLE_NOTIFICATION
    KNotifyConfigWidget::configure(nullptr, QStringLiteral("ring-kde"));
+#endif
 }
 
 void ActionCollection::slotAddPerson()
