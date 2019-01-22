@@ -1,9 +1,10 @@
 cmake_minimum_required(VERSION 3.0)
 
 project(jamitimelinebase)
+set(GENERIC_LIB_VERSION "1.0.0")
 
 if(POLICY CMP0063)
-   CMAKE_POLICY(SET CMP0063 NEW)
+    CMAKE_POLICY(SET CMP0063 NEW)
 endif(POLICY CMP0063)
 
 find_package(ECM 1.1.0 REQUIRED NO_MODULE)
@@ -24,7 +25,7 @@ SET(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
 # When used with `add_subdirectory`, assume it is a static Qt plugin
 get_directory_property(USES_ADD_SUBDIRECTORY PARENT_DIRECTORY)
 if(USES_ADD_SUBDIRECTORY)
-   set(BUILD_SHARED_LIBS OFF)
+    set(BUILD_SHARED_LIBS OFF)
 endif()
 
 set(CMAKE_AUTOMOC ON)
@@ -43,8 +44,6 @@ find_package(Qt5 CONFIG REQUIRED
     Core Gui Quick QuickControls2
 )
 
-set(GENERIC_LIB_VERSION "1.0.0")
-
 #File to compile
 set( jamitimelinebase_LIB_SRCS
     plugin.cpp
@@ -53,7 +52,7 @@ set( jamitimelinebase_LIB_SRCS
 )
 
 qt5_add_resources(jamitimelinebase_LIB_SRCS
-   jamitimelinebase.qrc
+    jamitimelinebase.qrc
 )
 
 include_directories(SYSTEM ${ringqt_INCLUDE_DIR})
@@ -82,9 +81,9 @@ if(USES_ADD_SUBDIRECTORY)
 endif()
 
 configure_package_config_file(
-   "${CMAKE_CURRENT_SOURCE_DIR}/cmake/JamiTimelineBaseConfig.cmake.in" ${jamitimelinebase_CONFIG_PATH}
-   INSTALL_DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}/cmake/JamiTimelineBase/
-   PATH_VARS INCLUDE_INSTALL_DIR
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/JamiTimelineBaseConfig.cmake.in" ${jamitimelinebase_CONFIG_PATH}
+    INSTALL_DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}/cmake/JamiTimelineBase/
+    PATH_VARS INCLUDE_INSTALL_DIR
 )
 
 install( FILES ${jamitimelinebase_CONFIG_PATH}

@@ -84,16 +84,16 @@ if(Qt5TextToSpeech_FOUND)
     )
 endif()
 
-if(KF5_AKONADI_FOUND AND  KF5_AKONADICONTACT_FOUND AND  KF5_CONTACTS_FOUND)
-    set(AKONADI_FOUND 1)
-endif()
+# if(KF5_AKONADI_FOUND AND  KF5_AKONADICONTACT_FOUND AND  KF5_CONTACTS_FOUND)
+#     set(AKONADI_FOUND 1)
+# endif()
 
-if( ${AKONADI_FOUND} )
-    set(jamikdeintegration_LIB_SRCS
-        ${jamikdeintegration_LIB_SRCS}
-        akonadibackend.cpp
-    )
-endif()
+# if( ${AKONADI_FOUND} )
+#     set(jamikdeintegration_LIB_SRCS
+#         ${jamikdeintegration_LIB_SRCS}
+#         akonadibackend.cpp
+#     )
+# endif()
 
 include_directories(SYSTEM ${ringqt_INCLUDE_DIR})
 
