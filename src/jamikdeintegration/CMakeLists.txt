@@ -6,6 +6,14 @@ if(POLICY CMP0063)
    CMAKE_POLICY(SET CMP0063 NEW)
 endif(POLICY CMP0063)
 
+IF(${CMAKE_SYSTEM_NAME} MATCHES "Android")
+    SET(OS_ANDROID 1)
+ENDIF()
+
+IF(DEFINED OS_ANDROID)
+    SET(ENABLE_NOTIFICATIONS OFF)
+ENDIF()
+
 find_package(ECM 1.1.0 REQUIRED NO_MODULE)
 list(APPEND CMAKE_MODULE_PATH "${ECM_MODULE_PATH}")
 
@@ -78,6 +86,7 @@ set( jamikdeintegration_LIB_SRCS
 
 if(ENABLE_NOTIFICATIONS)
     set( jamikdeintegration_LIB_SRCS
+        ${jamikdeintegration_LIB_SRCS}
         src/systray.cpp
     )
 endif()
