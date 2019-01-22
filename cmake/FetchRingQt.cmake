@@ -90,6 +90,10 @@ if (NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/libkquickitemviews)
     execute_process(COMMAND
         git clone  http://anongit.kde.org/kquickitemviews/ --branch master ${CMAKE_CURRENT_BINARY_DIR}/libkquickitemviews
     )
+else()
+    execute_process(COMMAND
+        /bin/sh -c "cd ${CMAKE_CURRENT_BINARY_DIR}/libkquickitemviews && git fetch origin && git reset --hard origin/master"
+    )
 endif()
 
 # Build LibRingQt
