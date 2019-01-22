@@ -163,10 +163,6 @@ int main(int argc, char **argv)
     KQuickItemViews v;
     v.registerTypes("org.kde.playground.kquickitemviews");
 #endif
-
-    qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_RingQtQuick().instance())->registerTypes("net.lvindustries.ringqtquick");
-    qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_RingQtQuick().instance())->initializeEngine(app.engine(), "net.lvindustries.ringqtquick");
-
 #ifdef JAMIKDEINTEGRATION_USE_STATIC_PLUGIN
     qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiKDEIntegration().instance())->registerTypes("org.kde.ringkde.jamikdeintegration");
     qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiKDEIntegration().instance())->initializeEngine(app.engine(), "org.kde.ringkde.jamikdeintegration");
@@ -175,6 +171,9 @@ int main(int argc, char **argv)
     v2.registerTypes("org.kde.ringkde.jamikdeintegration");
     v2.initializeEngine(app.engine(), "org.kde.ringkde.jamikdeintegration");
 #endif
+
+    qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_RingQtQuick().instance())->registerTypes("net.lvindustries.ringqtquick");
+    qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_RingQtQuick().instance())->initializeEngine(app.engine(), "net.lvindustries.ringqtquick");
 
 #ifdef JAMIWIZARD_USE_STATIC_PLUGIN
     qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiWizard().instance())->registerTypes("org.kde.ringkde.jamiwizard");
