@@ -16,10 +16,9 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
 import QtQuick 2.7
-import QtQuick.Controls 2.0
-import QtQuick.Layouts 1.0
 
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
+import org.kde.ringkde.jamiwizard 1.0 as JamiWizard
 
 Rectangle {
     id: applicationWindow
@@ -28,7 +27,7 @@ Rectangle {
 
     property string previousState: ""
 
-    StartingPage {
+    JamiWizard.Splash {
         id: startingPage
         anchors.fill: parent
         anchors.bottomMargin: footer.height
@@ -50,19 +49,20 @@ Rectangle {
         }
     }
 
-    Page1 {
+    JamiWizard.StartPage {
         id: frontPage
         anchors.fill: parent
         anchors.bottomMargin: footer.height
         visible: true
     }
 
-    ButtonBar {
+    JamiWizard.ButtonBar {
         id: footer
         height: 45
         width: applicationWindow.width
         visible: false
     }
+
     onWidthChanged: { //HACK
         footer.width = width
     }

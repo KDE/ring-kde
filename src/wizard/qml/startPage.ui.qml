@@ -16,10 +16,10 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
 import QtQuick 2.7
-import QtQuick.Controls 2.0
-import QtQuick.Layouts 1.0
+import QtQuick.Controls 2.0 as Controls
+import org.kde.ringkde.jamiwizard 1.0 as JamiWizard
 
-Page {
+Controls.Page {
     id: frontPage
     Rectangle {
         anchors.fill: parent
@@ -50,21 +50,21 @@ Page {
         color: "white"
     }
 
-    Button {
+    Controls.Button {
         id: createRingAccount
         anchors.horizontalCenter: parent.horizontalCenter
         y: 246
         text: i18n("Create a new GNU Ring account")
     }
 
-    Button {
+    Controls.Button {
         id: importRingAccount
         anchors.horizontalCenter: parent.horizontalCenter
         y: 300
         text: i18n("Import an existing account")
     }
 
-    Button {
+    Controls.Button {
         id: createAnonRingAccount
         anchors.horizontalCenter: parent.horizontalCenter
         y: 354
@@ -72,7 +72,7 @@ Page {
         visible: false
     }
 
-    Button {
+    Controls.Button {
         id: importSIPAccount
         anchors.horizontalCenter: parent.horizontalCenter
         y: 408
@@ -80,7 +80,7 @@ Page {
         visible: false
     }
 
-    Button {
+    Controls.Button {
         id: createIp2IPAccount
         anchors.horizontalCenter: parent.horizontalCenter
         y: 462
@@ -94,10 +94,10 @@ Page {
         y: 43
         width: 100
         height: 100
-        source: "ring-kde.svg"
+        source: "qrc:/wizard/ring-kde.svg"
     }
 
-    CreateRing {
+    JamiWizard.CreateRing {
         id: createRing
         x: frontPage.width/2 - width/2 - 20
         y: frontPage.height/2 - height/2
@@ -106,7 +106,7 @@ Page {
         visible: false
     }
 
-    ImportRing {
+    JamiWizard.ImportRing {
         id: importRing
         opacity: 0
         visible: false
@@ -115,7 +115,7 @@ Page {
         y: frontPage.height/2 - height/2
     }
 
-    ProfilePage {
+    JamiWizard.ProfilePage {
         id: profilePage
         visible: false
         y: text1.height + 8

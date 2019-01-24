@@ -16,7 +16,7 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
 import QtQuick 2.4
-import QtQuick.Controls 2.0
+import QtQuick.Controls 2.0 as Controls
 import QtQuick.Layouts 1.3
 import org.kde.kirigami 2.2 as Kirigami
 
@@ -55,7 +55,7 @@ Item {
                     Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
 
                     fillMode: Image.PreserveAspectFit
-                    source: "beta_logo.svg"
+                    source: "qrc:/wizard/beta_logo.svg"
 
                     Layout.fillHeight: true
                     Layout.fillWidth: true
@@ -68,14 +68,14 @@ Item {
                     height: width<parent.minHeight ? parent.minHeight : ( width>parent.maxHeight ? parent.maxHeight : width )
                     width: (parent.rowWidth) < parent.minWidth ? parent.minWidth : ( parent.rowWidth > parent.maxWidth ? parent.maxWidth : parent.rowWidth)
 
-                    source: "people.svg"
+                    source: "qrc:/wizard/people.svg"
                     Layout.fillHeight: true
                     Layout.fillWidth: false
                     Layout.maximumHeight: 300
                     Layout.maximumWidth: 300
                     Layout.preferredHeight: parent.height
                     Layout.preferredWidth: parent.height
-                    anchors.verticalCenter: parent.verticalCenter
+                    Layout.alignment: Qt.AlignVCenter
 
                 }
             }
@@ -84,7 +84,7 @@ Item {
                 height: 40
             }
 
-            SwipeView {
+            Controls.SwipeView {
                 id: swipeView
                 clip: true
                 Layout.fillHeight: true
@@ -98,7 +98,7 @@ Item {
                         fillMode: Image.PreserveAspectFit
                     }
 
-                    Label {
+                    Controls.Label {
                         wrapMode: Text.WordWrap
                         clip: true
                         text: i18n("Ring-KDE allows you to communicate privately with your friends. It uses peer to peer technologies popularised by BitTorrent to create a decentralized network of users. There is no central server and all communications are end-to-end encrypted.")
@@ -115,7 +115,7 @@ Item {
                         fillMode: Image.PreserveAspectFit
                     }
 
-                    Label {
+                    Controls.Label {
                         wrapMode: Text.WordWrap
                         clip: true
                         text: i18n("Ring-KDE stores all data locally using standard formats such as JSON, vCard, MIME, PCM/WAV, INI and X-509. No data is ever uploaded to external servers.")
@@ -132,7 +132,7 @@ Item {
                         fillMode: Image.PreserveAspectFit
                     }
 
-                    Label {
+                    Controls.Label {
                         wrapMode: Text.WordWrap
                         clip: true
                         text: i18n("Ring-KDE supports your office phone account. Answers, transfer and record your phone calls directly from KDE.")
@@ -149,7 +149,7 @@ Item {
                         fillMode: Image.PreserveAspectFit
                     }
 
-                    Label {
+                    Controls.Label {
                         wrapMode: Text.WordWrap
                         clip: true
                         text: i18n("Ring is based on open standards and it can interoperate with other SIP compliant systems.")
@@ -166,7 +166,7 @@ Item {
                         fillMode: Image.PreserveAspectFit
                     }
 
-                    Label {
+                    Controls.Label {
                         wrapMode: Text.WordWrap
                         clip: true
                         text: i18n("Ring offers an user friendly DBus API to automate all aspects of the application.")
@@ -183,7 +183,7 @@ Item {
                         fillMode: Image.PreserveAspectFit
                     }
 
-                    Label {
+                    Controls.Label {
                         wrapMode: Text.WordWrap
                         clip: true
                         text: i18n("Ring-KDE can call real phone numbers. Cheap credits are available from thousand of providers worldwide. Use your favorite search engine to locate a local SIP phone provider.")
@@ -193,7 +193,7 @@ Item {
                 }
             }
 
-            Label {
+            Controls.Label {
                 id: label
                 color: "white"
                 text: i18n("Press anywhere to begin")

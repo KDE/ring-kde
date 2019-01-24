@@ -16,7 +16,7 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
 import QtQuick 2.0
-import QtQuick.Controls 2.0
+import QtQuick.Controls 2.0 as Controls
 import QtQuick.Layouts 1.3
 
 Item {
@@ -42,7 +42,7 @@ Item {
             }
 
             // Align left
-            Button {
+            Controls.Button {
                 id: backButton
                 Layout.fillHeight: true
                 text: i18n("Back")
@@ -55,13 +55,13 @@ Item {
 
             // Align right
 
-            BusyIndicator {
+            Controls.BusyIndicator {
                 id: busyIndicator
                 visible: false
                 Layout.fillHeight: true
             }
 
-            Label {
+            Controls.Label {
                 id: missingFields
                 text: i18n("Please fill the required fields")
                 verticalAlignment: Text.AlignVCenter
@@ -70,14 +70,14 @@ Item {
                 Layout.fillHeight: true
             }
 
-            Button {
+            Controls.Button {
                 id: nextButton
                 Layout.fillHeight: true
                 text: i18n("Next")
                 visible: false
             }
 
-            Button {
+            Controls.Button {
                 id: skipButton
                 Layout.fillHeight: true
                 text: i18n("Skip")

@@ -26,6 +26,7 @@ import org.kde.ringkde.jamikdeintegration 1.0 as JamiKDEIntegration
 import org.kde.ringkde.jamiwizard 1.0 as JamiWizard
 import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 import org.kde.ringkde.jamitimeline 1.0 as JamiTimeline
+import org.kde.ringkde.jamiwizard 1.0 as JamiWizard
 // import org.kde.ringkde.jamiaccountview 1.0 as JamiAccountView
 
 Kirigami.ApplicationWindow {

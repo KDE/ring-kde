@@ -16,7 +16,7 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
 import QtQuick 2.0
-import QtQuick.Controls 2.0
+import QtQuick.Controls 2.0 as Controls
 import QtQuick.Layouts 1.0
 
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
@@ -89,7 +89,7 @@ Item {
         id: createForm
         anchors.fill: parent
 
-        Switch {
+        Controls.Switch {
             id: registerUserName
             height: 40
             text: i18n("Register public username*")
@@ -102,7 +102,7 @@ Item {
             }
         }
 
-        Label {
+        Controls.Label {
             id: label2
             clip: true
             x: -7
@@ -121,7 +121,7 @@ Item {
             }*/
         }
 
-        TextField {
+        Controls.TextField {
             id: userName
             clip: true
             x: 8
@@ -152,7 +152,7 @@ Item {
                 Layout.fillHeight: true
                 Layout.preferredWidth: 37
 
-                BusyIndicator {
+                Controls.BusyIndicator {
                     id: busyIndicator
                     anchors.fill: parent
                     visible: false
@@ -164,7 +164,7 @@ Item {
                 }
             }
 
-            Label {
+            Controls.Label {
                 id: registerFoundLabel
                 text: i18n("Please enter an username")
                 verticalAlignment: Text.AlignVCenter
@@ -181,7 +181,7 @@ Item {
             }*/
         }
 
-        Label {
+        Controls.Label {
             id: label1
             text: i18n("Enter an archive password")
             color: "white"
@@ -189,14 +189,14 @@ Item {
             anchors.leftMargin: 8
         }
 
-        TextField {
+        Controls.TextField {
             id: password
             echoMode: "Password"
             Layout.fillWidth: true
             onTextChanged: isNextAvailable()
         }
 
-        Label {
+        Controls.Label {
             id: label
             color: "white"
             text: i18n("Repeat the new password")
@@ -204,14 +204,14 @@ Item {
             anchors.leftMargin: 8
         }
 
-        TextField {
+        Controls.TextField {
             id: repeatPassword
             echoMode: "Password"
             Layout.fillWidth: true
             onTextChanged: isNextAvailable()
         }
 
-        Label {
+        Controls.Label {
             id: label4
             color: "red"
             text: i18n("Passwords don't match")
@@ -246,7 +246,7 @@ Item {
             Layout.fillWidth: true
         }
 
-        Label {
+        Controls.Label {
             id: labelInfo
             color: "white"
             text: i18n("(*) registered usernames can be reached by their username-string instead of their generated ring-id number only.")
@@ -272,12 +272,12 @@ Item {
             id: popupLayout
             anchors.verticalCenter: parent.verticalCenter
 
-            BusyIndicator {
+            Controls.BusyIndicator {
                 id: registrationIndicator
                 Layout.fillHeight: false
             }
 
-            Label {
+            Controls.Label {
                 id: registrationStatus
                 text: i18n("Creating account")
                 Layout.fillHeight: false

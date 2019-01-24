@@ -34,15 +34,15 @@ void JamiWizard::registerTypes(const char *uri)
     Q_ASSERT(uri == QByteArray("org.kde.ringkde.jamiwizard"));
 
     qmlRegisterType<WelcomeDialog>(uri, 1, 0, "WelcomeDialog");
-    qmlRegisterType(QStringLiteral("qrc:/ButtonBar.qml"), uri, 1, 0, "ButtonBar");
-    qmlRegisterType(QStringLiteral("qrc:/CreateRing.qml"), uri, 1, 0, "CreateRing");
-    qmlRegisterType(QStringLiteral("qrc:/ImportRing.qml"), uri, 1, 0, "ImportRing");
-    qmlRegisterType(QStringLiteral("qrc:/Page1.qml"), uri, 1, 0, "Page1");
-    qmlRegisterType(QStringLiteral("qrc:/Page1Form.ui.qml"), uri, 1, 0, "Page1Form");
-    qmlRegisterType(QStringLiteral("qrc:/ProfilePage.qml"), uri, 1, 0, "ProfilePage");
-    qmlRegisterType(QStringLiteral("qrc:/StartingPage.qml"), uri, 1, 0, "StartingPage");
-    qmlRegisterType(QStringLiteral("qrc:/StartingPageForm.ui.qml"), uri, 1, 0, "StartingPageForm");
-    qmlRegisterType(QStringLiteral("qrc:/Wizard.qml"), uri, 1, 0, "Wizard");
+    qmlRegisterType(QStringLiteral("qrc:/wizard/qml/buttonBar.qml"), uri, 1, 0, "ButtonBar");
+    qmlRegisterType(QStringLiteral("qrc:/wizard/qml/createRing.qml"), uri, 1, 0, "CreateRing");
+    qmlRegisterType(QStringLiteral("qrc:/wizard/qml/importRing.qml"), uri, 1, 0, "ImportRing");
+    qmlRegisterType(QStringLiteral("qrc:/wizard/qml/startPage.qml"), uri, 1, 0, "StartPage");
+    qmlRegisterType(QStringLiteral("qrc:/wizard/qml/startPage.ui.qml"), uri, 1, 0, "StartPageUI");
+    qmlRegisterType(QStringLiteral("qrc:/wizard/qml/profilePage.qml"), uri, 1, 0, "ProfilePage");
+    qmlRegisterType(QStringLiteral("qrc:/wizard/qml/splash.qml"), uri, 1, 0, "Splash");
+    qmlRegisterType(QStringLiteral("qrc:/wizard/qml/splash.ui.qml"), uri, 1, 0, "SplashUI");
+    qmlRegisterType(QStringLiteral("qrc:/wizard/qml/wizard.qml"), uri, 1, 0, "Wizard");
 }
 
 void JamiWizard::initializeEngine(QQmlEngine *engine, const char *uri)
