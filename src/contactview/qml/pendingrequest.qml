@@ -21,8 +21,6 @@ import QtQuick.Controls 2.0 as Controls2
 import QtQuick.Layouts 1.0
 import QtGraphicalEffects 1.0
 
-import RingQmlWidgets 1.0
-
 Rectangle {
 
 }

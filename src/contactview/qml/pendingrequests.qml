@@ -20,7 +20,6 @@ import QtQuick 2.7
 import QtQuick.Layouts 1.0
 import QtQuick.Controls 2.2
 import org.kde.kirigami 2.2 as Kirigami
-import RingQmlWidgets 1.0
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 
 Dialog {

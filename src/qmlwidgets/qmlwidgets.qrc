@@ -1,6 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file alias="OutlineButton.qml">qml/outlinebutton.qml</file>
-        <file alias="OutlineButtons.qml">qml/outlinebuttons.qml</file>
-    </qresource>
-</RCC>

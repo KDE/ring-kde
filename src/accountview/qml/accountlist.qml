@@ -17,9 +17,9 @@
  **************************************************************************/
 import QtQuick 2.7
 import QtQuick.Layouts 1.0
-import RingQmlWidgets 1.0
 
-import QtQuick.Controls 2.2
+import QtQuick.Controls 2.2 as Controls
+import org.kde.ringkde.genericutils 1.0 as GenericUtils
 import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 import org.kde.kirigami 2.2 as Kirigami
 import org.kde.playground.kquickitemviews 1.0 as KQuickItemViews
@@ -53,7 +53,7 @@ ListView {
                 horizontalAlignment: Image.AlignHCenter
                 source: "image://SymbolicColorizer/:/sharedassets/outline/warning.svg"
             }
-            Label {
+            Controls.Label {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 text: error
@@ -67,7 +67,7 @@ ListView {
     Component {
         id: defaultAccountComponent
         RowLayout {
-            CheckBox {
+            Controls.CheckBox {
                 Layout.fillHeight: true
                 Layout.preferredWidth: Kirigami.Units.fontMetrics.height * 2
                 Layout.minimumWidth: Kirigami.Units.fontMetrics.height * 2
@@ -89,7 +89,7 @@ ListView {
                     )
             }
 
-            Label {
+            Controls.Label {
                 Layout.fillHeight: true
                 Layout.fillWidth: true
                 text: obj.alias
@@ -117,7 +117,7 @@ ListView {
         RowLayout {
             anchors.fill: parent
 
-            CheckBox {
+            Controls.CheckBox {
                 Layout.fillHeight: true
                 Layout.preferredWidth: Kirigami.Units.fontMetrics.height * 2
                 Layout.minimumWidth: Kirigami.Units.fontMetrics.height * 2
@@ -154,7 +154,7 @@ ListView {
                     sourceComponent: accountErrorComponent
                 }
 
-                Label {
+                Controls.Label {
                     Layout.fillHeight: true
                     Layout.fillWidth: true
                     text: obj.alias
@@ -180,17 +180,17 @@ ListView {
         property string name: ""
         property var account: ""
         active: false
-        sourceComponent: Dialog {
+        sourceComponent: Controls.Dialog {
             height: 150
             parent: applicationWindow().contentItem
             x: applicationWindow().contentItem.width / 2 - width/2
             y: applicationWindow().contentItem.height / 2 - height/2
-            standardButtons: Dialog.Ok | Dialog.Cancel
+            standardButtons: Controls.Dialog.Ok | Controls.Dialog.Cancel
             closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
             modal: true
             title: i18n("Delete an account")
 
-            Label {
+            Controls.Label {
                 text: i18n("<center>Are you sure you want to delete the account called ")
                     + name + i18n(". <br><br> This cannot be undone and you will lose the account <b>permanently</b></center>")
             }
@@ -272,7 +272,7 @@ ListView {
         }
     }
 
-    footer: OutlineButton {
+    footer: GenericUtils.OutlineButton {
         id: mainArea
         height: enableAdd ? fontMetrics.height * 3.5 : 0
         expandedHeight: fontMetrics.height * 3.5

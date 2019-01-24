@@ -45,8 +45,6 @@
 #include "jamikdeintegration/src/windowevent.h"
 
 //QML
-#include "qmlwidgets/plugin.h"
-#include "qmlwidgets/symboliccolorizer.h"
 #include "desktopviewplugin.h"
 
 
@@ -57,11 +55,8 @@ static const QString GENERIC_ERROR = i18n("An unknown error occurred. Ring KDE w
 
 
 KDeclarative::KDeclarative* RingApplication::m_pDeclarative {nullptr};
-RingQmlWidgets* RingApplication::m_pQmlWidget {nullptr};
 DesktopView* RingApplication::m_pDesktopView {nullptr};
 RingApplication* RingApplication::m_spInstance {nullptr};
-
-
 
 /**
  * The application constructor
@@ -82,7 +77,6 @@ RingApplication::~RingApplication()
 {
    delete m_pDeclarative;
    delete engine();
-   delete m_pQmlWidget;
    m_spInstance = nullptr;
 }
 
@@ -144,9 +138,6 @@ QQmlApplicationEngine* RingApplication::engine()
    static std::atomic_flag engineInit = ATOMIC_FLAG_INIT;
 
    if (!engineInit.test_and_set()) {
-      m_pQmlWidget = new RingQmlWidgets;
-      m_pQmlWidget->registerTypes("RingQmlWidgets");
-
       m_pDesktopView = new DesktopView;
       m_pDesktopView->registerTypes("DesktopView");
 
@@ -155,9 +146,6 @@ QQmlApplicationEngine* RingApplication::engine()
       // Setup the icon theme provider and ki18n
       m_pDeclarative = new KDeclarative::KDeclarative;
       m_pDeclarative->setDeclarativeEngine(e);
-
-      auto im2 = new SymbolicColorizer();
-      e->addImageProvider( QStringLiteral("SymbolicColorizer"), im2 );
    }
    return e;
 }

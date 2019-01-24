@@ -16,10 +16,8 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
 import QtQuick 2.7
-import QtQuick.Controls 2.0
-import QtQuick.Layouts 1.0
+import QtQuick.Layouts 1.0 as Layouts
 
-import RingQmlWidgets 1.0
 import org.kde.kirigami 2.2 as Kirigami
 import org.kde.playground.kquickitemviews 1.0 as KQuickItemViews
 import org.kde.ringkde.jamitimelinebase 1.0 as JamiTimelineBase
@@ -119,7 +117,7 @@ KQuickItemViews.FlickableScrollBar {
             property bool selected: false
             height: getSectionHeight(scrollbar.height, totalEntries, categoryEntries, index, activeCategories)
 
-            RowLayout {
+            Layouts.RowLayout {
                 width: parent.width
                 anchors.top   : bottomUp ? undefined     : parent.top
                 anchors.bottom: bottomUp ? parent.bottom : undefined
@@ -153,7 +151,7 @@ KQuickItemViews.FlickableScrollBar {
                 }
                 Text {
                     id: label
-                    Layout.fillWidth: true
+                    Layouts.Layout.fillWidth: true
                     text: display
                     color: activePalette.text
                     font.pointSize: Kirigami.Theme.defaultFont.pointSize*1.2

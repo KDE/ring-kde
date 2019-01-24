@@ -22,6 +22,7 @@ import QtQuick.Layouts 1.0
 
 import org.kde.playground.kquickitemviews 1.0 as KQuickItemViews
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
+import org.kde.ringkde.genericutils 1.0 as GenericUtils
 
 ListView {
     id: accountList
@@ -160,7 +161,7 @@ ListView {
         id: accountBuilder
     }
 
-    footer: OutlineButtons {
+    footer: GenericUtils.OutlineButtons {
         function callback(index) {
             selectedAccount = accountBuilder.buildFor(index)
         }

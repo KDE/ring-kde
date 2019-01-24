@@ -17,10 +17,8 @@
  **************************************************************************/
 import QtQuick 2.7
 import QtQuick.Layouts 1.0
-import RingQmlWidgets 1.0
-import QtQuick.Controls 2.0
+import QtQuick.Controls 2.0 as Controls
 
-import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 import org.kde.kirigami 2.0 as Kirigami
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 import net.lvindustries.ringqtquick.models 1.0 as RingQtModels
@@ -128,7 +126,7 @@ Item {
                 text: "  "+(registeredName == "" ? uri : registeredName)
                 height: implicitHeight * 2
 
-                BusyIndicator {
+                Controls.BusyIndicator {
                     id: busyIndicator
                     visible: nameStatus == RingQtModels.NumberCompletionModel.IN_PROGRESS
                     anchors.right: searchStatus.left

@@ -147,6 +147,12 @@ Q_IMPORT_PLUGIN(JamiAudioPlayer)
 #include <jamiaudioplayer/plugin.h>
 #endif
 
+#ifdef GENERICUTILS_USE_STATIC_PLUGIN
+Q_IMPORT_PLUGIN(GenericUtils)
+#else
+#include <genericutils/plugin.h>
+#endif
+
 Q_IMPORT_PLUGIN(RingQtQuick)
 
 constexpr static const char version[] = "3.1.0";
@@ -168,6 +174,16 @@ int main(int argc, char **argv)
     KQuickItemViews v;
     v.registerTypes("org.kde.playground.kquickitemviews");
 #endif
+
+#ifdef GENERICUTILS_USE_STATIC_PLUGIN
+    qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_GenericUtils().instance())->registerTypes("org.kde.ringkde.genericutils");
+    qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_GenericUtils().instance())->initializeEngine(app.engine(), "org.kde.ringkde.genericutils");
+#else
+    GenericUtils v0;
+    v0.registerTypes("org.kde.ringkde.genericutils");
+    v0.initializeEngine(app.engine(), "org.kde.ringkde.genericutils");
+#endif
+
 #ifdef JAMIKDEINTEGRATION_USE_STATIC_PLUGIN
     qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiKDEIntegration().instance())->registerTypes("org.kde.ringkde.jamikdeintegration");
     qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiKDEIntegration().instance())->initializeEngine(app.engine(), "org.kde.ringkde.jamikdeintegration");

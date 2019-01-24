@@ -17,11 +17,9 @@
  **************************************************************************/
 import QtQuick 2.7
 import QtQuick.Layouts 1.0
-import QtQuick.Controls 2.0
-import QtQml.Models 2.2
-import RingQmlWidgets 1.0
+import QtQuick.Controls 2.0 as Controls
+import org.kde.ringkde.genericutils 1.0 as GenericUtils
 
-import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 import net.lvindustries.ringqtquick.media 1.0 as RingQtMedia
 
 Rectangle {
@@ -59,7 +57,7 @@ Rectangle {
         source: "image://SymbolicColorizer/:/sharedassets/outline/warning.svg"
     }
 
-    Label {
+    Controls.Label {
         id: errorMessage
         width: parent.width - 52
         height: parent.height

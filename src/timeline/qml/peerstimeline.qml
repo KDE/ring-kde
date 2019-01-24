@@ -28,8 +28,6 @@ import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 import org.kde.ringkde.jamitroubleshooting 1.0 as JamiTroubleShooting
 import org.kde.ringkde.jamitimelinebase 1.0 as JamiTimelineBase
 
-import RingQmlWidgets 1.0
-
 Rectangle {
     SystemPalette {
         id: activePalette

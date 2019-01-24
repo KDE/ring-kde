@@ -18,7 +18,7 @@
 import QtQuick 2.0
 import QtQuick.Layouts 1.0
 
-import RingQmlWidgets 1.0
+import org.kde.ringkde.genericutils 1.0 as GenericUtils
 import org.kde.kirigami 2.2 as Kirigami
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
@@ -50,7 +50,7 @@ Rectangle {
         NumberAnimation {duration: 200;  easing.type: Easing.OutQuad }
     }
 
-    TreeHelper {
+    GenericUtils.TreeHelper {
         id: treeHelper
         model: RingSession.callModel
     }
@@ -61,7 +61,7 @@ Rectangle {
         }
     }
 
-    OutlineButton {
+    GenericUtils.OutlineButton {
         id: closeButton
         label: "  "+i18n("Close")
         anchors.right: parent.right

@@ -20,7 +20,7 @@ import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
 import QtGraphicalEffects 1.0
 
-import RingQmlWidgets 1.0
+import org.kde.ringkde.genericutils 1.0 as GenericUtils
 import org.kde.kirigami 2.0 as Kirigami
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 import org.kde.ringkde.jamitimeline 1.0 as JamiTimeline
@@ -125,7 +125,7 @@ Item {
                 Layout.fillWidth: true
             }
 
-            OutlineButton {
+            GenericUtils.OutlineButton {
                 label: "  "+i18n("Scan a QR Code")
                 visible: false //Not implemented
                 height: 24
@@ -134,7 +134,7 @@ Item {
                 icon: "image://SymbolicColorizer/:/sharedassets/outline/qrcode.svg"
             }
 
-            OutlineButton {
+            GenericUtils.OutlineButton {
                 label: "  "+i18n("Close")
                 height: 24
                 alignment: Qt.AlignRight

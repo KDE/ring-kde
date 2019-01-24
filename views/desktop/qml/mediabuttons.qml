@@ -18,7 +18,7 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
-import RingQmlWidgets 1.0
+import org.kde.ringkde.genericutils 1.0 as GenericUtils
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 import net.lvindustries.ringqtquick.media 1.0 as RingQtMedia
 

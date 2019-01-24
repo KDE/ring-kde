@@ -15,17 +15,35 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#pragma once
+#include "plugin.h"
 
-#include <QQmlExtensionPlugin>
+#include <QtCore/QDebug>
+#include <QtWidgets/QAction>
+#include <QQmlEngine>
 
-//![plugin]
-class RingQmlWidgets final : public QQmlExtensionPlugin
+#include "treehelper.h"
+#include "symboliccolorizer.h"
+#include "fileloader.h"
+
+#include "qrc_qmlwidgets.cpp"
+
+void GenericUtils::registerTypes(const char *uri)
 {
-    Q_OBJECT
-    Q_PLUGIN_METADATA(IID "RingQmlWidgets")
+    Q_ASSERT(uri == QLatin1String("org.kde.ringkde.genericutils"));
 
-public:
-    void registerTypes(const char *uri) override;
-};
-//![plugin]
+    qmlRegisterType<QAction>(uri, 1, 0, "QAction");
+
+    qmlRegisterType<TreeHelper>(uri, 1, 0, "TreeHelper");
+    qmlRegisterType<FileLoader>(uri, 1, 0, "FileLoader");
+    qmlRegisterType(QStringLiteral("qrc:/qml/outlinebutton.qml"), uri, 1, 0, "OutlineButton");
+    qmlRegisterType(QStringLiteral("qrc:/qml/outlinebuttons.qml"), uri, 1, 0, "OutlineButtons");
+}
+
+void GenericUtils::initializeEngine(QQmlEngine *engine, const char *uri)
+{
+    Q_UNUSED(engine)
+    Q_UNUSED(uri)
+
+    static SymbolicColorizer p;
+    engine->addImageProvider( QStringLiteral("SymbolicColorizer"), &p);
+}

@@ -18,8 +18,6 @@
 import QtQuick 2.7
 import QtQuick.Layouts 1.0
 
-
-import RingQmlWidgets 1.0
 import org.kde.ringkde.jamichatview 1.0 as JamiChatView
 import org.kde.ringkde.jamitimelinebase 1.0 as JamiTimelineBase
 

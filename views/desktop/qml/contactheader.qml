@@ -19,7 +19,6 @@ import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
 
-import RingQmlWidgets 1.0
 import org.kde.kirigami 2.2 as Kirigami
 import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 import org.kde.ringkde.jamiphotoselector 1.0 as JamiPhotoSelector

@@ -22,8 +22,6 @@ import QtGraphicalEffects 1.0
 import org.kde.ringkde.jamitimelinebase 1.0 as JamiTimelineBase
 import org.kde.ringkde.jamihistoryview 1.0 as JamiHistoryView
 
-import RingQmlWidgets 1.0
-
 Rectangle {
     id: timelinePage
     property bool showScrollbar: true

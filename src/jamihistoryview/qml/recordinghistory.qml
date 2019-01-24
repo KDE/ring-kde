@@ -25,8 +25,7 @@ import net.lvindustries.ringqtquick.models 1.0 as RingQtModels
 import org.kde.ringkde.jamitimeline 1.0 as JamiTimeline
 import org.kde.ringkde.jamitimelinebase 1.0 as JamiTimelineBase
 import org.kde.ringkde.jamiaudioplayer 1.0 as JamiAudioPlayer
-
-import RingQmlWidgets 1.0
+import org.kde.ringkde.genericutils 1.0 as GenericUtils
 
 KQuickItemViews.TreeView {
     id: chatView
@@ -39,7 +38,7 @@ KQuickItemViews.TreeView {
         colorGroup: SystemPalette.Active
     }
 
-    TreeHelper {
+    GenericUtils.TreeHelper {
         id: _treeHelper
     }
 

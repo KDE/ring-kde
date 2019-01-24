@@ -15,25 +15,18 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-#include "plugin.h"
+#pragma once
 
-#include <QtCore/QDebug>
-#include <QtWidgets/QAction>
-#include <QQmlEngine>
+#include <QQmlExtensionPlugin>
 
-#include "treehelper.h"
-#include "fileloader.h"
-
-#include "qrc_qmlwidgets.cpp"
-
-void RingQmlWidgets::registerTypes(const char *uri)
+//![plugin]
+class GenericUtils final : public QQmlExtensionPlugin
 {
-    Q_ASSERT(uri == QLatin1String("RingQmlWidgets"));
+    Q_OBJECT
+    Q_PLUGIN_METADATA(IID "org.kde.ringkde.genericutils" FILE "genericutils.json")
 
-    qmlRegisterType<QAction>(uri, 1, 0, "QAction");
-
-    qmlRegisterType<TreeHelper>(uri, 1, 0, "TreeHelper");
-    qmlRegisterType<FileLoader>(uri, 1, 0, "FileLoader");
-    qmlRegisterType(QStringLiteral("qrc:/OutlineButton.qml"), uri, 1, 0, "OutlineButton");
-    qmlRegisterType(QStringLiteral("qrc:/OutlineButtons.qml"), uri, 1, 0, "OutlineButtons");
-}
+public:
+    void registerTypes(const char *uri) override;
+    virtual void initializeEngine(QQmlEngine* engine, const char* uri) override;
+};
+//![plugin]

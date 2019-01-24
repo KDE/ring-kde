@@ -19,7 +19,7 @@ import QtQuick 2.7
 
 import QtQuick.Layouts 1.0
 import org.kde.kirigami 2.2 as Kirigami
-import RingQmlWidgets 1.0
+import org.kde.ringkde.genericutils 1.0 as GenericUtils
 
 /**
  * Add a very obvious warning and reload button to make the "/!\ No accounts"

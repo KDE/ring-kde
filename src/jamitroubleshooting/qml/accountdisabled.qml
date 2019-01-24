@@ -17,10 +17,9 @@
  **************************************************************************/
 import QtQuick 2.7
 
-import QtQuick.Layouts 1.0
+import QtQuick.Layouts 1.0 as Layouts
 import org.kde.kirigami 2.2 as Kirigami
-import RingQmlWidgets 1.0
-import QtQuick.Controls 2.2
+import org.kde.ringkde.genericutils 1.0 as GenericUtils
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 
 /**
@@ -33,7 +32,7 @@ Rectangle {
     height: content.implicitHeight + 20
     opacity: 0.8
 
-    ColumnLayout {
+    Layouts.ColumnLayout {
         id: content
         y: 10
         x: 10
@@ -41,7 +40,7 @@ Rectangle {
 
         Image {
             height: 32
-            Layout.fillWidth: true
+            Layouts.Layout.fillWidth: true
             fillMode: Image.PreserveAspectFit
             width: parent.width
             sourceSize.width: 32
@@ -51,7 +50,7 @@ Rectangle {
         }
 
         Text {
-            Layout.fillWidth: true
+            Layouts.Layout.fillWidth: true
             text: i18n("All accounts are currently disabled. Please click on an account below to enable it:")
             color: activePalette.text
             wrapMode: Text.WordWrap
@@ -73,7 +72,7 @@ Rectangle {
                 width: content.width
                 radius: 5
 
-                Layout.fillWidth: true
+                Layouts.Layout.fillWidth: true
                 anchors.margins: 10
 
                 Text {

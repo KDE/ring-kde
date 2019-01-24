@@ -19,7 +19,6 @@ import QtQuick 2.7
 import org.kde.kirigami 2.2 as Kirigami
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.0
-import RingQmlWidgets 1.0
 
 import "Pages/" as Pages
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick

@@ -17,7 +17,6 @@
  **************************************************************************/
 import QtQuick 2.0
 
-import RingQmlWidgets 1.0
 import org.kde.ringkde.jamivideoview 1.0 as JamiVideoView
 
 Rectangle {

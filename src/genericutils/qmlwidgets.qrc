@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/outlinebutton.qml</file>
+        <file>qml/outlinebuttons.qml</file>
+    </qresource>
+</RCC>

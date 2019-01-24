@@ -21,9 +21,6 @@ import QtQuick.Layouts 1.0
 ColumnLayout {
     width: 300
     spacing: 10
-//     signal callWithVideo()
-//     signal callWithAudio()
-//     signal callWithScreen()
 
     Component {
         id: button

@@ -20,7 +20,7 @@ import org.kde.kirigami 2.5 as Kirigami
 import org.kde.playground.kquickitemviews 1.0 as KQuickItemViews
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
-import RingQmlWidgets 1.0
+import org.kde.ringkde.genericutils 1.0 as GenericUtils
 
 Page {
     property var account: object
@@ -120,8 +120,8 @@ Page {
 
        }
 
-        OutlineButtons {
-            TreeHelper {
+        GenericUtils.OutlineButtons {
+            GenericUtils.TreeHelper {
                 id: creationHelper
                 model: account ? account.credentialModel.availableTypeModel : null
             }

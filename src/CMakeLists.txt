@@ -1,5 +1,5 @@
 # Shared C++ QML components
-ADD_SUBDIRECTORY( qmlwidgets )
+ADD_SUBDIRECTORY( genericutils )
 
 #Build KDE specific files
 ADD_SUBDIRECTORY( jamikdeintegration )

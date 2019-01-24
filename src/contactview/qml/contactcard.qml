@@ -17,11 +17,7 @@
  **************************************************************************/
 import QtQuick 2.7
 import QtQuick.Layouts 1.0
-import QtQuick.Controls 2.0
-import QtQml.Models 2.2
-import RingQmlWidgets 1.0
 
-import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 
 Item {

@@ -16,12 +16,12 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
 import QtQuick 2.7
-import RingQmlWidgets 1.0 as RingQmlWidgets
+import org.kde.ringkde.genericutils 1.0 as GenericUtils
 
 Loader {
     clip: true
 
-    RingQmlWidgets.FileLoader {
+    GenericUtils.FileLoader {
         id: welcomeMessage
         path: ":/assets/welcome.html"
     }

@@ -17,10 +17,9 @@
  *****************************************************************************/
 import QtQuick 2.0
 
-import RingQmlWidgets 1.0
-import net.lvindustries.ringqtquick 1.0 as RingQtQuick
+import org.kde.ringkde.genericutils 1.0 as GenericUtils
 
-OutlineButton {
+GenericUtils.OutlineButton {
     id: mainArea
     height: 58
     expandedHeight: 64

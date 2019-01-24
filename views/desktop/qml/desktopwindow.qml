@@ -17,7 +17,6 @@
  **************************************************************************/
 import QtQuick 2.7
 
-import RingQmlWidgets 1.0
 import QtQuick.Layouts 1.0
 import QtQuick.Controls 2.0 as Controls
 import org.kde.kirigami 2.2 as Kirigami
@@ -26,8 +25,6 @@ import org.kde.ringkde.jamikdeintegration 1.0 as JamiKDEIntegration
 import org.kde.ringkde.jamiwizard 1.0 as JamiWizard
 import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 import org.kde.ringkde.jamitimeline 1.0 as JamiTimeline
-import org.kde.ringkde.jamiwizard 1.0 as JamiWizard
-// import org.kde.ringkde.jamiaccountview 1.0 as JamiAccountView
 
 Kirigami.ApplicationWindow {
     id: root
@@ -128,7 +125,7 @@ Kirigami.ApplicationWindow {
             "ActionCollection.quitAction"
         ]
 
-        var viewCode = "import RingQmlWidgets 1.0\n import DesktopView 1.0 \n QmlAction {text: \"View\" \n"
+        var viewCode = "import DesktopView 1.0 \n QmlAction {text: \"View\" \n"
         for (var i = 0; i < view.length; i++)
             viewCode = viewCode + "QmlAction { action:"+view[i]+"} \n"
         viewCode += "}"
@@ -136,7 +133,7 @@ Kirigami.ApplicationWindow {
         _regularActions.push(Qt.createQmlObject(viewCode, root, "dynamicSnippet1"))
 
         for (var i = 0; i < actions.length; i++) {
-            _regularActions.push(Qt.createQmlObject("import RingQmlWidgets 1.0;import DesktopView 1.0; QmlAction {
+            _regularActions.push(Qt.createQmlObject("import DesktopView 1.0; QmlAction {
                 action: "+actions[i]+"
             }", root, "dynamicSnippet2"))
         }
@@ -158,7 +155,7 @@ Kirigami.ApplicationWindow {
             "ActionCollection.quitAction"
         ]
 
-        var viewCode = "import RingQmlWidgets 1.0\n QmlAction {text: \""+i18n("Settings")+"\" \n"
+        var viewCode = "import DesktopView 1.0\n QmlAction {text: \""+i18n("Settings")+"\" \n"
         for (var i = 0; i < actions.length; i++)
             viewCode = viewCode + "QmlAction { action:"+actions[i]+"} \n"
         viewCode += "}"

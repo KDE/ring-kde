@@ -17,7 +17,6 @@
  **************************************************************************/
 import QtQuick 2.7
 import QtQuick.Layouts 1.0
-import RingQmlWidgets 1.0
 
 import QtQuick.Controls 2.2
 import org.kde.ringkde.jamicontactview 1.0 as JamiContactView

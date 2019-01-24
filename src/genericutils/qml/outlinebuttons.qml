@@ -16,9 +16,7 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
 import QtQuick 2.9
-
-import RingQmlWidgets 1.0
-import QtQuick.Layouts 1.0
+import org.kde.ringkde.genericutils 1.0 as GenericUtils
 
 Item {
     id: button
@@ -46,7 +44,7 @@ Item {
                 implicitHeight: 50
                 implicitWidth: width
                 height: 50
-                OutlineButton {
+                GenericUtils.OutlineButton {
                     anchors.fill: parent
                     label: display
                     onClicked: {

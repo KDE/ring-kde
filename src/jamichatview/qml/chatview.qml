@@ -23,8 +23,7 @@ import org.kde.playground.kquickitemviews 1.0 as KQuickItemViews
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 import net.lvindustries.ringqtquick.models 1.0 as RingQtModels
 import org.kde.ringkde.jamichatview 1.0 as JamiChatView
-
-import RingQmlWidgets 1.0
+import org.kde.ringkde.genericutils 1.0 as GenericUtils
 
 KQuickItemViews.HierarchyView {
     id: chatView
@@ -37,7 +36,7 @@ KQuickItemViews.HierarchyView {
         colorGroup: SystemPalette.Active
     }
 
-    TreeHelper {
+    GenericUtils.TreeHelper {
         id: _treeHelper
     }
 

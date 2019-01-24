@@ -22,10 +22,7 @@ import QtGraphicalEffects 1.0
 import org.kde.ringkde.jamitimeline 1.0 as JamiTimeline
 import org.kde.ringkde.jamitimelinebase 1.0 as JamiTimelineBase
 import org.kde.ringkde.jamichatview 1.0 as JamiChatView
-
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
-
-import RingQmlWidgets 1.0
 
 Rectangle {
     id: timelinePage

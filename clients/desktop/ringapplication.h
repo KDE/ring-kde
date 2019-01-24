@@ -30,7 +30,6 @@ namespace KDeclarative {
 }
 
 //Ring
-class RingQmlWidgets;
 class DesktopView;
 
 ///RingApplication: Main application
@@ -64,7 +63,6 @@ private:
    bool m_StartIconified {false};
 
    static KDeclarative::KDeclarative* m_pDeclarative;
-   static RingQmlWidgets* m_pQmlWidget;
    static RingApplication* m_spInstance;
    static DesktopView* m_pDesktopView;
 };
