@@ -21,7 +21,7 @@ import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
 import org.kde.playground.kquickitemviews 1.0 as KQuickItemViews
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
-import "../" as AccountWidgets
+import org.kde.ringkde.jamiaccountview 1.0 as JamiAccountView
 
 /**
  * This page contains the most basic elements necessary to create a SIP or
@@ -31,7 +31,7 @@ Page {
     ColumnLayout {
         anchors.fill: parent
 
-        AccountWidgets.SecurityLevel {
+        JamiAccountView.SecurityLevel {
             Layout.fillWidth: true
             level: securityLevel
             informationCount: object.securityEvaluationModel.informationCount
@@ -81,7 +81,7 @@ Page {
                 visible: RingQtQuick.FieldStatus.available
             }
 
-            AccountWidgets.SecurityTip {
+            JamiAccountView.SecurityTip {
                 id: permTip
                 visible: object.securityEvaluationModel.permissionWarning
                 Kirigami.FormData.isSection: true
@@ -101,7 +101,7 @@ Page {
                 }
             }
 
-            AccountWidgets.SecurityTip {
+            JamiAccountView.SecurityTip {
                 id: pathTip
                 Kirigami.FormData.isSection: true
                 visible: object.securityEvaluationModel.locationWarning

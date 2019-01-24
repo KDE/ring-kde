@@ -17,11 +17,30 @@
  **************************************************************************/
 #include "accountviewplugin.h"
 
+// Qt
+#include <QQmlEngine>
+#include <QQmlContext>
 #include <QtCore/QDebug>
 
 #include <qrc_accountview.cpp>
 
-void JamiAccountView::registerTypes(const char *)
+void JamiAccountView::registerTypes(const char *uri)
 {
+    static QByteArray pageUri = QByteArray(uri)+".pages";
 
+    qmlRegisterType(QStringLiteral("qrc:/account/qml/accountlist.qml"), uri, 1, 0,           "AccountList");
+    qmlRegisterType(QStringLiteral("qrc:/account/qml/presenceselector.qml"), uri, 1, 0,      "PresenceSelector");
+    qmlRegisterType(QStringLiteral("qrc:/account/qml/accounts.qml"), uri, 1, 0,              "Accounts");
+    qmlRegisterType(QStringLiteral("qrc:/account/qml/accountdialog.qml"), uri, 1, 0,         "AccountDialog");
+    qmlRegisterType(QStringLiteral("qrc:/account/qml/securitylevel.qml"), uri, 1, 0,         "SecurityLevel");
+    qmlRegisterType(QStringLiteral("qrc:/account/qml/securitytip.qml"), uri, 1, 0,           "SecurityTip");
+    qmlRegisterType(QStringLiteral("qrc:/account/qml/pages/basic.qml"), pageUri, 1, 0,       "Basic");
+    qmlRegisterType(QStringLiteral("qrc:/account/qml/pages/advanced.qml"), pageUri, 1, 0,    "Advanced");
+    qmlRegisterType(QStringLiteral("qrc:/account/qml/pages/network.qml"), pageUri, 1, 0,     "Network");
+    qmlRegisterType(QStringLiteral("qrc:/account/qml/pages/codecs.qml"), pageUri, 1, 0,      "Codecs");
+    qmlRegisterType(QStringLiteral("qrc:/account/qml/pages/credentials.qml"), pageUri, 1, 0, "Credentials");
+    qmlRegisterType(QStringLiteral("qrc:/account/qml/pages/devices.qml"), pageUri, 1, 0,     "Devices");
+    qmlRegisterType(QStringLiteral("qrc:/account/qml/pages/security.qml"), pageUri, 1, 0,    "Security");
+    qmlRegisterType(QStringLiteral("qrc:/account/qml/pages/ringtones.qml"), pageUri, 1, 0,   "Ringtones");
+    qmlRegisterType(QStringLiteral("qrc:/account/qml/pages/profiles.qml"), pageUri, 1, 0,    "Profiles");
 }

@@ -25,6 +25,7 @@ import org.kde.ringkde.jamikdeintegration 1.0 as JamiKDEIntegration
 import org.kde.ringkde.jamiwizard 1.0 as JamiWizard
 import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 import org.kde.ringkde.jamitimeline 1.0 as JamiTimeline
+import org.kde.ringkde.jamiaccountview 1.0 as JamiAccountView
 
 Kirigami.ApplicationWindow {
     id: root
@@ -46,7 +47,7 @@ Kirigami.ApplicationWindow {
         id: events
 
         onRequestsConfigureAccounts: {
-            var component = Qt.createComponent("AccountDialog.qml")
+            var component = Qt.createComponent("account/qml/accountdialog.qml")
             if (component.status == Component.Ready) {
                 var window = component.createObject(applicationWindow().contentItem)
                 window.open()
@@ -266,7 +267,8 @@ Kirigami.ApplicationWindow {
                         mainPage.setIndividual(ind)
                     }
                 }
-                AccountList {
+
+                JamiAccountView.AccountList {
                     height: contentHeight
                     Layout.fillWidth: true
                     enableAdd: false
@@ -305,7 +307,7 @@ Kirigami.ApplicationWindow {
                         Layout.fillWidth: true
                     }
 
-                    AccountList {
+                    JamiAccountView.AccountList {
                         id: accounts
                         height: contentHeight
                         Layout.minimumHeight: contentHeight

@@ -1,19 +1,19 @@
 <RCC>
-    <qresource prefix="/">
-        <file alias="AccountList.qml">qml/accountlist.qml</file>
-        <file alias="PresenceSelector.qml">qml/presenceselector.qml</file>
-        <file alias="Accounts.qml">qml/accounts.qml</file>
-        <file alias="AccountDialog.qml">qml/accountdialog.qml</file>
-        <file alias="SecurityLevel.qml">qml/securitylevel.qml</file>
-        <file alias="SecurityTip.qml">qml/securitytip.qml</file>
-        <file alias="Pages/Basic.qml">qml/pages/basic.qml</file>
-        <file alias="Pages/Advanced.qml">qml/pages/advanced.qml</file>
-        <file alias="Pages/Network.qml">qml/pages/network.qml</file>
-        <file alias="Pages/Codecs.qml">qml/pages/codecs.qml</file>
-        <file alias="Pages/Credentials.qml">qml/pages/credentials.qml</file>
-        <file alias="Pages/Devices.qml">qml/pages/devices.qml</file>
-        <file alias="Pages/Security.qml">qml/pages/security.qml</file>
-        <file alias="Pages/Ringtones.qml">qml/pages/ringtones.qml</file>
-        <file alias="Pages/Profiles.qml">qml/pages/profiles.qml</file>
+    <qresource prefix="/account/">
+        <file>qml/accountlist.qml</file>
+        <file>qml/presenceselector.qml</file>
+        <file>qml/accounts.qml</file>
+        <file>qml/accountdialog.qml</file>
+        <file>qml/securitylevel.qml</file>
+        <file>qml/securitytip.qml</file>
+        <file>qml/pages/basic.qml</file>
+        <file>qml/pages/advanced.qml</file>
+        <file>qml/pages/network.qml</file>
+        <file>qml/pages/codecs.qml</file>
+        <file>qml/pages/credentials.qml</file>
+        <file>qml/pages/devices.qml</file>
+        <file>qml/pages/security.qml</file>
+        <file>qml/pages/ringtones.qml</file>
+        <file>qml/pages/profiles.qml</file>
     </qresource>
 </RCC>

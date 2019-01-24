@@ -20,10 +20,11 @@ import org.kde.kirigami 2.2 as Kirigami
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.0
 
-import "Pages/" as Pages
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 import org.kde.playground.kquickitemviews 1.0 as KQuickItemViews
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
+import org.kde.ringkde.jamiaccountview 1.0 as JamiAccountView
+import org.kde.ringkde.jamiaccountview.pages 1.0 as JamiAccountPages
 
 Dialog {
     id: accountDialog
@@ -55,7 +56,7 @@ Dialog {
     RowLayout {
         anchors.fill: parent
 
-        Accounts {
+        JamiAccountView.Accounts {
             id: accountTree
             Layout.fillHeight: true
             Layout.preferredWidth: 300
@@ -112,20 +113,20 @@ Dialog {
                         interactive : false
                         Layout.fillHeight: true
                         Layout.fillWidth: true
-                        Pages.Basic {}
-                        Pages.Profiles {
+                        JamiAccountPages.Basic {}
+                        JamiAccountPages.Profiles {
                             id: prof
                             Component.onCompleted: {
                                 accountDialog.profilePage = prof
                             }
                         }
-                        Pages.Advanced {}
-                        Pages.Network {}
-                        Pages.Devices {}
-                        Pages.Codecs {}
-                        Pages.Credentials {}
-                        Pages.Security {}
-                        Pages.Ringtones {}
+                        JamiAccountPages.Advanced {}
+                        JamiAccountPages.Network {}
+                        JamiAccountPages.Devices {}
+                        JamiAccountPages.Codecs {}
+                        JamiAccountPages.Credentials {}
+                        JamiAccountPages.Security {}
+                        JamiAccountPages.Ringtones {}
                     }
                 }
             }
