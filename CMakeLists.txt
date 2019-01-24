@@ -104,15 +104,16 @@ INCLUDE(FeatureSummary)
 # On Android, the executable is treated as a library, this is not what's
 # normally expected.
 IF(NOT DEFINED OS_ANDROID)
-    SET(ENABLE_NOTIFICATIONS OFF)
     INCLUDE(KDECompilerSettings)
+ELSE()
+    SET(ENABLE_NOTIFICATIONS OFF)
 ENDIF()
 
 # So far only Linux systems use this feature, so it will print noise on all
 # platforms where the necessary infrastructure doesn't even exists, let alone
 # in use.
 IF(NOT ${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-    SET(KDE_SKIP_TEST_SETTINGS 1)
+#     SET(KDE_SKIP_TEST_SETTINGS 1)
 ENDIF()
 
 # Block known broken C++11 compilers

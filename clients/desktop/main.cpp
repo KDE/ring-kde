@@ -48,120 +48,34 @@ Q_IMPORT_PLUGIN(KQuickItemViews)
 #include <KQuickItemViews/plugin.h>
 #endif
 
-#ifdef JAMIKDEINTEGRATION_USE_STATIC_PLUGIN
 Q_IMPORT_PLUGIN(JamiKDEIntegration)
-#else
-#include <jamikdeintegration/src/plugin.h>
-#endif
-
-#ifdef JAMIWIZARD_USE_STATIC_PLUGIN
 Q_IMPORT_PLUGIN(JamiWizard)
-#else
-#include <wizard/plugin.h>
-#endif
-
-#ifdef JAMIACCOUNTVIEW_USE_STATIC_PLUGIN
 Q_IMPORT_PLUGIN(JamiAccountView)
-#else
-#include <accountview/accountviewplugin.h>
-#endif
-
-#ifdef JAMIACCOUNTVIEW_USE_STATIC_PLUGIN
 Q_IMPORT_PLUGIN(JamiCallView)
-#else
-#include <callview/callviewplugin.h>
-#endif
-
-#ifdef JAMIACCOUNTVIEW_USE_STATIC_PLUGIN
 Q_IMPORT_PLUGIN(JamiContactView)
-#else
-#include <contactview/contactviewplugin.h>
-#endif
-
-#ifdef JAMIACCOUNTVIEW_USE_STATIC_PLUGIN
 Q_IMPORT_PLUGIN(JamiDialView)
-#else
-#include <dialview/dialviewplugin.h>
-#endif
-
-#ifdef JAMIACCOUNTVIEW_USE_STATIC_PLUGIN
 Q_IMPORT_PLUGIN(JamiTimelineView)
-#else
-#include <timeline/timelineplugin.h>
-#endif
-
-#ifdef JAMICANVASINDICATOR_USE_STATIC_PLUGIN
 Q_IMPORT_PLUGIN(JamiCanvasIndicator)
-#else
-#include <canvasindicators/canvasindicator.h>
-#endif
-
-#ifdef JAMIPHOTOSELECTOR_USE_STATIC_PLUGIN
 Q_IMPORT_PLUGIN(JamiPhotoSelector)
-#else
-#include <photoselector/photoplugin.h>
-#endif
-
-
-#ifndef DISABLE_NOTIFICATION
-#ifdef JAMINOTIFICATION_USE_STATIC_PLUGIN
-Q_IMPORT_PLUGIN(JamiNotification)
-#else
-#include <jaminotification/plugin.h>
-#endif
-#endif
-
-#ifdef JAMIVIDEOVIEW_USE_STATIC_PLUGIN
 Q_IMPORT_PLUGIN(JamiVideoView)
-#else
-#include <jamivideoview/plugin.h>
-#endif
-
-#ifdef JAMITROUBLESHOOTING_USE_STATIC_PLUGIN
 Q_IMPORT_PLUGIN(JamiTroubleshooting)
-#else
-#include <jamitroubleshooting/plugin.h>
-#endif
-
-#ifdef JAMICHATVIEW_USE_STATIC_PLUGIN
 Q_IMPORT_PLUGIN(JamiChatView)
-#else
-#include <jamichatview/plugin.h>
-#endif
-
-#ifdef JAMIHISTORYVIEW_USE_STATIC_PLUGIN
 Q_IMPORT_PLUGIN(JamiHistoryView)
-#else
-#include <jamihistoryview/plugin.h>
-#endif
-
-#ifdef JAMITIMELINEBASE_USE_STATIC_PLUGIN
 Q_IMPORT_PLUGIN(JamiTimelineBase)
-#else
-#include <jamitimelinebase/plugin.h>
-#endif
-
-#ifdef JAMIAUDIOPLAYER_USE_STATIC_PLUGIN
 Q_IMPORT_PLUGIN(JamiAudioPlayer)
-#else
-#include <jamiaudioplayer/plugin.h>
-#endif
-
-#ifdef GENERICUTILS_USE_STATIC_PLUGIN
 Q_IMPORT_PLUGIN(GenericUtils)
-#else
-#include <genericutils/plugin.h>
-#endif
-
-#ifdef DESKTOPVIEW_USE_STATIC_PLUGIN
 Q_IMPORT_PLUGIN(DesktopView)
-#else
-#include <desktopviewplugin.h>
-#endif
-
 Q_IMPORT_PLUGIN(RingQtQuick)
 
+#ifndef Q_OS_ANDROID
+Q_IMPORT_PLUGIN(JamiNotification)
+#endif
+
 constexpr static const char version[] = "3.1.0";
+
+#define REGISTER_PLUGIN(name, uri) \
+ qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_ ## name().instance())->registerTypes(uri); \
+ qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_ ## name().instance())->initializeEngine(app.engine(), uri);
 
 int main(int argc, char **argv)
 {
@@ -181,172 +95,32 @@ int main(int argc, char **argv)
     v.registerTypes("org.kde.playground.kquickitemviews");
 #endif
 
-#ifdef GENERICUTILS_USE_STATIC_PLUGIN
-    qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_GenericUtils().instance())->registerTypes("org.kde.ringkde.genericutils");
-    qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_GenericUtils().instance())->initializeEngine(app.engine(), "org.kde.ringkde.genericutils");
-#else
-    GenericUtils v0;
-    v0.registerTypes("org.kde.ringkde.genericutils");
-    v0.initializeEngine(app.engine(), "org.kde.ringkde.genericutils");
+    // The order is important
+    REGISTER_PLUGIN(JamiKDEIntegration, "org.kde.ringkde.jamikdeintegration")
+    REGISTER_PLUGIN(RingQtQuick, "net.lvindustries.ringqtquick")
+
+    // The order is not important
+    REGISTER_PLUGIN(GenericUtils, "org.kde.ringkde.genericutils")
+    REGISTER_PLUGIN(JamiWizard, "org.kde.ringkde.jamiwizard")
+    REGISTER_PLUGIN(JamiAccountView, "org.kde.ringkde.jamiaccountview")
+    REGISTER_PLUGIN(JamiCallView, "org.kde.ringkde.jamicallview")
+    REGISTER_PLUGIN(JamiContactView, "org.kde.ringkde.jamicontactview")
+    REGISTER_PLUGIN(JamiDialView, "org.kde.ringkde.jamidialview")
+    REGISTER_PLUGIN(JamiTimelineView, "org.kde.ringkde.jamitimeline")
+    REGISTER_PLUGIN(JamiCanvasIndicator, "org.kde.ringkde.jamicanvasindicator")
+    REGISTER_PLUGIN(JamiPhotoSelector, "org.kde.ringkde.jamiphotoselector")
+    REGISTER_PLUGIN(JamiVideoView, "org.kde.ringkde.jamivideoview")
+    REGISTER_PLUGIN(JamiTroubleshooting, "org.kde.ringkde.jamitroubleshooting")
+    REGISTER_PLUGIN(JamiTimelineBase, "org.kde.ringkde.jamitimelinebase")
+    REGISTER_PLUGIN(JamiHistoryView, "org.kde.ringkde.jamihistoryview")
+    REGISTER_PLUGIN(JamiChatView, "org.kde.ringkde.jamichatview")
+    REGISTER_PLUGIN(JamiAudioPlayer, "org.kde.ringkde.jamiaudioplayer")
+
+#ifndef Q_OS_ANDROID
+    REGISTER_PLUGIN(JamiNotification, "org.kde.ringkde.jaminotification")
 #endif
 
-#ifdef JAMIKDEINTEGRATION_USE_STATIC_PLUGIN
-    qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiKDEIntegration().instance())->registerTypes("org.kde.ringkde.jamikdeintegration");
-    qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiKDEIntegration().instance())->initializeEngine(app.engine(), "org.kde.ringkde.jamikdeintegration");
-#else
-    JamiKDEIntegration v2;
-    v2.registerTypes("org.kde.ringkde.jamikdeintegration");
-    v2.initializeEngine(app.engine(), "org.kde.ringkde.jamikdeintegration");
-#endif
-
-    qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_RingQtQuick().instance())->registerTypes("net.lvindustries.ringqtquick");
-    qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_RingQtQuick().instance())->initializeEngine(app.engine(), "net.lvindustries.ringqtquick");
-
-#ifdef JAMIWIZARD_USE_STATIC_PLUGIN
-    qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiWizard().instance())->registerTypes("org.kde.ringkde.jamiwizard");
-    qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiWizard().instance())->initializeEngine(app.engine(), "org.kde.ringkde.jamiwizard");
-#else
-    JamiWizard v3;
-    v3.registerTypes("org.kde.ringkde.jamiwizard");
-    v3.initializeEngine(app.engine(), "org.kde.ringkde.jamiwizard");
-#endif
-
-#ifdef JAMIACCOUNTVIEW_USE_STATIC_PLUGIN
-    qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiAccountView().instance())->registerTypes("org.kde.ringkde.jamiaccountview");
-    qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiAccountView().instance())->initializeEngine(app.engine(), "org.kde.ringkde.jamiaccountview");
-#else
-    JamiAccountView v4;
-    v4.registerTypes("org.kde.ringkde.jamiaccountview");
-    v4.initializeEngine(app.engine(), "org.kde.ringkde.jamiaccountview");
-#endif
-
-#ifdef JAMIACCOUNTVIEW_USE_STATIC_PLUGIN
-    qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiCallView().instance())->registerTypes("org.kde.ringkde.jamicallview");
-    qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiCallView().instance())->initializeEngine(app.engine(), "org.kde.ringkde.jamicallview");
-#else
-    JamiCallViewPlugin v5;
-    v5.registerTypes("org.kde.ringkde.jamicallview");
-    v5.initializeEngine(app.engine(), "org.kde.ringkde.jamicallview");
-#endif
-
-#ifdef JAMICONTACTVIEW_USE_STATIC_PLUGIN
-    qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiContactView().instance())->registerTypes("org.kde.ringkde.jamicontactview");
-    qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiContactView().instance())->initializeEngine(app.engine(), "org.kde.ringkde.jamicontactview");
-#else
-    JamiContactViewPlugin v6;
-    v6.registerTypes("org.kde.ringkde.jamicontactview");
-    v6.initializeEngine(app.engine(), "org.kde.ringkde.jamicontactview");
-#endif
-
-#ifdef JAMIDIALVIEW_USE_STATIC_PLUGIN
-    qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiDialView().instance())->registerTypes("org.kde.ringkde.jamidialview");
-    qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiDialView().instance())->initializeEngine(app.engine(), "org.kde.ringkde.jamidialview");
-#else
-    JamiDialView v7;
-    v7.registerTypes("org.kde.ringkde.jamidialview");
-    v7.initializeEngine(app.engine(), "org.kde.ringkde.jamidialview");
-#endif
-
-#ifdef JAMITIMELINEVIEW_USE_STATIC_PLUGIN
-    qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiTimelineView().instance())->registerTypes("org.kde.ringkde.jamitimeline");
-    qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiTimelineView().instance())->initializeEngine(app.engine(), "org.kde.ringkde.jamitimeline");
-#else
-    JamiTimelineView v8;
-    v8.registerTypes("org.kde.ringkde.jamitimeline");
-    v8.initializeEngine(app.engine(), "org.kde.ringkde.jamitimeline");
-#endif
-
-#ifdef JAMICANVASINDICATOR_USE_STATIC_PLUGIN
-    qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiCanvasIndicator().instance())->registerTypes("org.kde.ringkde.jamicanvasindicator");
-    qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiCanvasIndicator().instance())->initializeEngine(app.engine(), "org.kde.ringkde.jamicanvasindicator");
-#else
-    JamiCanvasIndicator v9;
-    v9.registerTypes("org.kde.ringkde.jamicanvasindicator");
-    v9.initializeEngine(app.engine(), "org.kde.ringkde.jamicanvasindicator");
-#endif
-
-#ifdef JAMIPHOTOSELECTOR_USE_STATIC_PLUGIN
-    qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiPhotoSelector().instance())->registerTypes("org.kde.ringkde.jamiphotoselector");
-    qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiPhotoSelector().instance())->initializeEngine(app.engine(), "org.kde.ringkde.jamiphotoselector");
-#else
-    JamiPhotoSelector v10;
-    v10.registerTypes("org.kde.ringkde.jamiphotoselector");
-    v10.initializeEngine(app.engine(), "org.kde.ringkde.jamiphotoselector");
-#endif
-
-#ifndef DISABLE_NOTIFICATION
-#ifdef JAMINOTIFICATION_USE_STATIC_PLUGIN
-    qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiNotification().instance())->registerTypes("org.kde.ringkde.jaminotification");
-    qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiNotification().instance())->initializeEngine(app.engine(), "org.kde.ringkde.jaminotification");
-#else
-    JamiNotification v11;
-    v11.registerTypes("org.kde.ringkde.jaminotification");
-    v11.initializeEngine(app.engine(), "org.kde.ringkde.jaminotification");
-#endif
-#endif
-
-#ifdef JAMIVIDEOVIEW_USE_STATIC_PLUGIN
-    qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_VideoView().instance())->registerTypes("org.kde.ringkde.jamivideoview");
-    qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_VideoView().instance())->initializeEngine(app.engine(), "org.kde.ringkde.jamivideoview");
-#else
-    JamiVideoView v12;
-    v12.registerTypes("org.kde.ringkde.jamivideoview");
-    v12.initializeEngine(app.engine(), "org.kde.ringkde.jamivideoview");
-#endif
-
-#ifdef JAMITROUBLESHOOTING_USE_STATIC_PLUGIN
-    qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiTroubleshooting().instance())->registerTypes("org.kde.ringkde.jamitroubleshooting");
-    qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiTroubleshooting().instance())->initializeEngine(app.engine(), "org.kde.ringkde.jamitroubleshooting");
-#else
-    JamiTroubleshooting v13;
-    v13.registerTypes("org.kde.ringkde.jamitroubleshooting");
-    v13.initializeEngine(app.engine(), "org.kde.ringkde.jamitroubleshooting");
-#endif
-
-#ifdef JAMITIMELINEBASE_USE_STATIC_PLUGIN
-    qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiTimelineBase().instance())->registerTypes("org.kde.ringkde.jamitimelinebase");
-    qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiTimelineBase().instance())->initializeEngine(app.engine(), "org.kde.ringkde.jamitimelinebase");
-#else
-    JamiTimelineBase v14;
-    v14.registerTypes("org.kde.ringkde.jamitimelinebase");
-    v14.initializeEngine(app.engine(), "org.kde.ringkde.jamitimelinebase");
-#endif
-
-#ifdef JAMIHISTORYVIEW_USE_STATIC_PLUGIN
-    qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiHistoryView().instance())->registerTypes("org.kde.ringkde.jamihistoryview");
-    qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiHistoryView().instance())->initializeEngine(app.engine(), "org.kde.ringkde.jamihistoryview");
-#else
-    JamiHistoryView v15;
-    v15.registerTypes("org.kde.ringkde.jamihistoryview");
-    v15.initializeEngine(app.engine(), "org.kde.ringkde.jamihistoryview");
-#endif
-
-#ifdef JAMICHATVIEW_USE_STATIC_PLUGIN
-    qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiChatView().instance())->registerTypes("org.kde.ringkde.jamichatview");
-    qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiChatView().instance())->initializeEngine(app.engine(), "org.kde.ringkde.jamichatview");
-#else
-    JamiChatView v16;
-    v16.registerTypes("org.kde.ringkde.jamichatview");
-    v16.initializeEngine(app.engine(), "org.kde.ringkde.jamichatview");
-#endif
-
-#ifdef JAMIAUDIOPLAYER_USE_STATIC_PLUGIN
-    qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiAudioPlayer().instance())->registerTypes("org.kde.ringkde.jamiaudioplayer");
-    qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_JamiAudioPlayer().instance())->initializeEngine(app.engine(), "org.kde.ringkde.jamiaudioplayer");
-#else
-    JamiAudioPlayer v17;
-    v17.registerTypes("org.kde.ringkde.jamiaudioplayer");
-    v17.initializeEngine(app.engine(), "org.kde.ringkde.jamiaudioplayer");
-#endif
-
-#ifdef DESKTOPVIEW_USE_STATIC_PLUGIN
-    qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_DesktopView().instance())->registerTypes("org.kde.ringkde.desktopview");
-    qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_DesktopView().instance())->initializeEngine(app.engine(), "org.kde.ringkde.desktopview");
-#else
-    DesktopView v18;
-    v18.registerTypes("org.kde.ringkde.desktopview");
-    v18.initializeEngine(app.engine(), "org.kde.ringkde.desktopview");
-#endif
+    REGISTER_PLUGIN(DesktopView, "org.kde.ringkde.desktopview")
 
     KAboutData about(QStringLiteral("ring-kde"),
         i18n("ring-kde"),

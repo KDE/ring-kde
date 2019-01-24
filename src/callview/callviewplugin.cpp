@@ -26,7 +26,7 @@
 // QRC
 #include <qrc_callview.cpp>
 
-void JamiCallViewPlugin::registerTypes(const char *uri)
+void JamiCallView::registerTypes(const char *uri)
 {
     Q_ASSERT(uri == QByteArray("org.kde.ringkde.jamicallview"));
 
@@ -36,7 +36,7 @@ void JamiCallViewPlugin::registerTypes(const char *uri)
     qmlRegisterType(QStringLiteral("qrc:/callview/qml/callbackground.qml"), uri, 1, 0, "CallBackground");
 }
 
-void JamiCallViewPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
+void JamiCallView::initializeEngine(QQmlEngine *engine, const char *uri)
 {
     Q_UNUSED(engine)
     Q_UNUSED(uri)

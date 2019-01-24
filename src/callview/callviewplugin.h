@@ -20,7 +20,7 @@
 
 #include <QQmlExtensionPlugin>
 
-class Q_DECL_EXPORT JamiCallViewPlugin final : public QQmlExtensionPlugin
+class Q_DECL_EXPORT JamiCallView final : public QQmlExtensionPlugin
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID "org.kde.ringkde.callview" FILE "callview.json")

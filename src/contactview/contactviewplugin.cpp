@@ -30,7 +30,7 @@
 #include "mainpage.h"
 #include "contactphoto.h"
 
-void JamiContactViewPlugin::registerTypes(const char *uri)
+void JamiContactView::registerTypes(const char *uri)
 {
     Q_ASSERT(uri == QByteArray("org.kde.ringkde.jamicontactview"));
 
@@ -54,7 +54,7 @@ void JamiContactViewPlugin::registerTypes(const char *uri)
     qmlRegisterType(QStringLiteral("qrc:/contactview/qml/contactdialog.qml")             , uri, 1, 0, "ContactDialog");
 }
 
-void JamiContactViewPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
+void JamiContactView::initializeEngine(QQmlEngine *engine, const char *uri)
 {
     Q_UNUSED(engine)
     Q_UNUSED(uri)

@@ -20,7 +20,7 @@
 
 #include <QQmlExtensionPlugin>
 
-class Q_DECL_EXPORT JamiContactViewPlugin final : public QQmlExtensionPlugin
+class Q_DECL_EXPORT JamiContactView final : public QQmlExtensionPlugin
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID "org.kde.ringkde.contactview" FILE "contactview.json")
