@@ -23,6 +23,7 @@ import org.kde.kirigami 2.2 as Kirigami
 import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 import org.kde.ringkde.jamiphotoselector 1.0 as JamiPhotoSelector
 import org.kde.ringkde.jamitroubleshooting 1.0 as JamiTroubleshooting
+import org.kde.ringkde.desktopview 1.0 as DesktopView
 
 Rectangle {
     id: contactHeader
@@ -209,7 +210,7 @@ Rectangle {
         }
     }
 
-    MediaButtons {
+    DesktopView.MediaButtons {
         id: mediaButtons
         anchors.verticalCenter: contactHeader.verticalCenter
         anchors.left: separator.right

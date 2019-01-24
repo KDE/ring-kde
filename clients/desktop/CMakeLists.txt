@@ -123,7 +123,7 @@ TARGET_LINK_LIBRARIES(ring-kde
   desktopview
   jamicontactview
   jamiaccountview
-  libqmlwidgets
+  genericutils
   kquickitemviews
   jamikdeintegration
   jamivideoview

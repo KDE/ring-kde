@@ -20,7 +20,7 @@ import QtQuick 2.7
 import QtQuick.Layouts 1.0
 import QtQuick.Controls 2.0 as Controls
 import org.kde.kirigami 2.2 as Kirigami
-import DesktopView 1.0
+import org.kde.ringkde.desktopview 1.0 as DesktopView
 import org.kde.ringkde.jamikdeintegration 1.0 as JamiKDEIntegration
 import org.kde.ringkde.jamiwizard 1.0 as JamiWizard
 import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
@@ -35,7 +35,7 @@ Kirigami.ApplicationWindow {
 
     property bool wizardVisible: false
 
-    TipModel {
+    DesktopView.TipModel {
         id: displayTips
     }
 
@@ -47,7 +47,7 @@ Kirigami.ApplicationWindow {
         id: events
 
         onRequestsConfigureAccounts: {
-            var component = Qt.createComponent("account/qml/accountdialog.qml")
+            var component = Qt.createComponent("qrc:/account/qml/accountdialog.qml")
             if (component.status == Component.Ready) {
                 var window = component.createObject(applicationWindow().contentItem)
                 window.open()
@@ -126,15 +126,15 @@ Kirigami.ApplicationWindow {
             "ActionCollection.quitAction"
         ]
 
-        var viewCode = "import DesktopView 1.0 \n QmlAction {text: \"View\" \n"
+        var viewCode = "import org.kde.ringkde.desktopview 1.0 as DesktopView; DesktopView.QmlAction {text: \"View\" \n"
         for (var i = 0; i < view.length; i++)
-            viewCode = viewCode + "QmlAction { action:"+view[i]+"} \n"
+            viewCode = viewCode + "DesktopView.QmlAction { action:"+view[i]+"} \n"
         viewCode += "}"
 
         _regularActions.push(Qt.createQmlObject(viewCode, root, "dynamicSnippet1"))
 
         for (var i = 0; i < actions.length; i++) {
-            _regularActions.push(Qt.createQmlObject("import DesktopView 1.0; QmlAction {
+            _regularActions.push(Qt.createQmlObject("import org.kde.ringkde.desktopview 1.0 as DesktopView; DesktopView.QmlAction {
                 action: "+actions[i]+"
             }", root, "dynamicSnippet2"))
         }
@@ -156,9 +156,9 @@ Kirigami.ApplicationWindow {
             "ActionCollection.quitAction"
         ]
 
-        var viewCode = "import DesktopView 1.0\n QmlAction {text: \""+i18n("Settings")+"\" \n"
+        var viewCode = "import org.kde.ringkde.desktopview 1.0 as DesktopView\n DesktopView.QmlAction {text: \""+i18n("Settings")+"\" \n"
         for (var i = 0; i < actions.length; i++)
-            viewCode = viewCode + "QmlAction { action:"+actions[i]+"} \n"
+            viewCode = viewCode + "DesktopView.QmlAction { action:"+actions[i]+"} \n"
         viewCode += "}"
 
         _mobileActions.push(Qt.createQmlObject(viewCode, root, "dynamicSnippet1"))
@@ -264,7 +264,7 @@ Kirigami.ApplicationWindow {
 
                     state: "mobile"
                     onIndividualSelected: {
-                        mainPage.setIndividual(ind)
+                        /*mainPa*/ge.setIndividual(ind)
                     }
                 }
 
@@ -364,7 +364,7 @@ Kirigami.ApplicationWindow {
         }
     }
 
-    QActionBinder {
+    DesktopView.QActionBinder {
         id: binder
         actionCollection: ActionCollection.kactionCollection
     }
@@ -388,7 +388,7 @@ Kirigami.ApplicationWindow {
             Layout.preferredWidth: item ? item.width : 0
             visible: stateGroup.state != "mobile"
             active: true
-            sourceComponent: DockBar {
+            sourceComponent: DesktopView.DockBar {
                 height: parent.height
                 newHolder: newHolder
                 onTimelineSelected: {
@@ -404,7 +404,7 @@ Kirigami.ApplicationWindow {
             Layout.fillHeight: true
             Layout.fillWidth: true
 
-            ContactHeader {
+            DesktopView.ContactHeader {
                 id: contactHeader
                 backgroundColor: activePalette.alternateBase
                 isMobile: stateGroup.state == "mobile"

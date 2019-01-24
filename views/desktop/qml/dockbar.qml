@@ -26,8 +26,7 @@ import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 import org.kde.ringkde.jamidialview 1.0 as JamiDialView
 import org.kde.ringkde.jamitimeline 1.0 as JamiTimeline
 import org.kde.ringkde.jamihistoryview 1.0 as JamiHistoryView
-
-import DesktopView 1.0
+import org.kde.ringkde.desktopview 1.0 as DesktopView
 
 Item {
     id: topLevel
@@ -87,7 +86,7 @@ Item {
                 NumberAnimation {duration: 200;  easing.type: Easing.OutQuad }
             }
 
-            DockModel {
+            DesktopView.DockModel {
                 id: icons
             }
 

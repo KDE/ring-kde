@@ -20,7 +20,6 @@
 #include "ringapplication.h"
 
 //Qt
-#include <QtCore/QTimer>
 #include <QtCore/QDebug>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
@@ -29,10 +28,7 @@
 #include <QQmlComponent>
 
 //KDE
-#include <KIconLoader>
-#include <kmessagebox.h>
 #include <KDeclarative/KDeclarative>
-#include <KLocalizedString>
 
 //LRC
 #include <itemdataroles.h>
@@ -44,18 +40,7 @@
 #include "cmd.h"
 #include "jamikdeintegration/src/windowevent.h"
 
-//QML
-#include "desktopviewplugin.h"
-
-
-///Error to display when there is nothing else to say
-static const QString GENERIC_ERROR = i18n("An unknown error occurred. Ring KDE will now exit. If the problem persist, please report a bug.\n\n"
-      "It is known that this message can be caused by trying to open Ring KDE while the Ring daemon is exiting. If so, waiting 15 seconds and "
-      "trying again will solve the issue.");
-
-
 KDeclarative::KDeclarative* RingApplication::m_pDeclarative {nullptr};
-DesktopView* RingApplication::m_pDesktopView {nullptr};
 RingApplication* RingApplication::m_spInstance {nullptr};
 
 /**
@@ -64,8 +49,6 @@ RingApplication* RingApplication::m_spInstance {nullptr};
 RingApplication::RingApplication(int & argc, char ** argv) : QApplication(argc,argv),m_StartIconified(false)
 {
    Q_ASSERT(argc != -1);
-
-   setAttribute(Qt::AA_EnableHighDpiScaling);
 
    m_spInstance = this;
 }
@@ -138,9 +121,6 @@ QQmlApplicationEngine* RingApplication::engine()
    static std::atomic_flag engineInit = ATOMIC_FLAG_INIT;
 
    if (!engineInit.test_and_set()) {
-      m_pDesktopView = new DesktopView;
-      m_pDesktopView->registerTypes("DesktopView");
-
       e = new QQmlApplicationEngine(QGuiApplication::instance());
 
       // Setup the icon theme provider and ki18n
@@ -155,7 +135,7 @@ void RingApplication::initDesktopWindow()
    static QQuickWindow* dw = nullptr;
    if (!dw) {
       QQmlComponent component(engine());
-      component.loadUrl(QUrl(QStringLiteral("qrc:/DesktopWindow.qml")));
+      component.loadUrl(QUrl(QStringLiteral("qrc:/desktopview/qml/desktopwindow.qml")));
       if ( component.isReady() ) {
          qDebug() << "Previous error" << component.errorString();
 

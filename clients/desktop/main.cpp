@@ -153,6 +153,12 @@ Q_IMPORT_PLUGIN(GenericUtils)
 #include <genericutils/plugin.h>
 #endif
 
+#ifdef DESKTOPVIEW_USE_STATIC_PLUGIN
+Q_IMPORT_PLUGIN(DesktopView)
+#else
+#include <desktopviewplugin.h>
+#endif
+
 Q_IMPORT_PLUGIN(RingQtQuick)
 
 constexpr static const char version[] = "3.1.0";
@@ -331,6 +337,15 @@ int main(int argc, char **argv)
     JamiAudioPlayer v17;
     v17.registerTypes("org.kde.ringkde.jamiaudioplayer");
     v17.initializeEngine(app.engine(), "org.kde.ringkde.jamiaudioplayer");
+#endif
+
+#ifdef DESKTOPVIEW_USE_STATIC_PLUGIN
+    qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_DesktopView().instance())->registerTypes("org.kde.ringkde.desktopview");
+    qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_DesktopView().instance())->initializeEngine(app.engine(), "org.kde.ringkde.desktopview");
+#else
+    DesktopView v18;
+    v18.registerTypes("org.kde.ringkde.desktopview");
+    v18.initializeEngine(app.engine(), "org.kde.ringkde.desktopview");
 #endif
 
     KAboutData about(QStringLiteral("ring-kde"),

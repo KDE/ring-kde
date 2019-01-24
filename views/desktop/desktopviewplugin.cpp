@@ -33,4 +33,17 @@ void DesktopView::registerTypes(const char *uri)
     qmlRegisterType<TipModel>(uri, 1, 0, "TipModel");
     qmlRegisterType<QmlAction>(uri, 1, 0, "QmlAction");
     qmlRegisterType<QActionBinder>(uri, 1, 0, "QActionBinder");
+
+    qmlRegisterType(QStringLiteral("qrc:/desktopview/qml/desktopwindow.qml"), uri, 1, 0, "DesktopWindow");
+    qmlRegisterType(QStringLiteral("qrc:/desktopview/qml/dockbar.qml"), uri, 1, 0, "DockBar");
+    qmlRegisterType(QStringLiteral("qrc:/desktopview/qml/drawer.qml"), uri, 1, 0, "Drawer");
+    qmlRegisterType(QStringLiteral("qrc:/desktopview/qml/viewcontact.qml"), uri, 1, 0, "ViewContact");
+    qmlRegisterType(QStringLiteral("qrc:/desktopview/qml/contactheader.qml"), uri, 1, 0, "ContactHeader");
+    qmlRegisterType(QStringLiteral("qrc:/desktopview/qml/mediabuttons.qml"), uri, 1, 0, "MediaButtons");
+}
+
+void DesktopView::initializeEngine(QQmlEngine* engine, const char* uri)
+{
+    Q_UNUSED(engine)
+    Q_UNUSED(uri)
 }

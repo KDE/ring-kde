@@ -296,7 +296,7 @@ void MainPagePrivate::slotWindowChanged()
     auto ctx = QQmlEngine::contextForObject(q_ptr);
     Q_ASSERT(ctx);
 
-    QQmlComponent comp(ctx->engine(), QStringLiteral("qrc:/ViewContact.qml"), q_ptr);
+    QQmlComponent comp(ctx->engine(), QStringLiteral("qrc:/desktopview/qml/viewcontact.qml"), q_ptr);
 
     m_pItem = qobject_cast<QQuickItem*>(comp.create(ctx));
 

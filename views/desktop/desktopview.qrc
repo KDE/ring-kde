@@ -1,11 +1,11 @@
 <RCC>
-    <qresource prefix="/">
-        <file alias="DesktopWindow.qml">qml/desktopwindow.qml</file>
-        <file alias="DockBar.qml">qml/dockbar.qml</file>
-        <file alias="Drawer.qml">qml/drawer.qml</file>
-        <file alias="ViewContact.qml">qml/viewcontact.qml</file>
-        <file alias="ContactHeader.qml">qml/contactheader.qml</file>
-        <file alias="MediaButtons.qml">qml/mediabuttons.qml</file>
+    <qresource prefix="/desktopview">
+        <file>qml/desktopwindow.qml</file>
+        <file>qml/dockbar.qml</file>
+        <file>qml/drawer.qml</file>
+        <file>qml/viewcontact.qml</file>
+        <file>qml/contactheader.qml</file>
+        <file>qml/mediabuttons.qml</file>
     </qresource>
     <qresource prefix="gui">
         <file>./icons/assets/toolbar_bg.png</file>

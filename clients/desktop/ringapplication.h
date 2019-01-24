@@ -29,9 +29,6 @@ namespace KDeclarative {
    class KDeclarative;
 }
 
-//Ring
-class DesktopView;
-
 ///RingApplication: Main application
 class RingApplication final : public QApplication
 {
@@ -64,7 +61,6 @@ private:
 
    static KDeclarative::KDeclarative* m_pDeclarative;
    static RingApplication* m_spInstance;
-   static DesktopView* m_pDesktopView;
 };
 
 #endif // RINGAPPLICATION_H

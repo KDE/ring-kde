@@ -1,77 +1,122 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
+cmake_minimum_required(VERSION 3.0)
 
-ADD_DEFINITIONS("-std=c++11")
+project(genericutils)
 
-PROJECT(libqmlwidgets)
-
-IF(POLICY CMP0063)
+if(POLICY CMP0063)
    CMAKE_POLICY(SET CMP0063 NEW)
-ENDIF(POLICY CMP0063)
+endif(POLICY CMP0063)
 
-FIND_PACKAGE(ECM 1.1.0 REQUIRED NO_MODULE)
+find_package(ECM 1.1.0 REQUIRED NO_MODULE)
+list(APPEND CMAKE_MODULE_PATH "${ECM_MODULE_PATH}")
 
-INCLUDE(ECMInstallIcons)
-INCLUDE(ECMOptionalAddSubdirectory)
+include(ECMInstallIcons)
+include(ECMOptionalAddSubdirectory)
+include(CMakePackageConfigHelpers)
 
-INCLUDE(KDEInstallDirs)
-INCLUDE(KDECMakeSettings)
-INCLUDE(KDECompilerSettings)
+include(KDEInstallDirs)
+include(KDECMakeSettings)
+include(KDECompilerSettings)
 
-SET(CMAKE_AUTOMOC ON)
-SET(CMAKE_AUTORCC ON)
-SET(CMAKE_AUTOUIC ON)
+SET(CMAKE_C_VISIBILITY_PRESET hidden)
+SET(CMAKE_CXX_VISIBILITY_PRESET hidden)
+SET(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
 
-FIND_PACKAGE ( LibRingQt QUIET )
+# When used with `add_subdirectory`, assume it is a static Qt plugin
+get_directory_property(USES_ADD_SUBDIRECTORY PARENT_DIRECTORY)
+if(USES_ADD_SUBDIRECTORY)
+   set(BUILD_SHARED_LIBS OFF)
+endif()
 
-FIND_PACKAGE(Qt5 CONFIG REQUIRED
-    Core
-    Gui
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
 
-    Quick
-    QuickWidgets
-    QuickControls2
+set(CMAKE_CXX_STANDARD 14)
+
+if(NOT BUILD_SHARED_LIBS)
+    set(ENABLE_STATIC_PLUGIN 1) # Used in Config.cmake.in
+    add_definitions(-DQT_PLUGIN)
+    add_definitions(-DQT_STATICPLUGIN=1)
+    add_definitions(-DGENERICUTILS_USE_STATIC_PLUGIN=1)
+endif()
+
+find_package(Qt5 CONFIG REQUIRED
+    Core Gui Quick QuickControls2
 )
 
-FIND_PACKAGE(KF5 REQUIRED COMPONENTS
-    I18n
-    Config
-    ConfigWidgets
-)
-
-INCLUDE_DIRECTORIES(SYSTEM ${Qt5Widgets_INCLUDES} ${Qt5Core_INCLUDES} ${ringqt_INCLUDE_DIR})
-
-ADD_DEFINITIONS(${Qt5Core_DEFINITIONS})
-
-SET(GENERIC_LIB_VERSION "1.0.0")
+set(GENERIC_LIB_VERSION "1.0.0")
 
 #File to compile
-SET( libqmlwidgets_LIB_SRCS
+set( genericutils_LIB_SRCS
     plugin.cpp
     treehelper.cpp
     fileloader.cpp
     symboliccolorizer.cpp
 )
 
-QT5_ADD_RESOURCES(libqmlwidgets_LIB_SRCS
-   qmlwidgets.qrc
+qt5_add_resources(genericutils_LIB_SRCS
+    qmlwidgets.qrc
 )
 
-ADD_LIBRARY( libqmlwidgets  STATIC ${libqmlwidgets_LIB_SRCS} )
+set(AUTOMOC_MOC_OPTIONS -Muri=org.kde.ringkde.genericutils)
 
-target_link_libraries( libqmlwidgets
+add_library(genericutils ${genericutils_LIB_SRCS} )
+
+target_link_libraries( genericutils
+    # Project
     ringqt
+    ringqtquick
 
+    # Qt
     Qt5::Core
     Qt5::Gui
     Qt5::Quick
     Qt5::QuickControls2
-
-    KF5::ConfigCore
-    KF5::ConfigGui
-    KF5::ConfigWidgets
-    KF5::XmlGui
 )
 
-SET( libqmlwidgets_LIB_HDRS
-    plugin.h
+# Configure the target config
+set(genericutils_CONFIG_PATH "${CMAKE_CURRENT_BINARY_DIR}/GenericUtilsConfig.cmake")
+
+if(USES_ADD_SUBDIRECTORY)
+   set(GenericUtils_DIR ${CMAKE_CURRENT_BINARY_DIR} PARENT_SCOPE)
+endif()
+
+configure_package_config_file(
+   "${CMAKE_CURRENT_SOURCE_DIR}/cmake/GenericUtilsConfig.cmake.in" ${genericutils_CONFIG_PATH}
+   INSTALL_DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}/cmake/GenericUtils/
+   PATH_VARS INCLUDE_INSTALL_DIR
+)
+
+install( FILES ${genericutils_CONFIG_PATH}
+    DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}/cmake/GenericUtils/
+    COMPONENT Devel
+)
+
+# Create the target
+target_include_directories(genericutils
+    PUBLIC
+        $<INSTALL_INTERFACE:include/GenericUtils>
+    PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/
+)
+
+set_target_properties(genericutils PROPERTIES
+    PUBLIC_HEADER
+    "${genericutils_EXPORT_HDRS}"
+)
+
+export(TARGETS genericutils
+    FILE "${PROJECT_BINARY_DIR}/cmake/GenericUtilsTargets.cmake"
+)
+
+install(TARGETS genericutils
+    EXPORT GenericUtilsTargets
+    LIBRARY DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}" COMPONENT genericutils
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/bin
+    COMPONENT Devel
+)
+
+install(EXPORT GenericUtilsTargets
+    DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}/cmake/GenericUtils
+    COMPONENT Devel
 )
