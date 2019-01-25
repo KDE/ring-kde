@@ -22,22 +22,15 @@
 #include <QtCore/QtPlugin>
 #include <QtGui/QImage>
 #include <QQmlApplicationEngine>
+#include <QtWidgets/QApplication>
 
 //KDE
 #include <KAboutData>
 #include <KLocalizedString>
 #include <KCrash>
 
-#ifndef Q_OS_ANDROID
-#ifdef Q_OS_LINUX
- #include <KDBusService>
-#endif
-#endif
-
 //Ring
-#include "ringapplication.h"
 #include "kcfg_settings.h"
-#include "cmd.h"
 #include <QQmlDebuggingEnabler>
 
 #include <QQmlExtensionPlugin>
@@ -75,7 +68,7 @@ constexpr static const char version[] = "3.1.0";
 
 #define REGISTER_PLUGIN(name, uri) \
  qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_ ## name().instance())->registerTypes(uri); \
- qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_ ## name().instance())->initializeEngine(app.engine(), uri);
+ qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_ ## name().instance())->initializeEngine(&engine, uri);
 
 int main(int argc, char **argv)
 {
@@ -83,7 +76,9 @@ int main(int argc, char **argv)
 
     QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
-    RingApplication app( argc, argv );
+    QApplication app(argc, argv);
+
+    QQmlApplicationEngine engine;
 
     KLocalizedString::setApplicationDomain("ring-kde");
 
@@ -139,29 +134,13 @@ int main(int argc, char **argv)
     about.addAuthor( i18n( "Alexandre Lision"                ), QString(), QStringLiteral("alexandre.lision@savoirfairelinux.com"));
     about.addCredit( i18n( "Based on the SFLphone teamworks" ), QString(), QString()                                              );
 
-    if (!Cmd::parseCmd(argc, argv, about))
-        return 0;
-
     KAboutData::setApplicationData(about);
 
     KCrash::initialize();
 
-    app.setOrganizationDomain(QStringLiteral("ring.cx"));
+    app.setOrganizationDomain(QStringLiteral("kde.org"));
 
-    //Only start the application once
-#ifdef Q_OS_LINUX
-#ifndef Q_OS_ANDROID
-#ifndef DISABLE_KDBUS_SERVICE
-    KDBusService service(KDBusService::Unique);
-    QObject::connect(&service, &KDBusService::activateActionRequested, Cmd::instance(), &Cmd::slotActivateActionRequested);
-    QObject::connect(&service, &KDBusService::activateRequested      , Cmd::instance(), &Cmd::slotActivateRequested      );
-    QObject::connect(&service, &KDBusService::openRequested          , Cmd::instance(), &Cmd::slotOpenRequested          );
-#endif
-#endif
-#endif
-
-    //The app will have quitted by now if an instance already exist
-    app.newInstance();
+    engine.load(QUrl(QStringLiteral("qrc:/desktopview/qml/desktopwindow.qml")));
 
     const int retVal = app.exec();
 

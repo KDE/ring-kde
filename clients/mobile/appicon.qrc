@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="appicon">
+    <file>../../data/icons/sc-apps-ring-kde.svgz</file>
+  </qresource>
+</RCC>
