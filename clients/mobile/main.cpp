@@ -57,8 +57,13 @@ Q_IMPORT_PLUGIN(JamiHistoryView)
 Q_IMPORT_PLUGIN(JamiTimelineBase)
 Q_IMPORT_PLUGIN(JamiAudioPlayer)
 Q_IMPORT_PLUGIN(GenericUtils)
-Q_IMPORT_PLUGIN(DesktopView)
 Q_IMPORT_PLUGIN(RingQtQuick)
+
+#if false
+Q_IMPORT_PLUGIN(DesktopView)
+#else
+Q_IMPORT_PLUGIN(BasicView)
+#endif
 
 #ifndef Q_OS_ANDROID
 Q_IMPORT_PLUGIN(JamiNotification)
@@ -115,7 +120,11 @@ int main(int argc, char **argv)
     REGISTER_PLUGIN(JamiNotification, "org.kde.ringkde.jaminotification")
 #endif
 
+#if false
     REGISTER_PLUGIN(DesktopView, "org.kde.ringkde.desktopview")
+#else
+    REGISTER_PLUGIN(BasicView, "org.kde.ringkde.basicview")
+#endif
 
     KAboutData about(QStringLiteral("ring-kde"),
         i18n("ring-kde"),
@@ -140,7 +149,11 @@ int main(int argc, char **argv)
 
     app.setOrganizationDomain(QStringLiteral("kde.org"));
 
+#if false
     engine.load(QUrl(QStringLiteral("qrc:/desktopview/qml/desktopwindow.qml")));
+#else
+    engine.load(QUrl(QStringLiteral("qrc:/basicview/qml/basic.qml")));
+#endif
 
     const int retVal = app.exec();
 
