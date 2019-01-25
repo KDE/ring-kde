@@ -1,0 +1,16 @@
+<RCC>
+    <qresource prefix="/basicview">
+        <file>qml/actioncollection.qml</file>
+        <file>qml/basic.qml</file>
+        <file>qml/chatpage.qml</file>
+        <file>qml/contacts.qml</file>
+        <file>qml/desktopheader.qml</file>
+        <file>qml/detailpage.qml</file>
+        <file>qml/detail.qml</file>
+        <file>qml/formpage.qml</file>
+        <file>qml/form.qml</file>
+        <file>qml/header.qml</file>
+        <file>qml/listpage.qml</file>
+        <file>qml/list.qml</file>
+    </qresource>
+</RCC>
