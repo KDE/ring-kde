@@ -50,7 +50,7 @@ IF(NOT ENABLE_NOTIFICATIONS)
 ENDIF()
 
 # Added by a CI bot
-IF(EXISTS iconpack)
+IF(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/iconpack)
     ADD_SUBDIRECTORY(iconpack)
     ADD_DEFINITIONS(-DHAS_ICON_PACK=1)
 ENDIF()
@@ -156,7 +156,7 @@ TARGET_LINK_LIBRARIES(ring-kde
   KF5::Kirigami2
 )
 
-IF(EXISTS iconpack)
+IF(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/iconpack)
     TARGET_LINK_LIBRARIES(ring-kde
         breezeiconpack
     )
