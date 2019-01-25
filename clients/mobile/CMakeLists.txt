@@ -49,6 +49,12 @@ IF(NOT ENABLE_NOTIFICATIONS)
     ADD_DEFINITIONS(-DDISABLE_NOTIFICATION=1)
 ENDIF()
 
+# Added by a CI bot
+IF(EXISTS iconpack)
+    ADD_SUBDIRECTORY(iconpack)
+    ADD_DEFINITIONS(-DHAS_ICON_PACK=1)
+ENDIF()
+
 SET(
    ring_kde_SRCS
    main.cpp
@@ -149,6 +155,12 @@ TARGET_LINK_LIBRARIES(ring-kde
   KF5::Declarative
   KF5::Kirigami2
 )
+
+IF(EXISTS iconpack)
+    TARGET_LINK_LIBRARIES(ring-kde
+        breezeiconpack
+    )
+ENDIF()
 
 IF(ENABLE_NOTIFICATIONS)
     TARGET_LINK_LIBRARIES(ring-kde

@@ -59,6 +59,10 @@ Q_IMPORT_PLUGIN(JamiAudioPlayer)
 Q_IMPORT_PLUGIN(GenericUtils)
 Q_IMPORT_PLUGIN(RingQtQuick)
 
+#ifdef HAS_ICON_PACK
+Q_IMPORT_PLUGIN(BreezeIconPack)
+#endif
+
 #if false
 Q_IMPORT_PLUGIN(DesktopView)
 #else
