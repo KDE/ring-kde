@@ -103,6 +103,10 @@ endif()
 #     set(AKONADI_FOUND 1)
 # endif()
 
+# IF ( KF5_AKONADI_FOUND AND  KF5_AKONADICONTACT_FOUND AND  KF5_CONTACTS_FOUND)
+#    ADD_DEFINITIONS("-DENABLE_AKONADI=1")
+# ENDIF()
+
 # if( ${AKONADI_FOUND} )
 #     set(jamikdeintegration_LIB_SRCS
 #         ${jamikdeintegration_LIB_SRCS}
