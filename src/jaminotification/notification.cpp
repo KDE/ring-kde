@@ -17,9 +17,8 @@
  **************************************************************************/
 #include "notification.h"
 
-
 // Qt
-#include <QtWidgets/QApplication>
+#include <QtGui/QGuiApplication>
 
 // KDE
 #include <KNotification>
@@ -222,7 +221,7 @@ Notification::Notification(QObject* parent) : QObject(parent)
 
 Notification* Notification::instance()
 {
-   static auto i = new Notification(QApplication::instance());
+   static auto i = new Notification(QGuiApplication::instance());
 
    return i;
 }

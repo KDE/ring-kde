@@ -481,6 +481,7 @@ Kirigami.ApplicationWindow {
             State {
                 name: "compact"
                 when: root.height < 700 && root.width >= 500
+                    && !Kirigami.Settings.isMobile
                 PropertyChanges {
                     target: contactHeader
                     isCompact: true
@@ -489,7 +490,7 @@ Kirigami.ApplicationWindow {
             State {
                 name: "mobile"
                 extend: "compact"
-                when: root.width < 500
+                when: root.width < 500 || Kirigami.Settings.isMobile
                 PropertyChanges {
                     target: dockBar
                     active: false
