@@ -52,8 +52,6 @@ ENDIF()
 SET(
    ring_kde_SRCS
    main.cpp
-   cmd.cpp
-   ringapplication.cpp
 )
 
 QT5_ADD_RESOURCES(ring_kde_SRCS appicon.qrc)
