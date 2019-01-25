@@ -28,6 +28,7 @@
 #include <KAboutData>
 #include <KLocalizedString>
 #include <KCrash>
+#include <KDeclarative/KDeclarative>
 
 //Ring
 #include "kcfg_settings.h"
@@ -129,6 +130,10 @@ int main(int argc, char **argv)
 #else
     REGISTER_PLUGIN(BasicView, "org.kde.ringkde.basicview")
 #endif
+
+
+      KDeclarative::KDeclarative d;
+      d.setDeclarativeEngine(&engine);
 
     KAboutData about(QStringLiteral("ring-kde"),
         i18n("ring-kde"),
