@@ -75,7 +75,7 @@ Item {
                 width: parent.width
                 color: "transparent"
                 border.width: 1
-                border.color: activePalette.text
+                border.color: Kirigami.Theme.textColor
                 opacity: search.focus ? 0.8 : 0.5
                 radius: search.text == "" && !search.focus ? 99 : 5
 
@@ -116,7 +116,7 @@ Item {
                     Text {
                         id: findLabel
                         Layout.fillWidth: true
-                        color: activePalette.text
+                        color: Kirigami.Theme.textColor
                         text: i18n("Find someone")
                         anchors.verticalCenter: parent.verticalCenter
                         font.pixelSize: parent.height * 0.55

@@ -91,7 +91,7 @@ ListView {
                             Rectangle {
                                 opacity: 0.9
                                 anchors.fill: parent
-                                color: object == accountList.selectedAccount ? activePalette.highlight : registrationStateColor
+                                color: object == accountList.selectedAccount ? Kirigami.Theme.highlightColor : registrationStateColor
                             }
 
                             KQuickItemViews.DecorationAdapter {

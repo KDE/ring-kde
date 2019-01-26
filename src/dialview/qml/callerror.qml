@@ -33,7 +33,7 @@ Column {
     }
     Text {
         text: call.lastErrorMessage + " (" + call.lastErrorCode + ")"
-        color: activePalette.text
+        color: Kirigami.Theme.textColor
         wrapMode: Text.WordWrap
         width: parent.width
     }

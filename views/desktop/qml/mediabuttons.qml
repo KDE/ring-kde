@@ -251,7 +251,7 @@ Grid {
                 anchors.margins: 5
                 height: parent.height
                 verticalAlignment: Text.AlignVCenter
-                color: activePalette.text
+                color: Kirigami.Theme.textColor
                 text: "   " + i18n("Call")
             }
         }
@@ -312,7 +312,7 @@ Grid {
                 anchors.margins: 5
                 height: parent.height
                 verticalAlignment: Text.AlignVCenter
-                color: activePalette.text
+                color: Kirigami.Theme.textColor
                 text: "   " + i18n("Video")
             }
         }
@@ -369,7 +369,7 @@ Grid {
             Text {
                 id: textLabel3
                 anchors.margins: 5
-                color: activePalette.text
+                color: Kirigami.Theme.textColor
                 height: parent.height
                 verticalAlignment: Text.AlignVCenter
                 text: "   " + i18n("Screen sharing")
@@ -407,7 +407,7 @@ Grid {
                 anchors.margins: 5
                 height: parent.height
                 verticalAlignment: Text.AlignVCenter
-                color: activePalette.text
+                color: Kirigami.Theme.textColor
                 text: "   " + i18n("Chat")
             }
         }

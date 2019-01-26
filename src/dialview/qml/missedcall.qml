@@ -44,7 +44,7 @@ Column {
     Text {
         horizontalAlignment: Text.AlignHCenter
         text: i18n("<center><b>Missed call</b></center> <br />from: ")+ display + "<br /><br />"+formattedDate
-        color: activePalette.text
+        color: Kirigami.Theme.textColor
         wrapMode: Text.WordWrap
         width: parent.width
     }

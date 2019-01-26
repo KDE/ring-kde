@@ -214,7 +214,7 @@ Item {
                         anchors.bottom: parent.bottom
                         anchors.topMargin: 4
                         anchors.horizontalCenter: parent.horizontalCenter
-                        color: activePalette.text
+                        color: Kirigami.Theme.textColor
                         text: name
                     }
                 }
@@ -251,7 +251,7 @@ Item {
         radius: 5
         width: parent.width * 0.80
         height: errorLabel.implicitHeight + 20
-        color: inactivePalette.text
+        color: Kirigami.Theme.textColor
         opacity: 0
 
         Behavior on opacity {

@@ -58,7 +58,7 @@ Item {
         anchors.leftMargin: 10
         anchors.rightMargin: 10
         border.width: 1
-        border.color: activePalette.text
+        border.color: Kirigami.Theme.textColor
         color: "transparent"
         anchors.fill: parent
         radius: 5
@@ -104,7 +104,7 @@ Item {
                     height: 32
                     id: displayNameLabel
                     text: display
-                    color: activePalette.text
+                    color: Kirigami.Theme.textColor
                     verticalAlignment: Text.AlignHCenter
                     font.bold: true
                 }
@@ -117,12 +117,12 @@ Item {
                 id: uriSeparator
                 height: 1
                 Layout.fillWidth: true
-                color: activePalette.text
+                color: Kirigami.Theme.textColor
             }
 
             Text {
                 Layout.fillWidth: true
-                color: activePalette.text
+                color: Kirigami.Theme.textColor
                 text: "  "+(registeredName == "" ? uri : registeredName)
                 height: implicitHeight * 2
 
@@ -153,11 +153,11 @@ Item {
                 visible: accountAlias != ""
                 height: 1
                 Layout.fillWidth: true
-                color: activePalette.text
+                color: Kirigami.Theme.textColor
             }
 
             Rectangle {
-                color: activePalette.highlight
+                color: Kirigami.Theme.highlightColor
                 radius: 99
                 anchors.right: parent.right
                 anchors.rightMargin: 5
@@ -170,7 +170,7 @@ Item {
                     anchors.leftMargin: 16
                     anchors.rightMargin: 16
                     text: accountAlias
-                    color: activePalette.highlightedText
+                    color: Kirigami.Theme.highlightedTextColor
                 }
             }
 

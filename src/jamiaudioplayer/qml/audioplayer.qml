@@ -86,7 +86,7 @@ Item {
         Text {
             anchors.centerIn: parent
             text: i18n("Click to play")
-            color: inactivePalette.text
+            color: Kirigami.Theme.textColor
         }
         MouseArea {
             anchors.fill: parent

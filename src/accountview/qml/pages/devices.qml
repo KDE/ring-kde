@@ -46,14 +46,14 @@ Page {
 
                     Label {
                         text: name
-                        color: activePalette.text
+                        color: Kirigami.Theme.textColor
                         font.bold: true
                         Layout.fillWidth: true
                     }
 
                     Label {
                         text: id
-                        color: activePalette.text
+                        color: Kirigami.Theme.textColor
                         Layout.fillHeight: true
                         Layout.fillWidth: true
                     }
@@ -108,7 +108,7 @@ Page {
 
                     Label {
                         id: confirmLabel
-                        color: activePalette.text
+                        color: Kirigami.Theme.textColor
                         text: i18n("Enter your account password to confirm:")
                         Layout.fillWidth: true
                     }
@@ -217,7 +217,7 @@ Page {
 
                 Label {
                     text: i18n("Revokation in progress")
-                    color: activePalette.text
+                    color: Kirigami.Theme.textColor
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                 }
@@ -231,7 +231,7 @@ Page {
                 height: 1
                 opacity: 0.2
                 width: parent.width
-                color: inactivePalette.text
+                color: Kirigami.Theme.textColor
                 anchors.bottom: parent.bottom
             }
 

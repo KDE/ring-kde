@@ -27,7 +27,7 @@ import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 ListView {
     id: numbers
 
-    property color buttonColor: inactivePalette.text
+    property color buttonColor: Kirigami.Theme.textColor
     property alias model: numbers.model
     property QtObject person: null
     property alias interactive: numbers.interactive
@@ -264,7 +264,7 @@ ListView {
                         Layout.fillWidth: true
                         Text {
                             text: display
-                            color: activePalette.text
+                            color: Kirigami.Theme.textColor
                         }
                         Text {
                             visible: object.registeredName == display
@@ -274,14 +274,14 @@ ListView {
                         }
                         Text {
                             text: "  ("+categoryName+")"
-                            color: inactivePalette.text
+                            color: Kirigami.Theme.textColor
                         }
                     }
 
                     Text {
                         text: lastUsed == undefined || lastUsed == "" ? i18n("Never used") :
                             i18n("Used ")+totalCallCount+i18n(" time (Last used on: ") + formattedLastUsed + ")"
-                        color: inactivePalette.text
+                        color: Kirigami.Theme.textColor
                     }
                 }
 

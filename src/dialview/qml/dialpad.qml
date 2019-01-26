@@ -53,10 +53,10 @@ Item {
                     //Attributes
                     width:  Math.min((parent.width-3.333)/3 -1, dialPad.height/4 - 2)
                     height: dialPad.height/4 - 2
-                    color:  activePalette.highlight
+                    color:  Kirigami.Theme.highlightColor
                     radius: 999
                     border.width: 0
-                    border.color: activePalette.highlightedText
+                    border.color: Kirigami.Theme.highlightedTextColor
 
                     Behavior on border.width {
                         NumberAnimation { duration: 200 }
@@ -64,7 +64,7 @@ Item {
 
                     Rectangle {
                         id: overlay
-                        color: activePalette.highlightedText
+                        color: Kirigami.Theme.highlightedTextColor
                         opacity: 0
                         anchors.fill: parent
                         radius: 999
@@ -84,7 +84,7 @@ Item {
                             anchors.horizontalCenter: parent.horizontalCenter
                             horizontalAlignment: Text.AlignRight
                             text: dialPad.buttonsText[index]
-                            color: activePalette.highlightedText
+                            color: Kirigami.Theme.highlightedTextColor
                             font.bold: true
                             id:label
                         } //Text
@@ -92,7 +92,7 @@ Item {
                         Text {
                             text: dialPad.buttonsMap[index]
                             anchors.top:label.bottom
-                            color: activePalette.highlightedText
+                            color: Kirigami.Theme.highlightedTextColor
                             horizontalAlignment: Text.AlignRight
                             anchors.horizontalCenter: parent.horizontalCenter
                             id: ascii

@@ -44,7 +44,7 @@ Item {
         anchors.centerIn: parent
         color: "transparent"
         radius: 10
-        border.color: activePalette.text
+        border.color: Kirigami.Theme.textColor
         border.width: 1
 
         GridView {

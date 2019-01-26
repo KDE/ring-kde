@@ -38,11 +38,12 @@ Kirigami.Page {
     padding: 0
 
     header: Layouts.ColumnLayout {
+        height: globalTroubleshoot.active ? implicitHeight : 0
         width: peerListPage.width
-
         spacing: Kirigami.Units.largeSpacing
 
         JamiTroubleShooting.GlobalTroubleshoot {
+            id: globalTroubleshoot
             Layouts.Layout.fillWidth: true
             Layouts.Layout.margins: Kirigami.Units.largeSpacing
         }

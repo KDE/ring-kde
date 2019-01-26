@@ -30,27 +30,48 @@ KQuickItemViews.HierarchyView {
     id: chatView
     clip: true
 
+    property bool forceTime: false
     property var treeHelper: _treeHelper
-
-    GenericUtils.TreeHelper {
-        id: _treeHelper
-    }
-
     property var bubbleBackground: blendColor()
     property var bubbleForeground: ""
     property var unreadBackground: ""
     property var unreadForeground: ""
     property alias slideshow: slideshow
+    property bool displayExtraTimePrivate: moving || dragging || forceTime
+    property bool displayExtraTime: false
+
+    onDisplayExtraTimePrivateChanged: {
+        if (displayExtraTimePrivate)
+            displayExtraTime  = true
+        else
+            dateTimer.running = true
+    }
+
+    Timer {
+        id: dateTimer
+        interval: 1500
+        repeat: false
+        onTriggered: displayExtraTime = false
+    }
+
+    GenericUtils.TreeHelper {
+        id: _treeHelper
+    }
+
+    SystemPalette {
+        id: activePalette
+        colorGroup: SystemPalette.Active
+    }
 
     function blendColor() {
-        var base2 = Kirigami.Theme.highlightedColor
+        var base2 = activePalette.highlight
         base2 = Qt.rgba(base2.r, base2.g, base2.b, 0.3)
-        var base1 = Qt.tint(Kirigami.Theme.viewBackgroundColor, base2)
+        var base1 = Qt.tint(activePalette.base, base2)
 
         chatView.bubbleBackground = base1
-        chatView.unreadBackground = Qt.tint(Kirigami.Theme.viewBackgroundColor, "#33BB0000")
-        chatView.bubbleForeground = Kirigami.Theme.textColor
-        chatView.unreadForeground = Kirigami.Theme.textColor
+        chatView.unreadBackground = Qt.tint(activePalette.base, "#33BB0000")
+        chatView.bubbleForeground = activePalette.text
+        chatView.unreadForeground = activePalette.text
 
         return base1
     }

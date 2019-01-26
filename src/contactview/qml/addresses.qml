@@ -43,33 +43,33 @@ Item {
                         Layout.fillHeight: true
                         Text {
                             text: type
-                            color: inactivePalette.text
+                            color: Kirigami.Theme.textColor
                         }
                         Text {
                             Layout.fillWidth: true
                             Layout.fillHeight: true
                             text: addressLine
-                            color: activePalette.text
+                            color: Kirigami.Theme.textColor
                         }
                     }
                     RowLayout {
                         Layout.fillWidth: true
                         Text {
                             text: zipCode
-                            color: activePalette.text
+                            color: Kirigami.Theme.textColor
                         }
                         Text {
                             text: city
                             Layout.fillWidth: true
-                            color: activePalette.text
+                            color: Kirigami.Theme.textColor
                         }
                         Text {
                             text: state
-                            color: activePalette.text
+                            color: Kirigami.Theme.textColor
                         }
                         Text {
                             text: country
-                            color: activePalette.text
+                            color: Kirigami.Theme.textColor
                         }
                         Item {
                             Layout.preferredWidth: 5

@@ -139,7 +139,7 @@ Rectangle {
                 Text {
                     text: i18n("Add\nPhoto")
                     font.bold: true
-                    color: activePalette.text
+                    color: Kirigami.Theme.textColor
                     anchors.centerIn: parent
                     horizontalAlignment: Text.AlignHCenter
                 }
@@ -204,7 +204,7 @@ Rectangle {
             height: parent.height -10
             y: 5
             width: 1
-            color: inactivePalette.text
+            color: Kirigami.Theme.textColor
             opacity: 0.2
             anchors.horizontalCenter: parent.horizontalCenter
         }

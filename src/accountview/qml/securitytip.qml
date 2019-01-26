@@ -32,7 +32,7 @@ Rectangle {
     color: "transparent"
     radius: 3
     border.width: 1
-    border.color: inactivePalette.text
+    border.color: Kirigami.Theme.textColor
     anchors.margins: 5
 
     RowLayout {

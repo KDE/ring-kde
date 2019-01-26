@@ -47,7 +47,7 @@ Rectangle {
         setContactMethod()
     }
 
-    color: activePalette.base
+    color: Kirigami.Theme.backgroundColor
 
     property var currentContactMethod: null
     property var currentIndividual: null
@@ -144,7 +144,7 @@ Rectangle {
 
                     Rectangle {
                         anchors.fill: parent
-                        color: activePalette.base
+                        color: Kirigami.Theme.backgroundColor
                         opacity: 0.75
                     }
                 }

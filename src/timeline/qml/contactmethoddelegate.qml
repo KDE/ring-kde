@@ -58,16 +58,16 @@ MouseArea {
 
     Rectangle {
         width: 1
-        color: inactivePalette.text
+        color: Kirigami.Theme.textColor
         height: parent.height
         x: 10
     }
 
     Rectangle {
         radius: 99
-        color: activePalette.base
+        color: Kirigami.Theme.backgroundColor
         border.width: 1
-        border.color: inactivePalette.text
+        border.color: Kirigami.Theme.textColor
         width: 16
         height: 16
         y: 10
@@ -76,7 +76,7 @@ MouseArea {
         Rectangle {
             id: demandsAttention
             radius: 99
-            color: inactivePalette.text
+            color: Kirigami.Theme.textColor
             anchors.centerIn: parent
             height: 8
             width: 8
@@ -85,7 +85,7 @@ MouseArea {
 
     Rectangle {
         id: outline
-        border.color: inactivePalette.text
+        border.color: Kirigami.Theme.textColor
         border.width: 1
         anchors.fill: parent
 
@@ -120,7 +120,7 @@ MouseArea {
                         anchors.fill: parent
                         individual: object
                         defaultColor: isCurrentItem ?
-                            activePalette.highlightedText : activePalette.text
+                            Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor
                         drawEmptyOutline: false
                     }
                 }
@@ -132,12 +132,12 @@ MouseArea {
                     Layout.fillWidth: true
                     Layout.alignment: Qt.AlignVCenter
                     color: isCurrentItem ?
-                        activePalette.highlightedText : activePalette.text
+                        Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor
                 }
             }
 
             Rectangle {
-                color: inactivePalette.text
+                color: Kirigami.Theme.textColor
                 height:1
                 Layout.fillWidth: true
             }
@@ -151,11 +151,11 @@ MouseArea {
 
                 verticalAlignment: Text.AlignVCenter
                 color: isCurrentItem ?
-                    activePalette.highlightedText : inactivePalette.text
+                    Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor
             }
 
             Rectangle {
-                color: inactivePalette.text
+                color: Kirigami.Theme.textColor
                 height:1
                 Layout.fillWidth: true
                 visible: componentItem.hasMessage
@@ -190,7 +190,7 @@ MouseArea {
 
                         verticalAlignment: Text.AlignVCenter
                         color: isCurrentItem ?
-                            activePalette.highlightedText : inactivePalette.text
+                            Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor
 
                         onImplicitHeightChanged: {
                             messageLoader.contentHeight2 = implicitHeight
@@ -219,7 +219,7 @@ MouseArea {
                         Text {
                             text: i18n("Mark as read")
                             color: isCurrentItem ?
-                                activePalette.highlightedText : activePalette.text
+                                Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor
                             font.bold: true
                             anchors.centerIn: parent
                         }
@@ -240,7 +240,7 @@ MouseArea {
                                 target: button
                                 visible: true
                                 color: isCurrentItem ?
-                                    activePalette.highlight : activePalette.base
+                                    Kirigami.Theme.highlightColor : Kirigami.Theme.backgroundColor
                             }
                         }
                     ]

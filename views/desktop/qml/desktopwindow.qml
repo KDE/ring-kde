@@ -35,6 +35,11 @@ Kirigami.ApplicationWindow {
 
     property bool wizardVisible: false
 
+    SystemPalette {
+        id: activePalette
+        colorGroup: SystemPalette.Active
+    }
+
     DesktopView.TipModel {
         id: displayTips
     }
@@ -163,7 +168,7 @@ Kirigami.ApplicationWindow {
         property alias container: mobileHolderContent
         width: 0
         height: parent.height
-        color: activePalette.base
+        color: Kirigami.Theme.backgroundColor
         z: 10000
         visible: false
         state: ""
@@ -183,7 +188,7 @@ Kirigami.ApplicationWindow {
 
                 Text {
                     text: i18n("Hide")
-                    color: activePalette.text
+                    color: Kirigami.Theme.textColor
                     anchors.centerIn: parent
                 }
 
@@ -398,7 +403,7 @@ Kirigami.ApplicationWindow {
                 id: contactHeader
                 backgroundColor: activePalette.alternateBase
                 isMobile: stateGroup.state == "mobile"
-                textColor: activePalette.text
+                textColor: Kirigami.Theme.textColor
                 Layout.maximumHeight: height
                 Layout.minimumHeight: height
 

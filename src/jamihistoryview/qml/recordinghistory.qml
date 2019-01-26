@@ -40,7 +40,7 @@ KQuickItemViews.TreeView {
 
     // Display something when the chat is empty
     Text {
-        color: activePalette.text
+        color: Kirigami.Theme.textColor
         text: i18n("There is nothing yet, enter a message below or place a call using the buttons\nfound in the header")
         anchors.centerIn: parent
         visible: chatView.empty
@@ -63,16 +63,16 @@ KQuickItemViews.TreeView {
 
                     Rectangle {
                         width: 1
-                        color: inactivePalette.text
+                        color: Kirigami.Theme.textColor
                         height: parent.height
                         x: 10
                     }
 
                     Rectangle {
                         radius: 99
-                        color: activePalette.base
+                        color: Kirigami.Theme.backgroundColor
                         border.width: 1
-                        border.color: inactivePalette.text
+                        border.color: Kirigami.Theme.textColor
                         width: 16
                         height: 16
                         y: 10
@@ -81,7 +81,7 @@ KQuickItemViews.TreeView {
                         Rectangle {
                             id: demandsAttention
                             radius: 99
-                            color: inactivePalette.text
+                            color: Kirigami.Theme.textColor
                             anchors.centerIn: parent
                             height: 8
                             width: 8
@@ -89,7 +89,7 @@ KQuickItemViews.TreeView {
                     }
 
                     Rectangle {
-                        border.color: inactivePalette.text
+                        border.color: Kirigami.Theme.textColor
                         border.width: 1
                         anchors.fill: parent
 
@@ -122,12 +122,12 @@ KQuickItemViews.TreeView {
 
                                     verticalAlignment: Text.AlignVCenter
                                     color: ListView.isCurrentItem ?
-                                        activePalette.highlightedText : activePalette.text
+                                        Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor
                                 }
                             }
 
                             Rectangle {
-                                color: inactivePalette.text
+                                color: Kirigami.Theme.textColor
                                 height:1
                                 Layout.preferredHeight: 1
                                 Layout.fillWidth: true
@@ -142,7 +142,7 @@ KQuickItemViews.TreeView {
 
                                 verticalAlignment: Text.AlignVCenter
                                 color: ListView.isCurrentItem ?
-                                    activePalette.highlightedText : activePalette.text
+                                    Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor
                             }
 
                             Text {
@@ -154,7 +154,7 @@ KQuickItemViews.TreeView {
 
                                 verticalAlignment: Text.AlignVCenter
                                 color: ListView.isCurrentItem ?
-                                    activePalette.highlightedText : activePalette.text
+                                    Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor
                             }
 
                             Item {
@@ -184,16 +184,16 @@ KQuickItemViews.TreeView {
 
                     Rectangle {
                         width: 1
-                        color: inactivePalette.text
+                        color: Kirigami.Theme.textColor
                         height: parent.height
                         x: 10
                     }
 
                     Rectangle {
                         radius: 99
-                        color: activePalette.base
+                        color: Kirigami.Theme.backgroundColor
                         border.width: 1
-                        border.color: inactivePalette.text
+                        border.color: Kirigami.Theme.textColor
                         width: 16
                         height: 16
                         y: 10
@@ -202,7 +202,7 @@ KQuickItemViews.TreeView {
                         Rectangle {
                             id: demandsAttention
                             radius: 99
-                            color: inactivePalette.text
+                            color: Kirigami.Theme.textColor
                             anchors.centerIn: parent
                             height: 8
                             width: 8
@@ -210,7 +210,7 @@ KQuickItemViews.TreeView {
                     }
 
                     Rectangle {
-                        border.color: inactivePalette.text
+                        border.color: Kirigami.Theme.textColor
                         border.width: 1
                         anchors.fill: parent
 
@@ -243,12 +243,12 @@ KQuickItemViews.TreeView {
 
                                     verticalAlignment: Text.AlignVCenter
                                     color: ListView.isCurrentItem ?
-                                        activePalette.highlightedText : activePalette.text
+                                        Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor
                                 }
                             }
 
                             Rectangle {
-                                color: inactivePalette.text
+                                color: Kirigami.Theme.textColor
                                 height:1
                                 Layout.preferredHeight: 1
                                 Layout.fillWidth: true
@@ -292,7 +292,7 @@ KQuickItemViews.TreeView {
 
                     Text {
                         text: formattedDate
-                        color: activePalette.text
+                        color: Kirigami.Theme.textColor
                         Layout.fillWidth: true
                     }
 
@@ -303,7 +303,7 @@ KQuickItemViews.TreeView {
 
                     Text {
                         text: length
-                        color: inactivePalette.text
+                        color: Kirigami.Theme.textColor
                     }
                 }
             }
@@ -316,16 +316,16 @@ KQuickItemViews.TreeView {
 
                     Rectangle {
                         width: 1
-                        color: inactivePalette.text
+                        color: Kirigami.Theme.textColor
                         height: parent.height
                         x: 10
                     }
 
                     Rectangle {
                         radius: 99
-                        color: activePalette.base
+                        color: Kirigami.Theme.backgroundColor
                         border.width: 1
-                        border.color: inactivePalette.text
+                        border.color: Kirigami.Theme.textColor
                         width: 16
                         height: 16
                         y: 10
@@ -334,7 +334,7 @@ KQuickItemViews.TreeView {
                         Rectangle {
                             id: demandsAttention
                             radius: 99
-                            color: inactivePalette.text
+                            color: Kirigami.Theme.textColor
                             anchors.centerIn: parent
                             height: 8
                             width: 8
@@ -343,7 +343,7 @@ KQuickItemViews.TreeView {
 
                     Rectangle {
                         id: box
-                        border.color: inactivePalette.text
+                        border.color: Kirigami.Theme.textColor
                         border.width: 1
                         anchors.fill: parent
 
@@ -376,12 +376,12 @@ KQuickItemViews.TreeView {
 
                                     verticalAlignment: Text.AlignVCenter
                                     color: ListView.isCurrentItem ?
-                                        activePalette.highlightedText : activePalette.text
+                                        Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor
                                 }
                             }
 
                             Rectangle {
-                                color: inactivePalette.text
+                                color: Kirigami.Theme.textColor
                                 height:1
                                 Layout.preferredHeight: 1
                                 Layout.fillWidth: true

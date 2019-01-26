@@ -23,6 +23,10 @@ RowLayout {
     anchors.horizontalCenter: parent.horizontalCenter
     clip: true
     height: implicitHeight
+    opacity: chatView.displayExtraTime ? 1 : 0
+    Behavior on opacity {
+            NumberAnimation {duration: 200}
+    }
 
     property real lineWidth: Math.min(50, (width - label.implicitWidth)/2)
 

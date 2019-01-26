@@ -34,13 +34,13 @@ Item {
     property bool showSeparator: true
 
     property var  textColor: selected ?
-        activePalette.highlight : activePalette.highlightedText
+        Kirigami.Theme.highlightColor : Kirigami.Theme.highlightedTextColor
 
     property var  altTextColor: selected ?
-        activePalette.highlight : activePalette.highlightedText
+        Kirigami.Theme.highlightColor : Kirigami.Theme.highlightedTextColor
 
     property var baseColor: selected ?
-        activePalette.highlightedText : activePalette.highlight
+        Kirigami.Theme.highlightedTextColor : Kirigami.Theme.highlightColor
 
     width: parent.width
 
