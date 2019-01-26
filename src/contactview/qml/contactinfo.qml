@@ -79,16 +79,6 @@ Kirigami.ScrollablePage {
         isChanged = true
     }
 
-    SystemPalette {
-        id: activePalette
-        colorGroup: SystemPalette.Active
-    }
-
-    SystemPalette {
-        id: inactivePalette
-        colorGroup: SystemPalette.Inactive
-    }
-
     actions {
         main: Kirigami.Action {
             iconName: editing ? "document-save" : "document-edit"

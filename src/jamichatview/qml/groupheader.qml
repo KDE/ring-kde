@@ -17,6 +17,7 @@
  **************************************************************************/
 import QtQuick 2.7
 import QtQuick.Layouts 1.0
+import org.kde.kirigami 2.2 as Kirigami
 
 RowLayout {
     property string type: "text"
@@ -36,8 +37,8 @@ RowLayout {
         height: 30
         width: 30
         radius: 99
-        border.width: 3
-        border.color: activePalette.text
+        border.width: 1
+        border.color: Kirigami.Theme.disabledTextColor
         color: "transparent"
 
         Image {

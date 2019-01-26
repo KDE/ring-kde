@@ -31,16 +31,6 @@ FocusScope {
 
     signal selectCall(RingQtQuick.Call call)
 
-    SystemPalette {
-        id: inactivePalette
-        colorGroup: SystemPalette.Disabled
-    }
-
-    SystemPalette {
-        id: activePalette
-        colorGroup: SystemPalette.Active
-    }
-
     FontMetrics {
         id: fontMetrics
     }

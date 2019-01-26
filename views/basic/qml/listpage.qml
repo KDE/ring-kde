@@ -21,14 +21,39 @@
 import QtQuick 2.6
 import QtQuick.Controls 2.2 as Controls
 import org.kde.kirigami 2.4 as Kirigami
+import QtQuick.Layouts 1.2 as Layouts
 import org.kde.ringkde.basicview 1.0 as BasicView
+import org.kde.ringkde.jamitroubleshooting 1.0 as JamiTroubleShooting
 
-Kirigami.ScrollablePage {
+Kirigami.Page {
+    id: peerListPage
     property alias currentIndex: list.currentIndex;
     property alias model: list.model
 
+    spacing: 0
+    leftPadding: 0
+    rightPadding: 0
+    topPadding: 0
+    bottomPadding: 0
+    padding: 0
+
+    header: Layouts.ColumnLayout {
+        width: peerListPage.width
+
+        spacing: Kirigami.Units.largeSpacing
+
+        JamiTroubleShooting.GlobalTroubleshoot {
+            Layouts.Layout.fillWidth: true
+            Layouts.Layout.margins: Kirigami.Units.largeSpacing
+        }
+
+        Item {
+            height: 10
+        }
+    }
+
     Kirigami.Theme.colorSet: Kirigami.Theme.View
-    title: "Address book"
+    title: i18n("Address book")
 
     background: Rectangle {
         color: Kirigami.Theme.backgroundColor
@@ -42,7 +67,7 @@ Kirigami.ScrollablePage {
 
         Controls.TextField {
             id: searchField
-            placeholderText: "Search"
+            placeholderText: i18n("Search")
             anchors.centerIn: parent
             anchors.margins: Kirigami.Units.largeSpacing
             width: parent.width - 2 * Kirigami.Units.largeSpacing

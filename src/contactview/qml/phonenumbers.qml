@@ -43,16 +43,6 @@ ListView {
     height: preferredHeight
     clip: true
 
-    SystemPalette {
-        id: activePalette
-        colorGroup: SystemPalette.Active
-    }
-
-    SystemPalette {
-        id: inactivePalette
-        colorGroup: SystemPalette.Disabled
-    }
-
     Component {
         id: editComponent
 

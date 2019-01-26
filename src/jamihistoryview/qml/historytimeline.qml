@@ -31,16 +31,6 @@ Kirigami.Page {
     bottomPadding: 0
     rightPadding: 0
 
-    SystemPalette {
-        id: inactivePalette
-        colorGroup: SystemPalette.Disabled
-    }
-
-    SystemPalette {
-        id: activePalette
-        colorGroup: SystemPalette.Active
-    }
-
     FontMetrics {
         id: fontMetrics
     }

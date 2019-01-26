@@ -23,11 +23,6 @@ import QtQuick.Layouts 1.0
 Rectangle {
     property var account: null
 
-    SystemPalette {
-        id: activePalette
-        colorGroup: SystemPalette.Active
-    }
-
     color: activePalette.window
 
     Kirigami.CardsGridView {

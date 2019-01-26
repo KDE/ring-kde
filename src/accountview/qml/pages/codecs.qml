@@ -23,11 +23,6 @@ import QtQuick.Layouts 1.0
 Page {
     property var account: object
 
-    SystemPalette {
-        id: activePalette
-        colorGroup: SystemPalette.Active
-    }
-
     Kirigami.CardsGridView {
         id: gridView
         minimumColumnWidth: 160

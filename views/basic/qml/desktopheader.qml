@@ -21,6 +21,7 @@ import QtQuick 2.2
 import QtQuick.Layouts 1.4
 import QtQuick.Controls 2.2 as Controls
 import org.kde.kirigami 2.6 as Kirigami
+import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 
 MouseArea {
     property bool fits: pageStack.wideMode && grid.implicitWidth < parent.width
@@ -34,20 +35,22 @@ MouseArea {
         rowSpacing: 0
         flow: GridLayout.TopToBottom
         columnSpacing: Kirigami.Units.smallSpacing
-        Kirigami.Icon {
-            source: "favorite"
+        JamiContactView.ContactPhoto {
             Layout.preferredWidth: parent.parent.height
             Layout.preferredHeight: parent.parent.height
             Layout.rowSpan: 2
-            Rectangle {
-                anchors.fill:parent
-                radius: width
-                z: -1
-            }
+
+            individual: mainPage.currentIndividual
+            defaultColor: index == currentIndex ?
+                Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor
+            drawEmptyOutline: false
         }
+
         Kirigami.Heading {
             level: 3
-            text: mainPage.title
+            text: mainPage.currentIndividual ?
+                mainPage.currentIndividual.bestName : ""
+
             Layout.preferredWidth: implicitWidth
             elide: Text.ElideRight
             //show only when at least half of the string has been painted: use
@@ -70,7 +73,7 @@ MouseArea {
             Layout.preferredHeight: Kirigami.Units.iconSizes.smallMedium
 
             MouseArea {
-                onClicked: mainPage.editContact = true
+                onClicked: chatPage.editContact = true
                 anchors.fill: parent
             }
 

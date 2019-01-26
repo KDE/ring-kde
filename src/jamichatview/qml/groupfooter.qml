@@ -17,6 +17,7 @@
  **************************************************************************/
 import QtQuick 2.7
 import QtQuick.Layouts 1.0
+import org.kde.kirigami 2.2 as Kirigami
 
 RowLayout {
     anchors.horizontalCenter: parent.horizontalCenter
@@ -28,16 +29,16 @@ RowLayout {
     Rectangle {
         height: 1
         Layout.preferredWidth: 50
-        color: inactivePalette.text
+        color: Kirigami.Theme.disabledTextColor
     }
     Text {
         id: label
         text: endAt
-        color: inactivePalette.text
+        color: Kirigami.Theme.disabledTextColor
     }
     Rectangle {
         height: 1
         Layout.preferredWidth: 50
-        color: inactivePalette.text
+        color: Kirigami.Theme.disabledTextColor
     }
 }

@@ -48,16 +48,6 @@ Kirigami.Page {
         }
     }
 
-    SystemPalette {
-        id: inactivePalette
-        colorGroup: SystemPalette.Disabled
-    }
-
-    SystemPalette {
-        id: activePalette
-        colorGroup: SystemPalette.Active
-    }
-
     FontMetrics {
         id: fontMetrics
     }

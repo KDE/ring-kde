@@ -19,7 +19,7 @@ import QtQuick 2.7
 import QtQuick.Layouts 1.0
 import QtQuick.Controls 2.0 as Controls
 import org.kde.ringkde.genericutils 1.0 as GenericUtils
-
+import org.kde.kirigami 2.2 as Kirigami
 import net.lvindustries.ringqtquick.media 1.0 as RingQtMedia
 
 Rectangle {
@@ -42,11 +42,6 @@ Rectangle {
     height: defaultSize
     visible: availabilityTracker.hasWarning
     opacity: 0.5
-
-    SystemPalette {
-        id: activePalette
-        colorGroup: SystemPalette.Active
-    }
 
     Image {
         height: defaultSize

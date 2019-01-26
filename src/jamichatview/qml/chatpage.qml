@@ -18,6 +18,7 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
+import org.kde.kirigami 2.2 as Kirigami
 import QtGraphicalEffects 1.0
 import org.kde.ringkde.jamitimeline 1.0 as JamiTimeline
 import org.kde.ringkde.jamitimelinebase 1.0 as JamiTimelineBase
@@ -27,6 +28,8 @@ import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 Rectangle {
     id: timelinePage
     property bool showScrollbar: true
+
+    Kirigami.Theme.colorSet: Kirigami.Theme.View
 
     function focusEdit() {
         chatBox.focusEdit()
@@ -52,12 +55,7 @@ Rectangle {
         setContactMethod()
     }
 
-    SystemPalette {
-        id: activePalette
-        colorGroup: SystemPalette.Active
-    }
-
-    color: activePalette.base
+    color: Kirigami.Theme.viewBackgroundColor
 
     property var currentContactMethod: null
     property var currentIndividual: null
@@ -106,7 +104,10 @@ Rectangle {
 
                 JamiChatView.ChatView {
                     id: chatView
-                    anchors.fill: parent
+                    width: 600
+                    height: parent.width
+//                     Layout.alignment: Qt.AlignHCenter
+                    anchors.horizontalCenter: parent.horizontalCenter
                     model: null//FIXME timelinePage.timelineModel
 
                     // Due to a race condition, wait a bit, it should be fixed elsewhere,
@@ -152,7 +153,7 @@ Rectangle {
 
                     Rectangle {
                         anchors.fill: parent
-                        color: activePalette.base
+                        color: Kirigami.Theme.viewBackgroundColor
                         opacity: 0.75
                     }
                 }
@@ -190,9 +191,9 @@ Rectangle {
                 currentContactMethod.confirmationStatus == RingQtQuick.ContactMethod.UNCONFIRMED &&
                 currentContactMethod.confirmationStatus != RingQtQuick.ContactMethod.DISABLED
 
-            textColor: activePalette.text
-            backgroundColor: activePalette.window
-            emojiColor: activePalette.highlight
+            textColor: Kirigami.Theme.textColor
+            backgroundColor: Kirigami.Theme.backgroundColor
+            emojiColor: Kirigami.Theme.highlightColor
 
             onDisableContactRequests: {
                 if (timelinePage.setContactMethod()) {

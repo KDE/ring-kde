@@ -18,6 +18,7 @@
 import QtQuick 2.7
 import org.kde.ringkde.jamitimeline 1.0 as JamiTimeline
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
+import org.kde.kirigami 2.2 as Kirigami
 
 ListView {
     id: findPeers

@@ -16,6 +16,7 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
 import QtQuick 2.7
+import org.kde.kirigami 2.2 as Kirigami
 
 Text {
     anchors.margins:10

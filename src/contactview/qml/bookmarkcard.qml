@@ -19,6 +19,7 @@ import QtQuick 2.7
 import QtQuick.Layouts 1.0
 
 import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
+import org.kde.kirigami 2.2 as Kirigami
 
 Item {
     height: rows.implicitHeight + 10 //10 == 2*margins

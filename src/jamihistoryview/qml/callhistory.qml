@@ -21,6 +21,7 @@ import QtQuick.Layouts 1.0
 import QtGraphicalEffects 1.0
 import org.kde.ringkde.jamitimelinebase 1.0 as JamiTimelineBase
 import org.kde.ringkde.jamihistoryview 1.0 as JamiHistoryView
+import org.kde.kirigami 2.2 as Kirigami
 
 Rectangle {
     id: timelinePage
@@ -44,11 +45,6 @@ Rectangle {
     onCurrentIndividualChanged: {
         currentContactMethod = null
         setContactMethod()
-    }
-
-    SystemPalette {
-        id: activePalette
-        colorGroup: SystemPalette.Active
     }
 
     color: activePalette.base

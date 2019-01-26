@@ -21,44 +21,45 @@ import QtQuick 2.2
 import QtQuick.Controls 2.2 as Controls
 import org.kde.kirigami 2.4 as Kirigami
 import QtGraphicalEffects 1.0 as Effect
+import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 
 ListView {
     currentIndex: -1
     id: list
 
     delegate: Kirigami.SwipeListItem {
-        property alias image: img
-        onClicked: list.currentIndex = index
+        onClicked: {
+            list.currentIndex = index
+            mainPage.individual = object
+        }
+
+        clip: true
+
+        height: 4 * Kirigami.Units.fontMetrics.height
+
+        //selected: list.currentIndex = index
 
         contentItem: Row {
+            height: 4 * Kirigami.Units.fontMetrics.height
             spacing: 2 * Kirigami.Units.largeSpacing
 
-            Item {
-                width: Kirigami.Units.iconSizes.medium
-                height: width
+            JamiContactView.ContactPhoto {
+                id: img
+                anchors.margins: 3
+                height: 3 * Kirigami.Units.fontMetrics.height
+                width: 3 * Kirigami.Units.fontMetrics.height
+                anchors.verticalCenter: parent.verticalCenter
 
-                Image {
-                    id: img
-                    width: Kirigami.Units.iconSizes.medium
-                    height: width
-                    source: model.image
-                    visible: false
-                }
-
-                Effect.OpacityMask {
-                    anchors.fill: img
-                    source: img
-                    maskSource: Rectangle {
-                        height: img.width
-                        width: height
-                        radius: height / 2
-                    }
-                }
+                individual: object
+                defaultColor: index == currentIndex ?
+                    Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor
+                drawEmptyOutline: false
             }
 
-            Controls.Label {
+            Kirigami.Heading {
+                level: 3
                 anchors.verticalCenter: parent.verticalCenter
-                text: model.firstname + " " + model.lastname
+                text: object.bestName
             }
         }
 

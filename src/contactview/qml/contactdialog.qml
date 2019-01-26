@@ -37,11 +37,6 @@ Kirigami.ApplicationItem {
         changed(isChanged)
     }
 
-    SystemPalette {
-        id: activePalette
-        colorGroup: SystemPalette.Active
-    }
-
     FontMetrics {
         id: fontMetrics
     }

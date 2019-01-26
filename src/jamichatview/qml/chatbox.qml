@@ -17,6 +17,7 @@
  **************************************************************************/
 import QtQuick 2.7
 import QtQuick.Controls 2.0
+import org.kde.kirigami 2.2 as Kirigami
 import QtQuick.Layouts 1.0
 
 import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
@@ -44,11 +45,6 @@ Rectangle {
     signal disableContactRequests()
 
     color: "blue"
-
-    SystemPalette {
-        id: inactivePalette
-        colorGroup: SystemPalette.Disabled
-    }
 
     ListModel {
         id: emoji
@@ -97,7 +93,7 @@ Rectangle {
 
         color: "transparent"
         border.width: 2
-        border.color: inactivePalette.text
+        border.color: Kirigami.Theme.disabledTextColor
 
         Text {
             anchors.centerIn: parent

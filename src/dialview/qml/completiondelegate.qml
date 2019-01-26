@@ -21,6 +21,7 @@ import QtQuick.Controls 2.0
 
 import org.kde.playground.kquickitemviews 1.0 as KQuickItemViews
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
+import org.kde.kirigami 2.2 as Kirigami
 
 Item {
     id: componentItem
