@@ -50,9 +50,9 @@ Item {
         y: 10
 
         //Display
-        color: item.selected ? activePalette.highlight: "transparent"
+        color: item.selected ? Kirigami.Theme.highlightColor: "transparent"
         radius: 5
-        border.color: inactivePalette.text
+        border.color: Kirigami.Theme.textColor
         border.width: 2
 
         Component {
@@ -79,7 +79,7 @@ Item {
                 text: i18n("Conference")
                 font.bold: true
                 font.underline: true
-                color: activePalette.text
+                color: Kirigami.Theme.textColor
             }
 
             MouseArea {

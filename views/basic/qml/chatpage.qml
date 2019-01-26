@@ -74,9 +74,6 @@ Kirigami.Page {
         anchors.fill: parent
         currentIndividual: mainPage.currentIndividual
         timelineModel: mainPage.timelineModel
-        onCurrentIndividualChanged: {
-            console.log("GET HERE", currentIndividual)
-        }
     }
 
     Loader {

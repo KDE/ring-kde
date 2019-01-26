@@ -29,7 +29,7 @@ Loader {
 
     sourceComponent: Text {
         anchors.fill: parent
-        color: activePalette.text
+        color: Kirigami.Theme.textColor
         textFormat: Text.RichText
         wrapMode: Text.WordWrap
         text: welcomeMessage.content

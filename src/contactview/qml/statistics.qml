@@ -23,7 +23,7 @@ import org.kde.kirigami 2.2 as Kirigami
 ColumnLayout {
     id: statistics
     property var individual: null
-    property var labelColor: inactivePalette.text
+    property var labelColor: Kirigami.Theme.textColor
 
     function getLastContacted() {
         if (!individual)
@@ -61,7 +61,7 @@ ColumnLayout {
     }
 
     Rectangle {
-        color: activePalette.text
+        color: Kirigami.Theme.textColor
         height: 1
         opacity: 0.3
         Layout.fillWidth: true
@@ -69,24 +69,24 @@ ColumnLayout {
 
     Label {
         id: lastContactedTime
-        color: contactViewPage.labelColor ? contactViewPage.labelColor : activePalette.text
+        color: contactViewPage.labelColor ? contactViewPage.labelColor : Kirigami.Theme.textColor
         text: individual ? getLastContacted() : ""
     }
 
     Label {
         id: totalCall
-        color: contactViewPage.labelColor ? contactViewPage.labelColor : activePalette.text
+        color: contactViewPage.labelColor ? contactViewPage.labelColor : Kirigami.Theme.textColor
         text: individual ? getTotalCall() : ""
     }
 
     Label {
         id: totalText
-        color: contactViewPage.labelColor ? contactViewPage.labelColor : activePalette.text
+        color: contactViewPage.labelColor ? contactViewPage.labelColor : Kirigami.Theme.textColor
         text: individual ? getTotalText() : ""
     }
 
     Rectangle {
-        color: contactViewPage.state == "mobile" ? "transparent" : activePalette.text
+        color: contactViewPage.state == "mobile" ? "transparent" : Kirigami.Theme.textColor
         opacity: 0.3
         height: 1
         Layout.fillWidth: true

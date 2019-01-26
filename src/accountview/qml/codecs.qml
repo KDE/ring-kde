@@ -23,7 +23,7 @@ import QtQuick.Layouts 1.0
 Rectangle {
     property var account: null
 
-    color: activePalette.window
+    color: Kirigami.Theme.backgroundColor
 
     Kirigami.CardsGridView {
         id: gridView

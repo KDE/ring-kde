@@ -57,7 +57,7 @@ ListView {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 text: error
-                color: activePalette.text
+                color: Kirigami.Theme.textColor
                 wrapMode: Text.WordWrap
                 width: parent.width
             }

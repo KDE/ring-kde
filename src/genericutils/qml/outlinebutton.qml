@@ -22,7 +22,7 @@ import org.kde.kirigami 2.2 as Kirigami
 Item {
     id: button
 
-    property color color: activePalette.text
+    property color color: Kirigami.Theme.textColor
     property string label: ""
     property real expandedHeight: height
     property real radius: Math.min(48, button.height) / 2

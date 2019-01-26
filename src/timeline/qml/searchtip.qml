@@ -41,7 +41,7 @@ Loader {
             border.width: 1
             radius: 5
             color: "transparent"
-            border.color: activePalette.text
+            border.color: Kirigami.Theme.textColor
             anchors.margins: 15
             anchors.left: parent.left
             anchors.right: parent.right
@@ -70,10 +70,10 @@ Loader {
                         border.width: 1
                         radius: 5
                         color: "transparent"
-                        border.color: activePalette.text
+                        border.color: Kirigami.Theme.textColor
                         Text {
                             id: label
-                            color: activePalette.text
+                            color: Kirigami.Theme.textColor
                             text: i18n("Got it")
                             anchors.centerIn: parent
                         }
@@ -81,7 +81,7 @@ Loader {
                 }
 
                 Text {
-                    color: activePalette.text
+                    color: Kirigami.Theme.textColor
                     Layout.fillWidth: true
                     textFormat: Text.RichText
                     wrapMode: Text.WordWrap

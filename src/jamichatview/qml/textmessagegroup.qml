@@ -30,7 +30,6 @@ Item {
     }
 
     JamiChatView.GroupFooter {
-        visible: false //FIXME
         anchors.horizontalCenter: parent.horizontalCenter
         y: (parent.parent && parent.parent.parent && parent.parent.parent.height) ?
             parent.parent.parent.height - height : 0

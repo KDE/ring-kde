@@ -32,7 +32,7 @@ Column {
 
     Text {
         text: call.length
-        color: selected ? activePalette.highlightedText : activePalette.text
+        color: selected ? Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor
         anchors.horizontalCenter: parent.horizontalCenter
         font.bold: true
     }

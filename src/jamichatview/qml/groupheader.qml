@@ -22,6 +22,11 @@ import org.kde.kirigami 2.2 as Kirigami
 RowLayout {
     property string type: "text"
 
+    opacity: chatView.displayExtraTime ? 1 : 0.5
+    Behavior on opacity {
+            NumberAnimation {duration: 500}
+    }
+
     Item {
         Layout.preferredWidth: 5
     }
@@ -55,6 +60,6 @@ RowLayout {
 
     Text {
         text: display
-        color: activePalette.text
+        color: Kirigami.Theme.textColor
     }
 }

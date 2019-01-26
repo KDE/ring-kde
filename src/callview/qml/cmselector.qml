@@ -47,7 +47,7 @@ Dialog {
         id: label
         wrapMode: Text.WordWrap
         text: phoneNumbers.text
-        color: activePalette.text
+        color: Kirigami.Theme.textColor
     }
 
     ListView {
@@ -97,8 +97,8 @@ Dialog {
                     when: numbers.currentItem == delegate
                     PropertyChanges {
                         target: delegate
-                        border.color: activePalette.highlightedText
-                        color: activePalette.highlight
+                        border.color: Kirigami.Theme.highlightedTextColor
+                        color: Kirigami.Theme.highlightColor
                     }
                 },
                 State {
@@ -106,7 +106,7 @@ Dialog {
                     when: mouseArea.containsMouse
                     PropertyChanges {
                         target: delegate
-                        border.color: activePalette.highlightedText
+                        border.color: Kirigami.Theme.highlightedTextColor
                     }
                 }
             ]
@@ -124,14 +124,14 @@ Dialog {
                     Layout.fillWidth: true
                     Text {
                         text: display
-                        color: activePalette.text
+                        color: Kirigami.Theme.textColor
                         Layout.fillWidth: true
                     }
 
                     Text {
                         text: lastUsed == undefined || lastUsed == "" ? i18n("Never used") :
                             i18n("Used ")+totalCallCount+i18n(" time (Last used on: ") + formattedLastUsed + ")"
-                        color: inactivePalette.text
+                        color: Kirigami.Theme.textColor
                         Layout.fillWidth: true
                     }
                 }

@@ -42,7 +42,7 @@ Kirigami.ScrollablePage {
 
     property bool isChanged: false
 
-    property var labelColor: inactivePalette.text
+    property var labelColor: Kirigami.Theme.textColor
 
     property var cachedPhoto: undefined
 
@@ -144,7 +144,7 @@ Kirigami.ScrollablePage {
                 }
 
                 background: Rectangle {
-                    color: activePalette.base
+                    color: Kirigami.Theme.backgroundColor
                 }
 
                 Page {
@@ -162,7 +162,7 @@ Kirigami.ScrollablePage {
                         }
                     }
 
-                    background: Rectangle { color: activePalette.base }
+                    background: Rectangle { color: Kirigami.Theme.backgroundColor }
                 }
 
                 Page {
@@ -177,7 +177,7 @@ Kirigami.ScrollablePage {
                         showAdd: contactViewPage.editing
                     }
 
-                    background: Rectangle { color: activePalette.base }
+                    background: Rectangle { color: Kirigami.Theme.backgroundColor }
                 }
 
 //                 Page {
@@ -189,13 +189,13 @@ Kirigami.ScrollablePage {
 //                         anchors.fill: parent
 //                     }
 //
-//                     background: Rectangle { color: activePalette.base }
+//                     background: Rectangle { color: Kirigami.Theme.backgroundColor }
 //                 }
 
                 Page {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    background: Rectangle { color: activePalette.base }
+                    background: Rectangle { color: Kirigami.Theme.backgroundColor }
                     id: tabbedContactInfoPage4
                     JamiContactView.Statistics {
                         id: statistics
@@ -218,7 +218,7 @@ Kirigami.ScrollablePage {
         id: saveButton
         z: 10
         radius: 999
-        color: activePalette.highlight
+        color: Kirigami.Theme.highlightColor
         visible: showSave && isChanged
 
         anchors.margins: 10

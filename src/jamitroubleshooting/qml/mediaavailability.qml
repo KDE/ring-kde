@@ -35,7 +35,7 @@ Rectangle {
     }
 
     border.width: 1
-    border.color: activePalette.text
+    border.color: Kirigami.Theme.textColor
     color: "transparent"
     radius: 99
     width: defaultSize
@@ -58,7 +58,7 @@ Rectangle {
         height: parent.height
         anchors.right: parent.right
         visible: false
-        color: activePalette.text
+        color: Kirigami.Theme.textColor
         wrapMode: Text.WordWrap
     }
 

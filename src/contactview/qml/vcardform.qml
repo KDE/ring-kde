@@ -103,7 +103,7 @@ GridLayout {
     Label {
         id: label
         text: i18n("Formatted name:")
-        color: labelColor ? labelColor : activePalette.text
+        color: labelColor ? labelColor : Kirigami.Theme.textColor
     }
 
     TextField {
@@ -116,7 +116,7 @@ GridLayout {
 
     Label {
         text: i18n("Primary name:")
-        color: labelColor ? labelColor : activePalette.text
+        color: labelColor ? labelColor : Kirigami.Theme.textColor
     }
     TextField {
         id: firstName
@@ -128,7 +128,7 @@ GridLayout {
 
     Label {
         text: i18n("Last name:")
-        color: labelColor ? labelColor : activePalette.text
+        color: labelColor ? labelColor : Kirigami.Theme.textColor
     }
     TextField {
         id: lastName
@@ -140,7 +140,7 @@ GridLayout {
 
     Label {
         text: i18n("Email:")
-        color: labelColor ? labelColor : activePalette.text
+        color: labelColor ? labelColor : Kirigami.Theme.textColor
     }
     TextField {
         id: email

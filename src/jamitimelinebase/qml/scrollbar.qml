@@ -35,6 +35,12 @@ KQuickItemViews.FlickableScrollBar {
 
     visible: handleVisible
 
+    SystemPalette {
+        id: inactivePalette
+        colorGroup: SystemPalette.Inactive
+    }
+
+
     // This isn't correct at all, but close enough for now
     function getSectionHeight(height, total, section, index, activeCategoryCount) {
         var h = (height-(activeCategoryCount*22)) * (section/total)
@@ -120,7 +126,7 @@ KQuickItemViews.FlickableScrollBar {
                     radius: 999
                     color: inactivePalette.highlight
                     border.width: 1
-                    border.color: activePalette.text
+                    border.color: Kirigami.Theme.textColor
 
                     Rectangle {
                         id: smallCircle
@@ -128,7 +134,7 @@ KQuickItemViews.FlickableScrollBar {
                         width: 8
                         radius: 99
                         anchors.centerIn: parent
-                        color: activePalette.text
+                        color: Kirigami.Theme.textColor
 
                         Behavior on color {
                             ColorAnimation {duration: 300}
@@ -143,7 +149,7 @@ KQuickItemViews.FlickableScrollBar {
                     id: label
                     Layouts.Layout.fillWidth: true
                     text: display
-                    color: activePalette.text
+                    color: Kirigami.Theme.textColor
                     font.pointSize: Kirigami.Theme.defaultFont.pointSize*1.2
                     Behavior on font.pointSize {
                         NumberAnimation {duration: 150}
@@ -251,7 +257,7 @@ KQuickItemViews.FlickableScrollBar {
                 }
                 PropertyChanges {
                     target:  handle
-                    color: activePalette.highlight
+                    color: Kirigami.Theme.highlightColor
                 }
             }
         ]

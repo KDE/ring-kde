@@ -29,7 +29,7 @@ import org.kde.ringkde.jamitroubleshooting 1.0 as JamiTroubleShooting
 import org.kde.ringkde.jamitimelinebase 1.0 as JamiTimelineBase
 
 Rectangle {
-    color: activePalette.base
+    color: Kirigami.Theme.backgroundColor
     id: recentDock
     visible: true
 
@@ -65,7 +65,7 @@ Rectangle {
             width: parent.width
             anchors.margins: 10
             wrapMode: Text.WordWrap
-            color: activePalette.text
+            color: Kirigami.Theme.textColor
             text: i18n("To begin using Ring-KDE, enter an username in the box above and press enter")
         }
 
@@ -102,7 +102,7 @@ Rectangle {
                     anchors.leftMargin: 30
                     anchors.rightMargin: 40
                     radius: 10
-                    color: activePalette.highlight
+                    color: Kirigami.Theme.highlightColor
                 }
             }
 

@@ -26,14 +26,14 @@ Text {
     rightPadding: 10
     height: 3*fontMetrics.height
     verticalAlignment: Text.AlignVCenter
-    color: activePalette.text
+    color: Kirigami.Theme.textColor
     x: 10
 
     Rectangle {
         height: 30
         width: 100
         border.width: 1
-        border.color: activePalette.text
+        border.color: Kirigami.Theme.textColor
         color: "transparent"
         radius: 1
         z: -10

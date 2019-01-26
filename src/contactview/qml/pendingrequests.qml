@@ -99,7 +99,7 @@ Dialog {
                     anchors.leftMargin: 10
                     anchors.rightMargin: 10
                     radius: 5
-                    color: activePalette.highlight
+                    color: Kirigami.Theme.highlightColor
                 }
             }
         }

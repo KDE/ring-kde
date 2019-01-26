@@ -55,7 +55,7 @@ Rectangle {
         setContactMethod()
     }
 
-    color: Kirigami.Theme.viewBackgroundColor
+    color: Kirigami.Theme.backgroundColor
 
     property var currentContactMethod: null
     property var currentIndividual: null
@@ -105,10 +105,12 @@ Rectangle {
                 JamiChatView.ChatView {
                     id: chatView
                     width: 600
-                    height: parent.width
+                    height: parent.height
 //                     Layout.alignment: Qt.AlignHCenter
                     anchors.horizontalCenter: parent.horizontalCenter
                     model: null//FIXME timelinePage.timelineModel
+
+                    forceTime: scrollbar.overlayVisible
 
                     // Due to a race condition, wait a bit, it should be fixed elsewhere,
                     //FIXME but it would take much longer.
@@ -153,7 +155,7 @@ Rectangle {
 
                     Rectangle {
                         anchors.fill: parent
-                        color: Kirigami.Theme.viewBackgroundColor
+                        color: Kirigami.Theme.backgroundColor
                         opacity: 0.75
                     }
                 }

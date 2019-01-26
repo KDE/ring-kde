@@ -28,7 +28,7 @@ Item {
         anchors.leftMargin: 10
         anchors.rightMargin: 10
         border.width: 1
-        border.color: inactivePalette.text
+        border.color: Kirigami.Theme.textColor
         color: "transparent"
         anchors.fill: parent
         radius: 5
@@ -58,13 +58,13 @@ Item {
                     Layout.fillWidth: true
                     id: displayNameLabel
                     text: display
-                    color: activePalette.text
+                    color: Kirigami.Theme.textColor
                     font.bold: true
                 }
 
                 Text {
                     Layout.fillWidth: true
-                    color: inactivePalette.text
+                    color: Kirigami.Theme.textColor
                     text: number
                 }
 

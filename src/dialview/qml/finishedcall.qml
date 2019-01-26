@@ -37,7 +37,7 @@ Column {
 
     Text {
         text: i18n("The call finished normally")
-        color: selected ? activePalette.highlightedText : activePalette.text
+        color: selected ? Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor
         wrapMode: Text.WordWrap
         anchors.horizontalCenter: parent.horizontalCenter
         font.bold: true
@@ -48,7 +48,7 @@ Column {
         radius: 99
         x: 4
         width: start ? 0 : parent.width - 8
-        color: selected ? activePalette.highlightedText : activePalette.highlight
+        color: selected ? Kirigami.Theme.highlightedTextColor : Kirigami.Theme.highlightColor
 
         Behavior on width {
             NumberAnimation {duration: 5000}

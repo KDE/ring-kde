@@ -63,7 +63,7 @@ Page {
                             }
                             RowLayout {
                                 Text {
-                                    color: inactivePalette.text
+                                    color: Kirigami.Theme.textColor
                                     text: "Realm: <i>"+realm+"</i>"
                                 }
                                 Item {

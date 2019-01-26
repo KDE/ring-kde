@@ -33,13 +33,13 @@ Item {
         radius: 5
         color: "transparent"
         border.width: 1
-        border.color: activePalette.text
+        border.color: Kirigami.Theme.textColor
         opacity: 0
 
         Rectangle {
             id: background
             anchors.fill: parent
-            color: activePalette.text
+            color: Kirigami.Theme.textColor
             opacity: 0
 
             Behavior on opacity {
@@ -58,7 +58,7 @@ Item {
         Text {
             id: label
             opacity: 0
-            color: activePalette.text
+            color: Kirigami.Theme.textColor
             text: i18n("Merge all calls")
             font.pointSize: Kirigami.Theme.defaultFont.pointSize*1.6
             anchors.centerIn: parent

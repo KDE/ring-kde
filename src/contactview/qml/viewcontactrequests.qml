@@ -55,7 +55,7 @@ Rectangle {
         Text {
             Layout.fillWidth: true
             text: i18n("You have pending contact requests:")
-            color: activePalette.text
+            color: Kirigami.Theme.textColor
             wrapMode: Text.WordWrap
             width: parent.width
         }
@@ -63,7 +63,7 @@ Rectangle {
         Rectangle {
             color: "transparent"
             border.width: 1
-            border.color: activePalette.text
+            border.color: Kirigami.Theme.textColor
             height: buttonText.implicitHeight + 15
             radius: 5
 
@@ -73,7 +73,7 @@ Rectangle {
             Text {
                 id: buttonText
                 anchors.centerIn: parent
-                color: activePalette.text
+                color: Kirigami.Theme.textColor
                 text: i18n("View all contact requests")
             }
 
