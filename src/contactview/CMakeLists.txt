@@ -48,7 +48,6 @@ set(GENERIC_LIB_VERSION "1.0.0")
 #File to compile
 set( jamicontactview_LIB_SRCS
    contactviewplugin.cpp
-   mainpage.cpp
    contactphoto.cpp
 )
 

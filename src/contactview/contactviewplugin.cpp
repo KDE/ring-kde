@@ -27,14 +27,12 @@
 #include <qrc_contactview.cpp>
 
 // CallView
-#include "mainpage.h"
 #include "contactphoto.h"
 
 void JamiContactView::registerTypes(const char *uri)
 {
     Q_ASSERT(uri == QByteArray("org.kde.ringkde.jamicontactview"));
 
-    qmlRegisterType<MainPage>(uri, 1, 0, "MainPage");
     qmlRegisterType<ContactPhoto>(uri, 1, 0, "ContactPhoto");
 
     qmlRegisterType(QStringLiteral("qrc:/contactview/qml/pendingrequest.qml")   , uri, 1, 0, "PendingRequest");
