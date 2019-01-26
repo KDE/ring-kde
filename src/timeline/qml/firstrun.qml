@@ -17,6 +17,7 @@
  **************************************************************************/
 import QtQuick 2.7
 import org.kde.ringkde.genericutils 1.0 as GenericUtils
+import org.kde.kirigami 2.2 as Kirigami
 
 Loader {
     clip: true

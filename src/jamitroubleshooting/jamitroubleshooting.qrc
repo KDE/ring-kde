@@ -5,5 +5,6 @@
         <file>qml/accountdisabled.qml</file>
         <file>qml/noaccount.qml</file>
         <file>qml/mediaavailability.qml</file>
+        <file>qml/globaltroubleshoot.qml</file>
     </qresource>
 </RCC>

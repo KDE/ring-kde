@@ -20,6 +20,7 @@ import QtQuick 2.7
 import QtQuick.Layouts 1.0
 import org.kde.kirigami 2.2 as Kirigami
 import org.kde.ringkde.genericutils 1.0 as GenericUtils
+import org.kde.kirigami 2.2 as Kirigami
 
 /**
  * Add a very obvious warning and reload button to make the "/!\ No accounts"
@@ -51,7 +52,7 @@ Rectangle {
         Text {
             Layout.fillWidth: true
             text: i18n("There is no accounts, click on the button below to create one")
-            color: activePalette.text
+            color: Kirigami.Theme.textColor
             wrapMode: Text.WordWrap
             width: parent.width
         }
@@ -59,7 +60,7 @@ Rectangle {
         Rectangle {
             color: "transparent"
             border.width: 1
-            border.color: activePalette.text
+            border.color: Kirigami.Theme.textColor
             height: buttonText.implicitHeight + 15
             radius: 5
 
@@ -69,7 +70,7 @@ Rectangle {
             Text {
                 id: buttonText
                 anchors.centerIn: parent
-                color: activePalette.text
+                color: Kirigami.Theme.textColor
                 text: i18n("Create an account")
             }
 

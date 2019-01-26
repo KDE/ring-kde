@@ -29,16 +29,6 @@ import org.kde.ringkde.jamitroubleshooting 1.0 as JamiTroubleShooting
 import org.kde.ringkde.jamitimelinebase 1.0 as JamiTimelineBase
 
 Rectangle {
-    SystemPalette {
-        id: activePalette
-        colorGroup: SystemPalette.Active
-    }
-
-    SystemPalette {
-        id: inactivePalette
-        colorGroup: SystemPalette.Disabled
-    }
-
     color: activePalette.base
     id: recentDock
     visible: true
@@ -66,52 +56,6 @@ Rectangle {
         JamiTimeline.PeersTimelineCategories {}
     }
 
-    Component {
-        id: noRegisteredAccounts
-        JamiTroubleShooting.AccountError {
-            Component.onCompleted: {
-                implicitHeight = height + 20
-                accountError.height = height + 20
-            }
-        }
-    }
-
-    Component {
-        id: noEnabledAccounts
-        JamiTroubleShooting.AccountDisabled {
-            Component.onCompleted: {
-                implicitHeight = height
-                accountError.height = height
-            }
-        }
-    }
-
-    Component {
-        id: noAccounts
-        JamiTroubleShooting.NoAccount {
-            Component.onCompleted: {
-                implicitHeight = height
-                accountError.height = height
-            }
-        }
-    }
-
-    Component {
-        id: pendingContactRequests
-        JamiContactView.ViewContactRequests {
-            Component.onCompleted: {
-                implicitHeight = height
-                accountError.height = height
-            }
-        }
-    }
-
-    property bool displayNoAccount: RingSession.accountModel.size == 0
-    property bool displayDisabled: !RingSession.accountModel.hasEnabledAccounts
-    property bool displayNoRegAccounts: !RingSession.accountModel.hasAvailableAccounts
-    property bool displayContactRequests: RingSession.accountModel.incomingContactRequestModel.size > 0
-    property bool displayActionHeader: displayNoAccount || displayNoRegAccounts || displayDisabled || displayContactRequests
-
     Item {
         anchors.fill: parent
 
@@ -125,7 +69,7 @@ Rectangle {
             text: i18n("To begin using Ring-KDE, enter an username in the box above and press enter")
         }
 
-        Loader {
+        JamiTroubleShooting.GlobalTroubleshoot {
             id: accountError
             active: displayActionHeader
 
@@ -133,12 +77,6 @@ Rectangle {
             x: 10
             y: 10
             height: item ? item.implicitHeight : 0
-
-            sourceComponent: displayNoAccount ? noAccounts : (
-                displayDisabled ? noEnabledAccounts : (
-                    displayNoRegAccounts ? noRegisteredAccounts :
-                        pendingContactRequests
-            ))
         }
 
         KQuickItemViews.ListView {

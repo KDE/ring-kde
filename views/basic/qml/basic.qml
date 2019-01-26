@@ -23,11 +23,24 @@ import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.2
 import org.kde.kirigami 2.6 as Kirigami
 import org.kde.ringkde.basicview 1.0 as BasicView
+import net.lvindustries.ringqtquick 1.0 as RingQtQuick
+import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
+
 
 Kirigami.ApplicationWindow {
     width: 320
     height: 600
     id: root
+
+    JamiContactView.MainPage {
+        id: mainPage
+
+        onChanged: {
+            chat.boo.timelineModel = timelineModel
+            console.log("\n\nCHANGED", timelineModel, chat.boo, chat.boo.timelineModel)
+//             chat.model = timelineModel
+        }
+    }
 
     BasicView.ActionCollection {
         id: actionCollection
@@ -47,7 +60,7 @@ Kirigami.ApplicationWindow {
 
     BasicView.ListPage {
         id: list
-        model: mydata
+        model: RingSession.peersTimelineModel
     }
 
     BasicView.ChatPage {
@@ -57,7 +70,7 @@ Kirigami.ApplicationWindow {
 
     contextDrawer: Kirigami.ContextDrawer {
         id: contextDrawer
-     }
+    }
 
     globalDrawer: Kirigami.GlobalDrawer {
         actions: [

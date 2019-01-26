@@ -59,8 +59,9 @@ public:
     QSharedPointer<QAbstractItemModel> m_CallsModel;
     Individual* m_Invididual {nullptr};
     QSharedPointer<QAbstractItemModel> m_TimelineModel;
-    QQuickItem* m_pItem   {nullptr};
-    QQuickItem* m_pHeader {nullptr};
+//     QQuickItem* m_pItem   {nullptr};
+//     QQuickItem* m_pHeader {nullptr};
+    bool m_IsLocked{false};
 
     QList< QTimer* > m_lTimers;
 
@@ -155,6 +156,10 @@ void MainPage::setIndividual(Individual* ind)
     if (!ind)
         return;
 
+
+    d_ptr->m_IsLocked = true;
+    emit changed();
+
     if (d_ptr->m_TimelineModel) {
         disconnect(d_ptr->m_TimelineModel.data(), &QAbstractItemModel::rowsInserted,
             this, &MainPage::contextInserted);
@@ -165,26 +170,29 @@ void MainPage::setIndividual(Individual* ind)
     d_ptr->m_CallsModel = ind->eventAggregate()->unsortedListView();
     Q_ASSERT(d_ptr->m_CallsModel);
 
-    d_ptr->m_pItem->setProperty( "currentContactMethod", QVariant::fromValue(
-        static_cast<ContactMethod*>(nullptr)
-    ));
 
-    d_ptr->m_pItem->setProperty( "currentIndividual", QVariant::fromValue(
-        ind
-    ));
+//     d_ptr->m_pItem->setProperty( "currentContactMethod", QVariant::fromValue(
+//         static_cast<ContactMethod*>(nullptr)
+//     ));
 
-    d_ptr->m_pItem->setProperty( "timelineModel", QVariant::fromValue(d_ptr->m_TimelineModel));
-    d_ptr->m_pItem->setProperty( "unsortedListView", QVariant::fromValue(d_ptr->m_CallsModel));
+//     d_ptr->m_pItem->setProperty( "currentIndividual", QVariant::fromValue(
+//         ind
+//     ));
+
+//     d_ptr->m_pItem->setProperty( "timelineModel", QVariant::fromValue(d_ptr->m_TimelineModel));
+//     d_ptr->m_pItem->setProperty( "unsortedListView", QVariant::fromValue(d_ptr->m_CallsModel));
 
     if (d_ptr->m_TimelineModel) {
         connect(d_ptr->m_TimelineModel.data(), &QAbstractItemModel::rowsInserted,
             this, &MainPage::contextInserted);
     }
+    d_ptr->m_IsLocked = false;
+    emit changed();
 }
 
 void MainPage::setContactMethod(ContactMethod* cm)
 {
-    if ((!cm) || (!d_ptr->m_pItem))
+    if ((!cm))
         return;
 
 
@@ -214,13 +222,16 @@ void MainPage::setContactMethod(ContactMethod* cm)
     Q_ASSERT(d_ptr->m_CallsModel);
 
     d_ptr->m_TimelineModel = cm->individual()->timelineModel();
+    emit changed();
 
-    d_ptr->m_pItem->setProperty( "currentContactMethod", QVariant::fromValue(cm));
-    d_ptr->m_pItem->setProperty( "currentIndividual", QVariant::fromValue(
-        cm->individual()
-    ));
-    d_ptr->m_pItem->setProperty( "timelineModel", QVariant::fromValue(d_ptr->m_TimelineModel));
-    d_ptr->m_pItem->setProperty( "unsortedListView", QVariant::fromValue(d_ptr->m_CallsModel));
+//     d_ptr->m_pItem->setProperty( "currentContactMethod", QVariant::fromValue(cm));
+//     d_ptr->m_pItem->setProperty( "currentIndividual", QVariant::fromValue(
+//         cm->individual()
+//     ));
+//     d_ptr->m_pItem->setProperty( "timelineModel", QVariant::fromValue(d_ptr->m_TimelineModel));
+//     d_ptr->m_pItem->setProperty( "unsortedListView", QVariant::fromValue(d_ptr->m_CallsModel));
+/*
+    emit changed();*/
 
     if (d_ptr->m_TimelineModel) {
         connect(d_ptr->m_TimelineModel.data(), &QAbstractItemModel::rowsInserted,
@@ -238,20 +249,21 @@ void MainPage::setPerson(Person* p)
     auto ind = p->individual();
     d_ptr->m_Invididual = ind;
 
-    d_ptr->m_pItem->setProperty( "currentPerson", QVariant::fromValue(p));
-    d_ptr->m_pItem->setProperty( "currentIndividual", QVariant::fromValue(
-        ind
-    ));
+// //     d_ptr->m_pItem->setProperty( "currentPerson", QVariant::fromValue(p));
+//     d_ptr->m_pItem->setProperty( "currentIndividual", QVariant::fromValue(
+//         ind
+//     ));
 
     d_ptr->m_CallsModel = ind->eventAggregate()->unsortedListView();
     Q_ASSERT(d_ptr->m_CallsModel);
-
-    d_ptr->m_pItem->setProperty( "unsortedListView", QVariant::fromValue(d_ptr->m_CallsModel));
+/**/
+//     d_ptr->m_pItem->setProperty( "unsortedListView", QVariant::fromValue(d_ptr->m_CallsModel));
 
     if (d_ptr->m_TimelineModel) {
         connect(d_ptr->m_TimelineModel.data(), &QAbstractItemModel::rowsInserted,
             this, &MainPage::contextInserted);
     }
+    emit changed();
 }
 
 void MainPage::setCurrentPage(MainPage::Pages page)
@@ -278,7 +290,7 @@ void MainPage::setCurrentPage(MainPage::Pages page)
             break;
     }
 
-    d_ptr->m_pItem->setProperty( "currentPage", name);
+//     d_ptr->m_pItem->setProperty( "currentPage", name);
 }
 
 bool ActiveCallProxy2::filterAcceptsRow(int row, const QModelIndex& srcParent ) const
@@ -298,19 +310,18 @@ void MainPagePrivate::slotWindowChanged()
 
     QQmlComponent comp(ctx->engine(), QStringLiteral("qrc:/desktopview/qml/viewcontact.qml"), q_ptr);
 
-    m_pItem = qobject_cast<QQuickItem*>(comp.create(ctx));
+//     m_pItem = qobject_cast<QQuickItem*>(comp.create(ctx));
 
-    if (!m_pItem) {
-        qDebug() << "Previous error" << comp.errorString();
-    }
+//     if (!m_pItem) {
+//         qDebug() << "Previous error" << comp.errorString();
+//     }
 
-    Q_ASSERT(m_pItem);
-    m_pItem->setParentItem(q_ptr);
+//     Q_ASSERT(m_pItem);
+//     m_pItem->setParentItem(q_ptr);
 
-
-    auto anchors = qvariant_cast<QObject*>(m_pItem->property("anchors"));
-    anchors->setProperty("fill", QVariant::fromValue(q_ptr));
-    m_pItem->setProperty( "unsortedListView", QVariant::fromValue(nullptr));
+//     auto anchors = qvariant_cast<QObject*>(m_pItem->property("anchors"));
+//     anchors->setProperty("fill", QVariant::fromValue(q_ptr));
+//     m_pItem->setProperty( "unsortedListView", QVariant::fromValue(nullptr));
 }
 
 void MainPage::showVideo(Call* c)
@@ -320,34 +331,35 @@ void MainPage::showVideo(Call* c)
         return;
 
     setContactMethod(c->peerContactMethod());
-    QMetaObject::invokeMethod(d_ptr->m_pItem, "showVideo");
+//     QMetaObject::invokeMethod(d_ptr->m_pItem, "showVideo");
 }
 
-QQuickItem* MainPage::page() const
-{
-    return d_ptr->m_pItem;
-}
+// QQuickItem* MainPage::page() const
+// {
+//     return d_ptr->m_pItem;
+// }
 
 
-QQuickItem* MainPage::header() const
-{
-    return d_ptr->m_pHeader;
-}
+// QQuickItem* MainPage::header() const
+// {
+//     return d_ptr->m_pHeader;
+// }
 
-void MainPage::setHeader(QQuickItem* item)
-{
-    d_ptr->m_pItem->setProperty("contactHeader", QVariant::fromValue(item));
-    d_ptr->m_pHeader = item;
-}
+// void MainPage::setHeader(QQuickItem* item)
+// {
+//     d_ptr->m_pItem->setProperty("contactHeader", QVariant::fromValue(item));
+//     d_ptr->m_pHeader = item;
+// }
 
 bool MainPage::isMobile() const
 {
-    return d_ptr->m_pItem->property("mobile").toBool();
+    return false;
+//     return d_ptr->m_pItem->property("mobile").toBool();
 }
 
 void MainPage::setMobile(bool v)
 {
-    d_ptr->m_pItem->setProperty("mobile", v);
+//     d_ptr->m_pItem->setProperty("mobile", v);
 }
 
 Individual* MainPage::individual() const
@@ -370,8 +382,34 @@ QModelIndex MainPage::suggestedTimelineIndex() const
 
 void MainPage::contextInserted()
 {
-    QMetaObject::invokeMethod(d_ptr->m_pItem, "showNewContent");
+//     QMetaObject::invokeMethod(d_ptr->m_pItem, "showNewContent");
 }
+
+// ContactMethod* MainPage::currentContactMethod() const
+// {
+//     return nullptr;
+// }
+
+Individual* MainPage::currentIndividual() const
+{
+    return d_ptr->m_Invididual;
+}
+
+QAbstractItemModel* MainPage::timelineModel() const
+{
+    return d_ptr->m_IsLocked ? nullptr : d_ptr->m_TimelineModel.data();
+}
+
+QAbstractItemModel* MainPage::unsortedListView() const
+{
+    return d_ptr->m_IsLocked ? nullptr : d_ptr->m_CallsModel.data();
+}
+
+Person* MainPage::currentPerson() const
+{
+    return nullptr;
+}
+
 
 #include <mainpage.moc>
 // kate: space-indent on; indent-width 4; replace-tabs on;

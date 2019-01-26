@@ -26,17 +26,13 @@ import org.kde.ringkde.jamitimeline 1.0 as JamiTimeline
 import org.kde.ringkde.jamitimelinebase 1.0 as JamiTimelineBase
 import org.kde.ringkde.jamiaudioplayer 1.0 as JamiAudioPlayer
 import org.kde.ringkde.genericutils 1.0 as GenericUtils
+import org.kde.kirigami 2.2 as Kirigami
 
 KQuickItemViews.TreeView {
     id: chatView
     clip: true
 
     property var treeHelper: _treeHelper
-
-    SystemPalette {
-        id: activePalette
-        colorGroup: SystemPalette.Active
-    }
 
     GenericUtils.TreeHelper {
         id: _treeHelper

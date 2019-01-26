@@ -43,16 +43,6 @@ Dialog {
 
     clip: true
 
-    SystemPalette {
-        id: activePalette
-        colorGroup: SystemPalette.Active
-    }
-
-    SystemPalette {
-        id: inactivePalette
-        colorGroup: SystemPalette.Disabled
-    }
-
     Text {
         id: label
         wrapMode: Text.WordWrap

@@ -18,6 +18,7 @@
 import QtQuick 2.7
 import QtQml.Models 2.2
 import org.kde.ringkde.jamichatview 1.0 as JamiChatView
+import org.kde.kirigami 2.2 as Kirigami
 
 Item {
     id: snapshots

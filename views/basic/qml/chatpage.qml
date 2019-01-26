@@ -22,16 +22,20 @@ import QtQuick.Layouts 1.4
 import QtQuick.Controls 2.2 as Controls
 import org.kde.kirigami 2.6 as Kirigami
 import org.kde.ringkde.basicview 1.0 as BasicView
+import org.kde.ringkde.jamichatview 1.0 as JamiChatView
 
 Kirigami.Page {
     property var model;
-    property alias content: loader.sourceComponent
+//     property alias content: loader.sourceComponent
+//     property alias model2: chatView.model
+    property var currentIndividual: null
+    property var boo: chatView
     property alias showContactDetails: detail.active
     property alias editContact: form.active
 
     Kirigami.Theme.colorSet: Kirigami.Theme.View
 
-    id: mainPage
+    id: chatPage
 
     spacing: 0
     leftPadding: 0
@@ -47,35 +51,39 @@ Kirigami.Page {
         onVisibleChanged: header.visible = !visible
     }
 
-    footer: Controls.TextField {}
-
     header: BasicView.Header {
         id: header
         visible: !pageStack.wideMode
         Layout.fillWidth: true
-        height: Kirigami.Units.gridUnit * 5
-        Layout.preferredHeight: Kirigami.Units.gridUnit * 5
+        height: visible ? Kirigami.Units.gridUnit * 5 : 0
+        Layout.preferredHeight: visible ? Kirigami.Units.gridUnit * 5 : 0
         Layout.margins: 0
 
-        source: model.image
+        //source: model.image
     }
 
-    Loader {
-        id: loader
+//     Loader {
+//         id: loader
+//         anchors.fill: parent
+//         active: true
+//         sourceComponent:
+//     }
+
+    JamiChatView.ChatPage {
+        id: chatView
         anchors.fill: parent
-        active: true
-        /*sourceComponent: Rectangle {
-            color: "blue"
-            anchors.fill: parent
-        }*/
+        currentIndividual: mainPage.currentIndividual
+        timelineModel: mainPage.timelineModel
+        onCurrentIndividualChanged: {
+            console.log("GET HERE", currentIndividual)
+        }
     }
-
 
     Loader {
         active: false
         id: detail
         sourceComponent: BasicView.DetailPage {
-            model: mainPage.model
+            model: chatPage.model
             onSheetOpenChanged: detail.active = sheetOpen
             Component.onCompleted: sheetOpen = true
         }
@@ -85,7 +93,7 @@ Kirigami.Page {
         active: false
         id: form
         sourceComponent: BasicView.DetailPage {
-            model: mainPage.model
+            model: chatPage.model
             onSheetOpenChanged: form.active = sheetOpen
             Component.onCompleted: {sheetOpen = true}
         }

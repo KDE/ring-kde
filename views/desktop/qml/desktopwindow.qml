@@ -89,16 +89,6 @@ Kirigami.ApplicationWindow {
             console.log("ERROR", component.status, component.errorString())
     }
 
-    SystemPalette {
-        id: activePalette
-        colorGroup: SystemPalette.Active
-    }
-
-    SystemPalette {
-        id: inactivePalette
-        colorGroup: SystemPalette.Disabled
-    }
-
     property var _regularActions: undefined
     property var _mobileActions: undefined
 

@@ -54,16 +54,6 @@ KQuickItemViews.FlickableScrollBar {
         }
     }
 
-    SystemPalette {
-        id: inactivePalette
-        colorGroup: SystemPalette.Disabled
-    }
-
-    SystemPalette {
-        id: activePalette
-        colorGroup: SystemPalette.Active
-    }
-
     Timer {
         id: hideTimer
         running: false

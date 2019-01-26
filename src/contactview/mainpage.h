@@ -41,27 +41,40 @@ public:
     };
     Q_ENUM(Pages);
 
-    Q_PROPERTY(QQuickItem* page READ page CONSTANT) //FIXME remove
-    Q_PROPERTY(QQuickItem* header READ header WRITE setHeader CONSTANT) //FIXME remove
+//     Q_PROPERTY(QQuickItem* page READ page CONSTANT) //FIXME remove
+//     Q_PROPERTY(QQuickItem* header READ header WRITE setHeader CONSTANT) //FIXME remove
     Q_PROPERTY(bool mobile READ isMobile WRITE setMobile CONSTANT)
-    Q_PROPERTY(Individual* individual READ individual)
+    Q_PROPERTY(Individual* individual READ individual WRITE setIndividual NOTIFY changed)
     Q_PROPERTY(QModelIndex suggestedTimelineIndex READ suggestedTimelineIndex)
+
+//     Q_PROPERTY(ContactMethod* currentContactMethod READ currentContactMethod NOTIFY changed)
+    Q_PROPERTY(Individual* currentIndividual READ currentIndividual WRITE setIndividual NOTIFY changed)
+    Q_PROPERTY(QAbstractItemModel* timelineModel READ timelineModel NOTIFY changed)
+    Q_PROPERTY(QAbstractItemModel* unsortedListView READ unsortedListView NOTIFY changed)
+    Q_PROPERTY(Person* currentPerson READ currentPerson NOTIFY changed)
+
 
     Q_INVOKABLE explicit MainPage(QQuickItem* parent = nullptr);
     virtual ~MainPage();
 
     Q_INVOKABLE void setCurrentPage(Pages page); //FIXME remove
+//
+//     QQuickItem* page() const; //FIXME remove
 
-    QQuickItem* page() const; //FIXME remove
-
-    QQuickItem* header() const; //FIXME remove
-    void setHeader(QQuickItem* item); //FIXME remove
+//     QQuickItem* header() const; //FIXME remove
+//     void setHeader(QQuickItem* item); //FIXME remove
 
     Individual* individual() const;
     QModelIndex suggestedTimelineIndex() const;
 
     bool isMobile() const;
     void setMobile(bool v);
+
+//     ContactMethod* currentContactMethod() const;
+    Individual* currentIndividual() const;
+    QAbstractItemModel* timelineModel() const;
+    QAbstractItemModel* unsortedListView() const;
+    Person* currentPerson() const;
 
 protected:
     virtual bool eventFilter(QObject *obj, QEvent *event) override;
@@ -75,6 +88,7 @@ public Q_SLOTS:
 
 Q_SIGNALS:
     void suggestSelection(Individual* individual, const QModelIndex& modelIndex);
+    void changed();
 
 private:
     MainPagePrivate* d_ptr;

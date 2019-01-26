@@ -17,6 +17,7 @@
  *****************************************************************************/
 import QtQuick 2.0
 import org.kde.ringkde.jamicanvasindicator 1.0 as JamiCanvasIndicator
+import org.kde.kirigami 2.2 as Kirigami
 
 Column {
     id: outgoingCall

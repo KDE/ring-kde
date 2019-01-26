@@ -37,7 +37,6 @@ Rectangle {
 
     Kirigami.Heading {
         text: model.firstname + " " + model.lastname
-        color: "#fcfcfc"
         level: 1
         anchors.left: img.right
         anchors.leftMargin: 10
