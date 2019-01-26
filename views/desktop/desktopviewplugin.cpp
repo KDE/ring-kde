@@ -24,6 +24,7 @@
 #include "tipmodel.h"
 #include "qmlaction.h"
 #include "qactionbinder.h"
+#include "mainpage.h"
 
 #include <qrc_desktopview.cpp>
 
@@ -33,6 +34,7 @@ void DesktopView::registerTypes(const char *uri)
     qmlRegisterType<TipModel>(uri, 1, 0, "TipModel");
     qmlRegisterType<QmlAction>(uri, 1, 0, "QmlAction");
     qmlRegisterType<QActionBinder>(uri, 1, 0, "QActionBinder");
+    qmlRegisterType<MainPage>(uri, 1, 0, "MainPage");
 
     qmlRegisterType(QStringLiteral("qrc:/desktopview/qml/desktopwindow.qml"), uri, 1, 0, "DesktopWindow");
     qmlRegisterType(QStringLiteral("qrc:/desktopview/qml/dockbar.qml"), uri, 1, 0, "DockBar");

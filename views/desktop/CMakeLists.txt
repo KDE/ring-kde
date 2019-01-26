@@ -52,6 +52,7 @@ set( desktopview_LIB_SRCS
     tipmodel.cpp
     qmlaction.cpp
     qactionbinder.cpp
+    mainpage.cpp
 )
 
 qt5_add_resources(desktopview_LIB_SRCS

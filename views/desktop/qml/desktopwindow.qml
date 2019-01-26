@@ -422,7 +422,7 @@ Kirigami.ApplicationWindow {
                 }
             }
 
-            JamiContactView.MainPage {
+            DesktopView.MainPage {
                 id: mainPage
                 header: contactHeader
                 Layout.fillHeight: true
