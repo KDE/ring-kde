@@ -22,7 +22,7 @@ import QtQuick.Layouts 1.4
 import QtQuick.Controls 2.2 as Controls
 import org.kde.kirigami 2.6 as Kirigami
 import org.kde.ringkde.basicview 1.0 as BasicView
-import org.kde.ringkde.jamichatview 1.0 as JamiChatView
+// import org.kde.ringkde.jamichatview 1.0 as JamiChatView
 
 Kirigami.Page {
     property var model;
