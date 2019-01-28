@@ -21,6 +21,7 @@ import QtQuick.Layouts 1.0 as Layouts
 import org.kde.kirigami 2.2 as Kirigami
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 import org.kde.ringkde.genericutils 1.0 as GenericUtils
+import org.kde.ringkde.jamikdeintegration 1.0 as JamiKDEIntegration
 
 /**
  * Add a very obvious warning and reload button to make the "/!\ No accounts"

@@ -58,6 +58,8 @@
 #include "pixmapinterface.h"
 #include "serializationinterface.h"
 #include "windowevent.h"
+#include "qmlaction.h"
+#include "qactionbinder.h"
 #include "kcfg_settings.h"
 
 #ifndef DISABLE_NOTIFICATION
@@ -156,6 +158,8 @@ void JamiKDEIntegration::registerTypes(const char *uri)
     GlobalInstances::itemModelStateSerializer()->load();
 
     qmlRegisterType<WindowEvent>(uri, 1, 0, "WindowEvent");
+    qmlRegisterType<QmlAction>(uri, 1, 0, "QmlAction");
+    qmlRegisterType<QActionBinder>(uri, 1, 0, "QActionBinder");
 }
 
 void JamiKDEIntegration::initializeEngine(QQmlEngine *engine, const char *uri)
