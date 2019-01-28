@@ -27,8 +27,8 @@ import org.kde.ringkde.jamitroubleshooting 1.0 as JamiTroubleShooting
 
 Kirigami.Page {
     id: peerListPage
-    property var currentIndex: null//list.currentIndex;
-    property var model: null//list.model
+    property alias currentIndex: list.currentIndex;
+    property alias model: list.model
 
     spacing: 0
     leftPadding: 0
@@ -42,11 +42,11 @@ Kirigami.Page {
         width: peerListPage.width
         spacing: Kirigami.Units.largeSpacing
 
-        /*JamiTroubleShooting.GlobalTroubleshoot {
+        JamiTroubleShooting.GlobalTroubleshoot {
             id: globalTroubleshoot
             Layouts.Layout.fillWidth: true
             Layouts.Layout.margins: Kirigami.Units.largeSpacing
-        }*/
+        }
 
         Item {
             height: 10
@@ -75,11 +75,11 @@ Kirigami.Page {
         }
     }
 
-    /*BasicView.List {
+    BasicView.List {
         id: list
         width: parent.width
         height: parent.height
-    }*/
+    }
 
     actions {
         main: actionCollection.newContact
