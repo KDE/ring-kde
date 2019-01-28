@@ -96,7 +96,6 @@ Kirigami.ApplicationWindow {
         }
 
         onRequestsWizard: {
-            wizardVisible = true
             globalDrawer.drawerOpen = false
             wizardLoader.visible    = true
             wizardLoader.active     = true
@@ -117,7 +116,6 @@ Kirigami.ApplicationWindow {
                     wizardLoader.visible = false
                     wizardLoader.active = false
                 }
-                wizardVisible = visible
             }
         }
     }

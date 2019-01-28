@@ -292,7 +292,7 @@ Item {
         id: hidePopup
         repeat: false
         running: false
-        interval: 1000
+        interval: 5000
         onTriggered: {
             registrationPopup.visible = false
         }
@@ -302,7 +302,7 @@ Item {
     Timer {
         id: registrationTimeout
         repeat: false
-        interval: 30000
+        interval: 120000
         running: false
         onTriggered: {
             registrationPopup.color = "red"
