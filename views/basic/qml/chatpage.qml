@@ -45,13 +45,13 @@ Kirigami.Page {
     padding: 0
     title: "Susan Hoffman"
 
-    titleDelegate: BasicView.DesktopHeader {
+    /*titleDelegate: BasicView.DesktopHeader {
         id: dheader
         visible: fits
         onVisibleChanged: header.visible = !visible
-    }
+    }*/
 
-    header: BasicView.Header {
+    /*header: BasicView.Header {
         id: header
         visible: !pageStack.wideMode
         Layout.fillWidth: true
@@ -60,7 +60,7 @@ Kirigami.Page {
         Layout.margins: 0
 
         //source: model.image
-    }
+    }*/
 
 //     Loader {
 //         id: loader
@@ -69,12 +69,12 @@ Kirigami.Page {
 //         sourceComponent:
 //     }
 
-    JamiChatView.ChatPage {
+    /*JamiChatView.ChatPage {
         id: chatView
         anchors.fill: parent
         currentIndividual: mainPage.currentIndividual
         timelineModel: mainPage.timelineModel
-    }
+    }*/
 
     Loader {
         active: false
