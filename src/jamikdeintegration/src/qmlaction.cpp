@@ -19,6 +19,8 @@
 
 #include <QtCore/QDebug>
 
+#include "actioncollection.h"
+
 #ifdef HAS_QTWIDGET_SUPPORT
  #include <QtWidgets/QAction>
 #endif
@@ -31,6 +33,7 @@ public:
     bool            m_Checked    {false};
     bool            m_Enabled    {true};
     ActionIconGroup m_Icon       ;
+    QIcon           m_QIcon      ;
     QString         m_IconName   ;
     QString         m_IconSource ;
     QObject*        m_Shortcut   {nullptr};
@@ -45,6 +48,14 @@ public:
     QList<QmlAction*> m_lChildren;
 };
 
+
+QmlAction::QmlAction(const QIcon& icon, const QString& text, ActionCollection* c) :
+    QObject(c), d_ptr(new QmlActionPrivate)
+{
+    d_ptr->m_Name = text,
+    d_ptr->m_QIcon = icon;
+}
+
 QmlAction::QmlAction(QObject* parent) : QObject(parent), d_ptr(new QmlActionPrivate)
 {
 
@@ -58,6 +69,8 @@ QmlAction::QmlAction(QAction* action) : QObject(action), d_ptr(new QmlActionPriv
 
 QAction* QmlAction::action() const
 {
+    if ((!d_ptr->m_pAction) && !d_ptr->m_Name.isEmpty())
+        d_ptr->m_pAction = new QAction(d_ptr->m_QIcon, d_ptr->m_Name, const_cast<QmlAction*>(this));
     return d_ptr->m_pAction;
 }
 

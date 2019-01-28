@@ -29,9 +29,10 @@
 //KDE
 #include <QtWidgets/QAction>
 
-// Ring
+// Jami KDE Integration
 #include "actioncollection.h"
 #include "windowevent.h"
+#include "qmlaction.h"
 
 ///Constructor
 SysTray::SysTray(const QIcon &icon, QWidget *parent)
@@ -49,13 +50,13 @@ SysTray::SysTray(const QIcon &icon, QWidget *parent)
    setStatus(KStatusNotifierItem::ItemStatus::Active);
  #endif
 
-   addAction( ActionCollection::instance()->acceptAction  () );
-   addAction( ActionCollection::instance()->holdAction    () );
-   addAction( ActionCollection::instance()->transferAction() );
-   addAction( ActionCollection::instance()->recordAction  () );
+   addAction( ActionCollection::instance()->acceptAction  ()->action() );
+   addAction( ActionCollection::instance()->holdAction    ()->action() );
+   addAction( ActionCollection::instance()->transferAction()->action() );
+   addAction( ActionCollection::instance()->recordAction  ()->action() );
    addSeparator();
 
-   addAction( ActionCollection::instance()->closeAction() );
+   addAction( ActionCollection::instance()->closeAction()->action() );
 
    setObjectName( QStringLiteral("m_pTrayIcon") );
 }

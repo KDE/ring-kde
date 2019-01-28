@@ -22,17 +22,18 @@ import QtQuick 2.6
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.2
 import org.kde.kirigami 2.6 as Kirigami
-import org.kde.ringkde.basicview 1.0 as BasicView
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
+import org.kde.ringkde.basicview 1.0 as BasicView
 import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
-
+import org.kde.ringkde.jamiwizard 1.0 as JamiWizard
+import org.kde.ringkde.jamikdeintegration 1.0 as JamiKDEIntegration
 
 Kirigami.ApplicationWindow {
     width: 320
     height: 600
     id: root
 
-    JamiContactView.MainPage {
+    RingQtQuick.SharedModelLocker {
         id: mainPage
 
         onChanged: {
@@ -72,11 +73,53 @@ Kirigami.ApplicationWindow {
         id: contextDrawer
     }
 
-    globalDrawer: Kirigami.GlobalDrawer {
-        actions: [
-            actionCollection.newContact,
-            actionCollection.editAction,
-        ]
+    globalDrawer: BasicView.GlobalDrawer {
+        id: globalDrawer
+    }
+
+    JamiKDEIntegration.WindowEvent {
+        id: events
+
+        onRequestsConfigureAccounts: {
+            var component = Qt.createComponent("qrc:/account/qml/accountdialog.qml")
+            if (component.status == Component.Ready) {
+                var window = component.createObject(applicationWindow().contentItem)
+                window.open()
+            }
+            else
+                console.log("ERROR", component.status, component.errorString())
+
+        }
+
+        onRequestsHideWindow: {
+            hide()
+        }
+
+        onRequestsWizard: {
+            wizardVisible = true
+            globalDrawer.drawerOpen = false
+            wizardLoader.visible    = true
+            wizardLoader.active     = true
+        }
+    }
+
+    Loader {
+        id: wizardLoader
+        active: false
+        anchors.fill: parent
+        z: 999999
+        visible: false
+        sourceComponent: JamiWizard.Wizard {
+            anchors.fill: parent
+            z: 999999
+            onVisibleChanged: {
+                if (!visible) {
+                    wizardLoader.visible = false
+                    wizardLoader.active = false
+                }
+                wizardVisible = visible
+            }
+        }
     }
 
 }
