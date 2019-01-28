@@ -212,6 +212,7 @@ void QmlAction::setChecked(bool checked)
 #endif
     d_ptr->m_Checked = checked;
     Q_EMIT checkedChanged();
+    emit toggled(d_ptr->m_Checked);
 }
 
 void QmlAction::setEnabled(bool enabled)
@@ -276,6 +277,7 @@ void QmlAction::trigger()
 
 #ifdef HAS_QTWIDGET_SUPPORT
     if (action()) {
+        emit triggered(nullptr);
         d_ptr->m_pAction->trigger();
         return;
     }
