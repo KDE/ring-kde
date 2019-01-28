@@ -22,11 +22,10 @@
 
 //Qt
 class QActionGroup;
-
-//KDE
 class QAction;
 
 // Ring
+class QmlAction;
 class KXmlGuiWindow;
 class PhoneWindow;
 class KActionCollection;
@@ -43,149 +42,149 @@ public:
    static ActionCollection* instance();
    void setupAction();
 
-   Q_PROPERTY(QAction* holdAction                  READ holdAction                  CONSTANT)
-   Q_PROPERTY(QAction* recordAction                READ recordAction                CONSTANT)
-   Q_PROPERTY(QAction* muteCaptureAction           READ muteCaptureAction           CONSTANT)
-   Q_PROPERTY(QAction* mutePlaybackAction          READ mutePlaybackAction          CONSTANT)
-   Q_PROPERTY(QAction* hangupAction                READ hangupAction                CONSTANT)
-   Q_PROPERTY(QAction* transferAction              READ transferAction              CONSTANT)
-   Q_PROPERTY(QAction* acceptAction                READ acceptAction                CONSTANT)
-   Q_PROPERTY(QAction* newCallAction               READ newCallAction               CONSTANT)
-   Q_PROPERTY(QAction* displayVolumeControlsAction READ displayVolumeControlsAction CONSTANT)
-   Q_PROPERTY(QAction* displayDialpadAction        READ displayDialpadAction        CONSTANT)
-   Q_PROPERTY(QAction* displayAccountCbbAction     READ displayAccountCbbAction     CONSTANT)
-   Q_PROPERTY(QAction* showContactDockAction       READ showContactDockAction       CONSTANT)
-   Q_PROPERTY(QAction* showHistoryDockAction       READ showHistoryDockAction       CONSTANT)
-   Q_PROPERTY(QAction* showTimelineDockAction      READ showTimelineDockAction      CONSTANT)
-   Q_PROPERTY(QAction* showDialDockAction          READ showDialDockAction          CONSTANT)
-   Q_PROPERTY(QAction* showBookmarkDockAction      READ showBookmarkDockAction      CONSTANT)
-   Q_PROPERTY(QAction* quitAction                  READ quitAction                  CONSTANT)
-   Q_PROPERTY(QAction* closeAction                 READ closeAction                 CONSTANT)
-   Q_PROPERTY(QAction* addPerson                   READ addPerson                   CONSTANT)
-   Q_PROPERTY(QAction* focusHistory                READ focusHistory                CONSTANT)
-   Q_PROPERTY(QAction* focusContact                READ focusContact                CONSTANT)
-   Q_PROPERTY(QAction* focusCall                   READ focusCall                   CONSTANT)
-   Q_PROPERTY(QAction* focusBookmark               READ focusBookmark               CONSTANT)
-   Q_PROPERTY(QAction* showWizard                  READ showWizard                  CONSTANT)
-   Q_PROPERTY(QAction* showMenu                    READ showMenu                    CONSTANT)
-   Q_PROPERTY(QAction* newContact                  READ newContact                  CONSTANT)
-   Q_PROPERTY(QAction* configureShortcut           READ configureShortcut           CONSTANT)
-   Q_PROPERTY(QAction* configureNotification       READ configureNotification       CONSTANT)
-   Q_PROPERTY(QAction* configureAccount            READ configureAccount            CONSTANT)
-   Q_PROPERTY(QAction* videoRotateLeftAction     READ videoRotateLeftAction     CONSTANT)
-   Q_PROPERTY(QAction* videoRotateRightAction    READ videoRotateRightAction    CONSTANT)
-   Q_PROPERTY(QAction* videoFlipHorizontalAction READ videoFlipHorizontalAction CONSTANT)
-   Q_PROPERTY(QAction* videoFlipVerticalAction   READ videoFlipVerticalAction   CONSTANT)
-   Q_PROPERTY(QAction* videoMuteAction           READ videoMuteAction           CONSTANT)
-   Q_PROPERTY(QAction* videoPreviewAction        READ videoPreviewAction        CONSTANT)
-   Q_PROPERTY(QAction* vimw2deoScaleAction          READ videoScaleAction          CONSTANT)
-   Q_PROPERTY(QAction* videoFullscreenAction     READ videoFullscreenAction     CONSTANT)
+   Q_PROPERTY(QmlAction* holdAction                  READ holdAction                  CONSTANT)
+   Q_PROPERTY(QmlAction* recordAction                READ recordAction                CONSTANT)
+   Q_PROPERTY(QmlAction* muteCaptureAction           READ muteCaptureAction           CONSTANT)
+   Q_PROPERTY(QmlAction* mutePlaybackAction          READ mutePlaybackAction          CONSTANT)
+   Q_PROPERTY(QmlAction* hangupAction                READ hangupAction                CONSTANT)
+   Q_PROPERTY(QmlAction* transferAction              READ transferAction              CONSTANT)
+   Q_PROPERTY(QmlAction* acceptAction                READ acceptAction                CONSTANT)
+   Q_PROPERTY(QmlAction* newCallAction               READ newCallAction               CONSTANT)
+   Q_PROPERTY(QmlAction* displayVolumeControlsAction READ displayVolumeControlsAction CONSTANT)
+   Q_PROPERTY(QmlAction* displayDialpadAction        READ displayDialpadAction        CONSTANT)
+   Q_PROPERTY(QmlAction* displayAccountCbbAction     READ displayAccountCbbAction     CONSTANT)
+   Q_PROPERTY(QmlAction* showContactDockAction       READ showContactDockAction       CONSTANT)
+   Q_PROPERTY(QmlAction* showHistoryDockAction       READ showHistoryDockAction       CONSTANT)
+   Q_PROPERTY(QmlAction* showTimelineDockAction      READ showTimelineDockAction      CONSTANT)
+   Q_PROPERTY(QmlAction* showDialDockAction          READ showDialDockAction          CONSTANT)
+   Q_PROPERTY(QmlAction* showBookmarkDockAction      READ showBookmarkDockAction      CONSTANT)
+   Q_PROPERTY(QmlAction* quitAction                  READ quitAction                  CONSTANT)
+   Q_PROPERTY(QmlAction* closeAction                 READ closeAction                 CONSTANT)
+   Q_PROPERTY(QmlAction* addPerson                   READ addPerson                   CONSTANT)
+   Q_PROPERTY(QmlAction* focusHistory                READ focusHistory                CONSTANT)
+   Q_PROPERTY(QmlAction* focusContact                READ focusContact                CONSTANT)
+   Q_PROPERTY(QmlAction* focusCall                   READ focusCall                   CONSTANT)
+   Q_PROPERTY(QmlAction* focusBookmark               READ focusBookmark               CONSTANT)
+   Q_PROPERTY(QmlAction* showWizard                  READ showWizard                  CONSTANT)
+   Q_PROPERTY(QmlAction* showMenu                    READ showMenu                    CONSTANT)
+   Q_PROPERTY(QmlAction* newContact                  READ newContact                  CONSTANT)
+   Q_PROPERTY(QmlAction* configureShortcut           READ configureShortcut           CONSTANT)
+   Q_PROPERTY(QmlAction* configureNotification       READ configureNotification       CONSTANT)
+   Q_PROPERTY(QmlAction* configureAccount            READ configureAccount            CONSTANT)
+   Q_PROPERTY(QmlAction* videoRotateLeftAction     READ videoRotateLeftAction     CONSTANT)
+   Q_PROPERTY(QmlAction* videoRotateRightAction    READ videoRotateRightAction    CONSTANT)
+   Q_PROPERTY(QmlAction* videoFlipHorizontalAction READ videoFlipHorizontalAction CONSTANT)
+   Q_PROPERTY(QmlAction* videoFlipVerticalAction   READ videoFlipVerticalAction   CONSTANT)
+   Q_PROPERTY(QmlAction* videoMuteAction           READ videoMuteAction           CONSTANT)
+   Q_PROPERTY(QmlAction* videoPreviewAction        READ videoPreviewAction        CONSTANT)
+   Q_PROPERTY(QmlAction* vimw2deoScaleAction          READ videoScaleAction          CONSTANT)
+   Q_PROPERTY(QmlAction* videoFullscreenAction     READ videoFullscreenAction     CONSTANT)
 
    Q_PROPERTY(QObject* fakeMainWindow READ fakeMainWindow CONSTANT)
    Q_PROPERTY(QObject* kactionCollection READ kactionCollection CONSTANT)
 
    //Actions
-   QAction* holdAction                  ();
-   QAction* recordAction                ();
-   QAction* muteCaptureAction           ();
-   QAction* mutePlaybackAction          ();
-   QAction* hangupAction                ();
-   QAction* transferAction              ();
-   QAction* acceptAction                ();
-   QAction* newCallAction               ();
-   QAction* displayVolumeControlsAction ();
-   QAction* displayDialpadAction        ();
-   QAction* displayAccountCbbAction     ();
-   QAction* showContactDockAction       ();
-   QAction* showHistoryDockAction       ();
-   QAction* showBookmarkDockAction      ();
-   QAction* showTimelineDockAction      ();
-   QAction* showDialDockAction          ();
-   QAction* quitAction                  ();
-   QAction* closeAction                 ();
-   QAction* addPerson                   ();
-   QAction* focusHistory                ();
-   QAction* focusContact                ();
-   QAction* focusCall                   ();
-   QAction* focusBookmark               ();
-   QAction* showWizard                  ();
-   QAction* showMenu                    ();
-   QAction* newContact                  ();
-   QAction* configureShortcut           ();
-   QAction* configureNotification       ();
-   QAction* configureAccount            ();
+   QmlAction* holdAction                  ();
+   QmlAction* recordAction                ();
+   QmlAction* muteCaptureAction           ();
+   QmlAction* mutePlaybackAction          ();
+   QmlAction* hangupAction                ();
+   QmlAction* transferAction              ();
+   QmlAction* acceptAction                ();
+   QmlAction* newCallAction               ();
+   QmlAction* displayVolumeControlsAction ();
+   QmlAction* displayDialpadAction        ();
+   QmlAction* displayAccountCbbAction     ();
+   QmlAction* showContactDockAction       ();
+   QmlAction* showHistoryDockAction       ();
+   QmlAction* showBookmarkDockAction      ();
+   QmlAction* showTimelineDockAction      ();
+   QmlAction* showDialDockAction          ();
+   QmlAction* quitAction                  ();
+   QmlAction* closeAction                 ();
+   QmlAction* addPerson                   ();
+   QmlAction* focusHistory                ();
+   QmlAction* focusContact                ();
+   QmlAction* focusCall                   ();
+   QmlAction* focusBookmark               ();
+   QmlAction* showWizard                  ();
+   QmlAction* showMenu                    ();
+   QmlAction* newContact                  ();
+   QmlAction* configureShortcut           ();
+   QmlAction* configureNotification       ();
+   QmlAction* configureAccount            ();
 
    //Video actions
-   QAction* videoRotateLeftAction     ();
-   QAction* videoRotateRightAction    ();
-   QAction* videoFlipHorizontalAction ();
-   QAction* videoFlipVerticalAction   ();
-   QAction* videoMuteAction           ();
-   QAction* videoPreviewAction        ();
-   QAction* videoScaleAction          ();
-   QAction* videoFullscreenAction     ();
+   QmlAction* videoRotateLeftAction     ();
+   QmlAction* videoRotateRightAction    ();
+   QmlAction* videoFlipHorizontalAction ();
+   QmlAction* videoFlipVerticalAction   ();
+   QmlAction* videoMuteAction           ();
+   QmlAction* videoPreviewAction        ();
+   QmlAction* videoScaleAction          ();
+   QmlAction* videoFullscreenAction     ();
 
 private:
 
    //Selection dependant
-   QAction* action_accept             {nullptr};
-   QAction* action_new_call           {nullptr};
-   QAction* action_hold               {nullptr};
-   QAction* action_transfer           {nullptr};
-   QAction* action_record             {nullptr};
-   QAction* action_mute_capture       {nullptr};
-   QAction* action_mute_playback      {nullptr};
-   QAction* action_hangup             {nullptr};
-   QAction* action_mute_video         {nullptr};
-   QAction* action_join               {nullptr};
-   QAction* action_toggle_video       {nullptr};
-   QAction* action_add_contact        {nullptr};
-   QAction* action_add_to_contact     {nullptr};
-   QAction* action_delete_contact     {nullptr};
-   QAction* action_email_contact      {nullptr};
-   QAction* action_copy_contact       {nullptr};
-   QAction* action_bookmark           {nullptr};
-   QAction* action_view_chat_history  {nullptr};
-   QAction* action_add_contact_method {nullptr};
-   QAction* action_call_contact       {nullptr};
-   QAction* action_edit_contact       {nullptr};
-   QAction* action_remove_history     {nullptr};
+   QmlAction* action_accept             {nullptr};
+   QmlAction* action_new_call           {nullptr};
+   QmlAction* action_hold               {nullptr};
+   QmlAction* action_transfer           {nullptr};
+   QmlAction* action_record             {nullptr};
+   QmlAction* action_mute_capture       {nullptr};
+   QmlAction* action_mute_playback      {nullptr};
+   QmlAction* action_hangup             {nullptr};
+   QmlAction* action_mute_video         {nullptr};
+   QmlAction* action_join               {nullptr};
+   QmlAction* action_toggle_video       {nullptr};
+   QmlAction* action_add_contact        {nullptr};
+   QmlAction* action_add_to_contact     {nullptr};
+   QmlAction* action_delete_contact     {nullptr};
+   QmlAction* action_email_contact      {nullptr};
+   QmlAction* action_copy_contact       {nullptr};
+   QmlAction* action_bookmark           {nullptr};
+   QmlAction* action_view_chat_history  {nullptr};
+   QmlAction* action_add_contact_method {nullptr};
+   QmlAction* action_call_contact       {nullptr};
+   QmlAction* action_edit_contact       {nullptr};
+   QmlAction* action_remove_history     {nullptr};
 
    //Video actions
-   QAction* action_video_rotate_left     {nullptr};
-   QAction* action_video_rotate_right    {nullptr};
-   QAction* action_video_flip_horizontal {nullptr};
-   QAction* action_video_flip_vertical   {nullptr};
-   QAction* action_video_mute            {nullptr};
-   QAction* action_video_preview         {nullptr};
-   QAction* action_video_scale           {nullptr};
-   QAction* action_video_fullscreen      {nullptr};
+   QmlAction* action_video_rotate_left     {nullptr};
+   QmlAction* action_video_rotate_right    {nullptr};
+   QmlAction* action_video_flip_horizontal {nullptr};
+   QmlAction* action_video_flip_vertical   {nullptr};
+   QmlAction* action_video_mute            {nullptr};
+   QmlAction* action_video_preview         {nullptr};
+   QmlAction* action_video_scale           {nullptr};
+   QmlAction* action_video_fullscreen      {nullptr};
 
    //Other actions
-   QAction * action_new_contact            {nullptr};
-   QAction * action_quit                   {nullptr};
-   QAction * action_close                  {nullptr};
-   QAction * action_displayVolumeControls  {nullptr};
-   QAction * action_displayDialpad         {nullptr};
-   QAction * action_displayAccountCbb      {nullptr};
-   QAction * action_configureShortcut      {nullptr};
-   QAction * action_configureNotifications {nullptr};
-   QAction * action_configureAccount       {nullptr};
-   QAction * action_pastenumber            {nullptr};
-   QAction * action_showContactDock        {nullptr};
-   QAction * action_showHistoryDock        {nullptr};
-   QAction * action_showBookmarkDock       {nullptr};
-   QAction * action_showTimelineDock       {nullptr};
-   QAction * action_showDialDock           {nullptr};
-   QAction * action_addPerson              {nullptr};
-   QAction * action_raise_client           {nullptr};
-   QAction * action_focus_history          {nullptr};
-   QAction * action_focus_contact          {nullptr};
-   QAction * action_focus_call             {nullptr};
-   QAction * action_focus_bookmark         {nullptr};
-   QAction * action_show_wizard            {nullptr};
-   QAction * action_show_directory         {nullptr};
-   QAction * action_show_menu              {nullptr};
+   QmlAction* action_new_contact            {nullptr};
+   QmlAction* action_quit                   {nullptr};
+   QmlAction* action_close                  {nullptr};
+   QmlAction* action_displayVolumeControls  {nullptr};
+   QmlAction* action_displayDialpad         {nullptr};
+   QmlAction* action_displayAccountCbb      {nullptr};
+   QmlAction* action_configureShortcut      {nullptr};
+   QmlAction* action_configureNotifications {nullptr};
+   QmlAction* action_configureAccount       {nullptr};
+   QmlAction* action_pastenumber            {nullptr};
+   QmlAction* action_showContactDock        {nullptr};
+   QmlAction* action_showHistoryDock        {nullptr};
+   QmlAction* action_showBookmarkDock       {nullptr};
+   QmlAction* action_showTimelineDock       {nullptr};
+   QmlAction* action_showDialDock           {nullptr};
+   QmlAction* action_addPerson              {nullptr};
+   QmlAction* action_raise_client           {nullptr};
+   QmlAction* action_focus_history          {nullptr};
+   QmlAction* action_focus_contact          {nullptr};
+   QmlAction* action_focus_call             {nullptr};
+   QmlAction* action_focus_bookmark         {nullptr};
+   QmlAction* action_show_wizard            {nullptr};
+   QmlAction* action_show_directory         {nullptr};
+   QmlAction* action_show_menu              {nullptr};
 
    QObject* fakeMainWindow() const;
    QObject* kactionCollection() const;

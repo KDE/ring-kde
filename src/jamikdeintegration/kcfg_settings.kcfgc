@@ -3,5 +3,4 @@ File=ring-kde.kcfg
 ClassName=ConfigurationSkeleton
 Singleton=true
 Mutators=true
-Visibility=LIB_EXPORT
-IncludeFiles=\"typedefs.h\"
+Visibility=Q_DECL_EXPORT

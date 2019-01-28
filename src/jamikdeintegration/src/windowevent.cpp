@@ -20,6 +20,14 @@
 #include <QtCore/QList>
 #include <QtCore/QCoreApplication>
 
+class WindowEventPrivate
+{
+public:
+    bool m_StartIconified;
+};
+
+WindowEventPrivate* WindowEvent::d_ptr;
+
 static QList<WindowEvent*>& instances()
 {
     static QList<WindowEvent*> l;
@@ -76,5 +84,19 @@ void WindowEvent::hideWindow()
 {
     for (auto o : qAsConst(instances())) {
         emit o->requestsHideWindow();
+    }
+}
+
+bool WindowEvent::startIconified() const
+{
+    return d_ptr->m_StartIconified;
+}
+
+void WindowEvent::setStartIconified(bool ic)
+{
+    d_ptr->m_StartIconified = ic;
+
+    for (auto o : qAsConst(instances())) {
+        emit o->iconifiedChanged();
     }
 }

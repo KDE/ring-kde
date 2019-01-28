@@ -41,7 +41,9 @@ Rectangle {
 
     function setContactMethod() {
         if (currentIndividual && !currentContactMethod) {
-            currentContactMethod = currentIndividual.preferredContactMethod(RingQtQuick.Media.TEXT)
+            currentContactMethod = currentIndividual.preferredContactMethod(
+                RingQtQuick.Media.TEXT
+            )
 
             if (!currentContactMethod)
                 console.log("Cannot find a valid ContactMethod for", currentIndividual)

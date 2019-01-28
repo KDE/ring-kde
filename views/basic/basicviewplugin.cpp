@@ -36,6 +36,7 @@ void BasicView::registerTypes(const char *uri)
     qmlRegisterType(QStringLiteral("qrc:/basicview/qml/header.qml"), uri, 1, 0, "Header");
     qmlRegisterType(QStringLiteral("qrc:/basicview/qml/listpage.qml"), uri, 1, 0, "ListPage");
     qmlRegisterType(QStringLiteral("qrc:/basicview/qml/list.qml"), uri, 1, 0, "List");
+    qmlRegisterType(QStringLiteral("qrc:/basicview/qml/globaldrawer.qml"), uri, 1, 0, "GlobalDrawer");
 }
 
 void BasicView::initializeEngine(QQmlEngine* engine, const char* uri)

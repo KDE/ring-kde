@@ -20,10 +20,13 @@
 // Qt
 #include <QtCore/QObject>
 #include <QQmlListProperty>
+class QIcon;
 
 class QmlActionPrivate;
 
 typedef int ActionIconGroup ; //FIXME
+
+class ActionCollection;
 
 #define HAS_QTWIDGET_SUPPORT 1 //FIXME remove
 
@@ -67,6 +70,7 @@ public:
     Q_PROPERTY(bool              visible     READ isVisible   WRITE setVisible    NOTIFY visibleChanged     )
 
     Q_INVOKABLE explicit QmlAction(QObject* parent = nullptr);
+    QmlAction(const QIcon& icon, const QString& text, ActionCollection* c);
 
 #ifdef HAS_QTWIDGET_SUPPORT
     Q_PROPERTY(QAction* action READ action WRITE setAction)
@@ -122,6 +126,9 @@ Q_SIGNALS:
     void textChanged       ();
     void tooltipChanged    ();
     void visibleChanged    ();
+
+    void toggled (bool checked);
+    void triggered (QObject* source);
 
 private:
     QmlActionPrivate* d_ptr;

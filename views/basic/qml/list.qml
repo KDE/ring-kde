@@ -30,14 +30,12 @@ ListView {
     delegate: Kirigami.SwipeListItem {
         onClicked: {
             list.currentIndex = index
-            mainPage.individual = object
+            mainPage.currentIndividual = object
         }
 
         clip: true
 
         height: 4 * Kirigami.Units.fontMetrics.height
-
-        //selected: list.currentIndex = index
 
         contentItem: Row {
             height: 4 * Kirigami.Units.fontMetrics.height
