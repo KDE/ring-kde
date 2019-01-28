@@ -77,7 +77,7 @@ Kirigami.ApplicationWindow {
         id: globalDrawer
     }
 
-    JamiKDEIntegration.WindowEvent {
+    /*JamiKDEIntegration.WindowEvent {
         id: events
 
         onRequestsConfigureAccounts: {
@@ -101,9 +101,9 @@ Kirigami.ApplicationWindow {
             wizardLoader.visible    = true
             wizardLoader.active     = true
         }
-    }
+    }*/
 
-    Loader {
+    /*Loader {
         id: wizardLoader
         active: false
         anchors.fill: parent
@@ -120,6 +120,6 @@ Kirigami.ApplicationWindow {
                 wizardVisible = visible
             }
         }
-    }
+    }*/
 
 }
