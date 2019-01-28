@@ -3,7 +3,7 @@ import QtQuick 2.6
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.2
 import org.kde.kirigami 2.6 as Kirigami
-// import net.lvindustries.ringqtquick 1.0 as RingQtQuick
+import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 // import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 
 Kirigami.GlobalDrawer {

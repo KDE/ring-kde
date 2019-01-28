@@ -23,7 +23,7 @@ import QtQuick.Controls 2.2 as Controls
 import org.kde.kirigami 2.4 as Kirigami
 import QtQuick.Layouts 1.2 as Layouts
 import org.kde.ringkde.basicview 1.0 as BasicView
-// import org.kde.ringkde.jamitroubleshooting 1.0 as JamiTroubleShooting
+import org.kde.ringkde.jamitroubleshooting 1.0 as JamiTroubleShooting
 
 Kirigami.Page {
     id: peerListPage

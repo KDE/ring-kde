@@ -21,7 +21,7 @@ import QtQuick 2.2
 import QtQuick.Layouts 1.4
 import QtQuick.Controls 2.2 as Controls
 import org.kde.kirigami 2.6 as Kirigami
-// import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
+import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 
 MouseArea {
     property bool fits: pageStack.wideMode && grid.implicitWidth < parent.width
