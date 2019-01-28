@@ -98,7 +98,7 @@ QString QmlAction::description() const
 bool QmlAction::isCheckable() const
 {
 #ifdef HAS_QTWIDGET_SUPPORT
-    if (d_ptr->m_pAction)
+    if (action())
         return d_ptr->m_pAction->isCheckable();
 #endif
     return d_ptr->m_Checkable;
@@ -107,7 +107,7 @@ bool QmlAction::isCheckable() const
 bool QmlAction::isChecked() const
 {
 #ifdef HAS_QTWIDGET_SUPPORT
-    if (d_ptr->m_pAction)
+    if (action())
         return d_ptr->m_pAction->isChecked();
 #endif
     return d_ptr->m_Checked;
@@ -121,7 +121,7 @@ QQmlListProperty<QmlAction> QmlAction::children()
 bool QmlAction::isEnabled() const
 {
 #ifdef HAS_QTWIDGET_SUPPORT
-    if (d_ptr->m_pAction)
+    if (action())
         return d_ptr->m_pAction->isEnabled();
 #endif
     return d_ptr->m_Enabled;
@@ -139,7 +139,7 @@ ActionIconGroup QmlAction::icon() const
 QString QmlAction::iconName() const
 {
 #ifdef HAS_QTWIDGET_SUPPORT
-    if (d_ptr->m_pAction)
+    if (action())
         return d_ptr->m_pAction->icon().name();
 #endif
     return d_ptr->m_IconName;
@@ -158,7 +158,7 @@ QObject* QmlAction::shortcut() const
 QString QmlAction::text() const
 {
 #ifdef HAS_QTWIDGET_SUPPORT
-    if (d_ptr->m_pAction)
+    if (action())
         return d_ptr->m_pAction->text();
 #endif
     return d_ptr->m_Text;
@@ -167,7 +167,7 @@ QString QmlAction::text() const
 QString QmlAction::tooltip() const
 {
 #ifdef HAS_QTWIDGET_SUPPORT
-    if (d_ptr->m_pAction)
+    if (action())
         return d_ptr->m_pAction->toolTip();
 #endif
     return d_ptr->m_Tooltip;
@@ -193,7 +193,7 @@ void QmlAction::setDecription(const QString& description)
 void QmlAction::setCheckable(bool checkable)
 {
 #ifdef HAS_QTWIDGET_SUPPORT
-    if (d_ptr->m_pAction) {
+    if (action()) {
         d_ptr->m_pAction->setCheckable(checkable);
         return;
     }
@@ -205,7 +205,7 @@ void QmlAction::setCheckable(bool checkable)
 void QmlAction::setChecked(bool checked)
 {
 #ifdef HAS_QTWIDGET_SUPPORT
-    if (d_ptr->m_pAction) {
+    if (action()) {
         d_ptr->m_pAction->setChecked(checked);
         return;
     }
@@ -217,7 +217,7 @@ void QmlAction::setChecked(bool checked)
 void QmlAction::setEnabled(bool enabled)
 {
 #ifdef HAS_QTWIDGET_SUPPORT
-    if (d_ptr->m_pAction) {
+    if (action()) {
         d_ptr->m_pAction->setEnabled(enabled);
         return;
     }
@@ -275,7 +275,7 @@ void QmlAction::trigger()
     }
 
 #ifdef HAS_QTWIDGET_SUPPORT
-    if (d_ptr->m_pAction) {
+    if (action()) {
         d_ptr->m_pAction->trigger();
         return;
     }
