@@ -26,7 +26,7 @@ public:
     bool m_StartIconified;
 };
 
-WindowEventPrivate* WindowEvent::d_ptr;
+WindowEventPrivate* WindowEvent::d_ptr = new WindowEventPrivate;
 
 static QList<WindowEvent*>& instances()
 {

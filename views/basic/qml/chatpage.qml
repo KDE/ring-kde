@@ -26,8 +26,6 @@ import org.kde.ringkde.jamichatview 1.0 as JamiChatView
 
 Kirigami.Page {
     property var model;
-//     property alias content: loader.sourceComponent
-//     property alias model2: chatView.model
     property var currentIndividual: null
     property var boo: chatView
     property alias showContactDetails: detail.active
@@ -58,16 +56,7 @@ Kirigami.Page {
         height: visible ? Kirigami.Units.gridUnit * 5 : 0
         Layout.preferredHeight: visible ? Kirigami.Units.gridUnit * 5 : 0
         Layout.margins: 0
-
-        //source: model.image
     }
-
-//     Loader {
-//         id: loader
-//         anchors.fill: parent
-//         active: true
-//         sourceComponent:
-//     }
 
     JamiChatView.ChatPage {
         id: chatView

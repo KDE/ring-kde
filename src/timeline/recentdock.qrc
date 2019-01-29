@@ -13,4 +13,10 @@
         <file>icons/not_bookmarked.svg</file>
 
     </qresource>
+
+    <qresource prefix="/timelineassets/">
+        <file alias="history.svg">./icons/history.svg</file>
+        <file alias="contact.svg">./icons/contact.svg</file>
+        <file alias="bookmark.svg">./icons/bookmark.svg</file>
+    </qresource>
 </RCC>

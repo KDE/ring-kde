@@ -40,7 +40,6 @@ KQuickItemViews.FlickableScrollBar {
         colorGroup: SystemPalette.Inactive
     }
 
-
     // This isn't correct at all, but close enough for now
     function getSectionHeight(height, total, section, index, activeCategoryCount) {
         var h = (height-(activeCategoryCount*22)) * (section/total)

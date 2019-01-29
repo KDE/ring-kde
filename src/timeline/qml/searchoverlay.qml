@@ -24,6 +24,7 @@ import org.kde.ringkde.genericutils 1.0 as GenericUtils
 import org.kde.kirigami 2.0 as Kirigami
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 import org.kde.ringkde.jamitimeline 1.0 as JamiTimeline
+import org.kde.ringkde.jamikdeintegration 1.0 as JamiKDEIntegration
 
 
 Item {
@@ -32,11 +33,21 @@ Item {
     property var source: null
     property bool active: searchBox && searchBox.searchFocus
     property alias currentIndex: searchView.currentIndex
+    property alias currentItem: searchView.currentItem
     property bool delayed: false
     property QtObject searchBox: null
 
     signal contactMethodSelected(var cm)
     signal displayNotFoundMessage()
+
+    SystemPalette {
+        id: inactivePalette
+        colorGroup: SystemPalette.Inactive
+    }
+
+    JamiKDEIntegration.TipModel {
+        id: displayTips
+    }
 
     function hide() {
         searchBox.hide()
@@ -58,6 +69,14 @@ Item {
         )
     }
 
+    /**
+     * QML properties are evaluated in a random order, this exists to stop
+     * trying to handle everything.
+     *
+     * Keep in mind that some other components already have hacks to handle
+     * this. So this has to be done /after/ those hacks
+     * (which cannot be detected), hence the timer.
+     */
     Timer {
         id: buggyTimer
         repeat: false
@@ -152,17 +171,17 @@ Item {
         ListElement {
             name: "Bookmarks"
             elemColor: "#cfa02a"
-            src: "image://SymbolicColorizer/?color=#cfa02a;:/toolbar/bookmark.svg"
+            src: "image://SymbolicColorizer/?color=#cfa02a;:/timelineassets/bookmark.svg"
         }
         ListElement {
             name: "Contacts"
             elemColor: "#14883b"
-            src: "image://SymbolicColorizer/?color=#14883b;:/toolbar/contact.svg"
+            src: "image://SymbolicColorizer/?color=#14883b;:/timelineassets/contact.svg"
         }
         ListElement {
             name: "History"
             elemColor: "#be3411"
-            src: "image://SymbolicColorizer/?color=#be3411;:/toolbar/history.svg"
+            src: "image://SymbolicColorizer/?color=#be3411;:/timelineassets/history.svg"
         }
     }
 
@@ -331,11 +350,6 @@ Item {
                     visible: false
                     opacity: 0
                 }
-
-                PropertyChanges {
-                    target: desktopOverlay
-                    visible: false
-                }
             },
             State {
                 name: "searchActive"
@@ -366,11 +380,6 @@ Item {
                     target:  effectSource
                     sourceRect: Qt.rect(0, 0, parent.width, parent.height)
                 }
-
-                PropertyChanges {
-                    target: desktopOverlay
-                    visible: false
-                }
             },
             State {
                 name: "firstSearch"
@@ -378,16 +387,12 @@ Item {
                 when: delayed && (
                     RingSession.peersTimelineModel.empty || (searchBox && !searchBox.empty)
                 ) && displayTips.showFirstTip
+
                 PropertyChanges {
                     target:  seachOverlay
                     anchors.fill: undefined
                     width: applicationWindow().contentItem.width
                     height: applicationWindow().contentItem.height
-                }
-
-                ParentChange {
-                    target: seachOverlay
-                    parent: desktopOverlay
                 }
 
                 PropertyChanges {
@@ -396,11 +401,6 @@ Item {
                     width: seachOverlay.width*0.9
                     x: seachOverlay.width*0.05
                     searchFocus: true
-                }
-
-                PropertyChanges {
-                    target: desktopOverlay
-                    visible: true
                 }
             }
         ]

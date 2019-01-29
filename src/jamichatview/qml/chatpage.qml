@@ -185,6 +185,10 @@ Rectangle {
             }
         }
 
+        Kirigami.Separator {
+            Layout.fillWidth: true
+        }
+
         JamiChatView.ChatBox {
             id: chatBox
             Layout.fillWidth: true

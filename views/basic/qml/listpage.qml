@@ -30,16 +30,15 @@ Kirigami.Page {
     id: peerListPage
     property alias currentIndex: list.currentIndex;
     property alias model: list.model
+    property alias searchView: _searchView
 
     spacing: 0
-    leftPadding: 0
-    rightPadding: 0
-    topPadding: 0
-    bottomPadding: 0
-    padding: 0
+    leftPadding: 0; rightPadding: 0; topPadding: 0;bottomPadding: 0; padding: 0
+
+    Kirigami.Theme.colorSet: Kirigami.Theme.View
 
     JamiTimeline.SearchOverlay {
-        id: searchView
+        id: _searchView
         source: peerListPage
         visible: true
         width: peerListPage.width
@@ -50,10 +49,11 @@ Kirigami.Page {
             setCurrentIndex(RingSession.peersTimelineModel.individualIndex(cm.individual))
         }
 
-        z:100000
+        z: 1
     }
 
     header: Layouts.ColumnLayout {
+        visible: globalTroubleshoot.sourceComponent != null
         height: globalTroubleshoot.active ? implicitHeight : 0
         width: peerListPage.width
         spacing: Kirigami.Units.largeSpacing
@@ -65,11 +65,11 @@ Kirigami.Page {
         }
 
         Item {
+            visible: globalTroubleshoot.sourceComponent != null
             height: 10
         }
     }
 
-    Kirigami.Theme.colorSet: Kirigami.Theme.View
     title: i18n("Address book")
 
     background: Rectangle {
@@ -82,14 +82,17 @@ Kirigami.Page {
         implicitHeight: parent.parent.height - 2*Kirigami.Units.largeSpacing
         implicitWidth: 10
 
-
         JamiTimeline.SearchBox {
-            id: searchBox
-            searchView: searchView
+            id: headerSearchbox
+            searchView: peerListPage.searchView
             anchors.centerIn: parent
             anchors.margins: Kirigami.Units.largeSpacing
             width: parent.width - 2 * Kirigami.Units.largeSpacing
             z: 9999
+
+            // This component is async, just a reference to the `id` from
+            // the code above wont work
+            Component.onCompleted: peerListPage.searchView.searchBox = headerSearchbox
         }
     }
 
@@ -97,9 +100,5 @@ Kirigami.Page {
         id: list
         width: parent.width
         height: parent.height
-    }
-
-    actions {
-        main: actionCollection.newContact
     }
 }

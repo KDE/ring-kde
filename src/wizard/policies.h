@@ -20,7 +20,7 @@
 
 #include <QtCore/QObject>
 
-class WizardPolicies final : public QObject
+class Q_DECL_EXPORT WizardPolicies : public QObject
 {
     Q_OBJECT
 
@@ -30,7 +30,7 @@ public:
     Q_INVOKABLE WizardPolicies(QObject* parent = nullptr);
     virtual ~WizardPolicies();
 
-    bool displayWizard() const;
+    bool displayWizard();
 
 public Q_SLOTS:
     void setWizardFinished(bool f);

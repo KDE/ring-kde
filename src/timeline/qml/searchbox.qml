@@ -21,8 +21,6 @@ import QtQuick.Layouts 1.0
 import org.kde.kirigami 2.2 as Kirigami
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 
-
-
 Item {
     id: searchBox
 
@@ -109,17 +107,18 @@ Item {
                     Image {
                         width: parent.height - 6
                         height: parent.height - 6
-                        anchors.verticalCenter: parent.verticalCenter
+                        Layout.alignment: Qt.AlignVCenter
                         sourceSize.height: parent.height - 6
                         sourceSize.width: parent.height - 6
                         source: "image://SymbolicColorizer/image://icon/file-search-symbolic"
                     }
+
                     Text {
                         id: findLabel
                         Layout.fillWidth: true
                         color: Kirigami.Theme.textColor
                         text: i18n("Find someone")
-                        anchors.verticalCenter: parent.verticalCenter
+                        Layout.alignment: Qt.AlignVCenter
                         font.pixelSize: parent.height * 0.55
                     }
                 }
@@ -145,9 +144,6 @@ Item {
                 searchView.count - 1 : searchView.currentIndex - 1
         }
         Keys.onReturnPressed: {
-            if (searchStateGroup.state == "")
-                return
-
             var cm = searchView.currentItem.contactMethod
 
             // Display an error message when the selected element doesn't exist
@@ -161,7 +157,8 @@ Item {
 
             cm = RingSession.individualDirectory.fromTemporary(cm)
 
-            contactMethodSelected(cm)
+            mainPage.currentContactMethod = cm
+
             searchBox.hide()
         }
         Keys.onEscapePressed: {

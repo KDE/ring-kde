@@ -364,13 +364,6 @@ Kirigami.ApplicationWindow {
         actionCollection: ActionCollection.kactionCollection
     }
 
-    Item {
-        id: desktopOverlay //TODO Qt5.10, use QQC2.Overlay
-        anchors.fill: parent
-        visible: false
-        z: 1
-    }
-
     RowLayout {
         anchors.fill: parent
         spacing: 0

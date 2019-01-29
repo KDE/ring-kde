@@ -27,23 +27,18 @@ import org.kde.ringkde.basicview 1.0 as BasicView
 import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 import org.kde.ringkde.jamiwizard 1.0 as JamiWizard
 import org.kde.ringkde.jamikdeintegration 1.0 as JamiKDEIntegration
+import QtQuick.Controls.Material 2.3
 
 Kirigami.ApplicationWindow {
     width: 320
     height: 600
     id: root
 
-    JamiKDEIntegration.TipModel {
-        id: displayTips
-    }
-
     RingQtQuick.SharedModelLocker {
         id: mainPage
 
         onChanged: {
             chat.boo.timelineModel = timelineModel
-            console.log("\n\nCHANGED", timelineModel, chat.boo, chat.boo.timelineModel)
-//             chat.model = timelineModel
         }
     }
 
@@ -106,9 +101,16 @@ Kirigami.ApplicationWindow {
         }
     }
 
+    /**
+     * Display the wizard when all accounts are deleted.
+     */
+    JamiWizard.Policies {
+        id: wizardPolicies
+    }
+
     Loader {
         id: wizardLoader
-        active: false
+        active: wizardPolicies.displayWizard
         anchors.fill: parent
         z: 999999
         visible: false

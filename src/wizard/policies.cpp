@@ -31,7 +31,17 @@ static enum {
     UNDECIDED,
     DISCARDED,
     YES,
+    NO,
 } s_DisplayWizard;
+
+class WizardPoliciesWatcher : public QObject
+{
+    Q_OBJECT
+public:
+
+public Q_SLOTS:
+    void slotAccountAdded();
+};
 
 WizardPolicies::WizardPolicies(QObject* parent) : QObject(parent)
 {}
@@ -41,7 +51,7 @@ WizardPolicies::~WizardPolicies()
 
 }
 
-bool WizardPolicies::displayWizard() const
+bool WizardPolicies::displayWizard()
 {
     static bool dw  = ConfigurationSkeleton::enableWizard()
         || ConfigurationSkeleton::showSplash();
@@ -49,18 +59,24 @@ bool WizardPolicies::displayWizard() const
     const  bool dos = ConfigurationSkeleton::displayOnStart()
         && !WindowEvent::instance()->startIconified();
 
-        // The first run wizard
+    // The first run wizard
     if (dos && dw) {
 
-        if (ConfigurationSkeleton::enableWizard())
+        if (ConfigurationSkeleton::enableWizard()) {
             WindowEvent::instance()->showWizard();
-
-        if (!Session::instance()->accountModel()->size())
+            s_DisplayWizard = YES;
+        }
+        else if (!Session::instance()->accountModel()->size()) {
             WindowEvent::instance()->showWizard();
+            s_DisplayWizard = YES;
+        }
+        else
+            s_DisplayWizard = NO;
 
         ConfigurationSkeleton::setEnableWizard(false);
 
-        s_DisplayWizard = YES;
+
+        emit changed();
     }
 
     return s_DisplayWizard == YES;
@@ -68,5 +84,13 @@ bool WizardPolicies::displayWizard() const
 
 void WizardPolicies::setWizardFinished(bool f)
 {
-    s_DisplayWizard = DISCARDED;
+    s_DisplayWizard = f ? DISCARDED : UNDECIDED;
+    emit changed();
 }
+
+void WizardPoliciesWatcher::slotAccountAdded()
+{
+    //
+}
+
+#include <policies.moc>

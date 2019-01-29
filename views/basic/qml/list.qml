@@ -49,14 +49,15 @@ ListView {
 
             JamiContactView.ContactPhoto {
                 id: img
-                anchors.margins: 3
+                Layout.margins: 3
                 height: 3 * Kirigami.Units.fontMetrics.height
                 width: 3 * Kirigami.Units.fontMetrics.height
-                anchors.verticalCenter: parent.verticalCenter
+                Layout.alignment: Qt.AlignVCenter
 
                 individual: object
                 defaultColor: index == currentIndex ?
                     Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor
+
                 drawEmptyOutline: false
                 Layout.rowSpan: 2
             }
@@ -65,6 +66,7 @@ ListView {
                 level: 3
                 text: object.bestName
             }
+
             Kirigami.Heading {
                 level: 4
                 text: object.formattedLastUsedTime

@@ -19,6 +19,7 @@
  */
 import QtQuick 2.0
 import org.kde.kirigami 2.4 as Kirigami
+import QtQuick.Controls.Material 2.3
 
 QtObject {
     readonly property Kirigami.Action mailAction: Kirigami.Action {
@@ -74,5 +75,25 @@ QtObject {
     readonly property Kirigami.Action newContactAction: Kirigami.Action {
         iconName: "contact-new"
         text: "Create contact"
+    }
+
+    readonly property Kirigami.Action darkMode: Kirigami.Action {
+        iconName: "mail-message"
+        text: i18n("Dark mode")
+        onTriggered: {
+            console.log("Enable dark mode", Material.Dark, Material.Blue)
+            root.Material.theme = Material.Dark
+            root.Material.accent = Material.Blue
+        }
+    }
+
+    readonly property Kirigami.Action lightMode: Kirigami.Action {
+        iconName: "mail-message"
+        text: i18n("Light mode")
+        onTriggered: {
+            console.log("Enable light mode", Material.Light, Material.Purple)
+            root.Material.theme = Material.Light
+            root.Material.accent = Material.Purple
+        }
     }
 }
