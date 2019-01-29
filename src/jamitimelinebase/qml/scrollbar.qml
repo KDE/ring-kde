@@ -32,6 +32,7 @@ KQuickItemViews.FlickableScrollBar {
     property alias  hideTimeout: hideTimer.interval
 
     property bool overlayVisible: false
+    property bool forceOverlay: false
 
     visible: handleVisible
 
@@ -246,7 +247,7 @@ KQuickItemViews.FlickableScrollBar {
         states: [
             State {
                 name: "overlay"
-                when: scrollbar.overlayVisible
+                when: scrollbar.overlayVisible || scrollbar.forceOverlay
                 PropertyChanges {
                     target:  timelineOverlay
                     height: scrollbar.height

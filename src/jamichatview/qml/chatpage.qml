@@ -106,7 +106,7 @@ Rectangle {
 
                 JamiChatView.ChatView {
                     id: chatView
-                    width: 600
+                    width: Math.min(600, timelinePage.width - 50)
                     height: parent.height
 //                     Layout.alignment: Qt.AlignHCenter
                     anchors.horizontalCenter: parent.horizontalCenter
@@ -172,6 +172,7 @@ Rectangle {
                 display: chatView.moving || timelinePage.showScrollbar
                 model: timelinePage.timelineModel
                 view: chatView
+                forceOverlay: chatView.displayExtraTime
 
                 onWidthChanged: {
                     burryOverlay.width = scrollbar.fullWidth + 15

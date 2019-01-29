@@ -26,7 +26,9 @@ import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 
 Kirigami.GlobalDrawer {
     id: globalDrawer
+
     actions: [
+        actionCollection.settings,
         actionCollection.newContact,
         actionCollection.editAction,
         actionCollection.darkMode,
@@ -37,17 +39,18 @@ Kirigami.GlobalDrawer {
         y: 5
         id: availableAccounts
         model: RingSession.profileModel.availableProfileModel
-        height: 200
-        spacing: 5
         interactive: false
+        height: contentHeight
+        spacing: 5
         Layout.preferredWidth: globalDrawer.width
-        Layout.preferredHeight: 200
+        Layout.preferredHeight: contentHeight
+
         delegate: MouseArea {
             width: parent.width
             height: Kirigami.Units.iconSizes.large * 1.5
             Rectangle {
                 anchors.fill: parent
-                color: "#44000000"//Kirigami.Theme.backgroundColor
+                color: Qt.darker(Kirigami.Theme.backgroundColor, 1.2)
 
                 RowLayout {
                     width: parent.width

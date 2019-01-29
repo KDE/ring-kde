@@ -30,31 +30,15 @@ Kirigami.Page {
     id: peerListPage
     property alias currentIndex: list.currentIndex;
     property alias model: list.model
-    property alias searchView: _searchView
 
     spacing: 0
     leftPadding: 0; rightPadding: 0; topPadding: 0;bottomPadding: 0; padding: 0
 
     Kirigami.Theme.colorSet: Kirigami.Theme.View
 
-    JamiTimeline.SearchOverlay {
-        id: _searchView
-        source: peerListPage
-        visible: true
-        width: peerListPage.width
-        height: peerListPage.height
-
-        onContactMethodSelected: {
-            mainPage.currentContactMethod = cm
-            setCurrentIndex(RingSession.peersTimelineModel.individualIndex(cm.individual))
-        }
-
-        z: 1
-    }
-
     header: Layouts.ColumnLayout {
         visible: globalTroubleshoot.sourceComponent != null
-        height: globalTroubleshoot.active ? implicitHeight : 0
+        height: visible && globalTroubleshoot.active ? implicitHeight : 0
         width: peerListPage.width
         spacing: Kirigami.Units.largeSpacing
 
@@ -77,22 +61,51 @@ Kirigami.Page {
     }
 
     titleDelegate: Item {
-        clip: true
         id: header
         implicitHeight: parent.parent.height - 2*Kirigami.Units.largeSpacing
         implicitWidth: 10
 
         JamiTimeline.SearchBox {
             id: headerSearchbox
-            searchView: peerListPage.searchView
+            searchView: _searchView
             anchors.centerIn: parent
             anchors.margins: Kirigami.Units.largeSpacing
             width: parent.width - 2 * Kirigami.Units.largeSpacing
             z: 9999
+        }
 
-            // This component is async, just a reference to the `id` from
-            // the code above wont work
-            Component.onCompleted: peerListPage.searchView.searchBox = headerSearchbox
+        JamiTimeline.SearchOverlay {
+            id: _searchView
+            source: peerListPage
+            visible: true
+            searchBox: headerSearchbox
+            width: peerListPage.width
+            height: peerListPage.height + header.height
+            x: -(peerListPage.width - header.width)
+
+            onContactMethodSelected: {
+                mainPage.currentContactMethod = cm
+                setCurrentIndex(RingSession.peersTimelineModel.individualIndex(cm.individual))
+            }
+
+            //HACK obey god dammit
+            onHeightChanged: {
+                height = peerListPage.height + header.height
+                x = -(peerListPage.width - header.width)
+                width = peerListPage.width
+            }
+
+            //HACK obey god dammit
+            onActiveChanged: {
+                if (!active)
+                    return
+
+                width = peerListPage.width
+                height = peerListPage.height + header.height
+                x = -(peerListPage.width - header.width)
+            }
+
+            z: 9998
         }
     }
 

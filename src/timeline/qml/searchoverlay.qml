@@ -226,7 +226,7 @@ Item {
                         anchors.bottom: parent.bottom
                         anchors.topMargin: 4
                         anchors.horizontalCenter: parent.horizontalCenter
-                        color: Kirigami.Theme.textColor
+                        color: Kirigami.Theme.highlightedTextColor
                         text: name
                     }
                 }
@@ -251,10 +251,6 @@ Item {
         anchors.fill: parent
         anchors.topMargin: filterList.y + filterList.height
         z: 99999999
-
-        onCountChanged: {
-            console.log("\n\n\nCOUNT", count)
-        }
     }
 
     Rectangle {
@@ -358,12 +354,12 @@ Item {
                         (!RingSession.peersTimelineModel.empty) || (!displayTips.showFirstTip)
                     )
 
-                PropertyChanges {
-                    target:  seachOverlay
-                    anchors.fill: parent
-                    width: undefined
-                    height: undefined
-                }
+//                 PropertyChanges {
+//                     target:  seachOverlay
+//                     anchors.fill: parent
+//                     width: undefined
+//                     height: undefined
+//                 }
 
                 PropertyChanges {
                     target:  searchView
@@ -388,12 +384,12 @@ Item {
                     RingSession.peersTimelineModel.empty || (searchBox && !searchBox.empty)
                 ) && displayTips.showFirstTip
 
-                PropertyChanges {
-                    target:  seachOverlay
-                    anchors.fill: undefined
-                    width: applicationWindow().contentItem.width
-                    height: applicationWindow().contentItem.height
-                }
+//                 PropertyChanges {
+//                     target:  seachOverlay
+//                     anchors.fill: undefined
+//                     width: applicationWindow().contentItem.width
+//                     height: applicationWindow().contentItem.height
+//                 }
 
                 PropertyChanges {
                     target: searchBox
