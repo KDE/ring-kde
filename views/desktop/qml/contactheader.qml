@@ -53,7 +53,7 @@ Rectangle {
 
         contactPhoto.individual = currentIndividual
         bookmarkSwitch.source = (currentIndividual && currentIndividual.hasBookmarks) ?
-            "icons/bookmarked.svg" : "icons/not_bookmarked.svg"
+            "qrc:/icons/bookmarked.svg" : "qrc:/icons/not_bookmarked.svg"
     }
 
     onCurrentContactMethodChanged: {
@@ -62,14 +62,14 @@ Rectangle {
         contactPhoto.contactMethod = currentContactMethod
 
         bookmarkSwitch.source = (currentContactMethod && currentContactMethod.bookmarked) ?
-            "icons/bookmarked.svg" : "icons/not_bookmarked.svg"
+            "qrc:/icons/bookmarked.svg" : "qrc:/icons/not_bookmarked.svg"
     }
 
     Connections {
         target: currentIndividual
         onBookmarkedChanged: {
             bookmarkSwitch.source = (currentIndividual && currentIndividual.hasBookmarks) ?
-                "icons/bookmarked.svg" : "icons/not_bookmarked.svg"
+                "qrc:/icons/bookmarked.svg" : "qrc:/icons/not_bookmarked.svg"
         }
     }
 
@@ -81,7 +81,7 @@ Rectangle {
             contactPhoto.individual = currentIndividual
 
             bookmarkSwitch.source = (currentIndividual && currentIndividual.hasBookmarks) ?
-                "icons/bookmarked.svg" : "icons/not_bookmarked.svg"
+                "qrc:/icons/bookmarked.svg" : "qrc:/icons/not_bookmarked.svg"
         }
     }
 
@@ -169,7 +169,7 @@ Rectangle {
         height: 16
         width: 16
         source: (currentIndividual && currentIndividual.hasBookmarks) ?
-            "icons/bookmarked.svg" : "icons/not_bookmarked.svg"
+            "qrc:/icons/bookmarked.svg" : "qrc:/icons/not_bookmarked.svg"
         z: 100
         MouseArea {
             anchors.fill: parent

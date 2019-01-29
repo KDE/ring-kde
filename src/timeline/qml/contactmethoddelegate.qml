@@ -280,7 +280,7 @@ MouseArea {
             anchors.topMargin: 3
             height: 16
             width: 16
-            source: object.hasBookmarks ? "icons/bookmarked.svg" : "icons/not_bookmarked.svg"
+            source: object.hasBookmarks ? "qrc:/icons/bookmarked.svg" : "qrc:/icons/not_bookmarked.svg"
             z: 100
             MouseArea {
                 anchors.fill: parent

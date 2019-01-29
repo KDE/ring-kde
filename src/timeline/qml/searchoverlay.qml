@@ -29,7 +29,7 @@ import org.kde.ringkde.jamitimeline 1.0 as JamiTimeline
 Item {
     id: seachOverlay
     property var source: null
-    property bool active: searchBox.searchFocus
+    property alias active: searchBox.searchFocus
     property alias currentIndex: searchView.currentIndex
     property bool delayed: false
 
@@ -51,8 +51,8 @@ Item {
         sourceRect: Qt.rect(
             0,
             0,
-            parent.width,
-            parent.height
+            seachOverlay.width,
+            seachOverlay.height
         )
     }
 
@@ -302,6 +302,7 @@ Item {
         }
     }
 
+
     // Search
     StateGroup {
         id: searchStateGroup
@@ -309,7 +310,7 @@ Item {
         states: [
             State {
                 name: ""
-                when: ((!wizardVisible) && (!seachOverlay.active) && (
+                when: ((!seachOverlay.active) && (
                     (!RingSession.peersTimelineModel.empty) || (!displayTips.showFirstTip)
                 )) || (!delayed)
 
@@ -341,9 +342,9 @@ Item {
             },
             State {
                 name: "searchActive"
-                when: delayed && (!wizardVisible) && seachOverlay.active
+                when: delayed && seachOverlay.active
                     && (
-                        (!PeersTimelineModel.empty) || (!displayTips.showFirstTip)
+                        (!RingSession.peersTimelineModel.empty) || (!displayTips.showFirstTip)
                     )
 
                 PropertyChanges {
@@ -377,8 +378,8 @@ Item {
             State {
                 name: "firstSearch"
                 extend: "searchActive"
-                when: delayed && (!wizardVisible) && (
-                    PeersTimelineModel.empty || !searchBox.empty
+                when: delayed && (
+                    RingSession.peersTimelineModel.empty || !searchBox.empty
                 ) && displayTips.showFirstTip
                 PropertyChanges {
                     target:  seachOverlay

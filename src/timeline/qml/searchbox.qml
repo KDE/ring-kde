@@ -16,7 +16,7 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
 import QtQuick 2.7
-import QtQuick.Controls 2.0
+import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.0
 import org.kde.kirigami 2.2 as Kirigami
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
@@ -50,7 +50,6 @@ Item {
         width: parent.width - (focus ? 0 : parent.xPadding)
         x: focus ? 0 : parent.xPadding
         y: focus ? textMetric.height*1.5 + 3 : 3
-
 
         font.pointSize: Kirigami.Theme.defaultFont.pointSize*1.4
         text: RingSession.callModel.hasDialingCall ?

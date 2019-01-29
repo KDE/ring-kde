@@ -73,9 +73,8 @@ Item {
             }
 
             RowLayout {
-                anchors.topMargin: 5
-                anchors.bottomMargin: 5
-                anchors.fill: parent
+                Layout.topMargin: 5
+                Layout.bottomMargin: 5
 
                 Item {
                     height: 32
@@ -159,8 +158,9 @@ Item {
             Rectangle {
                 color: activePalette.highlight
                 radius: 99
-                anchors.right: parent.right
-                anchors.rightMargin: 5
+                Layout.alignment: Qt.AlignRight
+                Layout.rightMargin: 5
+
                 height: accountAliasText.implicitHeight + 4
                 visible: accountAlias != ""
                 width: accountAliasText.implicitWidth + accountAliasText.implicitHeight

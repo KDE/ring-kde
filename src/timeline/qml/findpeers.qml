@@ -17,8 +17,10 @@
  **************************************************************************/
 import QtQuick 2.7
 import org.kde.ringkde.jamitimeline 1.0 as JamiTimeline
+import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 
 ListView {
+    id: findPeers
     clip: true
 
     FontMetrics {
@@ -28,7 +30,7 @@ ListView {
     Component {
         id: searchDelegate
         JamiTimeline.SearchDelegate {
-            width: parent.width
+            width: findPeers.width
             buttonHeight: fontMetrics.height + 12
             labelHeight: fontMetrics.height
         }
