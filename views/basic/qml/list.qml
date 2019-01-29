@@ -19,6 +19,7 @@
  */
 import QtQuick 2.2
 import QtQuick.Controls 2.2 as Controls
+import QtQuick.Layouts 1.4
 import org.kde.kirigami 2.4 as Kirigami
 import QtGraphicalEffects 1.0 as Effect
 import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
@@ -33,13 +34,18 @@ ListView {
             mainPage.currentIndividual = object
         }
 
+        backgroundColor: index == currentIndex ?
+            Kirigami.Theme.highlightColor : Kirigami.Theme.backgroundColor
+
         clip: true
 
         height: 4 * Kirigami.Units.fontMetrics.height
 
-        contentItem: Row {
+        contentItem: GridLayout {
             height: 4 * Kirigami.Units.fontMetrics.height
-            spacing: 2 * Kirigami.Units.largeSpacing
+
+            rows: 2
+            columns: 2
 
             JamiContactView.ContactPhoto {
                 id: img
@@ -52,12 +58,20 @@ ListView {
                 defaultColor: index == currentIndex ?
                     Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor
                 drawEmptyOutline: false
+                Layout.rowSpan: 2
             }
 
             Kirigami.Heading {
                 level: 3
-                anchors.verticalCenter: parent.verticalCenter
                 text: object.bestName
+            }
+            Kirigami.Heading {
+                level: 4
+                text: object.formattedLastUsedTime
+                color: Kirigami.Theme.disabledTextColor
+                Layout.fillHeight: true
+                Layout.fillWidth: true
+                opacity: 0.5
             }
         }
 

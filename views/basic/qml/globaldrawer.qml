@@ -24,12 +24,38 @@ Kirigami.GlobalDrawer {
         Layout.preferredHeight: 200
         delegate: MouseArea {
             width: parent.width
-            height: Kirigami.Units.iconSizes.large
-            JamiContactView.ContactPhoto {
-                anchors.centerIn: parent
-                width: parent.width - 3
-                height: Kirigami.Units.iconSizes.large
-                individual: object
+            height: Kirigami.Units.iconSizes.large * 1.5
+            Rectangle {
+                anchors.fill: parent
+                color: "#44000000"//Kirigami.Theme.backgroundColor
+
+                RowLayout {
+                    width: parent.width
+                    height: Kirigami.Units.iconSizes.large
+                    anchors.verticalCenter: parent.verticalCenter
+                    JamiContactView.ContactPhoto {
+                        width: Kirigami.Units.iconSizes.large
+                        height: Kirigami.Units.iconSizes.large
+                        individual: object
+                    }
+
+                    ColumnLayout {
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        Kirigami.Heading {
+                            level: 2
+                            text: object.bestName
+                            Layout.fillWidth: true
+                        }
+                        Kirigami.Heading {
+                            level: 3
+                            color: Kirigami.Theme.positiveTextColor
+                            text: "online"
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                        }
+                    }
+                }
             }
             onClicked: {
                 var component = Qt.createComponent("qrc:/account/qml/presenceselector.qml")

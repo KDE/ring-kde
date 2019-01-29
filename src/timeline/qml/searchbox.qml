@@ -26,6 +26,8 @@ import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 Item {
     id: searchBox
 
+    Kirigami.Theme.colorSet: Kirigami.Theme.View
+
     property bool empty: search.text == ""
     property var searchView: null
     property real xPadding: 0

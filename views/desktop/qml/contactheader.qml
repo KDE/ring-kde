@@ -106,7 +106,7 @@ Rectangle {
                 z: 100
                 hoverEnabled: true
                 onClicked: {
-                    var component = Qt.createComponent("PhotoEditor.qml")
+                    var component = Qt.createComponent("qrc:/photoselector/qml/editor.qml")
                     if (component.status == Component.Ready) {
                         var window = component.createObject(contactHeader)
                         window.contactMethod = currentContactMethod

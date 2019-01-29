@@ -288,7 +288,7 @@ Kirigami.ScrollablePage {
                         if (!contactViewPage.editing)
                             return false
 
-                        var component = Qt.createComponent("PhotoEditor.qml")
+                        var component = Qt.createComponent("qrc:/photoselector/qml/editor.qml")
                         if (component.status == Component.Ready) {
                             var window    = component.createObject(contactViewPage)
                             window.person = individual ?

@@ -30,9 +30,10 @@ Item {
     id: seachOverlay
     property alias topLevel: seachOverlay.parent
     property var source: null
-    property alias active: searchBox.searchFocus
+    property bool active: searchBox && searchBox.searchFocus
     property alias currentIndex: searchView.currentIndex
     property bool delayed: false
+    property QtObject searchBox: null
 
     signal contactMethodSelected(var cm)
     signal displayNotFoundMessage()
@@ -101,19 +102,9 @@ Item {
         height: parent.height* 0.4
     }
 
-    JamiTimeline.SearchBox {
-        id: searchBox
-        searchView: searchView
-        width: topLevel.width
-        xPadding: dockBar.width
-        z: 9999
-    }
-
-    // The close and QR CODE buttons
-
     Loader {
         height: 30
-        width: parent.width - searchBox.labelWidth
+        width: parent.width - (searchBox ? searchBox.labelWidth : 0)
         anchors.right: parent.right
         clip: true
         active: seachOverlay.active && searchStateGroup.state != "firstSearch"
@@ -180,7 +171,7 @@ Item {
         active: searchView.count > 0 && searchStateGroup.state == "searchActive"
         opacity: searchView.count > 0 ? 1 : 0
         height: 30 + Kirigami.Units.fontMetrics.height*1.5
-        y: searchBox.y+searchBox.height+5
+        y: searchBox ? (searchBox.y+searchBox.height+5) : 0
         width: parent.width
 
         Behavior on opacity {
@@ -230,7 +221,7 @@ Item {
             && (!filterList.active)
             && searchStateGroup.state != "firstSearch"
             && displayTips.showSearchTip
-        anchors.top: searchBox.bottom
+        anchors.top: searchBox ? searchBox.bottom : undefined
         anchors.topMargin: 15
         width: parent.width
     }
@@ -241,6 +232,10 @@ Item {
         anchors.fill: parent
         anchors.topMargin: filterList.y + filterList.height
         z: 99999999
+
+        onCountChanged: {
+            console.log("\n\n\nCOUNT", count)
+        }
     }
 
     Rectangle {
@@ -381,7 +376,7 @@ Item {
                 name: "firstSearch"
                 extend: "searchActive"
                 when: delayed && (
-                    RingSession.peersTimelineModel.empty || !searchBox.empty
+                    RingSession.peersTimelineModel.empty || (searchBox && !searchBox.empty)
                 ) && displayTips.showFirstTip
                 PropertyChanges {
                     target:  seachOverlay

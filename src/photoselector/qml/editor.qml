@@ -19,10 +19,10 @@ import QtQuick 2.7
 import QtQuick.Layouts 1.0
 import QtQuick.Controls 2.2
 
-import PhotoSelectorPlugin 1.0
 import org.kde.playground.kquickitemviews 1.0 as KQuickItemViews
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
-
+import org.kde.ringkde.jamiphotoselector 1.0 as JamiPhotoSelector
+import org.kde.ringkde.jamivideoview 1.0 as JamiVideoView
 
 
 Dialog {
@@ -52,7 +52,7 @@ Dialog {
         (applicationWindow().height / 2 - height/2) :
         (parent.height / 2 - height/2)
 
-    PhotoSelector {
+    JamiPhotoSelector.PhotoSelector {
         id: selector
     }
 
@@ -85,7 +85,7 @@ Dialog {
                 id: overlay
                 z: 100
 
-                VideoWidget {
+                JamiVideoView.VideoWidget {
                     id: videoWidget
                     visible: false
                     z: -1

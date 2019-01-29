@@ -38,6 +38,21 @@ Kirigami.Page {
     bottomPadding: 0
     padding: 0
 
+    JamiTimeline.SearchOverlay {
+        id: searchView
+        source: peerListPage
+        visible: true
+        width: peerListPage.width
+        height: peerListPage.height
+
+        onContactMethodSelected: {
+            mainPage.currentContactMethod = cm
+            setCurrentIndex(RingSession.peersTimelineModel.individualIndex(cm.individual))
+        }
+
+        z:100000
+    }
+
     header: Layouts.ColumnLayout {
         height: globalTroubleshoot.active ? implicitHeight : 0
         width: peerListPage.width
@@ -67,16 +82,14 @@ Kirigami.Page {
         implicitHeight: parent.parent.height - 2*Kirigami.Units.largeSpacing
         implicitWidth: 10
 
-        JamiTimeline.SearchOverlay {
-            id: searchView
-            source: parent
+
+        JamiTimeline.SearchBox {
+            id: searchBox
+            searchView: searchView
             anchors.centerIn: parent
             anchors.margins: Kirigami.Units.largeSpacing
             width: parent.width - 2 * Kirigami.Units.largeSpacing
-            onContactMethodSelected: {
-                mainPage.setContactMethod(cm)
-                setCurrentIndex(RingSession.peersTimelineModel.individualIndex(cm.individual))
-            }
+            z: 9999
         }
     }
 

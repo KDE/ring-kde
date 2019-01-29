@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/">
-        <file alias="PhotoEditor.qml">qml/editor.qml</file>
+    <qresource prefix="/photoselector/">
+        <file>qml/editor.qml</file>
     </qresource>
 </RCC>
