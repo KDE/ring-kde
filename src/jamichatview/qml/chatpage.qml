@@ -38,7 +38,7 @@ Rectangle {
 
     function setContactMethod() {
         if (currentIndividual && !currentContactMethod) {
-            currentContactMethod = currentIndividual.preferredContactMethod(Media.TEXT)
+            currentContactMethod = currentIndividual.preferredContactMethod(RingQtQuick.Media.TEXT)
 
             if (!currentContactMethod)
                 console.log("Cannot find a valid ContactMethod for", currentIndividual)
@@ -207,7 +207,7 @@ Rectangle {
         onSendMessage: {
             timelinePage.setContactMethod()
             if (currentContactMethod) {
-                if (currentContactMethod.account && currentContactMethod.confirmationStatus == ContactMethod.UNCONFIRMED)
+                if (currentContactMethod.account && currentContactMethod.confirmationStatus == RingQtQuick.ContactMethod.UNCONFIRMED)
                     currentContactMethod.sendContactRequest()
 
                 builder.addPayload("text/plain", message)
