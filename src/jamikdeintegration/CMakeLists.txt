@@ -80,6 +80,7 @@ set( jamikdeintegration_LIB_SRCS
     src/windowevent.cpp
     src/cmiconengine.cpp
     src/personiconengine.cpp
+    src/tipmodel.cpp
     src/qmlaction.cpp
     src/qactionbinder.cpp
     src/plugin.cpp

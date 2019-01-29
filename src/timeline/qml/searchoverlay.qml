@@ -28,6 +28,7 @@ import org.kde.ringkde.jamitimeline 1.0 as JamiTimeline
 
 Item {
     id: seachOverlay
+    property alias topLevel: seachOverlay.parent
     property var source: null
     property alias active: searchBox.searchFocus
     property alias currentIndex: searchView.currentIndex
@@ -105,6 +106,7 @@ Item {
         searchView: searchView
         width: topLevel.width
         xPadding: dockBar.width
+        z: 9999
     }
 
     // The close and QR CODE buttons

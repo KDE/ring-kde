@@ -24,6 +24,7 @@ import org.kde.kirigami 2.4 as Kirigami
 import QtQuick.Layouts 1.2 as Layouts
 import org.kde.ringkde.basicview 1.0 as BasicView
 import org.kde.ringkde.jamitroubleshooting 1.0 as JamiTroubleShooting
+import org.kde.ringkde.jamitimeline 1.0 as JamiTimeline
 
 Kirigami.Page {
     id: peerListPage
@@ -66,12 +67,16 @@ Kirigami.Page {
         implicitHeight: parent.parent.height - 2*Kirigami.Units.largeSpacing
         implicitWidth: 10
 
-        Controls.TextField {
-            id: searchField
-            placeholderText: i18n("Search")
+        JamiTimeline.SearchOverlay {
+            id: searchView
+            source: parent
             anchors.centerIn: parent
             anchors.margins: Kirigami.Units.largeSpacing
             width: parent.width - 2 * Kirigami.Units.largeSpacing
+            onContactMethodSelected: {
+                mainPage.setContactMethod(cm)
+                setCurrentIndex(RingSession.peersTimelineModel.individualIndex(cm.individual))
+            }
         }
     }
 

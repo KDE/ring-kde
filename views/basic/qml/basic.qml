@@ -33,6 +33,10 @@ Kirigami.ApplicationWindow {
     height: 600
     id: root
 
+    JamiKDEIntegration.TipModel {
+        id: displayTips
+    }
+
     RingQtQuick.SharedModelLocker {
         id: mainPage
 

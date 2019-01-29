@@ -49,9 +49,6 @@ set(GENERIC_LIB_VERSION "1.0.0")
 set( desktopview_LIB_SRCS
     desktopviewplugin.cpp
     dockmodel.cpp
-    tipmodel.cpp
-    qmlaction.cpp
-    qactionbinder.cpp
     mainpage.cpp
 )
 
