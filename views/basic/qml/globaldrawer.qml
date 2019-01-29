@@ -4,7 +4,7 @@ import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.2
 import org.kde.kirigami 2.6 as Kirigami
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
-// import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
+import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 
 Kirigami.GlobalDrawer {
     id: globalDrawer
@@ -13,7 +13,7 @@ Kirigami.GlobalDrawer {
         actionCollection.editAction,
     ]
 
-    /*topContent: ListView {
+    topContent: ListView {
         y: 5
         id: availableAccounts
         model: RingSession.profileModel.availableProfileModel
@@ -43,5 +43,5 @@ Kirigami.GlobalDrawer {
                     console.log("ERROR", component.status, component.errorString())
             }
         }
-    }*/
+    }
 }

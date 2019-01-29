@@ -40,7 +40,7 @@ Kirigami.ApplicationWindow {
         colorGroup: SystemPalette.Active
     }
 
-    DesktopView.TipModel {
+    JamiKDEIntegration.TipModel {
         id: displayTips
     }
 
