@@ -96,4 +96,16 @@ QtObject {
             root.Material.accent = Material.Purple
         }
     }
+
+    readonly property Kirigami.Action settings: Kirigami.Action {
+        text: i18n("Settings")
+
+        Kirigami.Action {
+            text: i18n("Settings")
+        }
+
+        Kirigami.Action {
+            text: i18n("Settings")
+        }
+    }
 }

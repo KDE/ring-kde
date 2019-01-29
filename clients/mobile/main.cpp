@@ -132,8 +132,8 @@ int main(int argc, char **argv)
 #endif
 
 
-      KDeclarative::KDeclarative d;
-      d.setDeclarativeEngine(&engine);
+    KDeclarative::KDeclarative d;
+    d.setDeclarativeEngine(&engine);
 
     KAboutData about(QStringLiteral("ring-kde"),
         i18n("ring-kde"),

@@ -26,7 +26,7 @@ ColumnLayout {
 
     JamiChatView.GroupHeader {
         type: "call"
-        anchors.margins: 4
+        Layout.margins: 4
         Layout.fillWidth: true
         Layout.preferredHeight: 38
     }
