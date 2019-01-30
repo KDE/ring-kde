@@ -68,6 +68,9 @@ target_link_libraries( jamitimelineview
     Qt5::Gui
     Qt5::Quick
     Qt5::QuickControls2
+
+    # KF5
+    KF5::I18n
 )
 
 # Configure the target config
