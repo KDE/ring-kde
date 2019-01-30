@@ -380,7 +380,7 @@ Item {
             State {
                 name: "firstSearch"
                 extend: "searchActive"
-                when: delayed && (
+                when: false && delayed && (
                     RingSession.peersTimelineModel.empty || (searchBox && !searchBox.empty)
                 ) && displayTips.showFirstTip
 

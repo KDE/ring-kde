@@ -15,7 +15,7 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-import QtQuick 2.0
+import QtQuick 2.9
 import QtQuick.Controls 2.0 as Controls
 import QtQuick.Layouts 1.0
 
@@ -100,6 +100,13 @@ Item {
                 performLookup()
                 isNextAvailable()
             }
+            contentItem: Text {
+                text: registerUserName.text
+                font: registerUserName.font
+                color: "white"
+                verticalAlignment: Text.AlignVCenter
+                leftPadding: registerUserName.indicator.width + registerUserName.spacing
+            }
         }
 
         Controls.Label {
@@ -127,6 +134,7 @@ Item {
             x: 8
             y: 74
             height: 40
+            color: "white"
             Layout.fillWidth: true
 
             onTextChanged: {
@@ -193,6 +201,7 @@ Item {
             id: password
             echoMode: "Password"
             Layout.fillWidth: true
+            color: "white"
             onTextChanged: isNextAvailable()
         }
 
@@ -208,6 +217,7 @@ Item {
             id: repeatPassword
             echoMode: "Password"
             Layout.fillWidth: true
+            color: "white"
             onTextChanged: isNextAvailable()
         }
 

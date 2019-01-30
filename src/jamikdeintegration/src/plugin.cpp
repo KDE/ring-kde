@@ -166,6 +166,7 @@ void JamiKDEIntegration::registerTypes(const char *uri)
 
 void JamiKDEIntegration::initializeEngine(QQmlEngine *engine, const char *uri)
 {
+    Q_ASSERT(uri == QByteArray("org.kde.ringkde.jamikdeintegration"));
     e = engine;
     ActionCollection::instance()->setupAction();
 
