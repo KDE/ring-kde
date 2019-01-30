@@ -31,7 +31,7 @@
 #include <person.h>
 #include <session.h>
 #include <contactmethod.h>
-#include <numbercategory.h>
+#include <collections/numbercategory.h>
 #include <useractionmodel.h>
 #include <media/textrecording.h>
 #include <media/mimemessage.h>

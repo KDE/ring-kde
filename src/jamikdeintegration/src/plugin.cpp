@@ -42,14 +42,14 @@
 #include <libcard/historyimporter.h>
 
 // Collections
-#include <foldercertificatecollection.h>
-#include <fallbackpersoncollection.h>
-#include <peerprofilecollection2.h>
-#include <localhistorycollection.h>
-#include <localbookmarkcollection.h>
-#include <localrecordingcollection.h>
-#include <localprofilecollection.h>
-#include <localtextrecordingcollection.h>
+#include <collections/foldercertificatecollection.h>
+#include <collections/fallbackpersoncollection.h>
+#include <collections/peerprofilecollection2.h>
+#include <collections/localhistorycollection.h>
+#include <collections/localbookmarkcollection.h>
+#include <collections/localrecordingcollection.h>
+#include <collections/localprofilecollection.h>
+#include <collections/localtextrecordingcollection.h>
 
 // Ring-KDE
 #include "actioncollection.h"

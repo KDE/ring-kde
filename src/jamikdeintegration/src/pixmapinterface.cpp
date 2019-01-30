@@ -38,7 +38,7 @@
 #include <contactmethod.h>
 #include <presencestatusmodel.h>
 #include <securityevaluationmodel.h>
-#include <collectioninterface.h>
+#include <picocms/collectioninterface.h>
 #include <useractionmodel.h>
 #include <session.h>
 #include <video/sourcemodel.h>
