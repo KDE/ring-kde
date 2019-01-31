@@ -37,35 +37,6 @@ ListView {
 
         activeBackgroundColor: Kirigami.Theme.highlightColor
 
-        // DefaultListItemBackground copy paste
-        background: Rectangle {
-            id: background
-            color: listItem.checked || listItem.highlighted || (listItem.supportsMouseEvents && listItem.pressed && !listItem.checked && !listItem.sectionDelegate) ? listItem.activeBackgroundColor : listItem.backgroundColor
-
-            visible: listItem.ListView.view ? listItem.ListView.view.highlight === null : true
-            Rectangle {
-                id: internal
-                property bool indicateActiveFocus: listItem.pressed || Kirigami.Settings.tabletMode || listItem.activeFocus || (listItem.ListView.view ? listItem.ListView.view.activeFocus : false)
-                anchors.fill: parent
-                visible: !Kirigami.Settings.tabletMode && listItem.supportsMouseEvents
-                color: listItem.activeBackgroundColor
-                opacity: (listItem.hovered || listItem.highlighted || listItem.activeFocus) && !listItem.pressed ? 0.5 : 0
-                Behavior on opacity { NumberAnimation { duration: Kirigami.Units.longDuration } }
-            }
-
-            readonly property bool __separatorVisible: listItem.separatorVisible
-
-            on__SeparatorVisibleChanged: {
-                if (__separatorVisible) {
-                    var newObject = Qt.createQmlObject('import QtQuick 2.0; import org.kde.kirigami 2.4; Separator {anchors {left: parent.left; right: parent.right; bottom: parent.top} visible: listItem.separatorVisible}',
-                                        background);
-                    newObject = Qt.createQmlObject('import QtQuick 2.0; import org.kde.kirigami 2.4; Separator {anchors {left: parent.left; right: parent.right; bottom: parent.bottom} visible: listItem.separatorVisible}',
-                                        background);
-                }
-            }
-        }
-
-
         highlighted: index == currentIndex
 
         clip: true
