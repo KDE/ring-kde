@@ -240,8 +240,7 @@ Item {
             && (!filterList.active)
             && searchStateGroup.state != "firstSearch"
             && displayTips.showSearchTip
-        anchors.top: searchBox ? searchBox.bottom : undefined
-        anchors.topMargin: 15
+        y: searchBox ? searchBox.parent.height*2 : 15
         width: parent.width
     }
 

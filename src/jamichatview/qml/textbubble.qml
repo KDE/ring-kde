@@ -54,6 +54,7 @@ Item {
             contactMethod: chatMessage.cm
             Layout.alignment: Qt.AlignBottom
             Layout.bottomMargin: 20
+            defaultColor: Kirigami.Theme.textColor
         }
 
         Item {
@@ -98,7 +99,8 @@ Item {
                     anchors.leftMargin: direction == 1 ? 4 : undefined
                     anchors.rightMargin: direction == 0 ? 4 : undefined
                     text: formattedDate != undefined ? formattedDate : "N/A"
-                    color: "gray"
+                    color: Kirigami.Theme.highlightedTextColor
+                    opacity: 0.5
                 }
 
                 MouseArea {
@@ -119,6 +121,7 @@ Item {
             contactMethod: chatMessage.cm
             Layout.alignment: Qt.AlignBottom
             Layout.bottomMargin: 20
+            defaultColor: Kirigami.Theme.textColor
         }
     }
 }

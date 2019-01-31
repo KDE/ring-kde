@@ -20,7 +20,8 @@ import QtQuick.Layouts 1.0
 import org.kde.kirigami 2.2 as Kirigami
 
 RowLayout {
-    anchors.horizontalCenter: parent.horizontalCenter
+    Layout.alignment: Qt.AlignHCenter
+
     clip: true
     height: implicitHeight
     opacity: chatView.displayExtraTime ? 1 : 0

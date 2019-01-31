@@ -85,7 +85,9 @@ Kirigami.Page {
 
             onContactMethodSelected: {
                 mainPage.currentContactMethod = cm
-                setCurrentIndex(RingSession.peersTimelineModel.individualIndex(cm.individual))
+                pageStack.push(chat)
+                var idx = RingSession.peersTimelineModel.individualIndex(cm.individual)
+                list.currentIndex = idx.row
             }
 
             //HACK obey god dammit

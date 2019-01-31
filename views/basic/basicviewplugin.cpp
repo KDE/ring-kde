@@ -33,7 +33,6 @@ void BasicView::registerTypes(const char *uri)
     qmlRegisterType(QStringLiteral("qrc:/basicview/qml/detail.qml"), uri, 1, 0, "Detail");
     qmlRegisterType(QStringLiteral("qrc:/basicview/qml/formpage.qml"), uri, 1, 0, "FormPage");
     qmlRegisterType(QStringLiteral("qrc:/basicview/qml/form.qml"), uri, 1, 0, "Form");
-    qmlRegisterType(QStringLiteral("qrc:/basicview/qml/header.qml"), uri, 1, 0, "Header");
     qmlRegisterType(QStringLiteral("qrc:/basicview/qml/listpage.qml"), uri, 1, 0, "ListPage");
     qmlRegisterType(QStringLiteral("qrc:/basicview/qml/list.qml"), uri, 1, 0, "List");
     qmlRegisterType(QStringLiteral("qrc:/basicview/qml/globaldrawer.qml"), uri, 1, 0, "GlobalDrawer");

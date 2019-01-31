@@ -104,6 +104,7 @@ Item {
                         text: i18n("Ring-KDE allows you to communicate privately with your friends. It uses peer to peer technologies popularised by BitTorrent to create a decentralized network of users. There is no central server and all communications are end-to-end encrypted.")
                         Layout.fillWidth: true
                         Layout.fillHeight: true
+                        color: "white"
                     }
                 }
 
@@ -121,6 +122,7 @@ Item {
                         text: i18n("Ring-KDE stores all data locally using standard formats such as JSON, vCard, MIME, PCM/WAV, INI and X-509. No data is ever uploaded to external servers.")
                         Layout.fillWidth: true
                         Layout.fillHeight: true
+                        color: "white"
                     }
                 }
 
@@ -138,6 +140,7 @@ Item {
                         text: i18n("Ring-KDE supports your office phone account. Answers, transfer and record your phone calls directly from KDE.")
                         Layout.fillWidth: true
                         Layout.fillHeight: true
+                        color: "white"
                     }
                 }
 
@@ -155,6 +158,7 @@ Item {
                         text: i18n("Ring is based on open standards and it can interoperate with other SIP compliant systems.")
                         Layout.fillWidth: true
                         Layout.fillHeight: true
+                        color: "white"
                     }
                 }
 
@@ -172,6 +176,7 @@ Item {
                         text: i18n("Ring offers an user friendly DBus API to automate all aspects of the application.")
                         Layout.fillWidth: true
                         Layout.fillHeight: true
+                        color: "white"
                     }
                 }
 
@@ -189,6 +194,7 @@ Item {
                         text: i18n("Ring-KDE can call real phone numbers. Cheap credits are available from thousand of providers worldwide. Use your favorite search engine to locate a local SIP phone provider.")
                         Layout.fillWidth: true
                         Layout.fillHeight: true
+                        color: "white"
                     }
                 }
             }

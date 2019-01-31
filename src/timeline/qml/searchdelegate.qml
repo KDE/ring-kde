@@ -33,7 +33,6 @@ Item {
     property bool showSeparator: true
     property bool isSelectable: selectable
     height: rows.implicitHeight + 10 //10 == 2*margins
-
     opacity: selectable ? 1 : 0.6
 
     Behavior on opacity {

@@ -9,7 +9,6 @@
         <file>qml/detail.qml</file>
         <file>qml/formpage.qml</file>
         <file>qml/form.qml</file>
-        <file>qml/header.qml</file>
         <file>qml/listpage.qml</file>
         <file>qml/list.qml</file>
         <file>qml/globaldrawer.qml</file>

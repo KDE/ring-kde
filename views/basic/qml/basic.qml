@@ -39,6 +39,12 @@ Kirigami.ApplicationWindow {
 
         onChanged: {
             chat.boo.timelineModel = timelineModel
+
+            if (!currentIndividual)
+                return;
+
+            var idx = RingSession.peersTimelineModel.individualIndex(currentIndividual)
+            list.currentIndex = idx.row
         }
     }
 

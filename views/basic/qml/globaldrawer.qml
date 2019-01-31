@@ -45,12 +45,11 @@ Kirigami.GlobalDrawer {
         Layout.preferredWidth: globalDrawer.width
         Layout.preferredHeight: contentHeight
 
-        delegate: MouseArea {
+        delegate: ToolBar {
             width: parent.width
             height: Kirigami.Units.iconSizes.large * 1.5
-            Rectangle {
+            MouseArea {
                 anchors.fill: parent
-                color: Qt.darker(Kirigami.Theme.backgroundColor, 1.2)
 
                 RowLayout {
                     width: parent.width
@@ -79,17 +78,18 @@ Kirigami.GlobalDrawer {
                         }
                     }
                 }
-            }
-            onClicked: {
-                var component = Qt.createComponent("qrc:/account/qml/presenceselector.qml")
-                if (component.status == Component.Ready) {
-                    var window = component.createObject(applicationWindow().contentItem)
-                    window.individual = object
-                    globalDrawer.drawerOpen = false
-                    window.open()
+
+                onClicked: {
+                    var component = Qt.createComponent("qrc:/account/qml/presenceselector.qml")
+                    if (component.status == Component.Ready) {
+                        var window = component.createObject(applicationWindow().contentItem)
+                        window.individual = object
+                        globalDrawer.drawerOpen = false
+                        window.open()
+                    }
+                    else
+                        console.log("ERROR", component.status, component.errorString())
                 }
-                else
-                    console.log("ERROR", component.status, component.errorString())
             }
         }
     }

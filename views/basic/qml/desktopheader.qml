@@ -24,7 +24,9 @@ import org.kde.kirigami 2.6 as Kirigami
 import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 
 MouseArea {
-    property bool fits: pageStack.wideMode && grid.implicitWidth < parent.width
+    // The `currentIndividual` is to force it to be reloaded
+    property bool fits: mainPage.currentIndividual == mainPage.currentIndividual &&
+        pageStack.wideMode && grid.implicitWidth < parent.width
 
     implicitHeight: parent.parent.height - 2*Kirigami.Units.largeSpacing
 
@@ -44,9 +46,14 @@ MouseArea {
             defaultColor: index == currentIndex ?
                 Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor
             drawEmptyOutline: false
+            MouseArea {
+                onClicked: chatPage.editContact = true
+                anchors.fill: parent
+            }
         }
 
         Kirigami.Heading {
+            id: mainHeading
             level: 3
             text: mainPage.currentIndividual ?
                 mainPage.currentIndividual.bestName : ""
@@ -57,17 +64,29 @@ MouseArea {
             //opacity as using visible it won't correctly recalculate the width
             opacity: width > implicitWidth/2
             Layout.columnSpan: 1
+            MouseArea {
+                onClicked: chatPage.editContact = true
+                anchors.fill: parent
+            }
         }
         Controls.Label {
             text: "Online"
             elide: Text.ElideRight
             opacity: width > implicitWidth/2
+//             color: Qt.Tint(
+//                 mainHeading.color,
+//                 Kirigami.Theme.positiveTextColor
+//             )
             Layout.columnSpan: 2
+            MouseArea {
+                onClicked: chatPage.editContact = true
+                anchors.fill: parent
+            }
         }
 
         Kirigami.Icon {
             id: edit
-            opacity: 0
+            opacity: Kirigami.Settings.isMobile
             source: "document-edit"
             Layout.preferredWidth: Kirigami.Units.iconSizes.smallMedium
             Layout.preferredHeight: Kirigami.Units.iconSizes.smallMedium
@@ -87,7 +106,7 @@ MouseArea {
         Kirigami.Icon {
             id: favorite
             source: "favorite"
-            opacity: 0
+            opacity: Kirigami.Settings.isMobile
             Layout.rowSpan: 2
             Layout.preferredWidth: Kirigami.Units.iconSizes.smallMedium
             Layout.preferredHeight: Kirigami.Units.iconSizes.smallMedium
@@ -104,7 +123,7 @@ MouseArea {
         }
     }
 
-    hoverEnabled: true
+    hoverEnabled: !Kirigami.Settings.isMobile
 
     onContainsMouseChanged: {
         favorite.opacity = containsMouse

@@ -58,22 +58,19 @@ KQuickItemViews.HierarchyView {
         id: _treeHelper
     }
 
-    SystemPalette {
-        id: activePalette
-        colorGroup: SystemPalette.Active
-    }
-
     function blendColor() {
-        var base2 = activePalette.highlight
-        base2 = Qt.rgba(base2.r, base2.g, base2.b, 0.3)
-        var base1 = Qt.tint(activePalette.base, base2)
+        chatView.bubbleBackground = Qt.tint(
+            Kirigami.Theme.backgroundColor,
+            Kirigami.Theme.highlightColor //base1
+        )
+        chatView.unreadBackground = Qt.tint(
+            Kirigami.Theme.backgroundColor, "#99BB0000"
+        )
 
-        chatView.bubbleBackground = base1
-        chatView.unreadBackground = Qt.tint(activePalette.base, "#33BB0000")
-        chatView.bubbleForeground = activePalette.text
-        chatView.unreadForeground = activePalette.text
+        chatView.bubbleForeground = Kirigami.Theme.highlightedTextColor
+        chatView.unreadForeground = Kirigami.Theme.highlightedTextColor
 
-        return base1
+        return chatView.bubbleBackground
     }
 
     JamiChatView.Slideshow {

@@ -30,6 +30,7 @@ Kirigami.Page {
     property var boo: chatView
     property alias showContactDetails: detail.active
     property alias editContact: form.active
+    property bool _fits: false
 
     Kirigami.Theme.colorSet: Kirigami.Theme.View
 
@@ -46,16 +47,21 @@ Kirigami.Page {
     titleDelegate: BasicView.DesktopHeader {
         id: dheader
         visible: fits
-        onVisibleChanged: header.visible = !visible
+        Component.onCompleted: _fits = fits
+        onFitsChanged: _fits = fits
     }
 
-    header: BasicView.Header {
-        id: header
-        visible: !pageStack.wideMode
+    header: Controls.ToolBar {
+        visible: (!_fits)
+        height: visible ? Kirigami.Units.gridUnit * 2.5 : 0
+
         Layout.fillWidth: true
-        height: visible ? Kirigami.Units.gridUnit * 5 : 0
         Layout.preferredHeight: visible ? Kirigami.Units.gridUnit * 5 : 0
         Layout.margins: 0
+
+        BasicView.DesktopHeader {
+            anchors.fill: parent
+        }
     }
 
     JamiChatView.ChatPage {

@@ -174,6 +174,7 @@ Rectangle {
 
             Layout.fillHeight: true
             Layout.fillWidth : true
+            spacing: 0
 
             TextArea {
                 id: messageTextArea
@@ -194,6 +195,16 @@ Rectangle {
                     sendMessage(rawText, richText)
                 }
 
+                Keys.onEscapePressed: {
+                    console.log("escape")
+                    focus = false
+                }
+
+                background: Rectangle {
+                    color: Kirigami.Theme.backgroundColor
+                    anchors.fill: parent
+                }
+
                 persistentSelection: true
 
                 states: [
@@ -210,6 +221,9 @@ Rectangle {
                     }
                 ]
             }
+            Kirigami.Separator {
+                Layout.fillHeight: true
+            }
             Button {
                 text: i18n("Send")
                 Layout.fillHeight: true
@@ -218,6 +232,10 @@ Rectangle {
                     var richText = messageTextArea.getFormattedText(0, messageTextArea.length)
 
                     sendMessage(rawText, richText)
+                }
+                background: Rectangle {
+                    color: Kirigami.Theme.buttonBackgroundColor
+                    anchors.fill: parent
                 }
             }
         }

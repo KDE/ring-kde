@@ -92,6 +92,7 @@ Rectangle {
     ColumnLayout {
         anchors.fill: parent
         clip: true
+        spacing: 0
 
         RowLayout {
             id: chatScrollView

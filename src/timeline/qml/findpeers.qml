@@ -50,21 +50,10 @@ ListView {
             anchors.rightMargin: 10
             radius: 5
             color: Kirigami.Theme.highlightColor
+            opacity: 0.3
         }
     }
 
     model: RingSession.numberCompletionModel
     delegate: searchDelegate
-//     add: Transition {
-//         NumberAnimation {
-//             properties: "y"
-//             duration: 100
-//         }
-//     }
-//     addDisplaced: Transition {
-//         NumberAnimation {
-//             properties: "y"
-//             duration: 100
-//         }
-//     }
 }
