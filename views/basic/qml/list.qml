@@ -33,6 +33,7 @@ ListView {
         onClicked: {
             list.currentIndex = index
             mainPage.currentIndividual = object
+            pageStack.push(chat)
         }
 
         activeBackgroundColor: Kirigami.Theme.highlightColor
