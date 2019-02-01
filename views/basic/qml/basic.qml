@@ -139,6 +139,7 @@ Kirigami.ApplicationWindow {
             }
             onWizardFinished: {
                 wizardLoader.active = false
+                list.search()
             }
         }
     }

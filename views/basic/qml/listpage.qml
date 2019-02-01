@@ -79,7 +79,9 @@ Kirigami.Page {
 
             Connections {
                 target: peerListPage
-                onSearch: headerSearchbox.searchFocus = true
+                onSearch: {
+                    headerSearchbox.forceFocus()
+                }
             }
 
             /*Connections {
