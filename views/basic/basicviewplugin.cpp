@@ -27,6 +27,7 @@ void BasicView::registerTypes(const char *uri)
 {
     qmlRegisterType(QStringLiteral("qrc:/basicview/qml/actioncollection.qml"), uri, 1, 0, "ActionCollection");
     qmlRegisterType(QStringLiteral("qrc:/basicview/qml/chatpage.qml"), uri, 1, 0, "ChatPage");
+    qmlRegisterType(QStringLiteral("qrc:/basicview/qml/callpage.qml"), uri, 1, 0, "CallPage");
     qmlRegisterType(QStringLiteral("qrc:/basicview/qml/contacts.qml"), uri, 1, 0, "Contacts");
     qmlRegisterType(QStringLiteral("qrc:/basicview/qml/desktopheader.qml"), uri, 1, 0, "DesktopHeader");
     qmlRegisterType(QStringLiteral("qrc:/basicview/qml/detailpage.qml"), uri, 1, 0, "DetailPage");

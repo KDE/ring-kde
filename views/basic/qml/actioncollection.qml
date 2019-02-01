@@ -31,6 +31,10 @@ QtObject {
     readonly property Kirigami.Action callAction: Kirigami.Action {
         iconName: "call-start"
         text: i18n("Make call")
+        onTriggered: {
+            pageStack.push(callpage)
+            callpage.visible = true
+        }
     }
 
     readonly property Kirigami.Action chatAction: Kirigami.Action {

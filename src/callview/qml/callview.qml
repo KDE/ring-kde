@@ -30,9 +30,6 @@ Item {
     signal callWithAudio ()
     signal callWithScreen()
 
-    height: 480
-    width: 640
-
     // C++ bindings
     property alias    rendererName   : videoWidget.rendererName
     property bool     displayPreview : false
@@ -148,12 +145,6 @@ Item {
         visible: mode == "PREVIEW"
         width: parent.width
         z: 100
-        Rectangle {
-            anchors.fill: parent
-            color: "black"
-            opacity: 0.5
-            z: -1
-        }
     }
 
     JamiVideoView.VideoSource {

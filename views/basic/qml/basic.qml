@@ -76,6 +76,11 @@ Kirigami.ApplicationWindow {
         id: chat
     }
 
+    BasicView.CallPage {
+        id: callpage
+        visible: false
+    }
+
     contextDrawer: Kirigami.ContextDrawer {
         id: contextDrawer
     }

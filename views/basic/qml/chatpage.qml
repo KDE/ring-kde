@@ -42,7 +42,6 @@ Kirigami.Page {
     topPadding: 0
     bottomPadding: 0
     padding: 0
-    title: "Susan Hoffman"
 
     titleDelegate: BasicView.DesktopHeader {
         id: dheader

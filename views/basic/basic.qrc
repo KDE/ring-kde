@@ -14,5 +14,6 @@
         <file>qml/globaldrawer.qml</file>
         <file>qml/sidebar.qml</file>
         <file>qml/actionswitch.qml</file>
+        <file>qml/callpage.qml</file>
     </qresource>
 </RCC>

@@ -31,7 +31,7 @@ ColumnLayout {
             border.color: "#333333"
             border.width: 1
             radius: 5
-            visible: currentIndividual
+            visible: mainPage.currentIndividual
             Text {
                 text: label
                 anchors.centerIn: parent

@@ -20,6 +20,7 @@ import QtQuick.Layouts 1.0
 
 import org.kde.playground.kquickitemviews 1.0 as KQuickItemViews
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
+import net.lvindustries.ringqtquick.video 1.0 as RingQtQuickVideo
 
 GridLayout {
     property alias deviceSelectionModel    : device.selectionModel
@@ -47,6 +48,9 @@ GridLayout {
         id: channel
         selectionModel: RingSession.deviceModel.configurationProxy.channelSelectionModel
         Layout.fillWidth: true
+        Component.onCompleted: {
+            console.log("\n\n\nCOMPLETE!", RingSession.deviceModel.configurationProxy.channelSelectionModel)
+        }
     }
 
     Text {
