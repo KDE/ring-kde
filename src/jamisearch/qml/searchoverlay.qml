@@ -17,40 +17,51 @@
  **************************************************************************/
 import QtQuick 2.7
 import QtQuick.Controls 2.0
-import QtQuick.Layouts 1.0
+import QtQuick.Layouts 1.0 as Layouts
 import QtGraphicalEffects 1.0
 
-import org.kde.ringkde.genericutils 1.0 as GenericUtils
 import org.kde.kirigami 2.0 as Kirigami
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
-import org.kde.ringkde.jamitimeline 1.0 as JamiTimeline
-import org.kde.ringkde.jamikdeintegration 1.0 as JamiKDEIntegration
-
+import org.kde.ringkde.jamisearch 1.0 as JamiSearch
 
 Item {
     id: seachOverlay
+    visible: searchState.activeState || searchState.firstSearchState
+
+    // Properties
     property alias topLevel: seachOverlay.parent
     property var source: null
     property bool active: searchBox && searchBox.searchFocus
     property alias currentIndex: searchView.currentIndex
     property alias currentItem: searchView.currentItem
-    property bool delayed: false
     property QtObject searchBox: null
+    property bool displayWelcome: searchState.firstSearchState
 
+    // Signals
     signal contactMethodSelected(var cm)
     signal displayNotFoundMessage()
+
+    // Functions
+    function hide() {
+        searchBox.hide()
+    }
 
     SystemPalette {
         id: inactivePalette
         colorGroup: SystemPalette.Inactive
     }
 
-    JamiKDEIntegration.TipModel {
-        id: displayTips
+    // The algorithm used to define what's visible. It is in an class because
+    // the expression size was no longer maintainable.
+    JamiSearch.State {
+        id: searchState
+        searchEmpty: searchBox.empty
+        focussed: active
     }
 
-    function hide() {
-        searchBox.hide()
+    // Track if the user asked to never see some information ever again
+    JamiSearch.TipModel {
+        id: displayTips
     }
 
     // Add a blurry background
@@ -69,24 +80,7 @@ Item {
         )
     }
 
-    /**
-     * QML properties are evaluated in a random order, this exists to stop
-     * trying to handle everything.
-     *
-     * Keep in mind that some other components already have hacks to handle
-     * this. So this has to be done /after/ those hacks
-     * (which cannot be detected), hence the timer.
-     */
-    Timer {
-        id: buggyTimer
-        repeat: false
-        running: true
-        interval: 0
-        onTriggered: {
-            delayed = true
-        }
-    }
-
+    // Background
     Item {
         id: burryOverlay
         visible: false
@@ -112,146 +106,66 @@ Item {
         }
     }
 
-    JamiTimeline.FirstRun {
-        id: firstRun
-        visible: active
-        active: searchStateGroup.state == "firstSearch"
-        anchors.left: parent.left
-        anchors.right: parent.right
-        height: parent.height* 0.4
-    }
-
+    // Header buttons
     Loader {
-        height: 30
+        height: active ? searchBox.height : 0
         width: parent.width - (searchBox ? searchBox.labelWidth : 0)
-        anchors.right: parent.right
+        anchors.right: parent.parent.right
+        y: -searchBox.height
         clip: true
-        active: seachOverlay.active && searchStateGroup.state != "firstSearch"
-        sourceComponent: RowLayout {
-
-            Behavior on x {
-                NumberAnimation {duration: 350; easing.type: Easing.OutQuad}
-            }
-
-            Item {
-                Layout.fillWidth: true
-            }
-
-            GenericUtils.OutlineButton {
-                label: "  "+i18n("Scan a QR Code")
-                visible: false //Not implemented
-                height: 24
-                alignment: Qt.AlignRight
-                Layout.maximumWidth: width
-                icon: "image://SymbolicColorizer/:/sharedassets/outline/qrcode.svg"
-            }
-
-            GenericUtils.OutlineButton {
-                label: "  "+i18n("Close")
-                height: 24
-                alignment: Qt.AlignRight
-                icon: "image://SymbolicColorizer/:/sharedassets/outline/close.svg"
-                onClicked: {
-                    hide()
-                }
-            }
-
-            Component.onCompleted: x = 0
-        }
+        active: searchState.activeState
+        sourceComponent: JamiSearch.ToolBar {}
     }
 
-    ListModel {
-        id: searchCategoryModel
-
-        ListElement {
-            name: "Web"
-            elemColor: "#2c53bd"
-            src: "image://SymbolicColorizer/?color=#2c53bd;:/sharedassets/outline/web.svg"
-        }
-        ListElement {
-            name: "Bookmarks"
-            elemColor: "#cfa02a"
-            src: "image://SymbolicColorizer/?color=#cfa02a;:/timelineassets/bookmark.svg"
-        }
-        ListElement {
-            name: "Contacts"
-            elemColor: "#14883b"
-            src: "image://SymbolicColorizer/?color=#14883b;:/timelineassets/contact.svg"
-        }
-        ListElement {
-            name: "History"
-            elemColor: "#be3411"
-            src: "image://SymbolicColorizer/?color=#be3411;:/timelineassets/history.svg"
-        }
-    }
-
-    Loader {
-        id: filterList
-        active: searchView.count > 0 && searchStateGroup.state == "searchActive"
-        opacity: searchView.count > 0 ? 1 : 0
-        height: 30 + Kirigami.Units.fontMetrics.height*1.5
-        y: searchBox ? (searchBox.y+searchBox.height+5) : 0
-        width: parent.width
-
-        Behavior on opacity {
-            NumberAnimation {duration: 150;  easing.type: Easing.InQuad}
-        }
-
-        sourceComponent: Row {
-            anchors.fill: parent
-            Repeater {
-                model: searchCategoryModel
-                Item {
-                    width: parent.width / 4
-                    height: sourceName.implicitHeight + 34
-                    Rectangle {
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        width: 30
-                        height: 30
-                        radius: 99
-                        border.width: 2
-                        border.color: elemColor
-                        color: "transparent"
-                        Image {
-                            width: parent.width*0.8
-                            height: width
-                            anchors.centerIn:parent
-                            sourceSize.width: width
-                            sourceSize.height: width
-                            source: src
-                        }
-                    }
-                    Text {
-                        id: sourceName
-                        anchors.bottom: parent.bottom
-                        anchors.topMargin: 4
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        color: Kirigami.Theme.highlightedTextColor
-                        text: name
-                    }
-                }
-            }
-        }
-    }
-
-    // Display some tips and help to new users
-    JamiTimeline.SearchTip {
-        active: seachOverlay.active
-            && (!filterList.active)
-            && searchStateGroup.state != "firstSearch"
-            && displayTips.showSearchTip
-        y: searchBox ? searchBox.parent.height*2 : 15
-        width: parent.width
-    }
-
-    JamiTimeline.FindPeers {
-        id: searchView
-        visible: false
+    // Content
+    Layouts.ColumnLayout {
         anchors.fill: parent
-        anchors.topMargin: filterList.y + filterList.height
-        z: 99999999
+        spacing: 0
+
+        Item {
+            Layouts.Layout.fillWidth: true
+            Layouts.Layout.preferredHeight: 2*searchBox.height
+        }
+
+        // Display a welcome message when the user uses the app for the first time
+        JamiSearch.FirstRun {
+            id: firstRun
+            visible: active
+            active: searchState.firstSearchState
+            Layouts.Layout.fillWidth: true
+            Layouts.Layout.preferredHeight: active ? parent.height* 0.4 : 0
+            Layouts.Layout.maximumHeight: active ? parent.height* 0.4 : 0
+        }
+
+        // Display an icon for each search categories and match the colors with
+        // colored symbols in each search entry
+        JamiSearch.MatchCategories {
+            id: filterList
+            active: searchState.displaySearchCategories
+            opacity: searchView.count > 0 ? 1 : 0
+            Layouts.Layout.fillWidth: true
+            Layouts.Layout.preferredHeight: active ?
+                30 + Kirigami.Units.fontMetrics.height*1.5 : 0
+        }
+
+        // Display some tips and help to new users
+        JamiSearch.SearchTip {
+            active: searchState.displaySearchHelp
+            Layouts.Layout.fillWidth: true
+            Layouts.Layout.preferredHeight: active ? height : 0
+            Layouts.Layout.maximumHeight: active ? height : 0
+        }
+
+        // Display the results for the current query
+        JamiSearch.Results {
+            id: searchView
+            Layouts.Layout.fillWidth: true
+            Layouts.Layout.fillHeight: true
+            z: 99999999
+        }
     }
 
+    // When the user presses Return with nothing selected, print a message
     Rectangle {
         id: notFoundMessage
         z: 999999999
@@ -313,7 +227,6 @@ Item {
         }
     }
 
-
     // Search
     StateGroup {
         id: searchStateGroup
@@ -321,9 +234,7 @@ Item {
         states: [
             State {
                 name: ""
-                when: ((!seachOverlay.active) && (
-                    (!RingSession.peersTimelineModel.empty) || (!displayTips.showFirstTip)
-                )) || (!delayed)
+                when: searchState.inactiveState
 
                 ParentChange {
                     target: seachOverlay
@@ -336,11 +247,6 @@ Item {
                 }
 
                 PropertyChanges {
-                    target:  searchView
-                    visible: false
-                }
-
-                PropertyChanges {
                     target:  burryOverlay
                     visible: false
                     opacity: 0
@@ -348,10 +254,7 @@ Item {
             },
             State {
                 name: "searchActive"
-                when: delayed && seachOverlay.active
-                    && (
-                        (!RingSession.peersTimelineModel.empty) || (!displayTips.showFirstTip)
-                    )
+                when: searchState.activeState
 
 //                 PropertyChanges {
 //                     target:  seachOverlay
@@ -359,11 +262,6 @@ Item {
 //                     width: undefined
 //                     height: undefined
 //                 }
-
-                PropertyChanges {
-                    target:  searchView
-                    visible: true
-                }
 
                 PropertyChanges {
                     target:  burryOverlay
@@ -379,9 +277,7 @@ Item {
             State {
                 name: "firstSearch"
                 extend: "searchActive"
-                when: false && delayed && (
-                    RingSession.peersTimelineModel.empty || (searchBox && !searchBox.empty)
-                ) && displayTips.showFirstTip
+                when: searchState.firstSearchState
 
 //                 PropertyChanges {
 //                     target:  seachOverlay
@@ -389,14 +285,11 @@ Item {
 //                     width: applicationWindow().contentItem.width
 //                     height: applicationWindow().contentItem.height
 //                 }
-
-                PropertyChanges {
-                    target: searchBox
-                    y: firstRun.height + 10
-                    width: seachOverlay.width*0.9
-                    x: seachOverlay.width*0.05
-                    searchFocus: true
-                }
+//
+//                 PropertyChanges {
+//                     target: searchBox
+//                     searchFocus: true
+//                 }
             }
         ]
 

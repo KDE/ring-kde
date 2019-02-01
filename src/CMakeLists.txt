@@ -14,7 +14,10 @@ ADD_SUBDIRECTORY( callview )
 ADD_SUBDIRECTORY( dialview )
 
 # Build the views and widgets related to the social timeline feature
-ADD_SUBDIRECTORY( timeline )
+ADD_SUBDIRECTORY( jamitimeline )
+
+# Build the views and widgets related to the peers/people search box
+ADD_SUBDIRECTORY( jamisearch )
 
 # Build the contact and profile photo editor dialog
 ADD_SUBDIRECTORY( photoselector )
@@ -45,7 +48,6 @@ ADD_SUBDIRECTORY( jamitimelinebase )
 
 # Build the audio player widget
 ADD_SUBDIRECTORY( jamiaudioplayer )
-
 
 if(ENABLE_NOTIFICATIONS)
     # Build the account manager subsystem

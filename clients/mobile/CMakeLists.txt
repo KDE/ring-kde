@@ -131,6 +131,7 @@ TARGET_LINK_LIBRARIES(ring-kde
   jamichatview
   jamitimelinebase
   jamiaudioplayer
+  jamisearch
 
   # RingQt
   ringqtquick

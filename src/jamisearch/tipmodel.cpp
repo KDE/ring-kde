@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2017 by Bluesystems                                     *
+ *   Copyright (C) 2018 by Bluesystems                                     *
  *   Author : Emmanuel Lepage Vallee <elv1313@gmail.com>                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -15,45 +15,28 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
-import QtQuick 2.7
-import org.kde.ringkde.jamitimeline 1.0 as JamiTimeline
-import net.lvindustries.ringqtquick 1.0 as RingQtQuick
-import org.kde.kirigami 2.2 as Kirigami
+#include "tipmodel.h"
 
-ListView {
-    id: findPeers
-    clip: true
+#include "../jamikdeintegration/kcfg_settings.h"
 
-    FontMetrics {
-        id: fontMetrics
-    }
+bool TipModel::showSearchTip() const
+{
+    return ConfigurationSkeleton::displaySearchTip();
+}
 
-    Component {
-        id: searchDelegate
-        JamiTimeline.SearchDelegate {
-            width: findPeers.width
-            buttonHeight: fontMetrics.height + 12
-            labelHeight: fontMetrics.height
-        }
-    }
+void TipModel::setShowSearchTip(bool v)
+{
+    ConfigurationSkeleton::setDisplaySearchTip(v);
+    emit changed();
+}
 
-    highlight: Item {
-        anchors.topMargin: 5
-        anchors.bottomMargin: 5
-        anchors.leftMargin: 5
-        anchors.rightMargin: 5
-        Rectangle {
-            anchors.fill: parent
-            anchors.topMargin: 5
-            anchors.bottomMargin: 5
-            anchors.leftMargin: 10
-            anchors.rightMargin: 10
-            radius: 5
-            color: Kirigami.Theme.highlightColor
-            opacity: 0.3
-        }
-    }
+bool TipModel::showFirstTip() const
+{
+    return ConfigurationSkeleton::displayFirstTip();
+}
 
-    model: RingSession.numberCompletionModel
-    delegate: searchDelegate
+void TipModel::setShowFirstTip(bool v)
+{
+    ConfigurationSkeleton::setDisplayFirstTip(v);
+    emit changed();
 }

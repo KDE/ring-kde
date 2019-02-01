@@ -16,77 +16,16 @@
  *   License along with this library; if not, write to the Free Software            *
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA *
  ***********************************************************************************/
-#include "policies.h"
+#pragma once
 
-// LibRingQt
-#include <session.h>
-#include <accountmodel.h>
+#include <QQmlExtensionPlugin>
 
-// JamiKDEIntegration
-#include "../jamikdeintegration/kcfg_settings.h" //FIXME export this
-#include "../jamikdeintegration/src/windowevent.h" //FIXME export this
-
-// If there's more than 1 instance, this is worth fixing.
-static enum {
-    UNDECIDED,
-    DISCARDED,
-    YES,
-    NO,
-} s_DisplayWizard;
-
-class WizardPoliciesWatcher : public QObject
+class Q_DECL_EXPORT JamiSearch final : public QQmlExtensionPlugin
 {
     Q_OBJECT
+    Q_PLUGIN_METADATA(IID "org.kde.ringkde.jamisearch" FILE "jamisearch.json")
+
 public:
-
-public Q_SLOTS:
-    void slotAccountAdded();
+    void registerTypes(const char* uri) override;
+    virtual void initializeEngine(QQmlEngine* engine, const char* uri) override;
 };
-
-WizardPolicies::WizardPolicies(QObject* parent) : QObject(parent)
-{}
-
-WizardPolicies::~WizardPolicies()
-{
-
-}
-
-bool WizardPolicies::displayWizard()
-{
-    static bool dw  = ConfigurationSkeleton::enableWizard()
-        || ConfigurationSkeleton::showSplash();
-
-    const  bool dos = ConfigurationSkeleton::displayOnStart()
-        && !WindowEvent::instance()->startIconified();
-
-    // The first run wizard
-    if (dos && dw) {
-
-        if (dw && !Session::instance()->accountModel()->size()) {
-            WindowEvent::instance()->showWizard();
-            s_DisplayWizard = YES;
-        }
-        else
-            s_DisplayWizard = NO;
-
-//         ConfigurationSkeleton::setEnableWizard(false);
-
-
-        emit changed();
-    }
-
-    return s_DisplayWizard == YES;
-}
-
-void WizardPolicies::setWizardFinished(bool f)
-{
-    s_DisplayWizard = f ? DISCARDED : UNDECIDED;
-    emit changed();
-}
-
-void WizardPoliciesWatcher::slotAccountAdded()
-{
-    //
-}
-
-#include <policies.moc>

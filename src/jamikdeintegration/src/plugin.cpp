@@ -60,7 +60,6 @@
 #include "windowevent.h"
 #include "qmlaction.h"
 #include "qactionbinder.h"
-#include "tipmodel.h"
 #include "kcfg_settings.h"
 
 #ifndef DISABLE_NOTIFICATION
@@ -161,7 +160,6 @@ void JamiKDEIntegration::registerTypes(const char *uri)
     qmlRegisterType<WindowEvent>(uri, 1, 0, "WindowEvent");
     qmlRegisterType<QmlAction>(uri, 1, 0, "QmlAction");
     qmlRegisterType<QActionBinder>(uri, 1, 0, "QActionBinder");
-    qmlRegisterType<TipModel>(uri, 1, 0, "TipModel");
 }
 
 void JamiKDEIntegration::initializeEngine(QQmlEngine *engine, const char *uri)

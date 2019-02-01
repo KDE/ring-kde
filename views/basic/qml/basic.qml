@@ -74,7 +74,6 @@ Kirigami.ApplicationWindow {
 
     BasicView.ChatPage {
         id: chat
-        visible: true
     }
 
     contextDrawer: Kirigami.ContextDrawer {
@@ -119,10 +118,16 @@ Kirigami.ApplicationWindow {
 
     Loader {
         id: wizardLoader
-        active: wizardPolicies.displayWizard
+
+        active: false
         anchors.fill: parent
         z: 999999
-        visible: false
+
+        onActiveChanged: {
+            if ( list.displayWelcome && !active)
+                list.search()
+
+        }
         sourceComponent: JamiWizard.Wizard {
             anchors.fill: parent
             z: 999999
@@ -132,6 +137,18 @@ Kirigami.ApplicationWindow {
                     wizardLoader.active = false
                 }
             }
+            onWizardFinished: {
+                wizardLoader.active = false
+            }
+        }
+    }
+
+    Timer {
+        interval: 0
+        running: true
+        repeat: false
+        onTriggered: {
+            wizardLoader.active = wizardPolicies.displayWizard
         }
     }
 

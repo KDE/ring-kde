@@ -24,14 +24,13 @@ import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 Item {
     id: searchBox
 
-    Kirigami.Theme.colorSet: Kirigami.Theme.View
-
     property bool empty: search.text == ""
     property var searchView: null
-    property real xPadding: 0
+    property real xPadding: 2*Kirigami.Units.largeSpacing +2 /*border*/
     property alias searchFocus: search.focus
     property alias labelWidth: findLabel.implicitWidth
-    height: (search.focus ? textMetric.height*3 : textMetric.height*1.5) + 6
+
+    Kirigami.Theme.colorSet: Kirigami.Theme.View
 
     function hide() {
         search.text = ""
@@ -47,9 +46,11 @@ Item {
 
     TextField {
         id: search
-        width: parent.width - (focus ? 0 : parent.xPadding)
-        x: focus ? 0 : parent.xPadding
-        y: focus ? textMetric.height*1.5 + 3 : 3
+        width: focus ? searchView.width - xPadding : parent.width
+        x: focus ? -(searchView.width-searchBox.width ) + xPadding: 0
+        y: (focus ? searchBox.height : 0) + Kirigami.Units.largeSpacing
+        leftPadding: Kirigami.Units.largeSpacing + 1 /*border*/
+        topPadding: Kirigami.Units.largeSpacing
 
         font.pointSize: Kirigami.Theme.defaultFont.pointSize*1.4
         text: RingSession.callModel.hasDialingCall ?
@@ -88,8 +89,8 @@ Item {
 
                 RowLayout {
                     height: parent.height
-//                     opacity: search.text == "" && !search.focus ? 1 : 0
                     y: search.text == "" && !search.focus ? 0 : -search.height
+                    x: search.focus ? (searchView.width-searchBox.width)/2 : 0
                     spacing: 5
 
                     Behavior on opacity {

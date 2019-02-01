@@ -24,15 +24,18 @@ import org.kde.kirigami 2.4 as Kirigami
 import QtQuick.Layouts 1.2 as Layouts
 import org.kde.ringkde.basicview 1.0 as BasicView
 import org.kde.ringkde.jamitroubleshooting 1.0 as JamiTroubleShooting
-import org.kde.ringkde.jamitimeline 1.0 as JamiTimeline
+import org.kde.ringkde.jamisearch 1.0 as JamiSearch
 
 Kirigami.Page {
     id: peerListPage
     property alias currentIndex: list.currentIndex;
     property alias model: list.model
+    property bool displayWelcome: false
 
     spacing: 0
     leftPadding: 0; rightPadding: 0; topPadding: 0;bottomPadding: 0; padding: 0
+
+    signal search()
 
     Kirigami.Theme.colorSet: Kirigami.Theme.View
 
@@ -65,23 +68,33 @@ Kirigami.Page {
         implicitHeight: parent.parent.height - 2*Kirigami.Units.largeSpacing
         implicitWidth: 10
 
-        JamiTimeline.SearchBox {
+        JamiSearch.SearchBox {
             id: headerSearchbox
             searchView: _searchView
             anchors.centerIn: parent
             anchors.margins: Kirigami.Units.largeSpacing
             width: parent.width - 2 * Kirigami.Units.largeSpacing
+            height: headerSearchbox.focus ? parent.height : parent.height * 1.5
             z: 9999
+
+            Connections {
+                target: peerListPage
+                onSearch: headerSearchbox.searchFocus = true
+            }
         }
 
-        JamiTimeline.SearchOverlay {
+        JamiSearch.Overlay {
             id: _searchView
             source: peerListPage
-            visible: true
             searchBox: headerSearchbox
             width: peerListPage.width
             height: peerListPage.height + header.height
             x: -(peerListPage.width - header.width)
+            y: -Kirigami.Units.largeSpacing
+
+            onDisplayWelcomeChanged: {
+                peerListPage.displayWelcome = displayWelcome
+            }
 
             onContactMethodSelected: {
                 mainPage.currentContactMethod = cm

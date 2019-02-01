@@ -26,6 +26,7 @@ Rectangle {
     color: "#004d61"
 
     property string previousState: ""
+    signal wizardFinished()
 
     JamiWizard.Splash {
         id: startingPage
@@ -91,7 +92,7 @@ Rectangle {
     Connections {
         target: footer.skipButton
         onClicked: {
-            applicationWindow.visible = false
+            wizardFinished()
         }
     }
 
@@ -139,7 +140,7 @@ Rectangle {
 
                     frontPage.profilePage.save()
 
-                    applicationWindow.visible = false
+                    wizardFinished()
                     break;
             }
         }
