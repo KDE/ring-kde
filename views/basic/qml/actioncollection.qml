@@ -22,6 +22,7 @@ import org.kde.kirigami 2.4 as Kirigami
 import QtQuick.Controls.Material 2.3
 
 QtObject {
+
     readonly property Kirigami.Action mailAction: Kirigami.Action {
         iconName: "mail-message"
         text: i18n("Write mail")

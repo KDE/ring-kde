@@ -12,5 +12,7 @@
         <file>qml/listpage.qml</file>
         <file>qml/list.qml</file>
         <file>qml/globaldrawer.qml</file>
+        <file>qml/sidebar.qml</file>
+        <file>qml/actionswitch.qml</file>
     </qresource>
 </RCC>

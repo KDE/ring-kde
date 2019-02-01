@@ -34,6 +34,9 @@ Kirigami.ApplicationWindow {
     height: 600
     id: root
 
+    // Localization is currently broken with the Material theme
+    function i18n(t) {return t;}
+
     RingQtQuick.SharedModelLocker {
         id: mainPage
 

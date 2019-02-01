@@ -20,8 +20,6 @@ import QtQuick.Controls 2.0
 import org.kde.kirigami 2.2 as Kirigami
 import QtQuick.Layouts 1.0
 
-import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
-
 Rectangle {
     property QtObject call: null
 
@@ -29,11 +27,6 @@ Rectangle {
     property alias backgroundColor: chatBox.color
     property var emojiColor: undefined
     property bool requireContactRequest: false
-    property bool sendRequest: _sendRequestOverride && (
-        sendRequestLoader.active && sendRequestLoader.item && sendRequestLoader.item.sendRequests
-    )
-
-    property bool _sendRequestOverride: true
 
     function focusEdit() {
         messageTextArea.forceActiveFocus()
@@ -42,7 +35,6 @@ Rectangle {
     id: chatBox
 
     signal sendMessage(string message, string richMessage)
-    signal disableContactRequests()
 
     color: "blue"
 
@@ -186,7 +178,7 @@ Rectangle {
                 font.family: "Noto Color Emoji"
                 font.pixelSize : 18
 
-                placeholderText: i18n("Write a message and press enter...")
+                placeholderText: " "+i18n("Write a message and press enter...")
 
                 Keys.onReturnPressed: {
                     var rawText  = getText(0, length)
@@ -236,22 +228,6 @@ Rectangle {
                 background: Rectangle {
                     color: Kirigami.Theme.buttonBackgroundColor
                     anchors.fill: parent
-                }
-            }
-        }
-
-        Loader {
-            id: sendRequestLoader
-            height: active && item ? item.implicitHeight : 0
-            Layout.fillWidth: true
-            active: chatBox.requireContactRequest
-            Layout.minimumHeight: active && item ? item.implicitHeight : 0
-            Layout.maximumHeight: active && item ? item.implicitHeight : 0
-            sourceComponent: JamiContactView.SendRequest {
-                width: sendRequestLoader.width
-                onDisableContactRequests: {
-                    chatBox.disableContactRequests()
-                    chatBox._sendRequestOverride = send
                 }
             }
         }

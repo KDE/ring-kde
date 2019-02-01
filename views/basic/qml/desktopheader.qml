@@ -24,11 +24,14 @@ import org.kde.kirigami 2.6 as Kirigami
 import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 
 MouseArea {
+    property var textColor: undefined
+    property real photoSize: Kirigami.Units.largeSpacing
+
     // The `currentIndividual` is to force it to be reloaded
     property bool fits: mainPage.currentIndividual == mainPage.currentIndividual &&
         pageStack.wideMode && grid.implicitWidth < parent.width
 
-    implicitHeight: parent.parent.height - 2*Kirigami.Units.largeSpacing
+    implicitHeight: parent.parent.height - 2*photoSize
 
     GridLayout {
         id: grid
@@ -58,6 +61,7 @@ MouseArea {
             text: mainPage.currentIndividual ?
                 mainPage.currentIndividual.bestName : ""
 
+            color: textColor
             Layout.preferredWidth: implicitWidth
             elide: Text.ElideRight
             //show only when at least half of the string has been painted: use
@@ -69,9 +73,12 @@ MouseArea {
                 anchors.fill: parent
             }
         }
+
         Controls.Label {
             text: "Online"
             elide: Text.ElideRight
+            color: textColor
+
             opacity: width > implicitWidth/2
 //             color: Qt.Tint(
 //                 mainHeading.color,

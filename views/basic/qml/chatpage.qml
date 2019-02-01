@@ -64,11 +64,32 @@ Kirigami.Page {
         }
     }
 
-    JamiChatView.ChatPage {
-        id: chatView
+    RowLayout {
         anchors.fill: parent
-        currentIndividual: mainPage.currentIndividual
-        timelineModel: mainPage.timelineModel
+        spacing: 0
+
+        JamiChatView.ChatPage {
+            id: chatView
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.bottomMargin: 0
+            currentIndividual: mainPage.currentIndividual
+            timelineModel: mainPage.timelineModel
+        }
+
+        Loader {
+            id: sidebarLoader
+
+            // 750 is the 600pt maximum width of the chat + width of the sidebar
+            active: pageStack.wideMode
+                && (!Kirigami.Settings.isMobile)
+                && parent.width > 750
+            Layout.preferredWidth: active ? 250 : 0
+            Layout.fillHeight: true
+            sourceComponent: BasicView.SideBar {
+                anchors.fill: sidebarLoader
+            }
+        }
     }
 
     Loader {

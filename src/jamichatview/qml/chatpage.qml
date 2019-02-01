@@ -23,11 +23,24 @@ import QtGraphicalEffects 1.0
 import org.kde.ringkde.jamitimeline 1.0 as JamiTimeline
 import org.kde.ringkde.jamitimelinebase 1.0 as JamiTimelineBase
 import org.kde.ringkde.jamichatview 1.0 as JamiChatView
+import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 
 Rectangle {
     id: timelinePage
+    signal disableContactRequests()
     property bool showScrollbar: true
+    property bool _sendRequestOverride: true
+    property bool sendRequest: _sendRequestOverride && (
+        sendRequestLoader.active && sendRequestLoader.item && sendRequestLoader.item.sendRequests
+    )
+
+    onDisableContactRequests: {
+        if (timelinePage.setContactMethod())
+            currentContactMethod.confirmationEnabled = false
+
+        timelinePage._sendRequestOverride = send
+    }
 
     Kirigami.Theme.colorSet: Kirigami.Theme.View
 
@@ -94,10 +107,23 @@ Rectangle {
         clip: true
         spacing: 0
 
+        Loader {
+            id: sendRequestLoader
+            height: active && item ? item.implicitHeight : 0
+            Layout.fillWidth: true
+            active: chatBox.requireContactRequest
+            Layout.minimumHeight: active && item ? item.implicitHeight : 0
+            Layout.maximumHeight: active && item ? item.implicitHeight : 0
+            sourceComponent: JamiContactView.SendRequest {
+                width: sendRequestLoader.width
+            }
+        }
+
         RowLayout {
             id: chatScrollView
             Layout.fillHeight: true
             Layout.fillWidth: true
+            Layout.bottomMargin: 0
 
             property bool lock: false
 
@@ -204,12 +230,6 @@ Rectangle {
             textColor: Kirigami.Theme.textColor
             backgroundColor: Kirigami.Theme.backgroundColor
             emojiColor: Kirigami.Theme.highlightColor
-
-            onDisableContactRequests: {
-                if (timelinePage.setContactMethod()) {
-                    currentContactMethod.confirmationEnabled = false
-                }
-            }
         }
     }
 
