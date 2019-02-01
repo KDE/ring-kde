@@ -32,6 +32,10 @@ Item {
 
     Kirigami.Theme.colorSet: Kirigami.Theme.View
 
+    function forceFocus() {
+        search.forceActiveFocus(Qt.OtherFocusReason)
+    }
+
     function hide() {
         search.text = ""
         search.focus = false
@@ -46,6 +50,10 @@ Item {
 
     TextField {
         id: search
+
+        // Auto complete an auto completion == fail
+        inputMethodHints: Qt.ImhNoPredictiveText
+
         width: focus ? searchView.width - xPadding : parent.width
         x: focus ? -(searchView.width-searchBox.width ) + xPadding: 0
         y: (focus ? searchBox.height : 0) + Kirigami.Units.largeSpacing
@@ -149,7 +157,7 @@ Item {
 
             // Display an error message when the selected element doesn't exist
             if (!searchView.currentItem.isSelectable) {
-                displayNotFoundMessage()
+                searchView.displayNotFoundMessage()
                 return
             }
 

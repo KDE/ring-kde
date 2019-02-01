@@ -81,6 +81,15 @@ Kirigami.Page {
                 target: peerListPage
                 onSearch: headerSearchbox.searchFocus = true
             }
+
+            /*Connections {
+                target: peerListPage
+                onDisplayWelcomeChanged: {
+                    if (peerListPage.displayWelcome)
+                        headerSearchbox.searchFocus = true
+                }
+            }*/
+
         }
 
         JamiSearch.Overlay {

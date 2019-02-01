@@ -148,7 +148,10 @@ Kirigami.ApplicationWindow {
         running: true
         repeat: false
         onTriggered: {
-            wizardLoader.active = wizardPolicies.displayWizard
+            if (wizardPolicies.displayWizard)
+                wizardLoader.active = true
+            else if (list.displayWelcome)
+                list.search()
         }
     }
 

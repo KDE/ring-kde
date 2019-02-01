@@ -29,13 +29,12 @@ Item {
     visible: searchState.activeState || searchState.firstSearchState
 
     // Properties
-    property alias topLevel: seachOverlay.parent
     property var source: null
-    property bool active: searchBox && searchBox.searchFocus
-    property alias currentIndex: searchView.currentIndex
-    property alias currentItem: searchView.currentItem
+    property bool active: searchState.display
     property QtObject searchBox: null
     property bool displayWelcome: searchState.firstSearchState
+    property alias currentItem: searchView.currentItem // used be the search box
+
 
     // Signals
     signal contactMethodSelected(var cm)
@@ -55,8 +54,14 @@ Item {
     // the expression size was no longer maintainable.
     JamiSearch.State {
         id: searchState
-        searchEmpty: searchBox.empty
-        focussed: active
+        searchEmpty: (!searchBox) || searchBox.empty
+        focussed: searchBox && searchBox.searchFocus
+        onDisplayChanged: {
+            if (display) {
+                searchBox.searchFocus = true
+                searchBox.forceFocus()
+            }
+        }
     }
 
     // Track if the user asked to never see some information ever again
@@ -109,7 +114,7 @@ Item {
     // Header buttons
     Loader {
         height: active ? searchBox.height : 0
-        width: parent.width - (searchBox ? searchBox.labelWidth : 0)
+        width: parent.width
         anchors.right: parent.parent.right
         y: -searchBox.height
         clip: true
@@ -131,7 +136,7 @@ Item {
         JamiSearch.FirstRun {
             id: firstRun
             visible: active
-            active: searchState.firstSearchState
+            active: searchState.displayWelcome
             Layouts.Layout.fillWidth: true
             Layouts.Layout.preferredHeight: active ? parent.height* 0.4 : 0
             Layouts.Layout.maximumHeight: active ? parent.height* 0.4 : 0
@@ -236,16 +241,6 @@ Item {
                 name: ""
                 when: searchState.inactiveState
 
-                ParentChange {
-                    target: seachOverlay
-                    parent: topLevel
-                }
-
-                PropertyChanges {
-                    target:  seachOverlay
-                    anchors.fill: parent
-                }
-
                 PropertyChanges {
                     target:  burryOverlay
                     visible: false
@@ -256,40 +251,16 @@ Item {
                 name: "searchActive"
                 when: searchState.activeState
 
-//                 PropertyChanges {
-//                     target:  seachOverlay
-//                     anchors.fill: parent
-//                     width: undefined
-//                     height: undefined
-//                 }
-
                 PropertyChanges {
                     target:  burryOverlay
                     visible: true
                     opacity: 1
-                }
-
-                PropertyChanges {
-                    target:  effectSource
-                    sourceRect: Qt.rect(0, 0, parent.width, parent.height)
                 }
             },
             State {
                 name: "firstSearch"
                 extend: "searchActive"
                 when: searchState.firstSearchState
-
-//                 PropertyChanges {
-//                     target:  seachOverlay
-//                     anchors.fill: undefined
-//                     width: applicationWindow().contentItem.width
-//                     height: applicationWindow().contentItem.height
-//                 }
-//
-//                 PropertyChanges {
-//                     target: searchBox
-//                     searchFocus: true
-//                 }
             }
         ]
 

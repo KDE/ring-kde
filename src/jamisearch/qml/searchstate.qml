@@ -27,10 +27,12 @@ QtObject {
     property bool firstSearchState: false
     property bool activeState: false
     property string state: "inactive"
+    property bool display: _delayed && (firstSearchState || activeState)
 
     // Extra widgets
     property bool displaySearchHelp: false
     property bool displaySearchCategories: false
+    property bool displayWelcome: searchEmpty && firstSearchState
 
     // External status
     property bool searchEmpty: false
@@ -115,7 +117,7 @@ QtObject {
     property var _t: Timer {
         repeat: false
         running: true
-        interval: 0
+        interval: 100
         onTriggered: {
             _delayed = true
             _evalState()
