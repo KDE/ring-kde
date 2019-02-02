@@ -34,6 +34,7 @@ Item {
     property QtObject searchBox: null
     property bool displayWelcome: searchState.firstSearchState
     property alias currentItem: searchView.currentItem // used be the search box
+    property alias currentIndex: searchView.currentIndex // used by keyboard nav
 
 
     // Signals

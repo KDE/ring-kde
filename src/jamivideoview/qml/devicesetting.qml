@@ -48,9 +48,6 @@ GridLayout {
         id: channel
         selectionModel: RingSession.deviceModel.configurationProxy.channelSelectionModel
         Layout.fillWidth: true
-        Component.onCompleted: {
-            console.log("\n\n\nCOMPLETE!", RingSession.deviceModel.configurationProxy.channelSelectionModel)
-        }
     }
 
     Text {

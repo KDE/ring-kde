@@ -23,6 +23,8 @@ import org.kde.kirigami 2.6 as Kirigami
 import org.kde.ringkde.basicview 1.0 as BasicView
 import org.kde.ringkde.jamichatview 1.0 as JamiChatView
 import org.kde.ringkde.jamicallview 1.0 as JamiCallView
+import net.lvindustries.ringqtquick 1.0 as RingQtQuick
+import net.lvindustries.ringqtquick.media 1.0 as RingQtMedia
 
 Kirigami.Page {
     spacing: 0
@@ -33,7 +35,57 @@ Kirigami.Page {
     padding: 0
     Kirigami.Theme.colorSet: Kirigami.Theme.View
 
+    RingQtMedia.AvailabilityTracker {
+        id: availabilityTracker
+        individual: mainPage.currentIndividual
+    }
+
     JamiCallView.CallView {
         anchors.fill: parent
+        mode: "CONVERSATION"
+
+        function getDefaultCm() {
+            if (mainPage.currentContactMethod)
+                return mainPage.currentContactMethod
+
+            if (mainPage.currentIndividual)
+                return mainPage.currentIndividual.mainContactMethod
+
+            return null
+        }
+
+        onCallWithAudio: {
+            var cm = getDefaultCm()
+
+            if (cm && cm.hasInitCall) {
+                contactHeader.selectVideo()
+                return
+            }
+
+            RingSession.callModel.dialingCall(cm)
+                .performAction(RingQtQuick.Call.ACCEPT)
+        }
+        onCallWithVideo: {
+            var cm = getDefaultCm()
+
+            if (cm && cm.hasInitCall) {
+                contactHeader.selectVideo()
+                return
+            }
+
+            RingSession.callModel.dialingCall(cm)
+                .performAction(RingQtQuick.Call.ACCEPT)
+        }
+        onCallWithScreen: {
+            var cm = getDefaultCm()
+
+            if (cm && cm.hasInitCall) {
+                contactHeader.selectVideo()
+                return
+            }
+
+            RingSession.callModel.dialingCall(cm)
+                .performAction(RingQtQuick.Call.ACCEPT)
+        }
     }
 }
