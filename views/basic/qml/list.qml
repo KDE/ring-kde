@@ -27,13 +27,14 @@ import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 ListView {
     currentIndex: -1
     id: list
+    model: RingSession.peersTimelineModel
 
     delegate: Kirigami.SwipeListItem {
         id: listItem
         onClicked: {
-            list.currentIndex = index
-            mainPage.currentIndividual = object
-            pageStack.push(chat)
+            hideCall()
+            showChat()
+            mainPage.setIndividual(object)
         }
 
         activeBackgroundColor: Kirigami.Theme.highlightColor

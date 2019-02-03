@@ -27,19 +27,19 @@
 
 class QmlActionPrivate {
 public:
-    QString         m_Name       ;
-    QString         m_Description;
-    bool            m_Checkable  {false};
-    bool            m_Checked    {false};
-    bool            m_Enabled    {true};
-    ActionIconGroup m_Icon       ;
-    QIcon           m_QIcon      ;
-    QString         m_IconName   ;
-    QString         m_IconSource ;
-    QObject*        m_Shortcut   {nullptr};
-    QString         m_Text       ;
-    QString         m_Tooltip    ;
-    bool            m_Visible    {true};
+    QString  m_Name       ;
+    QString  m_Description;
+    bool     m_Checkable  {false};
+    bool     m_Checked    {false};
+    bool     m_Enabled    {true};
+    int      m_Icon       ;
+    QIcon    m_QIcon      ;
+    QString  m_IconName   ;
+    QString  m_IconSource ;
+    QObject* m_Shortcut   {nullptr};
+    QString  m_Text       ;
+    QString  m_Tooltip    ;
+    bool     m_Visible    {true};
 
 #ifdef HAS_QTWIDGET_SUPPORT
     QAction*        m_pAction    {nullptr};
@@ -127,7 +127,7 @@ bool QmlAction::isEnabled() const
     return d_ptr->m_Enabled;
 }
 
-ActionIconGroup QmlAction::icon() const
+int QmlAction::icon() const
 {
 // #ifdef HAS_QTWIDGET_SUPPORT
 //     if (d_ptr->m_pAction)
@@ -227,7 +227,7 @@ void QmlAction::setEnabled(bool enabled)
     Q_EMIT enabledChanged();
 }
 
-void QmlAction::setIcon(ActionIconGroup icon)
+void QmlAction::setIcon(int icon)
 {
     d_ptr->m_Icon = icon;
     Q_EMIT iconChanged();

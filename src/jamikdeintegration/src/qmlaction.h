@@ -24,8 +24,6 @@ class QIcon;
 
 class QmlActionPrivate;
 
-typedef int ActionIconGroup ; //FIXME
-
 class ActionCollection;
 
 #define HAS_QTWIDGET_SUPPORT 1 //FIXME remove
@@ -61,7 +59,7 @@ public:
     Q_PROPERTY(bool              checkable   READ isCheckable WRITE setCheckable  NOTIFY checkableChanged   )
     Q_PROPERTY(bool              checked     READ isChecked   WRITE setChecked    NOTIFY checkedChanged     )
     Q_PROPERTY(bool              enabled     READ isEnabled   WRITE setEnabled    NOTIFY enabledChanged     )
-    Q_PROPERTY(ActionIconGroup   icon        READ icon        WRITE setIcon       NOTIFY iconChanged        )
+    Q_PROPERTY(int               icon        READ icon        WRITE setIcon       NOTIFY iconChanged        )
     Q_PROPERTY(QString           iconName    READ iconName    WRITE setIconName   NOTIFY iconNameChanged    )
     Q_PROPERTY(QString           iconSource  READ iconSource  WRITE setIconSource NOTIFY iconSourceChanged  )
     Q_PROPERTY(QObject*          shortcut    READ shortcut    WRITE setShortcut   NOTIFY shortcutChanged    )
@@ -81,18 +79,18 @@ public:
 
     virtual ~QmlAction();
 
-    QString           name       () const;
-    QString           description() const;
-    bool              isCheckable() const;
-    bool              isChecked  () const;
-    bool              isEnabled  () const;
-    ActionIconGroup   icon       () const;
-    QString           iconName   () const;
-    QString           iconSource () const;
-    QObject*          shortcut   () const;
-    QString           text       () const;
-    QString           tooltip    () const;
-    bool              isVisible  () const;
+    QString  name       () const;
+    QString  description() const;
+    bool     isCheckable() const;
+    bool     isChecked  () const;
+    bool     isEnabled  () const;
+    int      icon       () const;
+    QString  iconName   () const;
+    QString  iconSource () const;
+    QObject* shortcut   () const;
+    QString  text       () const;
+    QString  tooltip    () const;
+    bool     isVisible  () const;
 
     QQmlListProperty<QmlAction> children();
 
@@ -101,7 +99,7 @@ public:
     void setCheckable (bool            checkable   );
     void setChecked   (bool            checked     );
     void setEnabled   (bool            enabled     );
-    void setIcon      (ActionIconGroup icon        );
+    void setIcon      (int             icon        );
     void setIconName  (const QString&  iconName    );
     void setIconSource(const QString&  iconSource  );
     void setShortcut  (QObject*        shortcut    );

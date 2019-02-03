@@ -28,18 +28,46 @@ QtObject {
         text: i18n("Write mail")
     }
 
-    readonly property Kirigami.Action callAction: Kirigami.Action {
-        iconName: "call-start"
-        text: i18n("Make call")
+    readonly property Kirigami.Action videoCallAction: Kirigami.Action {
+        iconName: "camera-web"
+        text: i18n("Video call")
+        enabled: availabilityTracker.canVideoCall
         onTriggered: {
-            pageStack.push(callpage)
+            showCallPage()
             callpage.visible = true
+            callpage.videoCall()
+        }
+    }
+
+    readonly property Kirigami.Action shareScreenAction: Kirigami.Action {
+        iconName: ":/sharedassets/outline/screen.svg"
+        text: i18n("Cast screen")
+        enabled: availabilityTracker.canVideoCall
+        onTriggered: {
+            showCallPage()
+            callpage.visible = true
+            callpage.screencast()
+        }
+    }
+
+    readonly property Kirigami.Action audioCallAction: Kirigami.Action {
+        iconName: "call-start"
+        text: i18n("Audio call")
+        enabled: availabilityTracker.canCall
+        onTriggered: {
+            showCallPage()
+            callpage.visible = true
+            callpage.audioCall()
         }
     }
 
     readonly property Kirigami.Action chatAction: Kirigami.Action {
         iconName: "kmouth-phrase-new"
-        text: i18n("Write SMS")
+        text: i18n("Chat")
+        onTriggered: {
+            hideCall()
+            showChat()
+        }
     }
 
     readonly property Kirigami.Action bookmarkAction: Kirigami.Action {

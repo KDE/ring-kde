@@ -22,6 +22,7 @@ import QtQuick 2.6
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.2
 import org.kde.kirigami 2.6 as Kirigami
+import net.lvindustries.ringqtquick.media 1.0 as RingQtMedia
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 import org.kde.ringkde.basicview 1.0 as BasicView
 import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
@@ -37,17 +38,69 @@ Kirigami.ApplicationWindow {
     // Localization is currently broken with the Material theme
     function i18n(t) {return t;}
 
+    function showCallPage() {
+        callpage.visible = true
+
+        if (pageStack.currentItem == callpage)
+            return
+
+        showChat()
+
+        for (var i = 0; i < pageStack.depth; i++) {
+            if (pageStack.get(i) == callpage) {
+                pageStack.currentIndex = i
+                return
+            }
+        }
+        pageStack.push(callpage)
+    }
+
+    function hideCall() {
+        for (var i = 0; i < pageStack.depth; i++) {
+            if (pageStack.get(i) == callpage) {
+                pageStack.pop(callpage)
+                pageStack.currentIndex = 0
+                return
+            }
+        }
+    }
+
+    function showChat() {
+        if (pageStack.currentItem == callpage)
+            return
+
+        for (var i = 0; i < pageStack.depth; i++) {
+            if (pageStack.get(i) == chat) {
+                pageStack.currentIndex = 0
+                return
+            }
+        }
+
+        pageStack.push(chat)
+        pageStack.currentIndex = 0
+    }
+
+    // Check the network status and other sources to ensure actions *can* work
+    RingQtMedia.AvailabilityTracker {
+        id: availabilityTracker
+        individual: mainPage.currentIndividual
+    }
+
+    // Allows to free resources when viewing other individuals
     RingQtQuick.SharedModelLocker {
         id: mainPage
 
-        onChanged: {
-            chat.boo.timelineModel = timelineModel
+        onCallChanged: {
+            if (!call)
+                hideCall()
+            else
+                showCallPage()
+        }
 
-            if (!currentIndividual)
-                return;
-
-            var idx = RingSession.peersTimelineModel.individualIndex(currentIndividual)
-            list.currentIndex = idx.row
+        onIndividualChanged: {
+            list.currentIndex = RingSession.peersTimelineModel.individualIndex(
+                currentIndividual
+            ).row
         }
     }
 
@@ -69,7 +122,6 @@ Kirigami.ApplicationWindow {
 
     BasicView.ListPage {
         id: list
-        model: RingSession.peersTimelineModel
     }
 
     BasicView.ChatPage {

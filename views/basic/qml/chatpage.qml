@@ -27,7 +27,6 @@ import org.kde.ringkde.jamichatview 1.0 as JamiChatView
 Kirigami.Page {
     property var model;
     property var currentIndividual: null
-    property var boo: chatView
     property alias showContactDetails: detail.active
     property alias editContact: form.active
     property bool _fits: false
@@ -112,9 +111,9 @@ Kirigami.Page {
     }
 
     actions {
-        left : actionCollection.mailAction
-        main : actionCollection.callAction
-        right: actionCollection.chatAction
+        left : actionCollection.videoCallAction
+        main : actionCollection.audioCallAction
+        right: actionCollection.shareScreenAction
     }
 
     contextualActions: [

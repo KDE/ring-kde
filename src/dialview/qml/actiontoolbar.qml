@@ -18,7 +18,7 @@
  **************************************************************************/
 import QtQuick 2.0
 
-import QtQuick.Layouts 1.0
+import QtQuick.Layouts 1.0 as Layouts
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 import net.lvindustries.ringqtquick.models 1.0 as RingQtModels
 import org.kde.playground.kquickitemviews 1.0 as KQuickItemViews
@@ -109,7 +109,7 @@ Rectangle {
                 border.width:  mouseArea.containsMouse ? 3 : 0
                 border.color: "#dd5555"
 
-                RowLayout {
+                Layouts.RowLayout {
                     anchors.margins: 15
                     anchors.fill: parent
                     KQuickItemViews.DecorationAdapter {
@@ -127,10 +127,10 @@ Rectangle {
                         color: selectLabelColor(action)
                         font.bold: true
 
-                        anchors.leftMargin: 10
-                        Layout.fillHeight: true
-                        Layout.fillWidth: true
-                        anchors.verticalCenter: parent.verticalCenter
+                        Layouts.Layout.leftMargin: 10
+                        Layouts.Layout.fillHeight: true
+                        Layouts.Layout.fillWidth: true
+                        Layouts.Layout.alignment: Qt.AlignVCenter
                     }
                 }
 

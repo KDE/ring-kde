@@ -35,57 +35,112 @@ Kirigami.Page {
     padding: 0
     Kirigami.Theme.colorSet: Kirigami.Theme.View
 
-    RingQtMedia.AvailabilityTracker {
-        id: availabilityTracker
-        individual: mainPage.currentIndividual
+    function getCall(cm) {
+        return mainPage.call && mainPage.call.lifeCycleState != Call.FINISHED ?
+            mainPage.call : RingSession.callModel.dialingCall(cm)
+    }
+
+    function getDefaultCm() {
+        if (mainPage.currentContactMethod)
+            return mainPage.currentContactMethod
+
+        if (mainPage.currentIndividual)
+            return mainPage.currentIndividual.mainContactMethod
+
+        return null
+    }
+
+    function audioCall() {
+        var cm = getDefaultCm()
+
+        if (cm.hasInitCall) {
+            mainPage.showCall(cm.firstActiveCall)
+            return
+        }
+
+        var call = getCall(cm)
+
+        call.performAction(RingQtQuick.Call.ACCEPT)
+    }
+
+    function videoCall() {
+        var cm = getDefaultCm()
+
+        if (cm.hasInitCall) {
+            mainPage.showCall(cm.firstActiveCall)
+            return
+        }
+
+        var call = getCall(cm)
+
+        call.performAction(RingQtQuick.Call.ACCEPT)
+    }
+
+    function screencast() {
+        var cm = getDefaultCm()
+
+        if (cm.hasInitCall) {
+            mainPage.showCall(cm.firstActiveCall)
+            return
+        }
+
+        var call = getCall(cm)
+
+        call.performAction(RingQtQuick.Call.ACCEPT)
     }
 
     JamiCallView.CallView {
+        id: callview
         anchors.fill: parent
         mode: "CONVERSATION"
+        call: mainPage.call
 
-        function getDefaultCm() {
-            if (mainPage.currentContactMethod)
-                return mainPage.currentContactMethod
-
-            if (mainPage.currentIndividual)
-                return mainPage.currentIndividual.mainContactMethod
-
-            return null
+        Connections {
+            target: mainPage
+            onCallChanged: {
+                callview.call = mainPage.call
+            }
         }
 
         onCallWithAudio: {
             var cm = getDefaultCm()
 
-            if (cm && cm.hasInitCall) {
-                contactHeader.selectVideo()
+            if (!cm)
                 return
-            }
 
-            RingSession.callModel.dialingCall(cm)
-                .performAction(RingQtQuick.Call.ACCEPT)
+            audioCall()
         }
         onCallWithVideo: {
             var cm = getDefaultCm()
 
-            if (cm && cm.hasInitCall) {
-                contactHeader.selectVideo()
+            if (!cm)
                 return
-            }
 
-            RingSession.callModel.dialingCall(cm)
-                .performAction(RingQtQuick.Call.ACCEPT)
+            videoCall()
         }
         onCallWithScreen: {
             var cm = getDefaultCm()
 
-            if (cm && cm.hasInitCall) {
-                contactHeader.selectVideo()
+            if (!cm)
                 return
-            }
 
-            RingSession.callModel.dialingCall(cm)
-                .performAction(RingQtQuick.Call.ACCEPT)
+            screencast()
         }
     }
+
+    actions {
+        main : actionCollection.chatAction
+    }
+
+
+    contextualActions: [
+        ActionCollection.holdAction        ,
+        ActionCollection.recordAction      ,
+        ActionCollection.muteCaptureAction ,
+        ActionCollection.mutePlaybackAction,
+        ActionCollection.hangupAction      ,
+        ActionCollection.transferAction    ,
+        ActionCollection.acceptAction      ,
+        ActionCollection.newCallAction
+    ]
 }

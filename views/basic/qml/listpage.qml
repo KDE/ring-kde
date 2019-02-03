@@ -29,7 +29,6 @@ import org.kde.ringkde.jamisearch 1.0 as JamiSearch
 Kirigami.Page {
     id: peerListPage
     property alias currentIndex: list.currentIndex;
-    property alias model: list.model
     property bool displayWelcome: false
 
     spacing: 0
@@ -83,15 +82,6 @@ Kirigami.Page {
                     headerSearchbox.forceFocus()
                 }
             }
-
-            /*Connections {
-                target: peerListPage
-                onDisplayWelcomeChanged: {
-                    if (peerListPage.displayWelcome)
-                        headerSearchbox.searchFocus = true
-                }
-            }*/
-
         }
 
         JamiSearch.Overlay {
@@ -109,7 +99,6 @@ Kirigami.Page {
 
             onContactMethodSelected: {
                 mainPage.currentContactMethod = cm
-                pageStack.push(chat)
                 var idx = RingSession.peersTimelineModel.individualIndex(cm.individual)
                 list.currentIndex = idx.row
             }
