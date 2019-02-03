@@ -225,10 +225,10 @@ Kirigami.ScrollablePage {
         width: 56
         height: 56
 
-        Image {
-            source: "image://icon/edit-save"
-            height: 32
-            width: 32
+        Kirigami.Icon {
+            source: "edit-save"
+            height: Kirigami.Units.iconSizes.smallMedium
+            width: Kirigami.Units.iconSizes.smallMedium
             anchors.centerIn: parent
         }
 

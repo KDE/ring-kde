@@ -18,15 +18,30 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 import QtQuick 2.6
+import QtQuick.Layouts 1.4
 import org.kde.kirigami 2.4 as Kirigami
 import org.kde.ringkde.basicview 1.0 as BasicView
+import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 
 Kirigami.OverlaySheet {
-    property alias model: form.model
-
     Kirigami.Theme.colorSet: Kirigami.Theme.View
 
-    BasicView.Form {
-        id: form
+    JamiContactView.ContactInfo {
+        id: contactInfo
+
+        Layout.preferredWidth: applicationWindow().width * (
+            Kirigami.Settings.isMobile ? 0.8 : 0.5
+        )
+
+        height: applicationWindow().height  * (
+            Kirigami.Settings.isMobile ? 0.8 : 0.5
+        )
+
+        individual: mainPage.currentIndividual
+        showStat: false
+        showImage: true
+        showSave: true
+        forcedState: "profile"
+        defaultName: ""
     }
 }

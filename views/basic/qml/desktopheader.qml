@@ -46,11 +46,10 @@ MouseArea {
             Layout.rowSpan: 2
 
             individual: mainPage.currentIndividual
-            defaultColor: index == currentIndex ?
-                Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor
+            defaultColor: Kirigami.Theme.highlightedTextColor
             drawEmptyOutline: false
             MouseArea {
-                onClicked: chatPage.editContact = true
+                onClicked: chatPage.showContactDetails = true
                 anchors.fill: parent
             }
         }
@@ -69,7 +68,7 @@ MouseArea {
             opacity: width > implicitWidth/2
             Layout.columnSpan: 1
             MouseArea {
-                onClicked: chatPage.editContact = true
+                onClicked: chatPage.showContactDetails = true
                 anchors.fill: parent
             }
         }
@@ -86,7 +85,7 @@ MouseArea {
 //             )
             Layout.columnSpan: 2
             MouseArea {
-                onClicked: chatPage.editContact = true
+                onClicked: chatPage.showContactDetails = true
                 anchors.fill: parent
             }
         }

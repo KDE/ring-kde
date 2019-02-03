@@ -103,8 +103,7 @@ Kirigami.Page {
     Loader {
         active: false
         id: form
-        sourceComponent: BasicView.DetailPage {
-            model: chatPage.model
+        sourceComponent: BasicView.FormPage {
             onSheetOpenChanged: form.active = sheetOpen
             Component.onCompleted: {sheetOpen = true}
         }
