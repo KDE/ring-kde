@@ -71,13 +71,13 @@ Kirigami.ApplicationWindow {
 
         for (var i = 0; i < pageStack.depth; i++) {
             if (pageStack.get(i) == chat) {
-                pageStack.currentIndex = 0
+                pageStack.currentIndex = 1
                 return
             }
         }
 
         pageStack.push(chat)
-        pageStack.currentIndex = 0
+        pageStack.currentIndex = 1
     }
 
     // Check the network status and other sources to ensure actions *can* work
