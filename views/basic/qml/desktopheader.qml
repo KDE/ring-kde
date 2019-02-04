@@ -24,7 +24,7 @@ import org.kde.kirigami 2.6 as Kirigami
 import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 
 MouseArea {
-    property var textColor: undefined
+    property var textColor: Kirigami.Theme.highlightedTextColor
     property real photoSize: Kirigami.Units.largeSpacing
 
     // The `currentIndividual` is to force it to be reloaded

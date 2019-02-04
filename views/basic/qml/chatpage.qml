@@ -115,7 +115,8 @@ Kirigami.Page {
         right: actionCollection.shareScreenAction
     }
 
-    contextualActions: [
+    // Not worth it on mobile
+    contextualActions: Kirigami.Settings.isMobile ? [] : [
         actionCollection.bookmarkAction,
         actionCollection.shareAction,
         actionCollection.editAction,

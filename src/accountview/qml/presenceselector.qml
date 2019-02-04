@@ -27,8 +27,14 @@ Dialog {
     parent: applicationWindow().contentItem
     x: applicationWindow().contentItem.width / 2 - width/2
     y: applicationWindow().contentItem.height / 2 - height/2
-    width: applicationWindow().contentItem.width * 0.66
-    height: applicationWindow().contentItem.height * 0.66
+
+    width: applicationWindow().contentItem.width * (
+        Kirigami.Settings.isMobile ? 0.9 : 0.66
+    )
+
+    height: applicationWindow().contentItem.height * (
+        Kirigami.Settings.isMobile ? 0.9 : 0.75
+    )
 
     property QtObject individual: null
 

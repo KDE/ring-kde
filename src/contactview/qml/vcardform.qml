@@ -109,6 +109,7 @@ GridLayout {
     TextField {
         id: formattedName
         readOnly: hasTarget && !mainInfo.editing
+        Layout.fillWidth: true
         onTextChanged: {
             mainInfo.changed()
         }
@@ -121,6 +122,7 @@ GridLayout {
     TextField {
         id: firstName
         readOnly: hasTarget && !mainInfo.editing
+        Layout.fillWidth: true
         onTextChanged: {
             mainInfo.changed()
         }
@@ -133,6 +135,7 @@ GridLayout {
     TextField {
         id: lastName
         readOnly: hasTarget && !mainInfo.editing
+        Layout.fillWidth: true
         onTextChanged: {
             mainInfo.changed()
         }
@@ -145,6 +148,7 @@ GridLayout {
     TextField {
         id: email
         readOnly: hasTarget && !mainInfo.editing
+        Layout.fillWidth: true
         onTextChanged: {
             mainInfo.changed()
         }

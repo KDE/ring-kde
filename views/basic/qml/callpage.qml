@@ -132,8 +132,8 @@ Kirigami.Page {
         main : actionCollection.chatAction
     }
 
-
-    contextualActions: [
+    // Not worth it on mobile
+    contextualActions: Kirigami.Settings.isMobile ? [] : [
         ActionCollection.holdAction        ,
         ActionCollection.recordAction      ,
         ActionCollection.muteCaptureAction ,
