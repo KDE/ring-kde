@@ -61,6 +61,29 @@ Q_IMPORT_PLUGIN(JamiAudioPlayer)
 Q_IMPORT_PLUGIN(GenericUtils)
 Q_IMPORT_PLUGIN(RingQtQuick)
 
+// Qt plusing
+#ifdef false
+ Q_IMPORT_PLUGIN(QXcbIntegrationPlugin)
+ Q_IMPORT_PLUGIN(QtQuick2Plugin)
+ Q_IMPORT_PLUGIN(QtQuickControls1Plugin)
+ Q_IMPORT_PLUGIN(QtQuickControls2Plugin)
+ Q_IMPORT_PLUGIN(QtQuick2WindowPlugin)
+ Q_IMPORT_PLUGIN(QEvdevKeyboardPlugin)
+ Q_IMPORT_PLUGIN(QEvdevMousePlugin)
+ Q_IMPORT_PLUGIN(QtQuickLayoutsPlugin)
+ Q_IMPORT_PLUGIN(QtQuickTemplates2Plugin)
+ Q_IMPORT_PLUGIN(QJpegPlugin)
+ //Q_IMPORT_PLUGIN(QJpegPlugin)
+ Q_IMPORT_PLUGIN(QSvgPlugin)
+ Q_IMPORT_PLUGIN(QSvgIconPlugin)
+ Q_IMPORT_PLUGIN(QXcbGlxIntegrationPlugin)
+ Q_IMPORT_PLUGIN(QtGraphicalEffectsPlugin)
+ Q_IMPORT_PLUGIN(QtGraphicalEffectsPrivatePlugin)
+ Q_IMPORT_PLUGIN(QtQmlModelsPlugin)
+ Q_IMPORT_PLUGIN(KirigamiPlugin)
+ Q_IMPORT_PLUGIN(QQc2DesktopStylePlugin)
+#endif
+
 #ifdef HAS_ICON_PACK
 Q_IMPORT_PLUGIN(BreezeIconPack)
 #endif

@@ -63,6 +63,10 @@ find_package(Qt5 CONFIG REQUIRED
     Core Gui Quick Widgets QuickControls2
 )
 
+if(X11_FOUND)
+    find_package(Qt5 QUIET OPTIONAL_COMPONENTS Qt5::X11Extras)
+endif()
+
 set(GENERIC_LIB_VERSION "1.0.0")
 
 # Pack the icons shared by various components
@@ -170,6 +174,13 @@ set(jamikdeintegration_EXPORT_HDRS
     src/windowevent.h
     src/plugin.h
 )
+
+if(X11_FOUND)
+    target_link_libraries( jamiaccountview
+        Qt5::X11Extras
+        ${X11_X11_LIB}
+    )
+endif()
 
 # Configure the target config
 set(jamikdeintegration_CONFIG_PATH "${CMAKE_CURRENT_BINARY_DIR}/JamiKDEIntegrationConfig.cmake")
