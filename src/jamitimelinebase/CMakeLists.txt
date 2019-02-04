@@ -73,8 +73,8 @@ target_link_libraries( jamitimelinebase
     Qt5::QuickControls2
 )
 
-if(X11_FOUND)
-    target_link_libraries( jamiaccountview
+if(LIB_X11_FOUND)
+    target_link_libraries( jamitimelinebase
         Qt5::X11Extras
         ${X11_X11_LIB}
     )

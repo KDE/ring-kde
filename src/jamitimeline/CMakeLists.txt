@@ -43,7 +43,7 @@ find_package(Qt5 CONFIG REQUIRED
     Core Gui Quick QuickControls2
 )
 
-if(X11_FOUND)
+if(LIB_X11_FOUND)
     find_package(Qt5 QUIET OPTIONAL_COMPONENTS Qt5::X11Extras)
 endif()
 
@@ -77,8 +77,8 @@ target_link_libraries( jamitimelineview
     KF5::I18n
 )
 
-if(X11_FOUND)
-    target_link_libraries( jamiaccountview
+if(LIB_X11_FOUND)
+    target_link_libraries( jamitimelineview
         Qt5::X11Extras
         ${X11_X11_LIB}
     )

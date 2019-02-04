@@ -63,7 +63,7 @@ find_package(Qt5 CONFIG REQUIRED
     Core Gui Quick Widgets QuickControls2
 )
 
-if(X11_FOUND)
+if(LIB_X11_FOUND)
     find_package(Qt5 QUIET OPTIONAL_COMPONENTS Qt5::X11Extras)
 endif()
 
@@ -175,8 +175,8 @@ set(jamikdeintegration_EXPORT_HDRS
     src/plugin.h
 )
 
-if(X11_FOUND)
-    target_link_libraries( jamiaccountview
+if(LIB_X11_FOUND)
+    target_link_libraries( jamikdeintegration
         Qt5::X11Extras
         ${X11_X11_LIB}
     )
