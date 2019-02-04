@@ -17,7 +17,7 @@
  **************************************************************************/
 #include "tipmodel.h"
 
-#include "../jamikdeintegration/kcfg_settings.h"
+#include <../jamikdeintegration/kcfg_settings.h>
 
 bool TipModel::showSearchTip() const
 {
