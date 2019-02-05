@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='utf-8'?>
-<manifest package="org.qtproject.example" xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="1.0" android:versionCode="1" android:installLocation="auto">
+<manifest package="org.kde.ringkde" xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="1.0" android:versionCode="1" android:installLocation="auto">
     <application android:hardwareAccelerated="true" android:name="org.qtproject.qt5.android.bindings.QtApplication" android:label="ring-kde">
         <activity android:configChanges="orientation|uiMode|screenLayout|screenSize|smallestScreenSize|layoutDirection|locale|fontScale|keyboard|keyboardHidden|navigation|mcc|mnc|density"
-                  android:name="org.qtproject.qt5.android.bindings.QtActivity"
-                  android:label="ring-kde"
+                  android:name="org.kde.ringkde.Ringkde"
+                  android:label="Ring-KDE"
                   android:screenOrientation="unspecified"
                   android:launchMode="singleTop">
             <intent-filter>
