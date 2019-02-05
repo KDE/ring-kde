@@ -413,6 +413,9 @@ Item {
                 case 0: //SUCCESS
                     registrationStatus.text = i18n("Success")
                     busy = false
+                    account.performAction(RingQtQuick.Account.RELOAD)
+                    account.performAction(RingQtQuick.Account.SAVE)
+                    RingSession.accountModel.save()
                     createRing.registrationCompleted(account)
                     break
                 case 1: //WRONG_PASSWORD
@@ -452,6 +455,9 @@ Item {
                     registrationTimeout.stop()
                     registrationIndicator.visible = false
                     busy = false
+                    account.performAction(RingQtQuick.Account.RELOAD)
+                    account.performAction(RingQtQuick.Account.SAVE)
+                    RingSession.accountModel.save()
                     createRing.registrationCompleted(account)
                 }
                 account = null
