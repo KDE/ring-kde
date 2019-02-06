@@ -27,9 +27,7 @@ Item {
     property alias registerUserName: registerUserName
     property alias account: ringAccountBuilder.account
     property alias nextAvailable: ringAccountBuilder.canCreate
-
-    property bool busy: false
-    property var lookupState: 2
+    property alias busy: ringAccountBuilder.creating
 
     signal registrationCompleted(QtObject account)
 
@@ -56,7 +54,6 @@ Item {
         usePassword       : usePassword.checked
         onFinished: {
             registrationCompleted(account)
-        console.log("\n\nCOMMIT")
         }
     }
 
