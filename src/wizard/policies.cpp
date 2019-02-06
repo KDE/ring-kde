@@ -53,7 +53,9 @@ WizardPolicies::~WizardPolicies()
 
 bool WizardPolicies::displayWizard()
 {
-    return true;
+    if (qgetenv("FORCE_WIZARD") == "1")
+        return true;
+
     static bool dw  = ConfigurationSkeleton::enableWizard()
         || ConfigurationSkeleton::showSplash();
 
