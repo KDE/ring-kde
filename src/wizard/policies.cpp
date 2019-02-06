@@ -53,6 +53,7 @@ WizardPolicies::~WizardPolicies()
 
 bool WizardPolicies::displayWizard()
 {
+    return true;
     static bool dw  = ConfigurationSkeleton::enableWizard()
         || ConfigurationSkeleton::showSplash();
 

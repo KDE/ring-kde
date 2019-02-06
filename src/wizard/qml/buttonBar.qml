@@ -65,7 +65,8 @@ Item {
                 id: missingFields
                 text: i18n("Please fill the required fields")
                 verticalAlignment: Text.AlignVCenter
-                color: "red"
+                color: "#ff1111"
+                font.bold: true
                 visible: true
                 Layout.fillHeight: true
             }

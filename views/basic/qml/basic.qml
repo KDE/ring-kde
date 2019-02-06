@@ -31,8 +31,8 @@ import org.kde.ringkde.jamikdeintegration 1.0 as JamiKDEIntegration
 import QtQuick.Controls.Material 2.3
 
 Kirigami.ApplicationWindow {
-    width: 320
-    height: 600
+    width: 1024
+    height: 768
     id: root
 
     // Localization is currently broken with the Material theme

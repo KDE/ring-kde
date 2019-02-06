@@ -123,7 +123,7 @@ Rectangle {
         onClicked: {
             switch (stateGroup.state) {
                 case 'createRegRing':
-                    frontPage.createRing.createAccount()
+                    frontPage.createRing.commitAccount()
                     break;
                 case 'importRing':
                     frontPage.importRing.createAccount()
@@ -158,7 +158,7 @@ Rectangle {
         onAccountChanged: {
             var acc = frontPage.createRing.account
 
-            if ((!acc) || cc.registrationType != RingQtQuick.Account.READY)
+            if ((!acc) || acc.registrationType != RingQtQuick.Account.READY)
                 return
 
             if (!acc.profile)

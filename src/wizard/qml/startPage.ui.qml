@@ -99,9 +99,10 @@ Controls.Page {
 
     JamiWizard.CreateRing {
         id: createRing
-        x: frontPage.width/2 - width/2 - 20
-        y: frontPage.height/2 - height/2
-        anchors.centerIn: frontPage
+        anchors.top: parent.top
+        anchors.topMargin: 120 //the logo height is 100
+        anchors.bottomMargin: footer.height + 10
+        anchors.horizontalCenter: parent.horizontalCenter
         opacity: 0
         visible: false
     }
