@@ -78,16 +78,56 @@ Item {
 
                 Text {
                     id: label
-                    anchors.fill: parent
+                    width: parent.width
                     anchors.leftMargin: 30
                     anchors.rightMargin: 30
                     anchors.topMargin: 5
                     anchors.bottomMargin: 5
+                    anchors.verticalCenter: bubble.verticalCenter
+                    anchors.left: direction == 1 ? undefined : bubble.left
+                    anchors.right: direction == 1 ? bubble.right : undefined
                     horizontalAlignment: direction == 1 ? Text.AlignRight : Text.AlignLeft
                     font: bubble.font
                     text: display != undefined ? display : "N/A"
                     color: foreground
                     wrapMode: Text.WordWrap
+
+                    transitions: Transition {
+                        AnchorAnimation {duration: 200;  easing.type: Easing.OutQuad }
+                    }
+
+                    states: [
+                        State {
+                            name: ""
+                            when: !chatView.displayExtraTime
+                            AnchorChanges {
+                                target: label
+                                anchors.verticalCenter: bubble.verticalCenter
+                                anchors.top: undefined
+                            }
+
+                            PropertyChanges {
+                                target: label
+                                anchors.topMargin: 5
+                                anchors.bottomMargin: 5
+                            }
+                        },
+                        State {
+                            name: "showtime"
+                            when: chatView.displayExtraTime
+                            AnchorChanges {
+                                target: label
+                                anchors.verticalCenter: undefined
+                                anchors.top: bubble.top
+                            }
+
+                            PropertyChanges {
+                                target: label
+                                anchors.topMargin: 0
+                                anchors.bottomMargin: 0
+                            }
+                        }
+                    ]
                 }
 
                 Text {
@@ -100,7 +140,11 @@ Item {
                     anchors.rightMargin: direction == 0 ? 4 : undefined
                     text: formattedDate != undefined ? formattedDate : "N/A"
                     color: Kirigami.Theme.highlightedTextColor
-                    opacity: 0.5
+                    opacity: chatView.displayExtraTime ? 0.75 : 0
+
+                    Behavior on opacity {
+                        NumberAnimation {duration: 200}
+                    }
                 }
 
                 MouseArea {

@@ -86,7 +86,7 @@ Rectangle {
     // Add a blurry background
     ShaderEffectSource {
         id: effectSource
-        visible: false
+        visible: chatView.displayExtraTime
 
         sourceItem: chatView
         anchors.right: timelinePage.right
@@ -95,10 +95,10 @@ Rectangle {
         height: chatView.height
 
         sourceRect: Qt.rect(
-            burryOverlay.x,
-            burryOverlay.y,
-            burryOverlay.width,
-            burryOverlay.height
+            blurryOverlay.x,
+            blurryOverlay.y,
+            blurryOverlay.width,
+            blurryOverlay.height
         )
     }
 
@@ -135,7 +135,6 @@ Rectangle {
                     id: chatView
                     width: Math.min(600, timelinePage.width - 50)
                     height: parent.height
-//                     Layout.alignment: Qt.AlignHCenter
                     anchors.horizontalCenter: parent.horizontalCenter
                     model: null//FIXME timelinePage.timelineModel
 
@@ -157,16 +156,17 @@ Rectangle {
                 // It needs to be here due to z-index conflicts between
                 // chatScrollView and timelinePage
                 Item {
-                    id: burryOverlay
+                    id: blurryOverlay
                     z: 2
-                    visible: false
-                    opacity: 0
+                    opacity: chatView.displayExtraTime && scrollbar.hasContent ? 1 : 0
                     anchors.right: parent.right
                     anchors.top: parent.top
                     anchors.rightMargin: - 15
-                    width: scrollbar.fullWidth + 15
-                    height: chatView.height
+                    height: chatScrollView.height
                     clip: true
+                    width: chatView.displayExtraTime ?
+                        scrollbar.fullWidth + 15 : 0
+                    visible: opacity > 0
 
                     Behavior on opacity {
                         NumberAnimation {duration: 300; easing.type: Easing.InQuad}
@@ -200,16 +200,6 @@ Rectangle {
                 model: timelinePage.timelineModel
                 view: chatView
                 forceOverlay: chatView.displayExtraTime
-
-                onWidthChanged: {
-                    burryOverlay.width = scrollbar.fullWidth + 15
-                }
-
-                onOverlayVisibleChanged: {
-                    burryOverlay.visible = overlayVisible
-                    burryOverlay.opacity = overlayVisible ? 1 : 0
-                    effectSource.visible = overlayVisible
-                }
             }
         }
 

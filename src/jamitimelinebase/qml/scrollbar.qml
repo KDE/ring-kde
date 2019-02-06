@@ -29,7 +29,9 @@ KQuickItemViews.FlickableScrollBar {
     property alias  model: timelineOverlay.tlModel
     property bool   bottomUp: false
     property bool   display: true
+    property bool   hasContent: tmlList.count > 1
     property alias  hideTimeout: hideTimer.interval
+    property color  textColor: Kirigami.Theme.textColor
 
     property bool overlayVisible: false
     property bool forceOverlay: false
@@ -124,7 +126,7 @@ KQuickItemViews.FlickableScrollBar {
                     width: 16
                     height: 16
                     radius: 999
-                    color: inactivePalette.highlight
+                    color: Kirigami.Theme.backgroundColor
                     border.width: 1
                     border.color: Kirigami.Theme.textColor
 
@@ -149,7 +151,7 @@ KQuickItemViews.FlickableScrollBar {
                     id: label
                     Layouts.Layout.fillWidth: true
                     text: display
-                    color: Kirigami.Theme.textColor
+                    color: scrollbar.textColor
                     font.pointSize: Kirigami.Theme.defaultFont.pointSize*1.2
                     Behavior on font.pointSize {
                         NumberAnimation {duration: 150}
@@ -206,6 +208,7 @@ KQuickItemViews.FlickableScrollBar {
                 height: parent.height
                 width: 16
                 z: -1
+                color: scrollbar.textColor
             }
         }
     }
@@ -231,13 +234,17 @@ KQuickItemViews.FlickableScrollBar {
 
             property var tlModel: null
 
-            active: false
+            active: active || opacity > 0
             sourceComponent: panelComponent
 
             width:   150
             x:      -130
-            visible: false
-            opacity: 0
+            visible: opacity > 0
+            opacity: stateGroup.state == "overlay" && hasContent ? 1 : 0
+
+            Behavior on opacity {
+                NumberAnimation {duration: 200}
+            }
         }
     }
 
@@ -251,8 +258,6 @@ KQuickItemViews.FlickableScrollBar {
                 PropertyChanges {
                     target:  timelineOverlay
                     height: scrollbar.height
-                    visible: true
-                    opacity: 1
                     x: -150
                 }
                 PropertyChanges {
@@ -265,11 +270,7 @@ KQuickItemViews.FlickableScrollBar {
         transitions: [
             Transition {
                 to: "overlay"
-                NumberAnimation {
-                    properties: "opacity"
-                    target: timelineOverlay
-                    duration: 200
-                }
+
                 NumberAnimation {
                     properties: "x"
                     target: timelineOverlay
@@ -282,11 +283,5 @@ KQuickItemViews.FlickableScrollBar {
                 }
             }
         ]
-
-        // Load the timeline only once
-        onStateChanged: {
-            if (state == "overlay")
-                timelineOverlay.active = true
-        }
     }
 }
