@@ -25,12 +25,19 @@ import org.kde.ringkde.jamitimelinebase 1.0 as JamiTimelineBase
 import org.kde.ringkde.jamichatview 1.0 as JamiChatView
 import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
+import org.kde.playground.kquickitemviews 1.0 as KQuickItemViews
 
 Rectangle {
     id: timelinePage
     signal disableContactRequests()
     property bool showScrollbar: true
     property bool _sendRequestOverride: true
+    property var currentContactMethod: null
+    property var currentIndividual: null
+    property var timelineModel: null
+
+    property bool canSendTexts: currentIndividual ? currentIndividual.canSendTexts : false
+
     property bool sendRequest: _sendRequestOverride && (
         sendRequestLoader.active && sendRequestLoader.item && sendRequestLoader.item.sendRequests
     )
@@ -72,11 +79,24 @@ Rectangle {
 
     color: Kirigami.Theme.backgroundColor
 
-    property var currentContactMethod: null
-    property var currentIndividual: null
-    property var timelineModel: null
+    // Scroll to the search, unread messages, bookmark, etc
+    RingQtQuick.TimelineIterator {
+        id: iterator
+        currentIndividual: timelinePage.currentIndividual
+        firstVisibleIndex: chatView.topLeft
+        lastVisibleIndex: chatView.bottomLeft
+        onContentAdded: {
+            lastVisibleIndex = chatView.indexAt(Qt.BottomEdge)
+            timelinePage.showNewContent()
+        }
 
-    property bool canSendTexts: currentIndividual ? currentIndividual.canSendTexts : false
+        onProposeIndex: {
+            if (poposedIndex == newestIndex)
+                timelinePage.showNewContent()
+            else
+                chatView.contentY = chatView.itemRect(newestIndex).y
+        }
+    }
 
     onTimelineModelChanged: {
         if (!fixmeTimer.running)
@@ -130,6 +150,17 @@ Rectangle {
             Item {
                 Layout.fillHeight: true
                 Layout.fillWidth: true
+
+                // Buttons to navigate to relevant content
+                JamiChatView.Navigation {
+                    timelineIterator: iterator
+                    anchors.rightMargin: blurryOverlay.width
+                    anchors.right: parent.right
+                    anchors.bottom: parent.bottom
+                    Behavior on anchors.rightMargin {
+                        NumberAnimation {duration: 100; easing.type: Easing.InQuad}
+                    }
+                }
 
                 JamiChatView.ChatView {
                     id: chatView
