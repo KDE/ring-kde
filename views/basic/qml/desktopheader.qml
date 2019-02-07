@@ -93,6 +93,7 @@ MouseArea {
         Kirigami.Icon {
             id: edit
             opacity: Kirigami.Settings.isMobile
+            color: textColor
             source: "document-edit"
             Layout.preferredWidth: Kirigami.Units.iconSizes.smallMedium
             Layout.preferredHeight: Kirigami.Units.iconSizes.smallMedium
@@ -112,6 +113,7 @@ MouseArea {
         Kirigami.Icon {
             id: favorite
             source: "favorite"
+            color: textColor
             opacity: Kirigami.Settings.isMobile
             Layout.rowSpan: 2
             Layout.preferredWidth: Kirigami.Units.iconSizes.smallMedium
