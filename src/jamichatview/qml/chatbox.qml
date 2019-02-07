@@ -174,6 +174,7 @@ Rectangle {
                 Layout.fillHeight: true
                 Layout.fillWidth:  true
                 textFormat: TextEdit.RichText
+                wrapMode: TextEdit.WordWrap
 
                 font.family: "Noto Color Emoji"
                 font.pixelSize : 18
