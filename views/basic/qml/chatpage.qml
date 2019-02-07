@@ -112,7 +112,8 @@ Kirigami.Page {
     actions {
         left : actionCollection.videoCallAction
         main : actionCollection.audioCallAction
-        right: actionCollection.shareScreenAction
+        right: Kirigami.Settings.isMobile ?
+            undefined : actionCollection.shareScreenAction
     }
 
     // Not worth it on mobile

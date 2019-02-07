@@ -71,13 +71,13 @@ Kirigami.ApplicationWindow {
 
         for (var i = 0; i < pageStack.depth; i++) {
             if (pageStack.get(i) == chat) {
-                pageStack.currentIndex = 1
+                pageStack.currentIndex = Kirigami.Settings.isMobile ? 1 : 0
                 return
             }
         }
 
         pageStack.push(chat)
-        pageStack.currentIndex = 1
+        pageStack.currentIndex = Kirigami.Settings.isMobile ? 1 : 0
     }
 
     // Check the network status and other sources to ensure actions *can* work
