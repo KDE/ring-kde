@@ -31,6 +31,10 @@ Item {
     property var cm: contactMethod
     signal clicked()
 
+    Behavior on background {
+        ColorAnimation {duration: 300; easing.type: Easing.InQuad}
+    }
+
     height: bubble.height + 10
 
     function getFactor() {
