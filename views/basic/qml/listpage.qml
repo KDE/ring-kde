@@ -93,6 +93,15 @@ Kirigami.Page {
             x: -(peerListPage.width - header.width)
             y: -Kirigami.Units.largeSpacing
 
+            function forceGeometry() {
+                if (!active)
+                    return
+
+                width = peerListPage.width
+                height = peerListPage.height + header.height
+                x = -(peerListPage.width - header.width)
+            }
+
             onDisplayWelcomeChanged: {
                 peerListPage.displayWelcome = displayWelcome
             }
@@ -104,20 +113,14 @@ Kirigami.Page {
             }
 
             //HACK obey god dammit
-            onHeightChanged: {
-                height = peerListPage.height + header.height
-                x = -(peerListPage.width - header.width)
-                width = peerListPage.width
-            }
+            onHeightChanged: _searchView.forceGeometry()
+            onActiveChanged: _searchView.forceGeometry()
 
-            //HACK obey god dammit
-            onActiveChanged: {
-                if (!active)
-                    return
-
-                width = peerListPage.width
-                height = peerListPage.height + header.height
-                x = -(peerListPage.width - header.width)
+            //HACK fix breakage caused by the other hack
+            Connections {
+                target: peerListPage
+                onWidthChanged: _searchView.forceGeometry()
+                onHeightChanged: _searchView.forceGeometry()
             }
 
             z: 9998
