@@ -90,8 +90,8 @@ Rectangle {
 
     // Close the wizard and let the user configure things manually
     Connections {
-        target: footer.skipButton
-        onClicked: {
+        target: footer
+        onSkip: {
             wizardFinished()
         }
     }

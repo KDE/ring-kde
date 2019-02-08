@@ -24,8 +24,10 @@ Item {
 
     property alias backButton: backButton
     property alias nextButton: nextButton
-    property alias skipButton: skipButton
+    property bool  displaySkip: false
     property bool  displayBusy: false
+
+    signal skip()
 
     Rectangle {
         id: rectangle
@@ -82,6 +84,10 @@ Item {
                 id: skipButton
                 Layout.fillHeight: true
                 text: i18n("Skip")
+                visible: displaySkip
+                onClicked: {
+                    skip()
+                }
             }
         }
     }
