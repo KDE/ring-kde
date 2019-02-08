@@ -68,10 +68,12 @@ Item {
             JamiChatView.Bubble {
                 id: bubble
                 anchors.margins: 5
+                sideMargins: 30
                 anchors.right: direction == 1 ? parent.right : undefined
                 anchors.left : direction == 1 ? undefined : parent.left
                 font.pointSize: Kirigami.Theme.defaultFont.pointSize*1.2
                 font.family: "Noto Color Emoji"
+                dateFont: dateLabel.font
                 z: 1
 
                 alignment: direction == 1 ? Text.AlignRight : Text.AlignLeft
@@ -83,8 +85,8 @@ Item {
                 Text {
                     id: label
                     width: parent.width
-                    anchors.leftMargin: 30
-                    anchors.rightMargin: 30
+                    anchors.leftMargin: bubble.sideMargins
+                    anchors.rightMargin: bubble.sideMargins
                     anchors.topMargin: 5
                     anchors.bottomMargin: 5
                     anchors.verticalCenter: bubble.verticalCenter

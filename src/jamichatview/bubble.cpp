@@ -32,8 +32,11 @@ public:
     QColor m_Color;
     QString m_Text;
     QFont m_Font {QStringLiteral("Noto Color Emoji")};
+    QFont m_DateFont;
     QFontMetricsF m_FontMetrics{m_Font};
+    QFontMetricsF m_DateFontMetrics{m_DateFont};
     qreal m_MaximumWidth {-1};
+    qreal m_SideMargins {30};
 };
 
 Bubble::Bubble(QQuickItem* parent) : QQuickPaintedItem(parent), d_ptr(new BubblePrivate)
@@ -133,6 +136,18 @@ void Bubble::setMaximumWidth(qreal value)
     update();
 }
 
+qreal Bubble::sideMargins() const
+{
+    return d_ptr->m_SideMargins;
+}
+
+void Bubble::setSideMargins(qreal m)
+{
+    d_ptr->m_SideMargins = m;
+    update();
+    emit changed();
+}
+
 QString Bubble::text() const
 {
     return d_ptr->m_Text;
@@ -159,24 +174,28 @@ void Bubble::setFont(const QFont& f)
     update();
 }
 
+QFont Bubble::dateFont() const
+{
+    return d_ptr->m_DateFont;
+}
+
+static qreal ratio = 0;
+
 void Bubble::slotWindowChanged(QQuickWindow *w)
 {
     w = window();
 
-    static qreal ratio   = 0;
     static qreal arrow   = 20;
-    static qreal margins = 30;
     static qreal dateW   = 0;
 
     // There is a race condition, the item are created before the window
     if (!ratio) {
         ratio  = w ? w->effectiveDevicePixelRatio():0;
 
-        //TODO make point size configurable
-        QFont f = d_ptr->m_Font;
-        f.setPointSize(8);
-        QFontMetricsF fm(f);
-        dateW = fm.width(QDateTime::currentDateTime().toString());
+        //TODO use the message date and store the result
+        dateW = d_ptr->m_DateFontMetrics.width(
+            QDateTime::currentDateTime().toString()
+        );
     }
 
     // At first, don't limit the height
@@ -187,7 +206,16 @@ void Bubble::slotWindowChanged(QQuickWindow *w)
     );
 
     // Prevent bubble larger than the screen
-    const qreal mw = std::max(dateW*1.66, r.width())+arrow+2*margins;
+    const qreal mw = std::max(dateW*1.05, r.width())+arrow+2*d_ptr->m_SideMargins;
 
     setWidth(std::min(d_ptr->m_MaximumWidth, mw));
+}
+
+void Bubble::setDateFont(const QFont& f)
+{
+    d_ptr->m_DateFont = f;
+    d_ptr->m_DateFontMetrics = QFontMetricsF(f);
+    ratio = 0;
+    update();
+    emit fontChanged(d_ptr->m_Font);
 }
