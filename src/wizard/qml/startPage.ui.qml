@@ -95,6 +95,8 @@ Controls.Page {
         width: 100
         height: 100
         source: "qrc:/wizard/ring-kde.svg"
+        sourceSize.width: 100
+        sourceSize.height: 100
     }
 
     JamiWizard.CreateRing {
