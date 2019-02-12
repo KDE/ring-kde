@@ -27,6 +27,8 @@ import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 Kirigami.GlobalDrawer {
     id: globalDrawer
 
+    topPadding: 0
+
     actions: [
         actionCollection.settings,
         actionCollection.newContact,
@@ -44,6 +46,7 @@ Kirigami.GlobalDrawer {
         spacing: 5
         Layout.preferredWidth: globalDrawer.width
         Layout.preferredHeight: contentHeight
+        Layout.leftMargin: -globalDrawer.leftPadding
 
         delegate: ToolBar {
             width: parent.width
