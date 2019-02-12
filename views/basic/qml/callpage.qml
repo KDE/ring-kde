@@ -35,6 +35,14 @@ Kirigami.Page {
     padding: 0
     Kirigami.Theme.colorSet: Kirigami.Theme.View
 
+    titleDelegate: BasicView.DesktopHeader {
+        id: dheader
+        visible: fits
+        Layout.fillWidth: true
+        Component.onCompleted: _fits = fits
+        onFitsChanged: _fits = fits
+    }
+
     function getCall(cm) {
         return mainPage.call && mainPage.call.lifeCycleState != Call.FINISHED ?
             mainPage.call : RingSession.callModel.dialingCall(cm)
