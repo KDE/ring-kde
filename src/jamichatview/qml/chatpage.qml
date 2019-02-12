@@ -154,7 +154,8 @@ Rectangle {
                 // Buttons to navigate to relevant content
                 JamiChatView.Navigation {
                     timelineIterator: iterator
-                    anchors.rightMargin: blurryOverlay.width
+                    anchors.rightMargin: scrollbar.hasContent ?
+                        blurryOverlay.width : 0
                     anchors.right: parent.right
                     anchors.bottom: parent.bottom
                     Behavior on anchors.rightMargin {
