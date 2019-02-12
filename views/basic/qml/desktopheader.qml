@@ -22,6 +22,7 @@ import QtQuick.Layouts 1.4
 import QtQuick.Controls 2.2 as Controls
 import org.kde.kirigami 2.6 as Kirigami
 import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
+import org.kde.ringkde.jamitroubleshooting 1.0 as JamiTroubleshooting
 
 MouseArea {
     property var textColor: Kirigami.Theme.highlightedTextColor
@@ -40,6 +41,7 @@ MouseArea {
         rowSpacing: 0
         flow: GridLayout.TopToBottom
         columnSpacing: Kirigami.Units.smallSpacing
+        anchors.fill: parent
         JamiContactView.ContactPhoto {
             Layout.preferredWidth: parent.parent.height
             Layout.preferredHeight: parent.parent.height
@@ -128,6 +130,15 @@ MouseArea {
         Item {
             Layout.fillWidth: true
             Layout.rowSpan: 2
+            Layout.fillHeight: true
+
+            // Display reasons why the media buttons are not present
+            JamiTroubleshooting.MediaAvailability {
+                width: parent.width
+                defaultSize: parent.height < 48 ? parent.height : 48
+                currentIndividual: mainPage.currentIndividual
+                anchors.verticalCenter: parent.verticalCenter
+            }
         }
     }
 

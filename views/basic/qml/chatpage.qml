@@ -45,6 +45,7 @@ Kirigami.Page {
     titleDelegate: BasicView.DesktopHeader {
         id: dheader
         visible: fits
+        Layout.fillWidth: true
         Component.onCompleted: _fits = fits
         onFitsChanged: _fits = fits
     }
