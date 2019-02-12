@@ -114,6 +114,8 @@ void MultiCall::paint(QPainter *painter)
 
     const int perRow = w/32;
 
+    setImplicitWidth(rc*32);
+
     for (int i = 0; i < rc; i++) {
         const auto cidx = d_ptr->m_Index.model()->index(i, 0, d_ptr->m_Index);
 

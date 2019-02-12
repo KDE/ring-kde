@@ -32,7 +32,7 @@ ColumnLayout {
     }
 
     JamiTimelineBase.MultiCall {
-        Layout.fillWidth: true
+        Layout.alignment: Qt.AlignHCenter
         width: textGroupDelegate.width
         modelIndex: rootIndex
         count: callCount
