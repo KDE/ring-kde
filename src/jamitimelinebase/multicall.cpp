@@ -99,6 +99,9 @@ void MultiCall::paint(QPainter *painter)
 {
     const int w(width());
 
+    if (w < 32 || height() < 32)
+        return;
+
     if ((!d_ptr->m_Index.isValid()) || (!w))
         return;
 
