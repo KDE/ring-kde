@@ -155,6 +155,14 @@ Item {
 
                 MouseArea {
                     anchors.fill: parent
+
+                    /**
+                     * On mobile, there is already multiple layers of touch
+                     * capable controls and this confuses the input handling
+                     * code too much.
+                     */
+                    enabled: !Kirigami.Settings.isMobile
+
                     onClicked: {
                         chatMessage.clicked()
                     }
