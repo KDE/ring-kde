@@ -249,7 +249,6 @@ Rectangle {
 
             textColor: Kirigami.Theme.textColor
             backgroundColor: Kirigami.Theme.backgroundColor
-            emojiColor: Kirigami.Theme.highlightColor
         }
     }
 

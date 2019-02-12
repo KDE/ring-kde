@@ -28,8 +28,12 @@ Rectangle {
     property var emojiColor: undefined
     property bool requireContactRequest: false
 
-    height: messageTextArea.implicitHeight
+    height: Math.max(messageTextArea.implicitHeight, emojis.optimalHeight)
     implicitHeight: height
+
+    Behavior on height {
+        NumberAnimation {duration: 200;  easing.type: Easing.OutQuad}
+    }
 
     function focusEdit() {
         messageTextArea.forceActiveFocus()
@@ -118,7 +122,7 @@ Rectangle {
                 when: emojiButton.checked
                 PropertyChanges {
                     target: emojiButton
-                    color:  "#00AA00"
+                    color: Kirigami.Theme.highlightColor
                 }
             }
         ]
@@ -128,7 +132,15 @@ Rectangle {
         id: emojis
         visible: false
         anchors.fill: parent
-        active: visible
+
+        property real optimalHeight: item && visible ? item.implicitHeight : 0
+
+        /**
+         * Only load once, then keep alive because otherwise it takes like 2
+         * seconds each time on mobile.
+         */
+        active: (Kirigami.Settings.isMobile && active) || visible
+
         sourceComponent: Grid {
             anchors.fill: parent
             spacing: 2
@@ -136,25 +148,23 @@ Rectangle {
 
             Repeater {
                 model: emoji
-                Rectangle {
-                    width:  30
-                    height: 30
-                    color:  emojiColor
-                    radius: 2
+                MouseArea {
+                    width:  2*emojiTxt.contentHeight
+                    height: 2*emojiTxt.contentHeight
 
                     Text {
-                        anchors.centerIn: parent
+                        id: emojiTxt
+                        anchors.fill: parent
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
                         font.family: "Noto Color Emoji"
                         font.pixelSize : 18
                         text: symbol
                     }
 
-                    MouseArea {
-                        anchors.fill: parent
-                        onClicked: {
-                            messageTextArea.insert(messageTextArea.length, symbol)
-                            emojiButton.checked = false
-                        }
+                    onClicked: {
+                        messageTextArea.insert(messageTextArea.length, symbol)
+                        emojiButton.checked = false
                     }
                 }
             }
