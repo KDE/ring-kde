@@ -27,7 +27,7 @@ Rectangle {
     id: toolbar
     color: "#55000000"
     height: actionGrid.contentHeight
-    width:parent.width
+    width: parent.width
     y:parent.height-toolbar.height -10
     z: 100
 
@@ -221,10 +221,13 @@ Rectangle {
 
     GridView  {
         id: actionGrid
-        anchors.fill: parent
+        height: parent.height
         model: RingSession.callModel.userActionModel.activeActionModel
         delegate: actionDelegate
         cellWidth: 70; cellHeight: 60
+        anchors.centerIn: parent
+        width: Math.min(toolbar.width, count*cellWidth)
+        implicitWidth: Math.min(toolbar.width, count*cellWidth)
 
         StateGroup {
             id: stateGroup
