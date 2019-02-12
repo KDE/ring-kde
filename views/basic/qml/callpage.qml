@@ -44,7 +44,7 @@ Kirigami.Page {
     }
 
     function getCall(cm) {
-        return mainPage.call && mainPage.call.lifeCycleState != Call.FINISHED ?
+        return mainPage.call && mainPage.call.lifeCycleState != RingQtQuick.Call.FINISHED ?
             mainPage.call : RingSession.callModel.dialingCall(cm)
     }
 
