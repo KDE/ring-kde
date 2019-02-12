@@ -241,7 +241,6 @@ Rectangle {
         JamiChatView.ChatBox {
             id: chatBox
             Layout.fillWidth: true
-            height: 90
             visible: canSendTexts
             RingQtQuick.MessageBuilder {id: builder}
             requireContactRequest: currentContactMethod &&

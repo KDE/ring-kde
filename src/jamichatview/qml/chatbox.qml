@@ -28,6 +28,9 @@ Rectangle {
     property var emojiColor: undefined
     property bool requireContactRequest: false
 
+    height: messageTextArea.implicitHeight
+    implicitHeight: height
+
     function focusEdit() {
         messageTextArea.forceActiveFocus()
     }
