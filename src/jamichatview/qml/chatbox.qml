@@ -21,9 +21,6 @@ import org.kde.kirigami 2.2 as Kirigami
 import QtQuick.Layouts 1.0
 
 Item {
-    property QtObject call: null
-
-    property var emojiColor: undefined
     property bool requireContactRequest: false
 
     height: Math.max(messageTextArea.implicitHeight, emojis.optimalHeight)
@@ -100,7 +97,6 @@ Item {
         id: emojis
         visible: false
         anchors.fill: parent
-
         property real optimalHeight: item && visible ? item.implicitHeight : 0
 
         /**
@@ -111,9 +107,11 @@ Item {
 
         sourceComponent: Grid {
             id: grid
-            anchors.fill: parent
-            spacing: 2
-            rows: Math.ceil((emoji.count*maxWidth)/width)
+            height: parent.height
+            anchors.centerIn: emojis
+            spacing: 0
+            width: Math.ceil(emoji.count/rows) * maxWidth*1.2
+            rows: Math.ceil((emoji.count*maxWidth*1.2)/width)
 
             property real maxWidth: 0
 
@@ -148,8 +146,9 @@ Item {
                     ListElement { symbol: "🙋" } ListElement { symbol: "🙌" } ListElement { symbol: "🙍" }
                     ListElement { symbol: "🙎" } ListElement { symbol: "🙏" }
                 }
+
                 MouseArea {
-                    width:  2*emojiTxt.contentHeight
+                    width:  1.3*maxWidth
                     height: 2*emojiTxt.contentHeight
 
                     Text {
