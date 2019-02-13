@@ -101,37 +101,6 @@ Item {
         visible: false
         anchors.fill: parent
 
-        ListModel {
-            id: emoji
-            ListElement { symbol: "😀" } ListElement { symbol: "😁" } ListElement { symbol: "😂" }
-            ListElement { symbol: "😃" } ListElement { symbol: "😄" } ListElement { symbol: "😅" }
-            ListElement { symbol: "😆" } ListElement { symbol: "😇" } ListElement { symbol: "😈" }
-            ListElement { symbol: "😉" } ListElement { symbol: "😊" } ListElement { symbol: "😋" }
-            ListElement { symbol: "😌" } ListElement { symbol: "😍" } ListElement { symbol: "😎" }
-            ListElement { symbol: "😏" } ListElement { symbol: "😐" } ListElement { symbol: "😑" }
-            ListElement { symbol: "😒" } ListElement { symbol: "😓" } ListElement { symbol: "😔" }
-            ListElement { symbol: "😕" } ListElement { symbol: "😖" } ListElement { symbol: "😗" }
-            ListElement { symbol: "😘" } ListElement { symbol: "😙" } ListElement { symbol: "😚" }
-            ListElement { symbol: "😛" } ListElement { symbol: "😜" } ListElement { symbol: "😝" }
-            ListElement { symbol: "😞" } ListElement { symbol: "😟" } ListElement { symbol: "😠" }
-            ListElement { symbol: "😡" } ListElement { symbol: "😢" } ListElement { symbol: "😣" }
-            ListElement { symbol: "😤" } ListElement { symbol: "😥" } ListElement { symbol: "😦" }
-            ListElement { symbol: "😧" } ListElement { symbol: "😨" } ListElement { symbol: "😩" }
-            ListElement { symbol: "😪" } ListElement { symbol: "😫" } ListElement { symbol: "😬" }
-            ListElement { symbol: "😭" } ListElement { symbol: "😮" } ListElement { symbol: "😯" }
-            ListElement { symbol: "😰" } ListElement { symbol: "😱" } ListElement { symbol: "😲" }
-            ListElement { symbol: "😳" } ListElement { symbol: "😴" } ListElement { symbol: "😵" }
-            ListElement { symbol: "😶" } ListElement { symbol: "😷" } ListElement { symbol: "😸" }
-            ListElement { symbol: "😹" } ListElement { symbol: "😺" } ListElement { symbol: "😻" }
-            ListElement { symbol: "😼" } ListElement { symbol: "😽" } ListElement { symbol: "😾" }
-            ListElement { symbol: "😿" } ListElement { symbol: "🙀" } ListElement { symbol: "🙁" }
-            ListElement { symbol: "🙂" } ListElement { symbol: "🙃" } ListElement { symbol: "🙄" }
-            ListElement { symbol: "🙅" } ListElement { symbol: "🙆" } ListElement { symbol: "🙇" }
-            ListElement { symbol: "🙈" } ListElement { symbol: "🙉" } ListElement { symbol: "🙊" }
-            ListElement { symbol: "🙋" } ListElement { symbol: "🙌" } ListElement { symbol: "🙍" }
-            ListElement { symbol: "🙎" } ListElement { symbol: "🙏" }
-        }
-
         property real optimalHeight: item && visible ? item.implicitHeight : 0
 
         /**
@@ -149,7 +118,36 @@ Item {
             property real maxWidth: 0
 
             Repeater {
-                model: emoji
+                model: ListModel {
+                    id: emoji
+                    ListElement { symbol: "😀" } ListElement { symbol: "😁" } ListElement { symbol: "😂" }
+                    ListElement { symbol: "😃" } ListElement { symbol: "😄" } ListElement { symbol: "😅" }
+                    ListElement { symbol: "😆" } ListElement { symbol: "😇" } ListElement { symbol: "😈" }
+                    ListElement { symbol: "😉" } ListElement { symbol: "😊" } ListElement { symbol: "😋" }
+                    ListElement { symbol: "😌" } ListElement { symbol: "😍" } ListElement { symbol: "😎" }
+                    ListElement { symbol: "😏" } ListElement { symbol: "😐" } ListElement { symbol: "😑" }
+                    ListElement { symbol: "😒" } ListElement { symbol: "😓" } ListElement { symbol: "😔" }
+                    ListElement { symbol: "😕" } ListElement { symbol: "😖" } ListElement { symbol: "😗" }
+                    ListElement { symbol: "😘" } ListElement { symbol: "😙" } ListElement { symbol: "😚" }
+                    ListElement { symbol: "😛" } ListElement { symbol: "😜" } ListElement { symbol: "😝" }
+                    ListElement { symbol: "😞" } ListElement { symbol: "😟" } ListElement { symbol: "😠" }
+                    ListElement { symbol: "😡" } ListElement { symbol: "😢" } ListElement { symbol: "😣" }
+                    ListElement { symbol: "😤" } ListElement { symbol: "😥" } ListElement { symbol: "😦" }
+                    ListElement { symbol: "😧" } ListElement { symbol: "😨" } ListElement { symbol: "😩" }
+                    ListElement { symbol: "😪" } ListElement { symbol: "😫" } ListElement { symbol: "😬" }
+                    ListElement { symbol: "😭" } ListElement { symbol: "😮" } ListElement { symbol: "😯" }
+                    ListElement { symbol: "😰" } ListElement { symbol: "😱" } ListElement { symbol: "😲" }
+                    ListElement { symbol: "😳" } ListElement { symbol: "😴" } ListElement { symbol: "😵" }
+                    ListElement { symbol: "😶" } ListElement { symbol: "😷" } ListElement { symbol: "😸" }
+                    ListElement { symbol: "😹" } ListElement { symbol: "😺" } ListElement { symbol: "😻" }
+                    ListElement { symbol: "😼" } ListElement { symbol: "😽" } ListElement { symbol: "😾" }
+                    ListElement { symbol: "😿" } ListElement { symbol: "🙀" } ListElement { symbol: "🙁" }
+                    ListElement { symbol: "🙂" } ListElement { symbol: "🙃" } ListElement { symbol: "🙄" }
+                    ListElement { symbol: "🙅" } ListElement { symbol: "🙆" } ListElement { symbol: "🙇" }
+                    ListElement { symbol: "🙈" } ListElement { symbol: "🙉" } ListElement { symbol: "🙊" }
+                    ListElement { symbol: "🙋" } ListElement { symbol: "🙌" } ListElement { symbol: "🙍" }
+                    ListElement { symbol: "🙎" } ListElement { symbol: "🙏" }
+                }
                 MouseArea {
                     width:  2*emojiTxt.contentHeight
                     height: 2*emojiTxt.contentHeight
