@@ -247,9 +247,6 @@ Rectangle {
             requireContactRequest: currentContactMethod &&
                 currentContactMethod.confirmationStatus == RingQtQuick.ContactMethod.UNCONFIRMED &&
                 currentContactMethod.confirmationStatus != RingQtQuick.ContactMethod.DISABLED
-
-            textColor: Kirigami.Theme.textColor
-            backgroundColor: Kirigami.Theme.backgroundColor
         }
     }
 

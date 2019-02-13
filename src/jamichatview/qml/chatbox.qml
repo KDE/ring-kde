@@ -20,11 +20,9 @@ import QtQuick.Controls 2.0
 import org.kde.kirigami 2.2 as Kirigami
 import QtQuick.Layouts 1.0
 
-Rectangle {
+Item {
     property QtObject call: null
 
-    property alias textColor: messageTextArea.color
-    property alias backgroundColor: chatBox.color
     property var emojiColor: undefined
     property bool requireContactRequest: false
 
@@ -43,39 +41,6 @@ Rectangle {
 
     signal sendMessage(string message, string richMessage)
 
-    color: "blue"
-
-    ListModel {
-        id: emoji
-        ListElement { symbol: "😀" } ListElement { symbol: "😁" } ListElement { symbol: "😂" }
-        ListElement { symbol: "😃" } ListElement { symbol: "😄" } ListElement { symbol: "😅" }
-        ListElement { symbol: "😆" } ListElement { symbol: "😇" } ListElement { symbol: "😈" }
-        ListElement { symbol: "😉" } ListElement { symbol: "😊" } ListElement { symbol: "😋" }
-        ListElement { symbol: "😌" } ListElement { symbol: "😍" } ListElement { symbol: "😎" }
-        ListElement { symbol: "😏" } ListElement { symbol: "😐" } ListElement { symbol: "😑" }
-        ListElement { symbol: "😒" } ListElement { symbol: "😓" } ListElement { symbol: "😔" }
-        ListElement { symbol: "😕" } ListElement { symbol: "😖" } ListElement { symbol: "😗" }
-        ListElement { symbol: "😘" } ListElement { symbol: "😙" } ListElement { symbol: "😚" }
-        ListElement { symbol: "😛" } ListElement { symbol: "😜" } ListElement { symbol: "😝" }
-        ListElement { symbol: "😞" } ListElement { symbol: "😟" } ListElement { symbol: "😠" }
-        ListElement { symbol: "😡" } ListElement { symbol: "😢" } ListElement { symbol: "😣" }
-        ListElement { symbol: "😤" } ListElement { symbol: "😥" } ListElement { symbol: "😦" }
-        ListElement { symbol: "😧" } ListElement { symbol: "😨" } ListElement { symbol: "😩" }
-        ListElement { symbol: "😪" } ListElement { symbol: "😫" } ListElement { symbol: "😬" }
-        ListElement { symbol: "😭" } ListElement { symbol: "😮" } ListElement { symbol: "😯" }
-        ListElement { symbol: "😰" } ListElement { symbol: "😱" } ListElement { symbol: "😲" }
-        ListElement { symbol: "😳" } ListElement { symbol: "😴" } ListElement { symbol: "😵" }
-        ListElement { symbol: "😶" } ListElement { symbol: "😷" } ListElement { symbol: "😸" }
-        ListElement { symbol: "😹" } ListElement { symbol: "😺" } ListElement { symbol: "😻" }
-        ListElement { symbol: "😼" } ListElement { symbol: "😽" } ListElement { symbol: "😾" }
-        ListElement { symbol: "😿" } ListElement { symbol: "🙀" } ListElement { symbol: "🙁" }
-        ListElement { symbol: "🙂" } ListElement { symbol: "🙃" } ListElement { symbol: "🙄" }
-        ListElement { symbol: "🙅" } ListElement { symbol: "🙆" } ListElement { symbol: "🙇" }
-        ListElement { symbol: "🙈" } ListElement { symbol: "🙉" } ListElement { symbol: "🙊" }
-        ListElement { symbol: "🙋" } ListElement { symbol: "🙌" } ListElement { symbol: "🙍" }
-        ListElement { symbol: "🙎" } ListElement { symbol: "🙏" }
-    }
-
     Rectangle {
         id: emojiButton
 
@@ -83,22 +48,25 @@ Rectangle {
 
         opacity: 0
         radius: 999
-        width: 30
-        height: 30
+        width:  Kirigami.Settings.isMobile ? 50 : 30
+        height: Kirigami.Settings.isMobile ? 50 : 30
+        visible: opacity > 0
 
         anchors.bottomMargin: -15
         anchors.bottom: parent.top
         anchors.horizontalCenter: parent.horizontalCenter
 
-        color: "transparent"
+        color: Kirigami.Theme.backgroundColor
         border.width: 2
         border.color: Kirigami.Theme.disabledTextColor
 
         Text {
-            anchors.centerIn: parent
+            anchors.fill: parent
             text: "😀"
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
             font.family: "Noto Color Emoji"
-            font.pixelSize : 18
+            font.pixelSize : Kirigami.Settings.isMobile ? 24 : 18
         }
 
         MouseArea {
@@ -133,6 +101,37 @@ Rectangle {
         visible: false
         anchors.fill: parent
 
+        ListModel {
+            id: emoji
+            ListElement { symbol: "😀" } ListElement { symbol: "😁" } ListElement { symbol: "😂" }
+            ListElement { symbol: "😃" } ListElement { symbol: "😄" } ListElement { symbol: "😅" }
+            ListElement { symbol: "😆" } ListElement { symbol: "😇" } ListElement { symbol: "😈" }
+            ListElement { symbol: "😉" } ListElement { symbol: "😊" } ListElement { symbol: "😋" }
+            ListElement { symbol: "😌" } ListElement { symbol: "😍" } ListElement { symbol: "😎" }
+            ListElement { symbol: "😏" } ListElement { symbol: "😐" } ListElement { symbol: "😑" }
+            ListElement { symbol: "😒" } ListElement { symbol: "😓" } ListElement { symbol: "😔" }
+            ListElement { symbol: "😕" } ListElement { symbol: "😖" } ListElement { symbol: "😗" }
+            ListElement { symbol: "😘" } ListElement { symbol: "😙" } ListElement { symbol: "😚" }
+            ListElement { symbol: "😛" } ListElement { symbol: "😜" } ListElement { symbol: "😝" }
+            ListElement { symbol: "😞" } ListElement { symbol: "😟" } ListElement { symbol: "😠" }
+            ListElement { symbol: "😡" } ListElement { symbol: "😢" } ListElement { symbol: "😣" }
+            ListElement { symbol: "😤" } ListElement { symbol: "😥" } ListElement { symbol: "😦" }
+            ListElement { symbol: "😧" } ListElement { symbol: "😨" } ListElement { symbol: "😩" }
+            ListElement { symbol: "😪" } ListElement { symbol: "😫" } ListElement { symbol: "😬" }
+            ListElement { symbol: "😭" } ListElement { symbol: "😮" } ListElement { symbol: "😯" }
+            ListElement { symbol: "😰" } ListElement { symbol: "😱" } ListElement { symbol: "😲" }
+            ListElement { symbol: "😳" } ListElement { symbol: "😴" } ListElement { symbol: "😵" }
+            ListElement { symbol: "😶" } ListElement { symbol: "😷" } ListElement { symbol: "😸" }
+            ListElement { symbol: "😹" } ListElement { symbol: "😺" } ListElement { symbol: "😻" }
+            ListElement { symbol: "😼" } ListElement { symbol: "😽" } ListElement { symbol: "😾" }
+            ListElement { symbol: "😿" } ListElement { symbol: "🙀" } ListElement { symbol: "🙁" }
+            ListElement { symbol: "🙂" } ListElement { symbol: "🙃" } ListElement { symbol: "🙄" }
+            ListElement { symbol: "🙅" } ListElement { symbol: "🙆" } ListElement { symbol: "🙇" }
+            ListElement { symbol: "🙈" } ListElement { symbol: "🙉" } ListElement { symbol: "🙊" }
+            ListElement { symbol: "🙋" } ListElement { symbol: "🙌" } ListElement { symbol: "🙍" }
+            ListElement { symbol: "🙎" } ListElement { symbol: "🙏" }
+        }
+
         property real optimalHeight: item && visible ? item.implicitHeight : 0
 
         /**
@@ -142,9 +141,12 @@ Rectangle {
         active: (Kirigami.Settings.isMobile && active) || visible
 
         sourceComponent: Grid {
+            id: grid
             anchors.fill: parent
             spacing: 2
-            rows: 2
+            rows: Math.ceil((emoji.count*maxWidth)/width)
+
+            property real maxWidth: 0
 
             Repeater {
                 model: emoji
@@ -158,8 +160,9 @@ Rectangle {
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
                         font.family: "Noto Color Emoji"
-                        font.pixelSize : 18
+                        font.pixelSize : Kirigami.Settings.isMobile ? 24 : 18
                         text: symbol
+                        Component.onCompleted: maxWidth = Math.max(maxWidth, emojiTxt.contentWidth)
                     }
 
                     onClicked: {
