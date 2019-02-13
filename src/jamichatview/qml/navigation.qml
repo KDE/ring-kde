@@ -22,7 +22,10 @@ Column {
     property QtObject timelineIterator: null
     property int buttonCount: 1
     spacing: Kirigami.Units.largeSpacing
-    property real buttonSize: Kirigami.Units.iconSizes.large
+    property real buttonSize: Kirigami.Units.iconSizes.large * (
+        Kirigami.Settings.isMobile ? 0.75 : 1
+    )
+
     width: buttonCount > 0 ? buttonSize : 0
     height: buttonCount * buttonSize + buttonCount*spacing
     visible: opacity > 0
