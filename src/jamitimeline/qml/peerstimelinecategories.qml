@@ -19,12 +19,16 @@ import QtQuick 2.7
 import org.kde.kirigami 2.2 as Kirigami
 
 Text {
+    property bool compact: false
+    property string section: display
+    property string recentDate: formattedDate
+
     anchors.margins:10
     text: section + (section == i18n("Never") ?
         "" :", <b>" + (recentDate ? recentDate.toLocaleString(Qt.locale(), "d MMM") : "")+ "</b>")
     leftPadding: 10
     rightPadding: 10
-    height: 3*fontMetrics.height
+    height: (compact ? 1.5 : 3) *Kirigami.Units.fontMetrics.height
     verticalAlignment: Text.AlignVCenter
     color: Kirigami.Theme.textColor
     x: 10
