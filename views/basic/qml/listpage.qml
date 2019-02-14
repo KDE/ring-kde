@@ -30,6 +30,7 @@ Kirigami.Page {
     id: peerListPage
     property alias currentIndex: list.currentIndex;
     property bool displayWelcome: false
+    globalToolBarStyle: Kirigami.ApplicationHeaderStyle.ToolBar
 
     spacing: 0
     leftPadding: 0; rightPadding: 0; topPadding: 0;bottomPadding: 0; padding: 0

@@ -32,6 +32,7 @@ Kirigami.Page {
     property bool _fits: false
 
     Kirigami.Theme.colorSet: Kirigami.Theme.View
+    globalToolBarStyle: Kirigami.ApplicationHeaderStyle.ToolBar
 
     id: chatPage
 

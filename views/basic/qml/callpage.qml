@@ -33,6 +33,7 @@ Kirigami.Page {
     topPadding: 0
     bottomPadding: 0
     padding: 0
+    globalToolBarStyle: Kirigami.ApplicationHeaderStyle.ToolBar
     Kirigami.Theme.colorSet: Kirigami.Theme.View
 
     titleDelegate: BasicView.DesktopHeader {
