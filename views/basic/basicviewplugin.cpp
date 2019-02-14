@@ -37,7 +37,6 @@ void BasicView::registerTypes(const char *uri)
     qmlRegisterType(QStringLiteral("qrc:/basicview/qml/list.qml"), uri, 1, 0, "List");
     qmlRegisterType(QStringLiteral("qrc:/basicview/qml/globaldrawer.qml"), uri, 1, 0, "GlobalDrawer");
     qmlRegisterType(QStringLiteral("qrc:/basicview/qml/sidebar.qml"), uri, 1, 0, "SideBar");
-    qmlRegisterType(QStringLiteral("qrc:/basicview/qml/actionswitch.qml"), uri, 1, 0, "ActionSwitch");
 }
 
 void BasicView::initializeEngine(QQmlEngine* engine, const char* uri)

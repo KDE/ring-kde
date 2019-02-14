@@ -56,6 +56,10 @@ set( jaminotification_LIB_SRCS
     focuslistener.cpp
 )
 
+qt5_add_resources(jaminotification_LIB_SRCS
+    jaminotification.qrc
+)
+
 set(AUTOMOC_MOC_OPTIONS -Muri=org.kde.ringkde.jaminotification)
 
 include_directories(SYSTEM ${ringqt_INCLUDE_DIR})

@@ -50,6 +50,7 @@ void JamiContactView::registerTypes(const char *uri)
     qmlRegisterType(QStringLiteral("qrc:/contactview/qml/viewcontactrequests.qml")       , uri, 1, 0, "ViewContactRequests");
     qmlRegisterType(QStringLiteral("qrc:/contactview/qml/addresses.qml")                 , uri, 1, 0, "Addresses");
     qmlRegisterType(QStringLiteral("qrc:/contactview/qml/contactdialog.qml")             , uri, 1, 0, "ContactDialog");
+    qmlRegisterType(QStringLiteral("qrc:/contactview/qml/commonactions.qml")             , uri, 1, 0, "CommonActions");
 }
 
 void JamiContactView::initializeEngine(QQmlEngine *engine, const char *uri)

@@ -21,6 +21,8 @@ import org.kde.kirigami 2.4 as Kirigami
 import QtQuick.Layouts 1.2 as Layouts
 import org.kde.ringkde.basicview 1.0 as BasicView
 import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
+import org.kde.ringkde.jaminotification 1.0 as JamiNotification
+import org.kde.ringkde.genericutils 1.0 as GenericUtils
 
 Controls.ToolBar {
     id: sideBar
@@ -71,34 +73,9 @@ Controls.ToolBar {
 
         }
 
-        BasicView.ActionSwitch {
-            icon: "mail-message"
-            text: "Write email"
-            checkable: false
-        }
-
-        BasicView.ActionSwitch {
-            icon: "delete"
-            text: "Delete contact"
-            checkable: false
-        }
-
-        BasicView.ActionSwitch {
-            icon: "edit-clear-history"
-            text: "Clear history"
-            checkable: false
-        }
-
-        BasicView.ActionSwitch {
-            icon: "favorite"
-            text: "Bookmark"
-            checkable: true
-        }
-
-        BasicView.ActionSwitch {
-            icon: "im-kick-user"
-            text: "Block"
-            checkable: true
+        JamiContactView.CommonActions {
+            individual: mainPage.individual
+            Layouts.Layout.fillWidth: true
         }
 
         Kirigami.Heading {
@@ -116,19 +93,9 @@ Controls.ToolBar {
 
         }
 
-        BasicView.ActionSwitch {
-            icon: "preferences-desktop-notification"
-            text: "On new messages"
-        }
-
-        BasicView.ActionSwitch {
-            icon: "preferences-desktop-notification"
-            text: "On presence changes"
-        }
-
-        BasicView.ActionSwitch {
-            icon: "preferences-desktop-notification"
-            text: "Ignore incoming calls"
+        JamiNotification.IndividualSettings {
+            individual: mainPage.individual
+            Layouts.Layout.fillWidth: true
         }
 
         Kirigami.Heading {
@@ -146,79 +113,10 @@ Controls.ToolBar {
 
         }
 
-        Row {
-            Item {width: Kirigami.Units.smallSpacing; height: 1}
-            Kirigami.Icon {
-                source: "appointment-new"
-                height: Kirigami.Units.iconSizes.smallMedium
-                width: Kirigami.Units.iconSizes.smallMedium
-            }
-            Item {width: Kirigami.Units.smallSpacing; height: 1}
-            Controls.Label {
-                color: "white"; text:  mainPage.currentIndividual?
-                    mainPage.currentIndividual.formattedLastUsedTime : ""
-            }
+        JamiContactView.Statistics {
+            individual: mainPage.individual
             Layouts.Layout.fillWidth: true
-        }
-
-        Row {
-            Item {width: Kirigami.Units.smallSpacing; height: 1}
-            Kirigami.Icon {
-                source: "dialog-messages"
-                height: Kirigami.Units.iconSizes.smallMedium
-                width: Kirigami.Units.iconSizes.smallMedium
-            }
-            Item {width: Kirigami.Units.smallSpacing; height: 1}
-            Controls.Label {
-                color: "white"; text: "Texted "+ (mainPage.currentIndividual?
-                    mainPage.currentIndividual.textMessageCount : 0) + " time"
-            }
-            Layouts.Layout.fillWidth: true
-        }
-
-        Row {
-            Item {width: Kirigami.Units.smallSpacing; height: 1}
-            Kirigami.Icon {
-                source: "dialog-messages"
-                height: Kirigami.Units.iconSizes.smallMedium
-                width: Kirigami.Units.iconSizes.smallMedium
-            }
-            Item {width: Kirigami.Units.smallSpacing; height: 1}
-            Controls.Label {
-                color: "white"; text: (mainPage.currentIndividual?
-                    mainPage.currentIndividual.unreadTextMessageCount : 0) + " unread messages"
-            }
-            Layouts.Layout.fillWidth: true
-        }
-
-        Row {
-            Item {width: Kirigami.Units.smallSpacing; height: 1}
-            Kirigami.Icon {
-                source: "call-start"
-                height: Kirigami.Units.iconSizes.smallMedium
-                width: Kirigami.Units.iconSizes.smallMedium
-            }
-            Item {width: Kirigami.Units.smallSpacing; height: 1}
-            Controls.Label {
-                color: "white"; text: "Called "+ (mainPage.currentIndividual?
-                    mainPage.currentIndividual.callCount : 0) + " time"
-            }
-            Layouts.Layout.fillWidth: true
-        }
-
-        Row {
-            Item {width: Kirigami.Units.smallSpacing; height: 1}
-            Kirigami.Icon {
-                source: "call-start"
-                height: Kirigami.Units.iconSizes.smallMedium
-                width: Kirigami.Units.iconSizes.smallMedium
-            }
-            Item {width: Kirigami.Units.smallSpacing; height: 1}
-            Controls.Label {
-                color: "white"; text: "Spoken "+ Math.ceil((mainPage.currentIndividual?
-                    mainPage.currentIndividual.totalSpentTime : 0)/60) + " minutes"
-            }
-            Layouts.Layout.fillWidth: true
+            labelColor: Kirigami.Theme.textColor
         }
 
         Item {

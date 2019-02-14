@@ -27,11 +27,15 @@
 #include "focuslistener.h"
 #include "notification.h"
 
+#include <qrc_jaminotification.cpp>
+
 void JamiNotification::registerTypes(const char *uri)
 {
     Q_ASSERT(uri == QByteArray("org.kde.ringkde.jaminotification"));
 
     qmlRegisterType<FocusListener>(uri, 1, 0, "FocusListener");
+
+    qmlRegisterType(QStringLiteral("qrc:/jaminotification/qml/individualsettings.qml"), uri, 1, 0, "IndividualSettings");
 }
 
 void JamiNotification::initializeEngine(QQmlEngine *engine, const char *uri)

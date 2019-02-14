@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2017 by Bluesystems                                     *
+ *   Copyright (C) 2017-2019 by Bluesystems                                *
  *   Author : Emmanuel Lepage Vallee <elv1313@gmail.com>                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -16,80 +16,97 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  **************************************************************************/
 import QtQuick 2.7
-import QtQuick.Controls 2.0
-import QtQuick.Layouts 1.0
+import QtQuick.Controls 2.0 as Controls
+import QtQuick.Layouts 1.0 as Layouts
 import org.kde.kirigami 2.2 as Kirigami
 
-ColumnLayout {
+Layouts.ColumnLayout {
     id: statistics
     property var individual: null
     property var labelColor: Kirigami.Theme.textColor
 
-    function getLastContacted() {
-        if (!individual)
-            return
+    Layouts.Layout.topMargin: 0
+    Layouts.Layout.bottomMargin: 0
+    Layouts.Layout.leftMargin: 0
+    Layouts.Layout.rightMargin: 0
 
-        if (individual.lastUsedTime == 0)
-            return i18n("<b>Never contacted</b>")
-
-        return i18n("<b>Last contacted on:</b> ") + individual.formattedLastUsedTime
+    Row {
+        Item {width: Kirigami.Units.smallSpacing; height: 1}
+        Kirigami.Icon {
+            source: "appointment-new"
+            height: Kirigami.Units.iconSizes.smallMedium
+            width: Kirigami.Units.iconSizes.smallMedium
+        }
+        Item {width: Kirigami.Units.smallSpacing; height: 1}
+        Controls.Label {
+            color:labelColor
+            text:  mainPage.currentIndividual?
+                mainPage.currentIndividual.formattedLastUsedTime : ""
+        }
+        Layouts.Layout.fillWidth: true
     }
 
-    function getTotalCall() {
-        if (!individual)
-            return
-
-        var label = i18n("<b>Called:</b> ")
-
-        if (individual.totalSpentTime == 0)
-            return label + i18n("Never")
-
-        return label + individual.callCount +
-            " time (" + (Math.floor(individual.totalSpentTime/60)) + " minutes)"
+    Row {
+        Item {width: Kirigami.Units.smallSpacing; height: 1}
+        Kirigami.Icon {
+            source: "dialog-messages"
+            height: Kirigami.Units.iconSizes.smallMedium
+            width: Kirigami.Units.iconSizes.smallMedium
+        }
+        Item {width: Kirigami.Units.smallSpacing; height: 1}
+        Controls.Label {
+            color:labelColor
+            text: "Texted "+ (mainPage.currentIndividual?
+                mainPage.currentIndividual.textMessageCount : 0) + " time"
+        }
+        Layouts.Layout.fillWidth: true
     }
 
-    function getTotalText() {
-        if (!individual)
-            return
-
-        var label = i18n("<b>Texted:</b> ")
-
-        if (individual.textMessageCount == 0)
-            return label + i18n("Never")
-
-        return label + individual.textMessageCount
+    Row {
+        Item {width: Kirigami.Units.smallSpacing; height: 1}
+        Kirigami.Icon {
+            source: "dialog-messages"
+            height: Kirigami.Units.iconSizes.smallMedium
+            width: Kirigami.Units.iconSizes.smallMedium
+        }
+        Item {width: Kirigami.Units.smallSpacing; height: 1}
+        Controls.Label {
+            color:labelColor
+            text: (mainPage.currentIndividual?
+                mainPage.currentIndividual.unreadTextMessageCount : 0) + " unread messages"
+        }
+        Layouts.Layout.fillWidth: true
     }
 
-    Rectangle {
-        color: Kirigami.Theme.textColor
-        height: 1
-        opacity: 0.3
-        Layout.fillWidth: true
+    Row {
+        Item {width: Kirigami.Units.smallSpacing; height: 1}
+        Kirigami.Icon {
+            source: "call-start"
+            height: Kirigami.Units.iconSizes.smallMedium
+            width: Kirigami.Units.iconSizes.smallMedium
+        }
+        Item {width: Kirigami.Units.smallSpacing; height: 1}
+        Controls.Label {
+            color:labelColor
+            text: "Called "+ (mainPage.currentIndividual?
+                mainPage.currentIndividual.callCount : 0) + " time"
+        }
+        Layouts.Layout.fillWidth: true
     }
 
-    Label {
-        id: lastContactedTime
-        color: contactViewPage.labelColor ? contactViewPage.labelColor : Kirigami.Theme.textColor
-        text: individual ? getLastContacted() : ""
-    }
-
-    Label {
-        id: totalCall
-        color: contactViewPage.labelColor ? contactViewPage.labelColor : Kirigami.Theme.textColor
-        text: individual ? getTotalCall() : ""
-    }
-
-    Label {
-        id: totalText
-        color: contactViewPage.labelColor ? contactViewPage.labelColor : Kirigami.Theme.textColor
-        text: individual ? getTotalText() : ""
-    }
-
-    Rectangle {
-        color: contactViewPage.state == "mobile" ? "transparent" : Kirigami.Theme.textColor
-        opacity: 0.3
-        height: 1
-        Layout.fillWidth: true
-        Layout.fillHeight: contactViewPage.state == "mobile"
+    Row {
+        Item {width: Kirigami.Units.smallSpacing; height: 1}
+        Kirigami.Icon {
+            source: "call-start"
+            height: Kirigami.Units.iconSizes.smallMedium
+            width: Kirigami.Units.iconSizes.smallMedium
+        }
+        Item {width: Kirigami.Units.smallSpacing; height: 1}
+        Controls.Label {
+            color:labelColor
+            text: "Spoken "+ Math.ceil((mainPage.currentIndividual?
+                mainPage.currentIndividual.totalSpentTime : 0)/60) + " minutes"
+        }
+        Layouts.Layout.fillWidth: true
     }
 }
