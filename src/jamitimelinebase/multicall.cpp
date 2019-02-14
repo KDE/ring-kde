@@ -23,9 +23,19 @@
 #include <QtGui/QIcon>
 #include <QtGui/QPixmap>
 
+#include <individualtimelinemodel.h>
+
 class MultiCallPrivate
 {
 public:
+    enum class Mode {
+        UNDEFINED     , /*!< Initialization            */
+        SINGLE_MISSED , /*!< Single missing call       */
+        SINGLE_ENTRY  , /*!< Direction and length      */
+        MULTI_ICON    , /*!< Single row of small icons */
+        SUMMARY       , /*!< Too many calls to display */
+    } m_Mode {Mode::UNDEFINED};
+
     QPersistentModelIndex m_Index;
 
     static bool     init;
@@ -34,6 +44,12 @@ public:
     MultiCall* q_ptr;
 
     int getHeight() const;
+    void updateMode();
+
+    void paintRow    (QPainter *painter);
+    void paintMissed (QPainter *painter);
+    void paintSingle (QPainter *painter);
+    void paintSummary(QPainter *painter);
 };
 
 bool MultiCallPrivate::init = false;
@@ -95,21 +111,66 @@ int MultiCallPrivate::getHeight() const
     return 32*((rc*32)/w + ((rc*32)%w ? 1 : 0));
 }
 
-void MultiCall::paint(QPainter *painter)
+void MultiCallPrivate::updateMode()
 {
-    const int w(width());
+    const int count = m_Index.data(
+        (int)IndividualTimelineModel::Role::CallCount
+    ).toInt();
 
-    if (w < 32 || height() < 32)
+    if (count == 1) {
+        const auto cidx = m_Index.model()->index(0, 0, m_Index);
+        if (const auto event = qvariant_cast<Event*>(cidx.data((int)Ring::Role::Object))) {
+            const bool isMissed   = event->status   () == Event::Status::X_MISSED;
+            const bool isOutgoing = event->direction() == Event::Direction::INCOMING;
+
+            if (isMissed && isOutgoing) {
+                m_Mode = Mode::SINGLE_MISSED;
+                return;
+            }
+
+            m_Mode = Mode::SINGLE_ENTRY;
+            return;
+        }
+    }
+
+    if (count <= 10) {
+        m_Mode = Mode::MULTI_ICON;
+        return;
+    }
+
+    m_Mode = Mode::SUMMARY;
+}
+
+void MultiCallPrivate::paintMissed(QPainter *painter)
+{
+    //
+}
+
+void MultiCallPrivate::paintSingle(QPainter *painter)
+{
+    //
+}
+
+void MultiCallPrivate::paintSummary(QPainter *painter)
+{
+    //
+}
+
+void MultiCallPrivate::paintRow(QPainter *painter)
+{
+    const int w(q_ptr->width());
+
+    if (w < 32 || q_ptr->height() < 32)
         return;
 
-    if ((!d_ptr->m_Index.isValid()) || (!w))
+    if ((!m_Index.isValid()) || (!w))
         return;
 
     // In case there's a resize
-    const int rc = d_ptr->m_Index.model()->rowCount(d_ptr->m_Index);
-    const int h  = d_ptr->getHeight();
+    const int rc = m_Index.model()->rowCount(m_Index);
+    const int h  = getHeight();
 
-    if (h > height() + 1 || h < height() - 1) {
+    if (h > q_ptr->height() + 1 || h < q_ptr->height() - 1) {
 //         setHeight(h + 200);
 //         update();
         return;
@@ -117,10 +178,10 @@ void MultiCall::paint(QPainter *painter)
 
     const int perRow = w/32;
 
-    setImplicitWidth(rc*32);
+    q_ptr->setImplicitWidth(rc*32);
 
     for (int i = 0; i < rc; i++) {
-        const auto cidx = d_ptr->m_Index.model()->index(i, 0, d_ptr->m_Index);
+        const auto cidx = m_Index.model()->index(i, 0, m_Index);
 
         if (const auto event = qvariant_cast<Event*>(cidx.data((int)Ring::Role::Object))) {
             const int col = (i/perRow) * 32;
@@ -131,11 +192,32 @@ void MultiCall::paint(QPainter *painter)
 
             painter->drawPixmap(
                 QPoint{row, col},
-                *d_ptr->iconCache[isMissed][isOutgoing]
+                *iconCache[isMissed][isOutgoing]
             );
         }
     }
+}
 
+void MultiCall::paint(QPainter *painter)
+{
+    d_ptr->updateMode();
+
+    switch(d_ptr->m_Mode) {
+        case MultiCallPrivate::Mode::UNDEFINED:
+            break;
+        case MultiCallPrivate::Mode::SINGLE_MISSED:
+            d_ptr->paintMissed(painter);
+            break;
+        case MultiCallPrivate::Mode::SINGLE_ENTRY:
+            d_ptr->paintSingle(painter);
+            break;
+        case MultiCallPrivate::Mode::MULTI_ICON:
+            d_ptr->paintRow(painter);
+            break;
+        case MultiCallPrivate::Mode::SUMMARY:
+            d_ptr->paintSummary(painter);
+            break;
+    }
 }
 
 int MultiCall::count() const
