@@ -31,7 +31,6 @@ KQuickItemViews.HierarchyView {
     clip: true
 
     property bool forceTime: false
-    property var treeHelper: _treeHelper
     property var bubbleBackground: blendColor()
     property var bubbleForeground: ""
     property var unreadBackground: ""
@@ -54,8 +53,12 @@ KQuickItemViews.HierarchyView {
         onTriggered: displayExtraTime = false
     }
 
-    GenericUtils.TreeHelper {
-        id: _treeHelper
+    model: RingQtQuick.TimelineFilter {
+        individual: mainPage.currentIndividual
+        showCalls: false
+        showEmptyGroups: true
+        showMessages: true
+        initDelay: 33
     }
 
     function blendColor() {

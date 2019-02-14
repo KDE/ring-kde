@@ -33,9 +33,9 @@ RowLayout {
 
     function getIcon() {
         if (type == "text")
-            return "image://icon/dialog-messages"
+            return "dialog-messages"
         else
-            return "image://icon/call-start"
+            return "call-start"
     }
 
     Rectangle {
@@ -46,10 +46,10 @@ RowLayout {
         border.color: Kirigami.Theme.disabledTextColor
         color: "transparent"
 
-        Image {
-            asynchronous: true
+        Kirigami.Icon {
             anchors.margins: 6
             anchors.fill: parent
+            color: Kirigami.Theme.disabledTextColor
             source: getIcon()
         }
     }

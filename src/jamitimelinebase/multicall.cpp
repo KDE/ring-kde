@@ -19,6 +19,7 @@
 
 #include <libcard/event.h>
 
+#include <QtCore/QAbstractProxyModel>
 #include <QtGui/QPainter>
 #include <QtGui/QIcon>
 #include <QtGui/QPixmap>
@@ -106,7 +107,9 @@ int MultiCallPrivate::getHeight() const
     if ((!m_Index.isValid()) || (!w))
         return 1;
 
-    const int rc = m_Index.model()->rowCount(m_Index);
+    const int rc = m_Index.data(
+        (int)IndividualTimelineModel::Role::CallCount
+    ).toInt();
 
     return 32*((rc*32)/w + ((rc*32)%w ? 1 : 0));
 }
@@ -167,7 +170,10 @@ void MultiCallPrivate::paintRow(QPainter *painter)
         return;
 
     // In case there's a resize
-    const int rc = m_Index.model()->rowCount(m_Index);
+    const int rc = std::min(
+        m_Index.data((int)IndividualTimelineModel::Role::CallCount).toInt(), 10
+    );
+
     const int h  = getHeight();
 
     if (h > q_ptr->height() + 1 || h < q_ptr->height() - 1) {
@@ -178,10 +184,17 @@ void MultiCallPrivate::paintRow(QPainter *painter)
 
     const int perRow = w/32;
 
+    // Handle the case where a QSortFilterProxyModel is being used
+    const QAbstractProxyModel* pm = qobject_cast<const QAbstractProxyModel*>(m_Index.model());
+
+    const QModelIndex pidx = pm ? pm->mapToSource(m_Index) : QModelIndex(m_Index);
+
+    const QAbstractItemModel* m = m ? pm->sourceModel() : m_Index.model();
+
     q_ptr->setImplicitWidth(rc*32);
 
     for (int i = 0; i < rc; i++) {
-        const auto cidx = m_Index.model()->index(i, 0, m_Index);
+        const auto cidx = m->index(i, 0, pidx);
 
         if (const auto event = qvariant_cast<Event*>(cidx.data((int)Ring::Role::Object))) {
             const int col = (i/perRow) * 32;

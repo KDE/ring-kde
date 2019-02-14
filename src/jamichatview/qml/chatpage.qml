@@ -98,11 +98,6 @@ Rectangle {
         }
     }
 
-    onTimelineModelChanged: {
-        if (!fixmeTimer.running)
-            chatView.model = timelineModel
-    }
-
     // Add a blurry background
     ShaderEffectSource {
         id: effectSource
@@ -168,21 +163,7 @@ Rectangle {
                     width: Math.min(600, timelinePage.width - 50)
                     height: parent.height
                     anchors.horizontalCenter: parent.horizontalCenter
-                    model: null//FIXME timelinePage.timelineModel
-
                     forceTime: scrollbar.overlayVisible
-
-                    // Due to a race condition, wait a bit, it should be fixed elsewhere,
-                    //FIXME but it would take much longer.
-                    Timer {
-                        id: fixmeTimer
-                        repeat: false
-                        running: true
-                        interval: 33
-                        onTriggered: {
-                            chatView.model = timelinePage.timelineModel
-                        }
-                    }
                 }
 
                 // It needs to be here due to z-index conflicts between
@@ -229,7 +210,7 @@ Rectangle {
                 Layout.fillHeight: true
                 Layout.preferredWidth: 10
                 display: chatView.moving || timelinePage.showScrollbar
-                model: timelinePage.timelineModel
+                model: chatView.model
                 view: chatView
                 forceOverlay: chatView.displayExtraTime
             }
