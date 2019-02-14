@@ -80,7 +80,7 @@ Item {
 
     Rectangle {
         id: selectOverlay
-        color: inactivePalette.base
+        color: Kirigami.Theme.disabledTextColor
         opacity: 0.5
         anchors.fill: parent
         Text {

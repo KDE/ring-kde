@@ -24,7 +24,6 @@ Layouts.ColumnLayout {
     property QtObject individual: null
 
     Layouts.Layout.topMargin: 0
-    Layouts.Layout.bottomMargin: 0
     Layouts.Layout.leftMargin: 0
     Layouts.Layout.rightMargin: 0
 
