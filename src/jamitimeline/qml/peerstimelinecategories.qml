@@ -19,9 +19,10 @@ import QtQuick 2.7
 import org.kde.kirigami 2.2 as Kirigami
 
 Text {
+    property var align: Qt.LeftEdge
     property bool compact: false
-    property string section: display
-    property string recentDate: formattedDate
+    property string section: ""
+    property string recentDate: ""
 
     anchors.margins:10
     text: section + (section == i18n("Never") ?
@@ -48,5 +49,7 @@ Text {
         width: 2
         height: parent.height
         color: "#993558"
+        anchors.left: align == Qt.LeftEdge ? parent.left : undefined
+        anchors.right: align == Qt.RightEdge ? parent.right : undefined
     }
 }

@@ -69,7 +69,8 @@ KQuickItemViews.TreeView {
                         width: 1
                         color: Kirigami.Theme.textColor
                         height: parent.height
-                        x: 10
+                        anchors.rightMargin: 10
+                        anchors.right: parent.right
                     }
 
                     Rectangle {
@@ -79,8 +80,8 @@ KQuickItemViews.TreeView {
                         border.color: Kirigami.Theme.textColor
                         width: 16
                         height: 16
-                        y: 10
-                        x: 3 // (16 - 10) / 2
+                        anchors.right: parent.right
+                        anchors.rightMargin: 3
 
                         Rectangle {
                             id: demandsAttention
@@ -99,8 +100,8 @@ KQuickItemViews.TreeView {
 
                         anchors.topMargin: 5
                         anchors.bottomMargin: 5
-                        anchors.leftMargin: 30
-                        anchors.rightMargin: 5
+                        anchors.leftMargin: 5
+                        anchors.rightMargin: 30
 
                         color: "transparent"
                         radius: 10
@@ -179,7 +180,8 @@ KQuickItemViews.TreeView {
                         width: 1
                         color: Kirigami.Theme.textColor
                         height: parent.height
-                        x: 10
+                        anchors.rightMargin: 10
+                        anchors.right: parent.right
                     }
 
                     Rectangle {
@@ -190,7 +192,8 @@ KQuickItemViews.TreeView {
                         width: 16
                         height: 16
                         y: 10
-                        x: 3 // (16 - 10) / 2
+                        anchors.right: parent.right
+                        anchors.rightMargin: 3
 
                         Rectangle {
                             id: demandsAttention
@@ -209,8 +212,8 @@ KQuickItemViews.TreeView {
 
                         anchors.topMargin: 5
                         anchors.bottomMargin: 5
-                        anchors.leftMargin: 30
-                        anchors.rightMargin: 5
+                        anchors.leftMargin: 5
+                        anchors.rightMargin: 30
 
                         color: "transparent"
                         radius: 10
@@ -265,6 +268,8 @@ KQuickItemViews.TreeView {
                         compact: true
                         section: display
                         recentDate: formattedDate
+                        align: Qt.RightEdge
+                        anchors.right: parent.right
                     }
                 }
             }
@@ -279,7 +284,8 @@ KQuickItemViews.TreeView {
                         width: 1
                         color: Kirigami.Theme.textColor
                         height: parent.height
-                        x: 10
+                        anchors.rightMargin: 10
+                        anchors.right: parent.right
                     }
 
                     Rectangle {
@@ -289,8 +295,8 @@ KQuickItemViews.TreeView {
                         border.color: Kirigami.Theme.textColor
                         width: 16
                         height: 16
-                        y: 10
-                        x: 3 // (16 - 10) / 2
+                        anchors.right: parent.right
+                        anchors.rightMargin: 3
 
                         Rectangle {
                             id: demandsAttention
@@ -310,8 +316,8 @@ KQuickItemViews.TreeView {
 
                         anchors.topMargin: 5
                         anchors.bottomMargin: 5
-                        anchors.leftMargin: 30
-                        anchors.rightMargin: 5
+                        anchors.leftMargin: 5
+                        anchors.rightMargin: 30
 
                         color: "transparent"
                         radius: 10
