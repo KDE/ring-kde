@@ -88,6 +88,9 @@ Kirigami.Page {
             Layout.fillHeight: true
             sourceComponent: BasicView.SideBar {
                 anchors.fill: sidebarLoader
+                onSelectIndex: {
+                    chatView.jumpTo(idx)
+                }
             }
         }
     }

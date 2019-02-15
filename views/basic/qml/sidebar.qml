@@ -29,6 +29,8 @@ Controls.ToolBar {
     id: sideBar
     property QtObject individual: mainPage.currentIndividual
 
+    signal selectIndex(var idx)
+
     Layouts.ColumnLayout {
         anchors.fill: parent
         spacing: Kirigami.Units.largeSpacing*2
@@ -179,6 +181,9 @@ Controls.ToolBar {
                 sourceComponent: JamiHistoryView.RecordingHistory {
                     anchors.fill: parent
                     individual: mainPage.currentIndividual
+                    onSelectIndex: {
+                        sideBar.selectIndex(idx)
+                    }
                 }
             }
 

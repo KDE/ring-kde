@@ -59,6 +59,10 @@ Rectangle {
         chatView.moveTo(Qt.BottomEdge)
     }
 
+    function jumpTo(idx) {
+        chatView.jumpTo(idx)
+    }
+
     function setContactMethod() {
         if (currentIndividual && !currentContactMethod) {
             currentContactMethod = currentIndividual.preferredContactMethod(

@@ -30,6 +30,12 @@ KQuickItemViews.HierarchyView {
     id: chatView
     clip: true
 
+    function jumpTo(idx) {
+        var ridx = filterModel.mapFromSource(idx)
+        var pos = chatView.itemRect(ridx)
+        chatView.contentY = pos.y
+    }
+
     property bool forceTime: false
     property var bubbleBackground: blendColor()
     property var bubbleForeground: ""
@@ -54,6 +60,7 @@ KQuickItemViews.HierarchyView {
     }
 
     model: RingQtQuick.TimelineFilter {
+        id: filterModel
         individual: mainPage.currentIndividual
         showCalls: false
         showEmptyGroups: true

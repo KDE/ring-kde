@@ -54,6 +54,9 @@ public:
     Q_INVOKABLE bool clearSelection() const;
     int currentListIndex() const;
 
+    Q_INVOKABLE QModelIndex mapToSource(const QModelIndex& idx) const;
+    Q_INVOKABLE QModelIndex mapFromSource(const QModelIndex& idx, QAbstractItemModel* prxoyModel) const;
+
 Q_SIGNALS:
     void selectListIndex(int index);
 private:

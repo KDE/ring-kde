@@ -269,6 +269,16 @@ void TreeHelperPrivate::slotCurrentSelectionChanged()
     Q_EMIT q_ptr->selectListIndex(m_pSelectionModel->currentIndex().row());
 }
 
+QModelIndex TreeHelper::mapToSource(const QModelIndex& idx) const
+{
+    return {};
+}
+
+QModelIndex  TreeHelper::mapFromSource(const QModelIndex& idx, QAbstractItemModel* prxoyModel) const
+{
+    return {};
+}
+
 Q_DECLARE_METATYPE(QItemSelectionModel*)
 
 #include <treehelper.moc>

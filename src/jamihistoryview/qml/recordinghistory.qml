@@ -29,12 +29,15 @@ import org.kde.ringkde.genericutils 1.0 as GenericUtils
 import org.kde.kirigami 2.2 as Kirigami
 
 KQuickItemViews.TreeView {
-    id: chatView
+    id: recordingHistory
 
     property QtObject individual: null
 
+    signal selectIndex(var idx)
+
     model: RingQtQuick.TimelineFilter {
-        individual: chatView.individual
+        id: filterModel
+        individual: recordingHistory.individual
         showMessages: false
         showCalls: false
         showEmptyGroups: true
@@ -47,7 +50,7 @@ KQuickItemViews.TreeView {
         color: Kirigami.Theme.textColor
         text: i18n("There is nothing yet, enter a message below or place a call using the buttons\nfound in the header")
         anchors.centerIn: parent
-        visible: chatView.empty
+        visible: recordingHistory.empty
         horizontalAlignment: Text.AlignHCenter
     }
 
@@ -55,6 +58,13 @@ KQuickItemViews.TreeView {
         id: messageDelegate
         Loader {
             id: chatLoader
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    selectIndex(model.mapToSource(rootIndex))
+                }
+            }
 
             property bool showDetailed: false
 
@@ -250,9 +260,11 @@ KQuickItemViews.TreeView {
                             }
 
                             JamiTimelineBase.MultiCall {
-                                width: chatView.width - 90
+                                Layout.fillWidth: true
+                                Layout.preferredHeight: 32
                                 modelIndex: rootIndex
                                 count: callCount
+                                clip: true
                             }
                         }
                     }
@@ -278,7 +290,7 @@ KQuickItemViews.TreeView {
                 id: recordingDelegate
                 Item {
                     height: content4444.implicitHeight + 10
-                    width: chatView.width
+                    width: recordingHistory.width
 
                     Rectangle {
                         width: 1
