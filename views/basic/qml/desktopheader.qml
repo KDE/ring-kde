@@ -112,21 +112,6 @@ MouseArea {
             Layout.rowSpan: 2
         }
 
-        Kirigami.Icon {
-            id: favorite
-            source: "favorite"
-            color: textColor
-            opacity: Kirigami.Settings.isMobile
-            Layout.rowSpan: 2
-            Layout.preferredWidth: Kirigami.Units.iconSizes.smallMedium
-            Layout.preferredHeight: Kirigami.Units.iconSizes.smallMedium
-
-            Behavior on opacity {
-                NumberAnimation {duration: 200}
-            }
-
-        }
-
         Item {
             Layout.fillWidth: true
             Layout.rowSpan: 2
@@ -143,9 +128,5 @@ MouseArea {
     }
 
     hoverEnabled: !Kirigami.Settings.isMobile
-
-    onContainsMouseChanged: {
-        favorite.opacity = containsMouse
-        edit.opacity = containsMouse
-    }
+    onContainsMouseChanged: edit.opacity = containsMouse
 }
