@@ -22,6 +22,7 @@ import QtQuick.Layouts 1.2
 import org.kde.kirigami 2.2 as Kirigami
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
+import org.kde.ringkde.jaminotification 1.0 as JamiNotification
 
 Kirigami.ScrollablePage {
     id: contactViewPage
@@ -39,6 +40,7 @@ Kirigami.ScrollablePage {
     property bool showStat: true
     property bool showImage: false
     property bool showSave: true
+    property bool showSettings: false
 
     property bool isChanged: false
 
@@ -255,15 +257,15 @@ Kirigami.ScrollablePage {
          * When showing the main GUI, this image is part of the header and should
          * not be shown.
          */
-        Item {
+        Loader {
             id: contactPicture
 
+            active: visible
             visible: showImage
-            height: showImage ? 90 : 0
-            implicitHeight: showImage ? 90 : 0
+            Layout.preferredHeight: showImage ? 90 : 0
             Layout.fillWidth: true
 
-            JamiContactView.ContactPhoto {
+            sourceComponent: JamiContactView.ContactPhoto {
                 id: photoRect
 
                 tracked: false
@@ -298,6 +300,20 @@ Kirigami.ScrollablePage {
                         else
                             console.log("ERROR", component.status, component.errorString())
                     }
+                }
+            }
+        }
+
+        Loader {
+            visible: showSettings
+            active: visible
+            Layout.alignment: Qt.AlignHCenter
+            sourceComponent: RowLayout {
+                JamiContactView.CommonActions {
+                    individual: contactViewPage.individual
+                }
+                JamiNotification.IndividualSettings {
+                    individual: contactViewPage.individual
                 }
             }
         }

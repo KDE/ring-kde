@@ -51,7 +51,6 @@ Layouts.RowLayout {
     Controls.Label {
         id: txt
         text: "Bookmark"
-        color: "white"
         Layouts.Layout.fillWidth: true
     }
 

@@ -40,6 +40,7 @@ Kirigami.OverlaySheet {
         individual: mainPage.currentIndividual
         showStat: false
         showImage: true
+        showSettings: true
         showSave: true
         forcedState: "profile"
         defaultName: ""
