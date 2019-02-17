@@ -27,6 +27,7 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "Android")
     SET(OS_ANDROID 1)
 ENDIF()
 
+OPTION(USE_STATIC_QT "Favor using Qt static plugins instead of shared libraries" OFF)
 OPTION(ENABLE_SINGLE_INSTANCE  "Reuse instances of Ring-KDE when possible" ON)
 OPTION(ENABLE_NOTIFICATIONS "Enable the notifications on supported platgorms" ON)
 

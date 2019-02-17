@@ -61,11 +61,11 @@ Q_IMPORT_PLUGIN(JamiAudioPlayer)
 Q_IMPORT_PLUGIN(GenericUtils)
 Q_IMPORT_PLUGIN(RingQtQuick)
 
-// Qt plusing
-#ifdef false
+// Qt plugins
+#ifdef USE_STATIC_KF5
+ Q_IMPORT_PLUGIN(QtQuickControls2MaterialStylePlugin)
  Q_IMPORT_PLUGIN(QXcbIntegrationPlugin)
  Q_IMPORT_PLUGIN(QtQuick2Plugin)
- Q_IMPORT_PLUGIN(QtQuickControls1Plugin)
  Q_IMPORT_PLUGIN(QtQuickControls2Plugin)
  Q_IMPORT_PLUGIN(QtQuick2WindowPlugin)
  Q_IMPORT_PLUGIN(QEvdevKeyboardPlugin)
@@ -73,7 +73,6 @@ Q_IMPORT_PLUGIN(RingQtQuick)
  Q_IMPORT_PLUGIN(QtQuickLayoutsPlugin)
  Q_IMPORT_PLUGIN(QtQuickTemplates2Plugin)
  Q_IMPORT_PLUGIN(QJpegPlugin)
- //Q_IMPORT_PLUGIN(QJpegPlugin)
  Q_IMPORT_PLUGIN(QSvgPlugin)
  Q_IMPORT_PLUGIN(QSvgIconPlugin)
  Q_IMPORT_PLUGIN(QXcbGlxIntegrationPlugin)
@@ -81,7 +80,7 @@ Q_IMPORT_PLUGIN(RingQtQuick)
  Q_IMPORT_PLUGIN(QtGraphicalEffectsPrivatePlugin)
  Q_IMPORT_PLUGIN(QtQmlModelsPlugin)
  Q_IMPORT_PLUGIN(KirigamiPlugin)
- Q_IMPORT_PLUGIN(QQc2DesktopStylePlugin)
+// Q_IMPORT_PLUGIN(QQc2DesktopStylePlugin)
 #endif
 
 #ifdef HAS_ICON_PACK
@@ -108,6 +107,13 @@ int main(int argc, char **argv)
 {
     //QQmlDebuggingEnabler enabler;
 
+#ifdef USE_STATIC_KF5
+    // In static mode, any "QML2_IMPORT_PATH" will probably have components built
+    // using a different version of Qt. This is unsuported and will crash
+    qputenv("QML2_IMPORT_PATH"   , "imaginary");
+    qputenv("XDG_CURRENT_DESKTOP", "imaginary");
+#endif
+
     QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QApplication app(argc, argv);
@@ -116,6 +122,9 @@ int main(int argc, char **argv)
 
     KLocalizedString::setApplicationDomain("ring-kde");
 
+#ifdef USE_STATIC_KF5
+    qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_KirigamiPlugin().instance())->registerTypes("org.kde.kirigami");
+#endif
     //FIXME remove
 #ifdef KQUICKITEMVIEWS_USE_STATIC_PLUGIN
     qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_KQuickItemViews().instance())->registerTypes("org.kde.playground.kquickitemviews");
@@ -155,7 +164,6 @@ int main(int argc, char **argv)
 #else
     REGISTER_PLUGIN(BasicView, "org.kde.ringkde.basicview")
 #endif
-
 
     KDeclarative::KDeclarative d;
     d.setDeclarativeEngine(&engine);
