@@ -49,6 +49,6 @@ void JamiVideoView::initializeEngine(QQmlEngine *engine, const char *uri)
     Q_UNUSED(engine)
     Q_UNUSED(uri)
 
-    static ImageProvider p;
-    engine->addImageProvider( QStringLiteral("VideoFrame"), &p );
+    auto p = new ImageProvider();
+    engine->addImageProvider( QStringLiteral("VideoFrame"), p );
 }
