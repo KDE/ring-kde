@@ -19,6 +19,8 @@
 
 #include <QtCore/QList>
 #include <QtCore/QCoreApplication>
+#include <QQmlEngine>
+#include <QQmlContext>
 
 class WindowEventPrivate
 {
@@ -47,9 +49,11 @@ WindowEvent::~WindowEvent()
 
 WindowEvent* WindowEvent::instance()
 {
-    static WindowEvent e(QCoreApplication::instance());
+    // Since it has a parent, it cannot directly be a static object
+    static WindowEvent* e = nullptr;
+    e = e ? e : new WindowEvent(QCoreApplication::instance());
 
-    return &e;
+    return e;
 }
 
 void WindowEvent::raiseWindow()
