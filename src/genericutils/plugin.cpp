@@ -45,6 +45,9 @@ void GenericUtils::initializeEngine(QQmlEngine *engine, const char *uri)
     Q_UNUSED(engine)
     Q_UNUSED(uri)
 
-    static SymbolicColorizer p;
-    engine->addImageProvider( QStringLiteral("SymbolicColorizer"), &p);
+    // It cannot be static because the ownership is transferred to QtQuick
+    // and it gets GC-ed when quitting.
+    auto p = new SymbolicColorizer;
+
+    engine->addImageProvider( QStringLiteral("SymbolicColorizer"), p);
 }
