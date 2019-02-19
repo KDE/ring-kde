@@ -110,35 +110,37 @@ QtObject {
         text: "Create contact"
     }
 
-    readonly property Kirigami.Action darkMode: Kirigami.Action {
-        iconName: "mail-message"
-        text: i18n("Dark mode")
-        onTriggered: {
-            console.log("Enable dark mode", Material.Dark, Material.Blue)
-            root.Material.theme = Material.Dark
-            root.Material.accent = Material.Blue
-        }
-    }
-
-    readonly property Kirigami.Action lightMode: Kirigami.Action {
-        iconName: "mail-message"
-        text: i18n("Light mode")
-        onTriggered: {
-            console.log("Enable light mode", Material.Light, Material.Purple)
-            root.Material.theme = Material.Light
-            root.Material.accent = Material.Purple
-        }
+    readonly property Kirigami.Action quitAction: Kirigami.Action {
+        iconName: "application-exit"
+        text: i18n("Exit")
+        onTriggered: Qt.quit()
     }
 
     readonly property Kirigami.Action settings: Kirigami.Action {
         text: i18n("Settings")
+        iconName: "configure"
 
         Kirigami.Action {
-            text: i18n("Settings")
+            text: i18n("Export account")
+            iconName: "document-export"
         }
 
         Kirigami.Action {
-            text: i18n("Settings")
+            text: i18n("Add a Jami account")
+            iconName: "tools-wizard"
+            onTriggered: events.requestsWizard()
+        }
+
+        Kirigami.Action {
+            text: i18n("Configure accounts")
+            iconName: "configure"
+            onTriggered: events.requestsConfigureAccounts()
+        }
+
+        Kirigami.Action {
+            text: i18n("Video settings")
+            iconName: "camera-web"
+            onTriggered: events.configureVideo()
         }
     }
 }

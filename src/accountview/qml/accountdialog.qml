@@ -17,7 +17,7 @@
  **************************************************************************/
 import QtQuick 2.7
 import org.kde.kirigami 2.2 as Kirigami
-import QtQuick.Controls 2.2
+import QtQuick.Controls 2.2 as Controls
 import QtQuick.Layouts 1.0
 
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
@@ -26,9 +26,9 @@ import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 import org.kde.ringkde.jamiaccountview 1.0 as JamiAccountView
 import org.kde.ringkde.jamiaccountview.pages 1.0 as JamiAccountPages
 
-Dialog {
+Controls.Dialog {
     id: accountDialog
-    standardButtons: Dialog.Save | Dialog.Cancel
+    standardButtons: Controls.Dialog.Save | Controls.Dialog.Cancel
 
     property var profilePage: undefined
 
@@ -76,39 +76,39 @@ Dialog {
 
                 ColumnLayout {
                     anchors.fill: parent
-                    TabBar {
+                    Controls.TabBar {
                         id: pageTabs
                         Layout.fillWidth: true
-                        TabButton {
+                        Controls.TabButton {
                             text: i18n("Basic")
                         }
-                        TabButton {
+                        Controls.TabButton {
                             text: i18n("Profile")
                         }
-                        TabButton {
+                        Controls.TabButton {
                             text: i18n("Advanced")
                         }
-                        TabButton {
+                        Controls.TabButton {
                             text: i18n("Network")
                         }
-                        TabButton {
+                        Controls.TabButton {
                             text: i18n("Devices")
                         }
-                        TabButton {
+                        Controls.TabButton {
                             text: i18n("Codecs")
                         }
-                        TabButton {
+                        Controls.TabButton {
                             text: i18n("Credentials")
                         }
-                        TabButton {
+                        Controls.TabButton {
                             text: i18n("Security")
                         }
-                        TabButton {
+                        Controls.TabButton {
                             text: i18n("Ringtones")
                         }
                     }
 
-                    SwipeView {
+                    Controls.SwipeView {
                         currentIndex: pageTabs.currentIndex
                         interactive : false
                         Layout.fillHeight: true

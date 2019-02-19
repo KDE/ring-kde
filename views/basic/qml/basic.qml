@@ -145,16 +145,18 @@ Kirigami.ApplicationWindow {
     JamiKDEIntegration.WindowEvent {
         id: events
 
-        onRequestsConfigureAccounts: {
-            var component = Qt.createComponent("qrc:/account/qml/accountdialog.qml")
+        function showDialog(path) {
+            var component = Qt.createComponent(path)
             if (component.status == Component.Ready) {
                 var window = component.createObject(applicationWindow().contentItem)
                 window.open()
             }
             else
                 console.log("ERROR", component.status, component.errorString())
-
         }
+
+        onRequestsConfigureAccounts: showDialog("qrc:/account/qml/accountdialog.qml")
+        onRequestsVideo: showDialog("qrc:/jamivideoview/qml/settingpopup.qml")
 
         onRequestsHideWindow: {
             hide()
