@@ -18,13 +18,14 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.0 as Controls
 import QtQuick.Layouts 1.3
+import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 
 Item {
     id: buttonBar
 
     property alias backButton: backButton
     property alias nextButton: nextButton
-    property bool  displaySkip: false
+    property bool  displaySkip: RingSession.accountModel.size > 0
     property bool  displayBusy: false
 
     signal skip()
@@ -37,11 +38,6 @@ Item {
         // Left buttons
         RowLayout {
             anchors.fill: parent
-
-            // The kirigami handle
-            Item {
-                width: 40
-            }
 
             // Align left
             Controls.Button {

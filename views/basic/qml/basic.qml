@@ -139,6 +139,7 @@ Kirigami.ApplicationWindow {
 
     globalDrawer: BasicView.GlobalDrawer {
         id: globalDrawer
+        handleVisible: !wizardLoader.active
     }
 
     JamiKDEIntegration.WindowEvent {
