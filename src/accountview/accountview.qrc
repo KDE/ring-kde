@@ -6,6 +6,7 @@
         <file>qml/accountdialog.qml</file>
         <file>qml/securitylevel.qml</file>
         <file>qml/securitytip.qml</file>
+        <file>qml/deleter.qml</file>
         <file>qml/pages/basic.qml</file>
         <file>qml/pages/advanced.qml</file>
         <file>qml/pages/network.qml</file>

@@ -17,11 +17,12 @@
 **************************************************************************/
 import QtQuick 2.8
 import org.kde.kirigami 2.5 as Kirigami
-import QtQuick.Controls 2.0
+import QtQuick.Controls 2.2 as Controls
 import QtQuick.Layouts 1.0
 
 import org.kde.playground.kquickitemviews 1.0 as KQuickItemViews
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
+import org.kde.ringkde.jamiaccountview 1.0 as JamiAccountView
 import org.kde.ringkde.genericutils 1.0 as GenericUtils
 
 ListView {
@@ -32,6 +33,10 @@ ListView {
     spacing : 10
     model: RingSession.profileModel
     delegate: codecDelegate
+
+    JamiAccountView.Deleter {
+        id: deleter
+    }
 
     Component {
         id: codecDelegate
@@ -116,7 +121,7 @@ ListView {
                         RowLayout {
                             width: parent.width
                             height: check.implicitHeight*2
-                            CheckBox {
+                            Controls.CheckBox {
                                 id: check
                                 width: height
                                 checked: model.enabled
@@ -128,7 +133,7 @@ ListView {
                                 pixmap: decoration
                             }
 
-                            Label {
+                            Controls.Label {
                                 text: alias
                                 Layout.fillWidth: true
                             }
@@ -137,7 +142,9 @@ ListView {
                             Kirigami.Action {
                                 text: i18n("Remove")
                                 iconName: "list-remove"
-                                onTriggered: {}
+                                onTriggered: {
+                                    deleter.deleteAccount(object)
+                                }
                             }
                         ]
 

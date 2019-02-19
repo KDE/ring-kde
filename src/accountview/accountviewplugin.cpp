@@ -34,6 +34,7 @@ void JamiAccountView::registerTypes(const char *uri)
     qmlRegisterType(QStringLiteral("qrc:/account/qml/accountdialog.qml"), uri, 1, 0,         "AccountDialog");
     qmlRegisterType(QStringLiteral("qrc:/account/qml/securitylevel.qml"), uri, 1, 0,         "SecurityLevel");
     qmlRegisterType(QStringLiteral("qrc:/account/qml/securitytip.qml"), uri, 1, 0,           "SecurityTip");
+    qmlRegisterType(QStringLiteral("qrc:/account/qml/deleter.qml"), uri, 1, 0,               "Deleter");
     qmlRegisterType(QStringLiteral("qrc:/account/qml/pages/basic.qml"), pageUri, 1, 0,       "Basic");
     qmlRegisterType(QStringLiteral("qrc:/account/qml/pages/advanced.qml"), pageUri, 1, 0,    "Advanced");
     qmlRegisterType(QStringLiteral("qrc:/account/qml/pages/network.qml"), pageUri, 1, 0,     "Network");
