@@ -266,7 +266,7 @@ Item {
     Rectangle{
         id: registrationPopup
 
-        width: Math.min(applicationWindow.width*0.8, implicitWidth + 50)
+        width: Math.min(wizardWindow.width*0.8, implicitWidth + 50)
         height: popupLayout.implicitHeight + 10
         anchors.centerIn: createRing
         color: "#0886a0"

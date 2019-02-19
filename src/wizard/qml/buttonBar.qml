@@ -23,6 +23,10 @@ import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 Item {
     id: buttonBar
 
+    onStateChanged: {
+        console.log("\nSTATE!", state)
+    }
+
     property alias backButton: backButton
     property alias nextButton: nextButton
     property bool  displaySkip: RingSession.accountModel.size > 0
@@ -94,7 +98,6 @@ Item {
             PropertyChanges {
                 target: buttonBar
                 visible: true
-                y: buttonBar.parent.height - buttonBar.height
                 state: "nextAvailable"
             }
         },

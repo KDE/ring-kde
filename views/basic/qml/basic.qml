@@ -17,7 +17,6 @@
  *   Free Software Foundation, Inc.,
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-
 import QtQuick 2.6
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.2
@@ -28,7 +27,6 @@ import org.kde.ringkde.basicview 1.0 as BasicView
 import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 import org.kde.ringkde.jamiwizard 1.0 as JamiWizard
 import org.kde.ringkde.jamikdeintegration 1.0 as JamiKDEIntegration
-import QtQuick.Controls.Material 2.3
 
 Kirigami.ApplicationWindow {
     width: 1024
@@ -80,13 +78,20 @@ Kirigami.ApplicationWindow {
         pageStack.currentIndex = Kirigami.Settings.isMobile ? 1 : 0
     }
 
-    // Check the network status and other sources to ensure actions *can* work
+    /**
+     * Track the network status and other information sources to ensure
+     * actions *can* work at any given time
+     */
     RingQtMedia.AvailabilityTracker {
         id: availabilityTracker
         individual: mainPage.currentIndividual
     }
 
-    // Allows to free resources when viewing other individuals
+    /**
+     * This implements the workflow of having a single "current" Individual
+     * (abstract contact) at once. It hold some references to all the shared
+     * pointers to ensure QtQuick don't accidentally let them be freed.
+     */
     RingQtQuick.SharedModelLocker {
         id: mainPage
 
@@ -104,14 +109,25 @@ Kirigami.ApplicationWindow {
         }
     }
 
+    /**
+     * This is the QtQuick action collection, there is also:
+     *
+     *          org.kde.ringkde.jamikdeintegration.actioncollection
+     *
+     * The difference is that this one has the actions that can be implemented
+     * in QML easily while the other one has the ones where the check and
+     * enabled state depends on the backend state and thus are better
+     * implemented in C++.
+     */
     BasicView.ActionCollection {
         id: actionCollection
     }
 
-    BasicView.Contacts {
+//     sdfdssdfsd()
+    BasicView.Contacts {//FIXME
         id : mydata
         Component.onCompleted: {
-            chat.model =  mydata.get(3)
+            chat.model = mydata.get(3)
         }
     }
 
@@ -120,14 +136,30 @@ Kirigami.ApplicationWindow {
     pageStack.globalToolBar.preferredHeight: Kirigami.Units.gridUnit * 3
     pageStack.defaultColumnWidth: root.width < 320 ? root.width : 320
 
+    /**
+     *
+     */
     BasicView.ListPage {
         id: list
     }
 
+    /**
+     * This page holds the chat and "per individual" timeline.
+     *
+     * It also has a sidebar with some actions and statistics to perform on
+     * the individual (abstract contact).
+     */
     BasicView.ChatPage {
         id: chat
     }
 
+    /**
+     * This is the multimedia page.
+     *
+     * It is used for audio, video and screencast communication. It is only in
+     * the PageRow stack when explicitly selected using a QmlAction or when
+     * there is an incoming (or active) communication.
+     */
     BasicView.CallPage {
         id: callpage
         visible: false
@@ -142,6 +174,13 @@ Kirigami.ApplicationWindow {
         handleVisible: !wizardLoader.active
     }
 
+    /**
+     * This is a "wormhole" object where the signals sent by any instance,
+     * including in C++, ends up here.
+     *
+     * This is used as an abstraction to integrate the C++ backend with the QML
+     * frontend without any setContextProperty.
+     */
     JamiKDEIntegration.WindowEvent {
         id: events
 
@@ -155,62 +194,59 @@ Kirigami.ApplicationWindow {
                 console.log("ERROR", component.status, component.errorString())
         }
 
+        // Dialogs and overlays
         onRequestsConfigureAccounts: showDialog("qrc:/account/qml/accountdialog.qml")
         onRequestsVideo: showDialog("qrc:/jamivideoview/qml/settingpopup.qml")
+        onRequestsWizard: wizardLoader.activate()
 
-        onRequestsHideWindow: {
-            hide()
-        }
-
-        onRequestsWizard: {
-            globalDrawer.drawerOpen = false
-            wizardLoader.visible    = true
-            wizardLoader.active     = true
-        }
+        // Window events
+        onRequestsHideWindow: hide()
     }
 
     /**
-     * Display the wizard when all accounts are deleted.
+     * This object tracks when showing the wizard is required. Unlike Ring-KDE,
+     * Banji cannot work without an account and all component blindly expect
+     * one to exist.
+     *
+     * In Ring-KDE, having no account was requested (and implemented), but this
+     * made everything harder to maintain with long QML expressions checking
+     * everything, everywhere. It was a mistake and Banji will *never* support
+     * having no account.
      */
     JamiWizard.Policies {
         id: wizardPolicies
     }
 
-    Loader {
+    /**
+     * Do common operations in a wizard instead of the settings.
+     *
+     * It is less error prone.
+     */
+    JamiWizard.Wizard {
         id: wizardLoader
-
-        active: false
         anchors.fill: parent
-        z: 999999
 
         onActiveChanged: {
-            if ( list.displayWelcome && !active)
+            if (list.displayWelcome && !active)
                 list.search()
-
-        }
-        sourceComponent: JamiWizard.Wizard {
-            anchors.fill: parent
-            z: 999999
-            onVisibleChanged: {
-                if (!visible) {
-                    wizardLoader.visible = false
-                    wizardLoader.active = false
-                }
-            }
-            onWizardFinished: {
-                wizardLoader.active = false
-                list.search()
-            }
         }
     }
 
+    /**
+     * Delay showing the wizard or welcome page until the next event loop
+     * iteration. This avoids having to handle a whole bunch of corner cases.
+     *
+     * It is important to keep in mind that net.lvindustries.ringqtquick is
+     * loaded by the QML files, not ahead of time. So during the first iteration,
+     * it isn't fully ready yet.
+     */
     Timer {
         interval: 0
         running: true
         repeat: false
         onTriggered: {
             if (wizardPolicies.displayWizard)
-                wizardLoader.active = true
+                wizardLoader.activate()
             else if (list.displayWelcome)
                 list.search()
         }

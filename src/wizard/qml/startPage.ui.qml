@@ -21,6 +21,9 @@ import org.kde.ringkde.jamiwizard 1.0 as JamiWizard
 
 Controls.Page {
     id: frontPage
+
+    property real bottomMargin: 0
+
     Rectangle {
         anchors.fill: parent
         x: -1
@@ -103,7 +106,7 @@ Controls.Page {
         id: createRing
         anchors.top: parent.top
         anchors.topMargin: 120 //the logo height is 100
-        anchors.bottomMargin: footer.height + 10
+        anchors.bottomMargin: frontPage.bottomMargin + 10
         anchors.horizontalCenter: parent.horizontalCenter
         opacity: 0
         visible: false
@@ -122,9 +125,9 @@ Controls.Page {
         id: profilePage
         visible: false
         y: text1.height + 8
-        height: parent.height - text1.height - 8 -45/*footer.height*/
+        height: parent.height - text1.height - 8 - frontPage.bottomMargin
         width: parent.width
-        anchors.bottomMargin: 45/*footer.height*/
+        anchors.bottomMargin: frontPage.bottomMargin
         anchors.topMargin: 12
     }
 }
