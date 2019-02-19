@@ -52,11 +52,13 @@ public Q_SLOTS:
     void showWizard();
     void configureAccounts();
     void hideWindow();
+    void configureVideo();
 
 Q_SIGNALS:
     void requestsWindowRaised();
     void requestsQuit();
     void requestsWizard();
+    void requestsVideo();
     void requestsConfigureAccounts();
     void requestsHideWindow();
     void iconifiedChanged();

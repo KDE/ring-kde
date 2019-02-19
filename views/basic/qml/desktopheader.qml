@@ -27,67 +27,89 @@ import org.kde.ringkde.jamitroubleshooting 1.0 as JamiTroubleshooting
 MouseArea {
     property var textColor: Kirigami.Theme.highlightedTextColor
     property real photoSize: Kirigami.Units.largeSpacing
+    property bool verticalMode: false
 
     // The `currentIndividual` is to force it to be reloaded
     property bool fits: mainPage.currentIndividual == mainPage.currentIndividual &&
         pageStack.wideMode && grid.implicitWidth < parent.width
 
-    implicitHeight: parent.parent.height - 2*photoSize
+    implicitHeight: grid.implicitHeight
+
+    function defaultDisplay() {
+        if (verticalMode)
+            chatPage.editContact = true
+        else
+            chatPage.showContactDetails = true
+    }
 
     GridLayout {
         id: grid
-        rows: 2
-        columns: 5
+        rows: verticalMode ? 3 : 2
+        columns: verticalMode ? 2 : 4
         rowSpacing: 0
-        flow: GridLayout.TopToBottom
+        flow: verticalMode ? GridLayout.LeftToRight : GridLayout.TopToBottom
         columnSpacing: Kirigami.Units.smallSpacing
         anchors.fill: parent
         JamiContactView.ContactPhoto {
-            Layout.preferredWidth: parent.parent.height
-            Layout.preferredHeight: parent.parent.height
+            Layout.preferredWidth: photoSize
+            Layout.preferredHeight: photoSize
+            Layout.fillHeight: !verticalMode
             Layout.rowSpan: 2
 
             individual: mainPage.currentIndividual
             defaultColor: Kirigami.Theme.highlightedTextColor
             drawEmptyOutline: false
             MouseArea {
-                onClicked: chatPage.showContactDetails = true
+                onClicked: defaultDisplay()
                 anchors.fill: parent
             }
         }
 
         Kirigami.Heading {
             id: mainHeading
-            level: 3
+            level: onlineLabel.visible || (!pageStack.wideMode) ? 3 : 1
             text: mainPage.currentIndividual ?
                 mainPage.currentIndividual.bestName : ""
 
             color: textColor
             Layout.preferredWidth: implicitWidth
+            Layout.alignment: Qt.AlignVCenter
             elide: Text.ElideRight
             //show only when at least half of the string has been painted: use
             //opacity as using visible it won't correctly recalculate the width
             opacity: width > implicitWidth/2
             Layout.columnSpan: 1
             MouseArea {
-                onClicked: chatPage.showContactDetails = true
+                onClicked: defaultDisplay()
                 anchors.fill: parent
             }
         }
 
         Controls.Label {
-            text: "Online"
-            elide: Text.ElideRight
-            color: textColor
+            id: onlineLabel
+            text: mainPage.currentIndividual && mainPage.currentIndividual.isOnline ?
+                i18n("Online") : i18n("Offline")
 
-            opacity: width > implicitWidth/2
-//             color: Qt.Tint(
-//                 mainHeading.color,
-//                 Kirigami.Theme.positiveTextColor
-//             )
+            elide: Text.ElideRight
+
+            Layout.maximumHeight: visible ? undefined : 0
+
+            opacity: mainPage.currentIndividual && (
+                mainPage.currentIndividual.isOnline || mainPage.currentIndividual.isOffline
+            ) ? 1 : 0
+
+            visible: opacity > 0
+
+            color: mainPage.currentIndividual ? Qt.Tint(
+                textColor,
+                mainPage.currentIndividual.isOnline ?
+                    Kirigami.Theme.positiveTextColor :
+                    Kirigami.Theme.negativeTextColor
+            ) : "transparent"
+
             Layout.columnSpan: 2
             MouseArea {
-                onClicked: chatPage.showContactDetails = true
+                onClicked: defaultDisplay()
                 anchors.fill: parent
             }
         }
@@ -97,6 +119,7 @@ MouseArea {
             opacity: Kirigami.Settings.isMobile
             color: textColor
             source: "document-edit"
+            visible: !verticalMode
             Layout.preferredWidth: Kirigami.Units.iconSizes.smallMedium
             Layout.preferredHeight: Kirigami.Units.iconSizes.smallMedium
 
@@ -114,15 +137,30 @@ MouseArea {
 
         Item {
             Layout.fillWidth: true
-            Layout.rowSpan: 2
+            Layout.rowSpan: verticalMode ? 1 :  2
+            Layout.columnSpan: verticalMode ? 2 : 1
             Layout.fillHeight: true
+            Layout.preferredHeight: verticalMode ?
+                content.implicitHeight + 4*Kirigami.Units.largeSpacing : undefined
+
+            Layout.topMargin: verticalMode ? Kirigami.Units.largeSpacing : 0
+            Layout.bottomMargin: verticalMode ? Kirigami.Units.largeSpacing : 0
+            Layout.rightMargin: verticalMode ? Kirigami.Units.largeSpacing : 0
+            Layout.leftMargin: verticalMode ? Kirigami.Units.largeSpacing : 0
+
+            Layout.minimumHeight: photoSize
+            Layout.maximumWidth: parent.parent.width - 2*Kirigami.Units.largeSpacing
 
             // Display reasons why the media buttons are not present
             JamiTroubleshooting.MediaAvailability {
+                id: content
                 width: parent.width
+                persistent: verticalMode
                 defaultSize: parent.height < 48 ? parent.height : 48
                 currentIndividual: mainPage.currentIndividual
                 anchors.verticalCenter: parent.verticalCenter
+                background: verticalMode ? Kirigami.Theme.neutralTextColor : undefined
+                foreground: verticalMode ? Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor
             }
         }
     }

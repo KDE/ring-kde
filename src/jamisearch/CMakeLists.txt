@@ -67,6 +67,7 @@ target_link_libraries( jamisearch
     # Project
     ringqt
     ringqtquick
+    jamikdeintegration
 
     # Qt
     Qt5::Core

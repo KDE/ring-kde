@@ -46,6 +46,8 @@ Kirigami.Page {
     titleDelegate: BasicView.DesktopHeader {
         id: dheader
         visible: fits
+        Layout.fillHeight: true
+        photoSize: parent.parent.height - 2*Kirigami.Units.largeSpacing
         Layout.fillWidth: true
         Component.onCompleted: _fits = fits
         onFitsChanged: _fits = fits

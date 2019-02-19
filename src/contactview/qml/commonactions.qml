@@ -31,6 +31,7 @@ Layouts.ColumnLayout {
         icon: "mail-message"
         text: "Write email"
         checkable: false
+        checked: individual && indivudal.firstBookmark
     }
 
     GenericUtils.ActionSwitch {

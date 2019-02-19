@@ -36,10 +36,11 @@ Controls.ToolBar {
         spacing: Kirigami.Units.largeSpacing*2
 
         BasicView.DesktopHeader {
-            Layouts.Layout.preferredWidth: parent.width
-            Layouts.Layout.preferredHeight: Kirigami.Units.iconSizes.large*1.5
+            Layouts.Layout.fillWidth: true
+            Layouts.Layout.maximumWidth: sideBar.width
             textColor: "white"
             photoSize: Kirigami.Units.iconSizes.large*1.5
+            verticalMode: true
         }
 
         Kirigami.Separator {

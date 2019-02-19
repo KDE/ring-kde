@@ -31,10 +31,7 @@ Kirigami.GlobalDrawer {
 
     actions: [
         actionCollection.settings,
-        actionCollection.newContact,
-        actionCollection.editAction,
-        actionCollection.darkMode,
-        actionCollection.lightMode,
+        actionCollection.quitAction,
     ]
 
     topContent: ListView {

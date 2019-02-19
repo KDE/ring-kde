@@ -24,6 +24,7 @@ Layouts.RowLayout {
     property alias icon: icn.source
     property alias text: txt.text
     property alias checkable: swt.visible
+    property alias checked: swt.checked
 
     Layouts.Layout.margins: 0
     Layouts.Layout.leftMargin: Kirigami.Units.smallSpacing

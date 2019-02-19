@@ -84,6 +84,13 @@ void WindowEvent::configureAccounts()
     }
 }
 
+void WindowEvent::configureVideo()
+{
+    for (auto o : qAsConst(instances())) {
+        emit o->requestsVideo();
+    }
+}
+
 void WindowEvent::hideWindow()
 {
     for (auto o : qAsConst(instances())) {
