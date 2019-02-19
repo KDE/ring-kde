@@ -57,8 +57,6 @@ Kirigami.Page {
         }
     }
 
-    title: i18n("Address book")
-
     background: Rectangle {
         color: Kirigami.Theme.backgroundColor
     }
