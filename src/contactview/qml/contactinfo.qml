@@ -177,6 +177,7 @@ Kirigami.ScrollablePage {
                         model: contactViewPage.individual
                         buttonColor: contactViewPage.labelColor
                         showAdd: contactViewPage.editing
+                        individual: contactViewPage.individual
                     }
 
                     background: Rectangle { color: Kirigami.Theme.backgroundColor }

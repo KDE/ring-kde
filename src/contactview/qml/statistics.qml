@@ -40,8 +40,8 @@ Layouts.ColumnLayout {
         Item {width: Kirigami.Units.smallSpacing; height: 1}
         Controls.Label {
             color:labelColor
-            text:  mainPage.currentIndividual?
-                mainPage.currentIndividual.formattedLastUsedTime : ""
+            text:  statistics.individual?
+                statistics.individual.formattedLastUsedTime : ""
         }
         Layouts.Layout.fillWidth: true
     }
@@ -56,8 +56,8 @@ Layouts.ColumnLayout {
         Item {width: Kirigami.Units.smallSpacing; height: 1}
         Controls.Label {
             color:labelColor
-            text: "Texted "+ (mainPage.currentIndividual?
-                mainPage.currentIndividual.textMessageCount : 0) + " time"
+            text: "Texted "+ (statistics.individual?
+                statistics.individual.textMessageCount : 0) + " time"
         }
         Layouts.Layout.fillWidth: true
     }
@@ -72,8 +72,8 @@ Layouts.ColumnLayout {
         Item {width: Kirigami.Units.smallSpacing; height: 1}
         Controls.Label {
             color:labelColor
-            text: (mainPage.currentIndividual?
-                mainPage.currentIndividual.unreadTextMessageCount : 0) + " unread messages"
+            text: (statistics.individual?
+                statistics.individual.unreadTextMessageCount : 0) + " unread messages"
         }
         Layouts.Layout.fillWidth: true
     }
@@ -88,8 +88,8 @@ Layouts.ColumnLayout {
         Item {width: Kirigami.Units.smallSpacing; height: 1}
         Controls.Label {
             color:labelColor
-            text: "Called "+ (mainPage.currentIndividual?
-                mainPage.currentIndividual.callCount : 0) + " time"
+            text: "Called "+ (statistics.individual?
+                statistics.individual.callCount : 0) + " time"
         }
         Layouts.Layout.fillWidth: true
     }
@@ -104,8 +104,8 @@ Layouts.ColumnLayout {
         Item {width: Kirigami.Units.smallSpacing; height: 1}
         Controls.Label {
             color:labelColor
-            text: "Spoken "+ Math.ceil((mainPage.currentIndividual?
-                mainPage.currentIndividual.totalSpentTime : 0)/60) + " minutes"
+            text: "Spoken "+ Math.ceil((statistics.individual?
+                statistics.individual.totalSpentTime : 0)/60) + " minutes"
         }
         Layouts.Layout.fillWidth: true
     }

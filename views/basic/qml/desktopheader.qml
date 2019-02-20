@@ -30,16 +30,16 @@ MouseArea {
     property bool verticalMode: false
 
     // The `currentIndividual` is to force it to be reloaded
-    property bool fits: mainPage.currentIndividual == mainPage.currentIndividual &&
+    property bool fits: workflow.currentIndividual == workflow.currentIndividual &&
         pageStack.wideMode && grid.implicitWidth < parent.width
 
     implicitHeight: grid.implicitHeight
 
     function defaultDisplay() {
         if (verticalMode)
-            chatPage.editContact = true
+            editContact.active = true
         else
-            chatPage.showContactDetails = true
+            viewContact.active = true
     }
 
     GridLayout {
@@ -50,13 +50,14 @@ MouseArea {
         flow: verticalMode ? GridLayout.LeftToRight : GridLayout.TopToBottom
         columnSpacing: Kirigami.Units.smallSpacing
         anchors.fill: parent
+
         JamiContactView.ContactPhoto {
             Layout.preferredWidth: photoSize
             Layout.preferredHeight: photoSize
             Layout.fillHeight: !verticalMode
             Layout.rowSpan: 2
 
-            individual: mainPage.currentIndividual
+            individual: workflow.currentIndividual
             defaultColor: Kirigami.Theme.highlightedTextColor
             drawEmptyOutline: false
             MouseArea {
@@ -68,8 +69,8 @@ MouseArea {
         Kirigami.Heading {
             id: mainHeading
             level: onlineLabel.visible || (!pageStack.wideMode) ? 3 : 1
-            text: mainPage.currentIndividual ?
-                mainPage.currentIndividual.bestName : ""
+            text: workflow.currentIndividual ?
+                workflow.currentIndividual.bestName : ""
 
             color: textColor
             Layout.preferredWidth: implicitWidth
@@ -87,22 +88,22 @@ MouseArea {
 
         Controls.Label {
             id: onlineLabel
-            text: mainPage.currentIndividual && mainPage.currentIndividual.isOnline ?
+            text: workflow.currentIndividual && workflow.currentIndividual.isOnline ?
                 i18n("Online") : i18n("Offline")
 
             elide: Text.ElideRight
 
             Layout.maximumHeight: visible ? undefined : 0
 
-            opacity: mainPage.currentIndividual && (
-                mainPage.currentIndividual.isOnline || mainPage.currentIndividual.isOffline
+            opacity: workflow.currentIndividual && (
+                workflow.currentIndividual.isOnline || workflow.currentIndividual.isOffline
             ) ? 1 : 0
 
             visible: opacity > 0
 
-            color: mainPage.currentIndividual ? Qt.Tint(
+            color: workflow.currentIndividual ? Qt.tint(
                 textColor,
-                mainPage.currentIndividual.isOnline ?
+                workflow.currentIndividual.isOnline ?
                     Kirigami.Theme.positiveTextColor :
                     Kirigami.Theme.negativeTextColor
             ) : "transparent"
@@ -124,7 +125,7 @@ MouseArea {
             Layout.preferredHeight: Kirigami.Units.iconSizes.smallMedium
 
             MouseArea {
-                onClicked: chatPage.editContact = true
+                onClicked: editContact.active = true
                 anchors.fill: parent
             }
 
@@ -157,7 +158,7 @@ MouseArea {
                 width: parent.width
                 persistent: verticalMode
                 defaultSize: parent.height < 48 ? parent.height : 48
-                currentIndividual: mainPage.currentIndividual
+                currentIndividual: workflow.currentIndividual
                 anchors.verticalCenter: parent.verticalCenter
                 background: verticalMode ? Kirigami.Theme.neutralTextColor : undefined
                 foreground: verticalMode ? Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor

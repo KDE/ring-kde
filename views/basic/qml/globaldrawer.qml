@@ -34,6 +34,11 @@ Kirigami.GlobalDrawer {
         actionCollection.quitAction,
     ]
 
+    /**
+     * List the active account profile.
+     *
+     * A profile is "our own" contact. There is one or more account per profile.
+     */
     topContent: ListView {
         y: 5
         id: availableAccounts

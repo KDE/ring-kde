@@ -25,17 +25,16 @@ import org.kde.ringkde.basicview 1.0 as BasicView
 import org.kde.ringkde.jamichatview 1.0 as JamiChatView
 
 Kirigami.Page {
-    property var model;
-    property var currentIndividual: null
-    property alias showContactDetails: detail.active
-    property alias editContact: form.active
     property bool _fits: false
 
+    // Force the toolbar style to prevent the action and drawer handles from
+    // getting on top of the chatbox.
     Kirigami.Theme.colorSet: Kirigami.Theme.View
     globalToolBarStyle: Kirigami.ApplicationHeaderStyle.ToolBar
 
     id: chatPage
 
+    // Remove all padding and spacing because otherwise the separators will have holes
     spacing: 0
     leftPadding: 0
     rightPadding: 0
@@ -43,6 +42,9 @@ Kirigami.Page {
     bottomPadding: 0
     padding: 0
 
+    /*
+     * When there is plenty of room, move the header into the toolbar.
+     */
     titleDelegate: BasicView.DesktopHeader {
         id: dheader
         visible: fits
@@ -53,6 +55,9 @@ Kirigami.Page {
         onFitsChanged: _fits = fits
     }
 
+    /*
+     * When there isn't enough room in the toolbar, add another row
+     */
     header: Controls.ToolBar {
         visible: (!_fits)
         height: visible ? Kirigami.Units.gridUnit * 2.5 : 0
@@ -70,15 +75,26 @@ Kirigami.Page {
         anchors.fill: parent
         spacing: 0
 
+        /*
+         * This is the main chat widget with the chatbox, messages, emojis
+         * and timeline scrollbar.
+         */
         JamiChatView.ChatPage {
             id: chatView
             Layout.fillWidth: true
             Layout.fillHeight: true
             Layout.bottomMargin: 0
-            currentIndividual: mainPage.currentIndividual
-            timelineModel: mainPage.timelineModel
+            currentIndividual: workflow.currentIndividual
         }
 
+        Kirigami.Separator {
+            Layout.fillHeight: true
+        }
+
+        /*
+         * Only add a sidebar when there is more room than the chat can make use
+         * of. It was decided to restrict the chat with to prevent long bubble.
+         */
         Loader {
             id: sidebarLoader
 
@@ -86,33 +102,16 @@ Kirigami.Page {
             active: pageStack.wideMode
                 && (!Kirigami.Settings.isMobile)
                 && parent.width > 750
+
             Layout.preferredWidth: active ? 250 : 0
             Layout.fillHeight: true
+
             sourceComponent: BasicView.SideBar {
                 anchors.fill: sidebarLoader
                 onSelectIndex: {
                     chatView.jumpTo(idx)
                 }
             }
-        }
-    }
-
-    Loader {
-        active: false
-        id: detail
-        sourceComponent: BasicView.DetailPage {
-            model: chatPage.model
-            onSheetOpenChanged: detail.active = sheetOpen
-            Component.onCompleted: sheetOpen = true
-        }
-    }
-
-    Loader {
-        active: false
-        id: form
-        sourceComponent: BasicView.FormPage {
-            onSheetOpenChanged: form.active = sheetOpen
-            Component.onCompleted: {sheetOpen = true}
         }
     }
 

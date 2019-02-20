@@ -45,6 +45,12 @@ Kirigami.Page {
         width: peerListPage.width
         spacing: Kirigami.Units.largeSpacing
 
+        /*
+         * This module displays the most severe error (if any) with a bunch
+         * of options to fix this. This is only for account or global errors.
+         *
+         * Individual errors have their own popup, so are media related errors.
+         */
         JamiTroubleShooting.GlobalTroubleshoot {
             id: globalTroubleshoot
             Layouts.Layout.fillWidth: true
@@ -57,10 +63,13 @@ Kirigami.Page {
         }
     }
 
-    background: Rectangle {
-        color: Kirigami.Theme.backgroundColor
-    }
-
+    /*
+     * The searchbox.
+     *
+     * When clicking on it, it grows and hijack the whole (list) page. It is
+     * done this way because the animation are pretty. Otherwise this is so, so
+     * wrong.
+     */
     titleDelegate: Item {
         id: header
         implicitHeight: parent.parent.height - 2*Kirigami.Units.largeSpacing
@@ -83,6 +92,9 @@ Kirigami.Page {
             }
         }
 
+        /*
+         * Add a blurry background when the search overlay is visible.
+         */
         JamiSearch.Overlay {
             id: _searchView
             source: peerListPage
@@ -106,7 +118,7 @@ Kirigami.Page {
             }
 
             onContactMethodSelected: {
-                mainPage.currentContactMethod = cm
+                workflow.currentContactMethod = cm
                 var idx = RingSession.peersTimelineModel.individualIndex(cm.individual)
                 list.currentIndex = idx.row
             }
@@ -126,7 +138,7 @@ Kirigami.Page {
         }
     }
 
-    BasicView.List {
+    BasicView.TimelineList {
         id: list
         width: parent.width
         height: parent.height

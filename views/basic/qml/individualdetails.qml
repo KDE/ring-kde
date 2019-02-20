@@ -22,23 +22,33 @@ import org.kde.kirigami 2.4 as Kirigami
 import QtQuick.Layouts 1.2 as Layouts
 import org.kde.ringkde.basicview 1.0 as BasicView
 
-Kirigami.OverlaySheet {
-    property var model;
-    id: page
-    Kirigami.Theme.colorSet: Kirigami.Theme.View
+/**
+ * Display some generic information about an individual.
+ *
+ * It isn't intended as a full contact manager, just "the basic stuff".
+ */
+Loader {
+    id: pageLoader
+    active: false
 
-    leftPadding: 0
-    topPadding: 0
-    rightPadding: 0
-    bottomPadding: 0
+    sourceComponent: Kirigami.OverlaySheet {
+        id: page
+        Kirigami.Theme.colorSet: Kirigami.Theme.View
+        onSheetOpenChanged: pageLoader.active = sheetOpen
+        Component.onCompleted: sheetOpen = true
 
-    header: Kirigami.Heading {
-        level: 2
-        text: "Details"
-    }
+        leftPadding: 0
+        topPadding: 0
+        rightPadding: 0
+        bottomPadding: 0
 
-    BasicView.Detail {
-        model: page.model
-        Layouts.Layout.preferredWidth: 300
+        header: Kirigami.Heading {
+            level: 2
+            text: "Details"
+        }
+
+        BasicView.Detail {
+            Layouts.Layout.preferredWidth: 300
+        }
     }
 }

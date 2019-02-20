@@ -28,7 +28,7 @@ ListView {
     id: numbers
 
     property color buttonColor: Kirigami.Theme.textColor
-    property alias model: numbers.model
+    property QtObject individual: null
     property QtObject person: null
     property alias interactive: numbers.interactive
     property bool editing: (model && model.editRow) || !person
@@ -44,6 +44,7 @@ ListView {
     anchors.margins: 3
     height: preferredHeight
     clip: true
+    model: individual
 
     Component {
         id: editComponent
@@ -97,7 +98,7 @@ ListView {
                     var p = numbers.person ? numbers.person : numbers.model.person
 
                     var cm = contactBuilder.updatePhoneNumber(obj,
-                        mainPage.currentIndividual,
+                        individual,
                         p, newPhoneNumber.text, numbertype.index, accIdx
                     )
 

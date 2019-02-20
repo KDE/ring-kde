@@ -22,6 +22,7 @@ import QtQuick.Controls 2.2 as Controls
 import QtQuick.Layouts 1.2 as Layouts
 import org.kde.kirigami 2.4 as Kirigami
 
+//FIXME hardcoded
 Column {
     id: root
     property var model;

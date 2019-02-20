@@ -25,9 +25,15 @@ import org.kde.ringkde.jaminotification 1.0 as JamiNotification
 import org.kde.ringkde.jamihistoryview 1.0 as JamiHistoryView
 import org.kde.ringkde.genericutils 1.0 as GenericUtils
 
+/**
+ * A narrow sidebar displayed when there is too much white space.
+ *
+ * It can be useful to ease navigation and lower the amount of clicks/touch
+ * for some common operations.
+ */
 Controls.ToolBar {
     id: sideBar
-    property QtObject individual: mainPage.currentIndividual
+    property QtObject individual: workflow.currentIndividual
 
     signal selectIndex(var idx)
 
@@ -35,19 +41,28 @@ Controls.ToolBar {
         anchors.fill: parent
         spacing: Kirigami.Units.largeSpacing*2
 
+        /*
+         * It is the same header as in the toolbar, but with an horizontal
+         * layout and brighter error popup.
+         */
         BasicView.DesktopHeader {
             Layouts.Layout.fillWidth: true
             Layouts.Layout.maximumWidth: sideBar.width
-            textColor: "white"
+            textColor: Kirigami.Theme.textColor
             photoSize: Kirigami.Units.iconSizes.large*1.5
             verticalMode: true
         }
 
         Kirigami.Separator {
             Layouts.Layout.fillWidth: true
-            color: "white"
+            color: Kirigami.Theme.textColor
         }
 
+        /*
+         * While it looks ok with the Material mode, use an hardcoded style
+         * for all theme because the desktop tabs don't fit and are terrible
+         * with iconified tabs.
+         */
         Controls.TabBar {
             id: tabs
             property real underlineHeight: 4
@@ -72,6 +87,7 @@ Controls.ToolBar {
 
             Controls.TabButton {
                 width: sideBar.width/3
+                height: width/2.5
                 background: Kirigami.Icon {
                     source: "help-about"
                     height: parent.height - tabs.underlineHeight*1.5
@@ -80,6 +96,7 @@ Controls.ToolBar {
 
             Controls.TabButton {
                 width: sideBar.width/3
+                height: width/2.5
                 background: Kirigami.Icon {
                     source: "shallow-history"
                     height: parent.height - tabs.underlineHeight*1.5
@@ -88,6 +105,7 @@ Controls.ToolBar {
 
             Controls.TabButton {
                 width: sideBar.width/3
+                height: width/2.5
                 background: Kirigami.Icon {
                     source: "favorite"
                     height: parent.height - tabs.underlineHeight*1.5
@@ -102,69 +120,53 @@ Controls.ToolBar {
             Layouts.Layout.fillWidth: true
             Layouts.Layout.fillHeight: true
 
+            /*
+             * A general informative overview of the individual with some
+             * common settings and action the user might want visible.
+             */
             Item {
-//                 background: Item{}
-
                 Layouts.ColumnLayout {
                     spacing: Kirigami.Units.largeSpacing*2
 
                     Kirigami.Heading {
                         level: 1
-                        text: "Actions"
-                        color: "white"
-
+                        text: i18n("Actions")
+                        color: Kirigami.Theme.textColor
                         Layouts.Layout.fillWidth: true
-
                         elide: Text.ElideRight
-
-                        //show only when at least half of the string has been painted: use
-                        //opacity as using visible it won't correctly recalculate the width
                         opacity: width > implicitWidth/2
-
                     }
 
                     JamiContactView.CommonActions {
-                        individual: mainPage.individual
+                        individual: workflow.currentIndividual
                         Layouts.Layout.fillWidth: true
                     }
 
                     Kirigami.Heading {
                         level: 1
-                        text: "Notifications"
-                        color: "white"
-
+                        text: i18n("Notifications")
+                        color: Kirigami.Theme.textColor
                         Layouts.Layout.fillWidth: true
-
                         elide: Text.ElideRight
-
-                        //show only when at least half of the string has been painted: use
-                        //opacity as using visible it won't correctly recalculate the width
                         opacity: width > implicitWidth/2
-
                     }
 
                     JamiNotification.IndividualSettings {
-                        individual: mainPage.individual
+                        individual: workflow.currentIndividual
                         Layouts.Layout.fillWidth: true
                     }
 
                     Kirigami.Heading {
                         level: 1
-                        text: "Statistics"
-                        color: "white"
-
+                        text: i18n("Statistics")
+                        color: Kirigami.Theme.textColor
                         Layouts.Layout.fillWidth: true
-
                         elide: Text.ElideRight
-
-                        //show only when at least half of the string has been painted: use
-                        //opacity as using visible it won't correctly recalculate the width
                         opacity: width > implicitWidth/2
-
                     }
 
                     JamiContactView.Statistics {
-                        individual: mainPage.individual
+                        individual: workflow.currentIndividual
                         Layouts.Layout.fillWidth: true
                         labelColor: Kirigami.Theme.textColor
                     }
@@ -175,19 +177,27 @@ Controls.ToolBar {
                 }
             }
 
+            /*
+             * This code is based on the original prototype of the chat back
+             * when it had the same box/timeline style as (back then), the
+             * peers timeline.
+             *
+             * The code is horrific, it barely works, but is enough for now.
+             */
             Loader {
                 width: swipeView.width
                 height: swipeView.height
                 active: currentIndex == Controls.SwipeView.index
                 sourceComponent: JamiHistoryView.RecordingHistory {
                     anchors.fill: parent
-                    individual: mainPage.currentIndividual
+                    individual: workflow.currentIndividual
                     onSelectIndex: {
                         sideBar.selectIndex(idx)
                     }
                 }
             }
 
+            //TODO finish the bookmarked media elements.
             Item {}
         }
     }

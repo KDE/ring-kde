@@ -34,7 +34,6 @@ Rectangle {
     property bool _sendRequestOverride: true
     property var currentContactMethod: null
     property var currentIndividual: null
-    property var timelineModel: null
 
     property bool canSendTexts: currentIndividual ? currentIndividual.canSendTexts : false
 
@@ -164,6 +163,7 @@ Rectangle {
 
                 JamiChatView.ChatView {
                     id: chatView
+                    individual: timelinePage.currentIndividual
                     width: Math.min(600, timelinePage.width - 50)
                     height: parent.height
                     anchors.horizontalCenter: parent.horizontalCenter

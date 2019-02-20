@@ -166,7 +166,8 @@ Item {
 
             cm = RingSession.individualDirectory.fromTemporary(cm)
 
-            mainPage.currentContactMethod = cm
+            //FIXME
+            workflow.currentContactMethod = cm
 
             searchBox.hide()
         }

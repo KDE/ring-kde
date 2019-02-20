@@ -29,11 +29,27 @@ import org.kde.ringkde.jamiwizard 1.0 as JamiWizard
 import org.kde.ringkde.jamikdeintegration 1.0 as JamiKDEIntegration
 
 Kirigami.ApplicationWindow {
-    width: 1024
-    height: 768
-    id: root
+    /*
+     * Default to 4:3 because it has a nice balance between landscape and
+     * portrait aspect ratios.
+     */
+    width: 1024; height: 768
+    pageStack.defaultColumnWidth: width < 320 ? width : 320
+
+    /*
+     * The call page is only in the stack when it is needed.
+     */
+    pageStack.initialPage: [list, chat]
+
+    /*
+     * Always use the toolbar mode because otherwise the chatbox and call
+     * toolbars gets covered by the Kirigami navigation widgets.
+     */
+    pageStack.globalToolBar.style: Kirigami.ApplicationHeaderStyle.ToolBar
+    pageStack.globalToolBar.preferredHeight: Kirigami.Units.gridUnit * 3
 
     // Localization is currently broken with the Material theme
+    //TODO check if the theme is Material before "fixing" i18n
     function i18n(t) {return t;}
 
     function showCallPage() {
@@ -78,22 +94,22 @@ Kirigami.ApplicationWindow {
         pageStack.currentIndex = Kirigami.Settings.isMobile ? 1 : 0
     }
 
-    /**
+    /*
      * Track the network status and other information sources to ensure
      * actions *can* work at any given time
      */
     RingQtMedia.AvailabilityTracker {
         id: availabilityTracker
-        individual: mainPage.currentIndividual
+        individual: workflow.currentIndividual
     }
 
-    /**
+    /*
      * This implements the workflow of having a single "current" Individual
      * (abstract contact) at once. It hold some references to all the shared
      * pointers to ensure QtQuick don't accidentally let them be freed.
      */
     RingQtQuick.SharedModelLocker {
-        id: mainPage
+        id: workflow
 
         onCallChanged: {
             if (!call)
@@ -109,7 +125,7 @@ Kirigami.ApplicationWindow {
         }
     }
 
-    /**
+    /*
      * This is the QtQuick action collection, there is also:
      *
      *          org.kde.ringkde.jamikdeintegration.actioncollection
@@ -123,27 +139,24 @@ Kirigami.ApplicationWindow {
         id: actionCollection
     }
 
-//     sdfdssdfsd()
-    BasicView.Contacts {//FIXME
-        id : mydata
-        Component.onCompleted: {
-            chat.model = mydata.get(3)
-        }
-    }
-
-    pageStack.initialPage: [list, chat]
-    pageStack.globalToolBar.style: Kirigami.ApplicationHeaderStyle.ToolBar
-    pageStack.globalToolBar.preferredHeight: Kirigami.Units.gridUnit * 3
-    pageStack.defaultColumnWidth: root.width < 320 ? root.width : 320
-
-    /**
+    /*
+     * This is a fixed non-expanded column on the left side with a list.
+     *
+     * Currently, it always display the timeline, but maybe eventually the other
+     * will be supported too:
+     *
+     *  * Peers timeline
+     *  * Contacts
+     *  * History
+     *  * Bookmarks
+     *  * Active calls and conferences
      *
      */
     BasicView.ListPage {
         id: list
     }
 
-    /**
+    /*
      * This page holds the chat and "per individual" timeline.
      *
      * It also has a sidebar with some actions and statistics to perform on
@@ -153,7 +166,7 @@ Kirigami.ApplicationWindow {
         id: chat
     }
 
-    /**
+    /*
      * This is the multimedia page.
      *
      * It is used for audio, video and screencast communication. It is only in
@@ -165,16 +178,19 @@ Kirigami.ApplicationWindow {
         visible: false
     }
 
-    contextDrawer: Kirigami.ContextDrawer {
-        id: contextDrawer
-    }
+    // Each page provide their actions
+    contextDrawer: Kirigami.ContextDrawer {}
 
     globalDrawer: BasicView.GlobalDrawer {
-        id: globalDrawer
+        /*
+         * Without this the handle might cover the "back" button or allow to
+         * open the wizard from within the wizard, which "works" but is
+         * obviously bad.
+         */
         handleVisible: !wizardLoader.active
     }
 
-    /**
+    /*
      * This is a "wormhole" object where the signals sent by any instance,
      * including in C++, ends up here.
      *
@@ -203,7 +219,7 @@ Kirigami.ApplicationWindow {
         onRequestsHideWindow: hide()
     }
 
-    /**
+    /*
      * This object tracks when showing the wizard is required. Unlike Ring-KDE,
      * Banji cannot work without an account and all component blindly expect
      * one to exist.
@@ -217,7 +233,7 @@ Kirigami.ApplicationWindow {
         id: wizardPolicies
     }
 
-    /**
+    /*
      * Do common operations in a wizard instead of the settings.
      *
      * It is less error prone.
@@ -232,7 +248,36 @@ Kirigami.ApplicationWindow {
         }
     }
 
-    /**
+    /*
+     * View the current individual information.
+     *
+     * This isn't intended as a full contact manager, only an overview of the
+     * relevant information. It is partially redundant with the sidebar.
+     *
+     * Please note that the sidebar only exists in wide mode with enough room to
+     * "afford" it. So this information needs to be available as an overlay too.
+     */
+    BasicView.IndividualDetails {
+        id: viewContact
+    }
+
+    /*
+     * Edit the current individual details.
+     *
+     * Like the `viewContact` above, this is partially redundant with the
+     * sidebar. As with `viewContact`, this is due to the fact that the sidebar
+     * isn't always there.
+     *
+     * It is also important to note that this will create a "real" contact
+     * (LibRingQt.Person) object. For as long as possible, the peer will exist
+     * as an LibRingQt.Individual object. It is a lower level abstraction and
+     * it is easier to synchronize because it doesn't have a custom vCard.
+     */
+    BasicView.IndividualEditor {
+        id: editContact
+    }
+
+    /*
      * Delay showing the wizard or welcome page until the next event loop
      * iteration. This avoids having to handle a whole bunch of corner cases.
      *

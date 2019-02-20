@@ -38,23 +38,28 @@ Kirigami.Page {
 
     titleDelegate: BasicView.DesktopHeader {
         id: dheader
-        visible: fits
         Layout.fillWidth: true
-        Component.onCompleted: _fits = fits
-        onFitsChanged: _fits = fits
     }
 
+    /**
+     * Get an ongoing call if it exists or request a dialing call to be created.
+     */
     function getCall(cm) {
-        return mainPage.call && mainPage.call.lifeCycleState != RingQtQuick.Call.FINISHED ?
-            mainPage.call : RingSession.callModel.dialingCall(cm)
+        return workflow.call && workflow.call.lifeCycleState != RingQtQuick.Call.FINISHED ?
+            workflow.call : RingSession.callModel.dialingCall(cm)
     }
 
+    /**
+     * An individual can have multiple phone numbers or Ring/Jami accounts.
+     *
+     * Pick one.
+     */
     function getDefaultCm() {
-        if (mainPage.currentContactMethod)
-            return mainPage.currentContactMethod
+        if (workflow.currentContactMethod)
+            return workflow.currentContactMethod
 
-        if (mainPage.currentIndividual)
-            return mainPage.currentIndividual.mainContactMethod
+        if (workflow.currentIndividual)
+            return workflow.currentIndividual.mainContactMethod
 
         return null
     }
@@ -63,7 +68,7 @@ Kirigami.Page {
         var cm = getDefaultCm()
 
         if (cm.hasInitCall) {
-            mainPage.showCall(cm.firstActiveCall)
+            workflow.showCall(cm.firstActiveCall)
             return
         }
 
@@ -76,7 +81,7 @@ Kirigami.Page {
         var cm = getDefaultCm()
 
         if (cm.hasInitCall) {
-            mainPage.showCall(cm.firstActiveCall)
+            workflow.showCall(cm.firstActiveCall)
             return
         }
 
@@ -89,7 +94,7 @@ Kirigami.Page {
         var cm = getDefaultCm()
 
         if (cm.hasInitCall) {
-            mainPage.showCall(cm.firstActiveCall)
+            workflow.showCall(cm.firstActiveCall)
             return
         }
 
@@ -101,13 +106,14 @@ Kirigami.Page {
     JamiCallView.CallView {
         id: callview
         anchors.fill: parent
+        individual: workflow.currentIndividual
         mode: "CONVERSATION"
-        call: mainPage.call
+        call: workflow.call
 
         Connections {
-            target: mainPage
+            target: workflow
             onCallChanged: {
-                callview.call = mainPage.call
+                callview.call = workflow.call
             }
         }
 
@@ -141,7 +147,9 @@ Kirigami.Page {
         main : actionCollection.chatAction
     }
 
-    // Not worth it on mobile
+    /**
+     * Not worth it on mobile, they are the same as in the call toolbar.
+     */
     contextualActions: Kirigami.Settings.isMobile ? [] : [
         ActionCollection.holdAction        ,
         ActionCollection.recordAction      ,

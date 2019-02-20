@@ -29,6 +29,7 @@ import org.kde.ringkde.genericutils 1.0 as GenericUtils
 KQuickItemViews.HierarchyView {
     id: chatView
     clip: true
+    property alias individual: filterModel.individual
 
     function jumpTo(idx) {
         var ridx = filterModel.mapFromSource(idx)
@@ -61,7 +62,6 @@ KQuickItemViews.HierarchyView {
 
     model: RingQtQuick.TimelineFilter {
         id: filterModel
-        individual: mainPage.currentIndividual
         showCalls: false
         showEmptyGroups: true
         showMessages: true

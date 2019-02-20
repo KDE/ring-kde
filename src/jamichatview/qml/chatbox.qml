@@ -60,6 +60,7 @@ Item {
         Text {
             anchors.fill: parent
             text: "😀"
+            color: Kirigami.Theme.textColor
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
             font.family: "Noto Color Emoji"
@@ -157,6 +158,7 @@ Item {
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
                         font.family: "Noto Color Emoji"
+                        color: Kirigami.Theme.textColor
                         font.pixelSize : Kirigami.Settings.isMobile ? 24 : 18
                         text: symbol
                         Component.onCompleted: maxWidth = Math.max(maxWidth, emojiTxt.contentWidth)

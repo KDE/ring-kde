@@ -23,26 +23,37 @@ import org.kde.kirigami 2.4 as Kirigami
 import org.kde.ringkde.basicview 1.0 as BasicView
 import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 
-Kirigami.OverlaySheet {
-    Kirigami.Theme.colorSet: Kirigami.Theme.View
+Loader {
+    id: pageLoader
+    active: false
+    sourceComponent: Kirigami.OverlaySheet {
+        Kirigami.Theme.colorSet: Kirigami.Theme.View
 
-    JamiContactView.ContactInfo {
-        id: contactInfo
+        onSheetOpenChanged: pageLoader.active = sheetOpen
+        Component.onCompleted: {sheetOpen = true}
 
-        Layout.preferredWidth: applicationWindow().width * (
-            Kirigami.Settings.isMobile ? 0.8 : 0.5
-        )
+        /*
+         * This widget is shared between the profile edition, the wizard,
+         * the contact request and normal contact edition.
+         */
+        JamiContactView.ContactInfo {
+            id: contactInfo
 
-        height: applicationWindow().height  * (
-            Kirigami.Settings.isMobile ? 0.8 : 0.5
-        )
+            Layout.preferredWidth: applicationWindow().width * (
+                Kirigami.Settings.isMobile ? 0.8 : 0.5
+            )
 
-        individual: mainPage.currentIndividual
-        showStat: false
-        showImage: true
-        showSettings: true
-        showSave: true
-        forcedState: "profile"
-        defaultName: ""
+            height: applicationWindow().height  * (
+                Kirigami.Settings.isMobile ? 0.8 : 0.5
+            )
+
+            individual: workflow.currentIndividual
+            showStat: false
+            showImage: true
+            showSettings: true
+            showSave: true
+            forcedState: "profile"
+            defaultName: ""
+        }
     }
 }

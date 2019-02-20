@@ -34,7 +34,7 @@ ListView {
         onClicked: {
             hideCall()
             showChat()
-            mainPage.setIndividual(object)
+            workflow.setIndividual(object)
         }
 
         activeBackgroundColor: Kirigami.Theme.highlightColor
@@ -48,7 +48,7 @@ ListView {
         contentItem: GridLayout {
             height: 4 * Kirigami.Units.fontMetrics.height
 
-            rows: 2
+            rows: 4
             columns: 2
 
             JamiContactView.ContactPhoto {
@@ -63,7 +63,11 @@ ListView {
                     Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor
 
                 drawEmptyOutline: false
-                Layout.rowSpan: 2
+                Layout.rowSpan: 4
+            }
+
+            Item {
+                Layout.fillHeight: true
             }
 
             Kirigami.Heading {
@@ -81,6 +85,10 @@ ListView {
                 opacity: 0.5
                 color: highlighted ?
                     Kirigami.Theme.highlightedTextColor : Kirigami.Theme.disabledTextColor
+            }
+
+            Item {
+                Layout.fillHeight: true
             }
         }
 

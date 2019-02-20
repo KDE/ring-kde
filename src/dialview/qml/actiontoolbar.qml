@@ -94,7 +94,6 @@ Rectangle {
     Component {
         id: actionDelegate
 
-
         Item {
             id: mainArea
             width:  actionGrid.cellWidth
@@ -113,7 +112,7 @@ Rectangle {
                     anchors.margins: 15
                     anchors.fill: parent
                     KQuickItemViews.DecorationAdapter {
-                        anchors.verticalCenter: parent.verticalCenter
+                        Layouts.Layout.alignment: Qt.AlignVCenter
                         pixmap: decoration
                         width:  30
                         height:  30

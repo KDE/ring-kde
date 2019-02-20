@@ -3,13 +3,12 @@
         <file>qml/actioncollection.qml</file>
         <file>qml/basic.qml</file>
         <file>qml/chatpage.qml</file>
-        <file>qml/contacts.qml</file>
         <file>qml/desktopheader.qml</file>
-        <file>qml/detailpage.qml</file>
+        <file>qml/individualdetails.qml</file>
         <file>qml/detail.qml</file>
-        <file>qml/formpage.qml</file>
+        <file>qml/individualeditor.qml</file>
         <file>qml/listpage.qml</file>
-        <file>qml/list.qml</file>
+        <file>qml/timelinelist.qml</file>
         <file>qml/globaldrawer.qml</file>
         <file>qml/sidebar.qml</file>
         <file>qml/callpage.qml</file>
