@@ -25,7 +25,7 @@ import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 import org.kde.ringkde.jamitroubleshooting 1.0 as JamiTroubleshooting
 
 MouseArea {
-    property var textColor: Kirigami.Theme.highlightedTextColor
+    property var textColor: Kirigami.Theme.textColor
     property real photoSize: Kirigami.Units.largeSpacing
     property bool verticalMode: false
 
@@ -58,7 +58,7 @@ MouseArea {
             Layout.rowSpan: 2
 
             individual: workflow.currentIndividual
-            defaultColor: Kirigami.Theme.highlightedTextColor
+            defaultColor: Kirigami.Theme.textColor
             drawEmptyOutline: false
             MouseArea {
                 onClicked: defaultDisplay()
