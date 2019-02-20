@@ -31,11 +31,14 @@ import org.kde.ringkde.genericutils 1.0 as GenericUtils
  * It can be useful to ease navigation and lower the amount of clicks/touch
  * for some common operations.
  */
-Controls.ToolBar {
+Controls.Pane {
     id: sideBar
     property QtObject individual: workflow.currentIndividual
 
     signal selectIndex(var idx)
+
+    Kirigami.Theme.inherit: false
+    Kirigami.Theme.colorSet: Kirigami.Theme.Window
 
     Layouts.ColumnLayout {
         anchors.fill: parent
