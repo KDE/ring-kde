@@ -93,17 +93,17 @@ IF(NOT ${ENABLE_STATIC} MATCHES false)
   ADD_DEFINITIONS(${Qt5DBus_CFLAGS})
 
   IF(NOT DEFINED OS_ANDROID)
-    TARGET_LINK_LIBRARIES(ring-kde
+    TARGET_LINK_LIBRARIES(ring-kde PUBLIC
       -lpthread
     )
   ENDIF()
 
-  TARGET_LINK_LIBRARIES(ring-kde
+  TARGET_LINK_LIBRARIES(ring-kde PRIVATE
     ${ringqt_LIBRARY_STATIC}
   )
 
   IF(NOT ${ENABLE_LIBWRAP})
-    TARGET_LINK_LIBRARIES(ring-kde
+    TARGET_LINK_LIBRARIES(ring-kde PUBLIC
         ${Qt5DBus_LIBRARIES}
     )
   ENDIF()
@@ -115,68 +115,74 @@ ENDIF()
 QT5_ADD_DBUS_ADAPTOR(ring_kde_SRCS ../data/org.kde.kuiserver.xml cmd.h Cmd )
 
 TARGET_LINK_LIBRARIES(ring-kde
-  jamiwizard
-  jamicallview
-  jamidialview
-  jamitimelineview
-  jamiphotoselector
-  jamicanvasindicator
-  basicview
-  jamicontactview
-  jamiaccountview
-  genericutils
-  kquickitemviews
-  jamikdeintegration
-  jamivideoview
-  jamitroubleshooting
-  jamihistoryview
-  jamichatview
-  jamitimelinebase
-  jamiaudioplayer
-  jamisearch
+    PRIVATE
+        # Internal
+        jamiwizard
+        jamicallview
+        jamidialview
+        jamitimelineview
+        jamiphotoselector
+        jamicanvasindicator
+        basicview
+        jamicontactview
+        jamiaccountview
+        genericutils
+        kquickitemviews
+        jamikdeintegration
+        jamivideoview
+        jamitroubleshooting
+        jamihistoryview
+        jamichatview
+        jamitimelinebase
+        jamiaudioplayer
+        jamisearch
+        sharedassets
 
-  # RingQt
-  ringqtquick
+        # RingQt
+        ringqtquick
 
-  # Qt5
-  Qt5::Widgets
-  Qt5::Core
-  Qt5::Gui
-  Qt5::Svg
-  Qt5::PrintSupport
+    PUBLIC
+        # Qt5
+        Qt5::Widgets
+        Qt5::Core
+        Qt5::Gui
+        Qt5::Svg
+        Qt5::PrintSupport
 
-  # KF5
-  KF5::I18n
-  KF5::WidgetsAddons
-  KF5::ConfigCore
-  KF5::ConfigGui
-  KF5::DBusAddons
-  KF5::XmlGui
-  KF5::IconThemes
-  KF5::Crash
-  KF5::GlobalAccel
-  KF5::Declarative
-  KF5::Kirigami2
+        # KF5
+        KF5::I18n
+        KF5::WidgetsAddons
+        KF5::ConfigCore
+        KF5::ConfigGui
+        KF5::DBusAddons
+        KF5::XmlGui
+        KF5::IconThemes
+        KF5::Crash
+        KF5::GlobalAccel
+        KF5::Declarative
+        KF5::Kirigami2
 )
 
 IF(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/iconpack)
-    TARGET_LINK_LIBRARIES(ring-kde
+    TARGET_LINK_LIBRARIES(ring-kde PRIVATE
         breezeiconpack
     )
 ENDIF()
 
 IF(ENABLE_NOTIFICATIONS)
     TARGET_LINK_LIBRARIES(ring-kde
-        jaminotification
+        PRIVATE
+            jaminotification
 
-        # KF5
-        KF5::Notifications
-        KF5::NotifyConfig
+        PUBLIC
+            # KF5
+            KF5::Notifications
+            KF5::NotifyConfig
     )
 ENDIF()
 
 IF (Qt5TextToSpeech_FOUND)
-   TARGET_LINK_LIBRARIES(ring-kde
+   TARGET_LINK_LIBRARIES(ring-kde PUBLIC
       Qt5::TextToSpeech
    )
 ENDIF()
