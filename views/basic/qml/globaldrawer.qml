@@ -82,6 +82,30 @@ Kirigami.GlobalDrawer {
                             Layout.fillHeight: true
                         }
                     }
+
+                    ColumnLayout {
+                        Layout.fillHeight: true
+                        Layout.preferredWidth: Kirigami.Units.iconSizes.small
+
+                        Kirigami.Icon {
+                            Layout.preferredHeight: Kirigami.Units.iconSizes.small
+                            Layout.preferredWidth: Kirigami.Units.iconSizes.small
+                            source: "view-refresh"
+                            MouseArea {
+                                anchors.fill: parent
+                                onClicked: {
+                                    console.log("RELOAD", model.object)
+                                    RingSession.profileModel.reloadAllAccount(
+                                    model.object
+                                    )
+                                }
+                            }
+                        }
+
+                        Item {
+                            Layout.fillHeight: true
+                        }
+                    }
                 }
 
                 onClicked: {

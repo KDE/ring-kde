@@ -37,6 +37,8 @@ KQuickItemViews.HierarchyView {
         chatView.contentY = pos.y
     }
 
+    property var treeHelper: GenericUtils.TreeHelper {}
+
     property bool forceTime: false
     property var bubbleBackground: blendColor()
     property var bubbleForeground: ""

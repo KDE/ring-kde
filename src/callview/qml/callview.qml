@@ -92,6 +92,7 @@ Item {
         toolbarTimer.running = true
     }
 
+    // The main video widget
     JamiVideoView.VideoWidget {
         id: videoWidget
         anchors.fill: parent
@@ -101,6 +102,7 @@ Item {
         call: videoDock.call
     }
 
+    // The preview
     JamiVideoView.VideoWidget {
         id: videoPreview
         z: -95
@@ -112,6 +114,7 @@ Item {
         height: 108
     }
 
+    // This toolbar allows to rotate video, take screenshots, etc
     JamiVideoView.VideoControlToolbar {
         id: controlToolbar
         anchors.top: parent.top
@@ -124,6 +127,7 @@ Item {
         }
     }
 
+    // The has the currently supported call actions such as hang up
     JamiDialView.ActionToolbar {
         id: actionToolbar
         anchors.bottom: parent.bottom
@@ -136,18 +140,14 @@ Item {
         }
     }
 
+    // Make it obvious when the call is being recording (locally, if the other
+    // side choose to record, there is no way to really know.
     JamiCallView.RecordingIcon {
         anchors.right: videoDock.right
         anchors.top: controlToolbar.bottom
     }
 
-    JamiVideoView.DeviceSetting {
-        id: deviceSettings
-        visible: mode == "PREVIEW"
-        width: parent.width
-        z: 100
-    }
-
+    // This allows to switch to different camera or enable screen sharing
     JamiVideoView.VideoSource {
         id: videoSource
         z: 101
@@ -185,12 +185,8 @@ Item {
         }
 
         function trackActivity() {
-            if (mode == "PREVIEW") {
-                deviceSettings.visible = true
-            }
-            else if (call) {
+            if (call && mode != "PREVIEW")
                 showToolbars()
-            }
 
             activityTimer.restart()
         }

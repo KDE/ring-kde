@@ -64,8 +64,19 @@ Kirigami.Page {
         return null
     }
 
-    function audioCall() {
+    function callCommon(media) {
+        if (!workflow.currentIndividual)
+            return
+
         var cm = getDefaultCm()
+
+        if (!cm)
+            cm = workflow.currentIndividual.preferredContactMethod(media)
+
+        if (!cm) {
+            console.log("Failed to find a proper contact method for", workflow.currentIndividual)
+            return
+        }
 
         if (cm.hasInitCall) {
             workflow.showCall(cm.firstActiveCall)
@@ -75,32 +86,18 @@ Kirigami.Page {
         var call = getCall(cm)
 
         call.performAction(RingQtQuick.Call.ACCEPT)
+    }
+
+    function audioCall() {
+        callCommon(RingQtQuick.Media.AUDIO)
     }
 
     function videoCall() {
-        var cm = getDefaultCm()
-
-        if (cm.hasInitCall) {
-            workflow.showCall(cm.firstActiveCall)
-            return
-        }
-
-        var call = getCall(cm)
-
-        call.performAction(RingQtQuick.Call.ACCEPT)
+        callCommon(RingQtQuick.Media.VIDEO)
     }
 
     function screencast() {
-        var cm = getDefaultCm()
-
-        if (cm.hasInitCall) {
-            workflow.showCall(cm.firstActiveCall)
-            return
-        }
-
-        var call = getCall(cm)
-
-        call.performAction(RingQtQuick.Call.ACCEPT)
+        callCommon(RingQtQuick.Media.VIDEO)
     }
 
     JamiCallView.CallView {

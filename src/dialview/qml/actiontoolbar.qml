@@ -19,6 +19,7 @@
 import QtQuick 2.0
 
 import QtQuick.Layouts 1.0 as Layouts
+import org.kde.kirigami 2.2 as Kirigami
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 import net.lvindustries.ringqtquick.models 1.0 as RingQtModels
 import org.kde.playground.kquickitemviews 1.0 as KQuickItemViews
@@ -221,7 +222,49 @@ Rectangle {
     GridView  {
         id: actionGrid
         height: parent.height
-        model: RingSession.callModel.userActionModel.activeActionModel
+
+        /*
+         * This filter allows to handle the action differently depending on the
+         * platform or context. The UserActionModel doesn't care about these
+         * use case and only tell if the action is available depending on the
+         * current state.
+         */
+        model: RingQtQuick.UserActionFilter {
+            id: filterModel
+
+            // Record crashes on Android
+            RingQtQuick.UserAction {
+                action: RingQtModels.UserActionModel.RECORD
+                enabled: !Kirigami.Settings.isMobile
+            }
+
+            // Not implemented on Android
+            RingQtQuick.UserAction {
+                action: RingQtModels.UserActionModel.MUTE_VIDEO
+                enabled: !Kirigami.Settings.isMobile
+            }
+
+            // Not implemented on Android
+            RingQtQuick.UserAction {
+                action: RingQtModels.UserActionModel.MUTE_AUDIO
+                enabled: !Kirigami.Settings.isMobile
+            }
+
+            // As of Feb 2019, this is currently broken upstream
+            RingQtQuick.UserAction {
+                action: RingQtModels.UserActionModel.HOLD
+                enabled: false
+            }
+
+            // Unsuported by this client
+            RingQtQuick.UserAction {
+                action: RingQtModels.UserActionModel.SERVER_TRANSFER
+                enabled: false
+            }
+
+            model: RingSession.callModel.userActionModel
+        }
+
         delegate: actionDelegate
         cellWidth: 70; cellHeight: 60
         anchors.centerIn: parent
@@ -281,7 +324,7 @@ Rectangle {
             return
         }
 
-        actionGrid.model = (userActionModel && userActionModel.activeActionModel) ?
-            userActionModel.activeActionModel : RingSession.callModel.userActionModel.activeActionModel
+        filterModel.model = userActionModel ?
+            userActionModel : RingSession.callModel.userActionModel
     }
 }
