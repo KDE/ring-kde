@@ -133,9 +133,14 @@ set(AUTOMOC_MOC_OPTIONS -Muri=org.kde.ringkde.jamikdeintegration)
 add_library(jamikdeintegration ${jamikdeintegration_LIB_SRCS} )
 
 target_link_libraries( jamikdeintegration
+
+PRIVATE
     # Project
-    ringqt
     ringqtquick
+    sharedassets
+
+PUBLIC
+    ringqt
 
     # Qt
     Qt5::Core
@@ -154,7 +159,7 @@ target_link_libraries( jamikdeintegration
 )
 
 if(ENABLE_NOTIFICATIONS)
-    target_link_libraries( jamikdeintegration
+    target_link_libraries( jamikdeintegration PUBLIC
         KF5::NotifyConfig # the notification dialog # (DESKTOP)
         KF5::Notifications # the Systray
     )
@@ -176,7 +181,7 @@ set(jamikdeintegration_EXPORT_HDRS
 )
 
 if(X11_FOUND)
-    target_link_libraries( jamikdeintegration
+    target_link_libraries( jamikdeintegration PRIVATE
         Qt5::X11Extras
         ${X11_X11_LIB}
     )

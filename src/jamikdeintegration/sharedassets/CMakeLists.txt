@@ -24,5 +24,5 @@ QT5_ADD_RESOURCES(sharedassets_LIB_SRCS
 
 ADD_LIBRARY( sharedassets  STATIC ${sharedassets_LIB_SRCS} )
 
-target_link_libraries( sharedassets )
+target_link_libraries( sharedassets PRIVATE )
 
