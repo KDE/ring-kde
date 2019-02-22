@@ -133,29 +133,28 @@ set(AUTOMOC_MOC_OPTIONS -Muri=org.kde.ringkde.jamikdeintegration)
 add_library(jamikdeintegration ${jamikdeintegration_LIB_SRCS} )
 
 target_link_libraries( jamikdeintegration
+    PRIVATE
+        # Project
+        ringqtquick
+        sharedassets
 
-PRIVATE
-    # Project
-    ringqtquick
-    sharedassets
+    PUBLIC
+        ringqt
 
-PUBLIC
-    ringqt
+        # Qt
+        Qt5::Core
+        Qt5::Gui
+        Qt5::Quick
+        Qt5::Widgets
+        Qt5::QuickControls2
 
-    # Qt
-    Qt5::Core
-    Qt5::Gui
-    Qt5::Quick
-    Qt5::Widgets
-    Qt5::QuickControls2
-
-    # KF5
-    KF5::I18n
-    KF5::ConfigCore
-    KF5::ConfigGui
-    KF5::ConfigWidgets # KColorScheme
-    KF5::XmlGui # KSortcutdialog # (DESKTOP)
-    KF5::GlobalAccel # (DESKTOP)
+        # KF5
+        KF5::I18n
+        KF5::ConfigCore
+        KF5::ConfigGui
+        KF5::ConfigWidgets # KColorScheme
+        KF5::XmlGui # KSortcutdialog # (DESKTOP)
+        KF5::GlobalAccel # (DESKTOP)
 )
 
 if(ENABLE_NOTIFICATIONS)
