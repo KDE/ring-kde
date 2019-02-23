@@ -25,7 +25,7 @@
 
 void BasicView::registerTypes(const char *uri)
 {
-    qmlRegisterType(QStringLiteral("qrc:/basicview/qml/actioncollection.qml"), uri, 1, 0, "ActionCollection");
+    qmlRegisterType(QStringLiteral("qrc:/basicview/qml/banjiactioncollection.qml"), uri, 1, 0, "BanjiActionCollection");
     qmlRegisterType(QStringLiteral("qrc:/basicview/qml/chatpage.qml"), uri, 1, 0, "ChatPage");
     qmlRegisterType(QStringLiteral("qrc:/basicview/qml/callpage.qml"), uri, 1, 0, "CallPage");
     qmlRegisterType(QStringLiteral("qrc:/basicview/qml/desktopheader.qml"), uri, 1, 0, "DesktopHeader");
@@ -36,6 +36,7 @@ void BasicView::registerTypes(const char *uri)
     qmlRegisterType(QStringLiteral("qrc:/basicview/qml/timelinelist.qml"), uri, 1, 0, "TimelineList");
     qmlRegisterType(QStringLiteral("qrc:/basicview/qml/globaldrawer.qml"), uri, 1, 0, "GlobalDrawer");
     qmlRegisterType(QStringLiteral("qrc:/basicview/qml/sidebar.qml"), uri, 1, 0, "SideBar");
+    qmlRegisterType(QStringLiteral("qrc:/basicview/qml/pagemanager.qml"), uri, 1, 0, "PageManager");
 }
 
 void BasicView::initializeEngine(QQmlEngine* engine, const char* uri)

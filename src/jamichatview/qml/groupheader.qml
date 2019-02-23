@@ -22,9 +22,11 @@ import org.kde.kirigami 2.2 as Kirigami
 RowLayout {
     property string type: "text"
 
-    opacity: chatView.displayExtraTime ? 1 : 0.5
+    // This information has no value 99% of the time, so fade it away
+    opacity: chatView.displayExtraTime ? 1 : 0.1
+
     Behavior on opacity {
-            NumberAnimation {duration: 500}
+        NumberAnimation {duration: 500}
     }
 
     Item {

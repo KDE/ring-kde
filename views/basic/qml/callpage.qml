@@ -27,77 +27,21 @@ import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 import net.lvindustries.ringqtquick.media 1.0 as RingQtMedia
 
 Kirigami.Page {
-    spacing: 0
-    leftPadding: 0
-    rightPadding: 0
-    topPadding: 0
-    bottomPadding: 0
+    property alias actionFilter: callview.actionFilter
+
+    // The JamiCallView.CallView has toolbars that must touch the edge.
+    // Remove all margins
+    spacing: 0; leftPadding: 0; rightPadding: 0; topPadding: 0; bottomPadding: 0
     padding: 0
+
     globalToolBarStyle: Kirigami.ApplicationHeaderStyle.ToolBar
     Kirigami.Theme.colorSet: Kirigami.Theme.View
 
+    // Place the contact name. There is only 1 action, so there's usually
+    // enough room for at least part of the name.
     titleDelegate: BasicView.DesktopHeader {
         id: dheader
         Layout.fillWidth: true
-    }
-
-    /**
-     * Get an ongoing call if it exists or request a dialing call to be created.
-     */
-    function getCall(cm) {
-        return workflow.call && workflow.call.lifeCycleState != RingQtQuick.Call.FINISHED ?
-            workflow.call : RingSession.callModel.dialingCall(cm)
-    }
-
-    /**
-     * An individual can have multiple phone numbers or Ring/Jami accounts.
-     *
-     * Pick one.
-     */
-    function getDefaultCm() {
-        if (workflow.currentContactMethod)
-            return workflow.currentContactMethod
-
-        if (workflow.currentIndividual)
-            return workflow.currentIndividual.mainContactMethod
-
-        return null
-    }
-
-    function callCommon(media) {
-        if (!workflow.currentIndividual)
-            return
-
-        var cm = getDefaultCm()
-
-        if (!cm)
-            cm = workflow.currentIndividual.preferredContactMethod(media)
-
-        if (!cm) {
-            console.log("Failed to find a proper contact method for", workflow.currentIndividual)
-            return
-        }
-
-        if (cm.hasInitCall) {
-            workflow.showCall(cm.firstActiveCall)
-            return
-        }
-
-        var call = getCall(cm)
-
-        call.performAction(RingQtQuick.Call.ACCEPT)
-    }
-
-    function audioCall() {
-        callCommon(RingQtQuick.Media.AUDIO)
-    }
-
-    function videoCall() {
-        callCommon(RingQtQuick.Media.VIDEO)
-    }
-
-    function screencast() {
-        callCommon(RingQtQuick.Media.VIDEO)
     }
 
     JamiCallView.CallView {
@@ -107,6 +51,12 @@ Kirigami.Page {
         mode: "CONVERSATION"
         call: workflow.call
 
+        /**
+         * There is different ways a call can be selected.
+         *
+         * This is all handled by the workflow logic, so this callview should
+         * blindly obey the workflow object when it tells to select a call.
+         */
         Connections {
             target: workflow
             onCallChanged: {
@@ -114,34 +64,13 @@ Kirigami.Page {
             }
         }
 
-        onCallWithAudio: {
-            var cm = getDefaultCm()
-
-            if (!cm)
-                return
-
-            audioCall()
-        }
-        onCallWithVideo: {
-            var cm = getDefaultCm()
-
-            if (!cm)
-                return
-
-            videoCall()
-        }
-        onCallWithScreen: {
-            var cm = getDefaultCm()
-
-            if (!cm)
-                return
-
-            screencast()
-        }
+        onCallWithAudio : pageManager.audioCall ()
+        onCallWithVideo : pageManager.videoCall ()
+        onCallWithScreen: pageManager.screencast()
     }
 
     actions {
-        main : actionCollection.chatAction
+        main : pageManager.chatAction
     }
 
     /**

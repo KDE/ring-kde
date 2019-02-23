@@ -34,6 +34,16 @@ Rectangle {
 
     property var userActionModel: null
 
+    /*
+     * This filter allows to handle the action differently depending on the
+     * platform or context. The UserActionModel doesn't care about these
+     * use case and only tell if the action is available depending on the
+     * current state.
+     */
+    property var filter: RingQtQuick.UserActionFilter {
+        model: RingSession.callModel.userActionModel
+    }
+
     Timer {
         id: hideLabel
         running: false
@@ -222,49 +232,7 @@ Rectangle {
     GridView  {
         id: actionGrid
         height: parent.height
-
-        /*
-         * This filter allows to handle the action differently depending on the
-         * platform or context. The UserActionModel doesn't care about these
-         * use case and only tell if the action is available depending on the
-         * current state.
-         */
-        model: RingQtQuick.UserActionFilter {
-            id: filterModel
-
-            // Record crashes on Android
-            RingQtQuick.UserAction {
-                action: RingQtModels.UserActionModel.RECORD
-                enabled: !Kirigami.Settings.isMobile
-            }
-
-            // Not implemented on Android
-            RingQtQuick.UserAction {
-                action: RingQtModels.UserActionModel.MUTE_VIDEO
-                enabled: !Kirigami.Settings.isMobile
-            }
-
-            // Not implemented on Android
-            RingQtQuick.UserAction {
-                action: RingQtModels.UserActionModel.MUTE_AUDIO
-                enabled: !Kirigami.Settings.isMobile
-            }
-
-            // As of Feb 2019, this is currently broken upstream
-            RingQtQuick.UserAction {
-                action: RingQtModels.UserActionModel.HOLD
-                enabled: false
-            }
-
-            // Unsuported by this client
-            RingQtQuick.UserAction {
-                action: RingQtModels.UserActionModel.SERVER_TRANSFER
-                enabled: false
-            }
-
-            model: RingSession.callModel.userActionModel
-        }
-
+        model: toolbar.filter
         delegate: actionDelegate
         cellWidth: 70; cellHeight: 60
         anchors.centerIn: parent
@@ -324,7 +292,7 @@ Rectangle {
             return
         }
 
-        filterModel.model = userActionModel ?
+        toolbar.filter.model = userActionModel ?
             userActionModel : RingSession.callModel.userActionModel
     }
 }

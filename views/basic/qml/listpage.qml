@@ -28,7 +28,6 @@ import org.kde.ringkde.jamisearch 1.0 as JamiSearch
 
 Kirigami.Page {
     id: peerListPage
-    property alias currentIndex: list.currentIndex;
     property bool displayWelcome: false
     globalToolBarStyle: Kirigami.ApplicationHeaderStyle.ToolBar
 

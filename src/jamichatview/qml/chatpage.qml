@@ -152,7 +152,7 @@ Rectangle {
                 // Buttons to navigate to relevant content
                 JamiChatView.Navigation {
                     timelineIterator: iterator
-                    anchors.rightMargin: scrollbar.hasContent ?
+                    anchors.rightMargin: timelinePage.showScrollbar && scrollbar.hasContent ?
                         blurryOverlay.width : 0
                     anchors.right: parent.right
                     anchors.bottom: parent.bottom
@@ -175,7 +175,8 @@ Rectangle {
                 Item {
                     id: blurryOverlay
                     z: 2
-                    opacity: chatView.displayExtraTime && scrollbar.hasContent ? 1 : 0
+                    opacity: chatView.displayExtraTime &&
+                        timelinePage.showScrollbar && scrollbar.hasContent ? 1 : 0
                     anchors.right: parent.right
                     anchors.top: parent.top
                     anchors.rightMargin: - 15
@@ -213,10 +214,10 @@ Rectangle {
                 bottomUp: true
                 Layout.fillHeight: true
                 Layout.preferredWidth: 10
-                display: chatView.moving || timelinePage.showScrollbar
+                display: chatView.moving && timelinePage.showScrollbar
                 model: chatView.model
                 view: chatView
-                forceOverlay: chatView.displayExtraTime
+                forceOverlay: timelinePage.showScrollbar && chatView.displayExtraTime
             }
         }
 

@@ -38,6 +38,7 @@ Item {
     property alias    peerRunning    : videoWidget.started
     property QtObject call           : null
     property QtObject renderer       : call ? call.renderer : null
+    property alias actionFilter      : actionToolbar.filter
     property alias individual: placeholderMessage.individual
 
     property bool previewVisible: mode != "PREVIEW" &&

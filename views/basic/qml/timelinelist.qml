@@ -29,11 +29,30 @@ ListView {
     id: list
     model: RingSession.peersTimelineModel
 
+    /*
+     * Instead of setting the currentIndex directly, listen to the workflow
+     * proposed current individual and select this.
+     *
+     * This is done because sometime, such as when a new call arrives, the
+     * selection is change automatically. Avoiding performing direct action
+     * limits the amount of business logic required to keep the list selection
+     * in sync with the application state.
+     */
+    Connections {
+        target: workflow
+
+        onIndividualChanged: {
+            list.currentIndex = RingSession.peersTimelineModel.individualIndex(
+                workflow.currentIndividual
+            ).row
+        }
+    }
+
     delegate: Kirigami.SwipeListItem {
         id: listItem
         onClicked: {
-            hideCall()
-            showChat()
+            pageManager.hideCall()
+            pageManager.showChat()
             workflow.setIndividual(object)
         }
 

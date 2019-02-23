@@ -52,46 +52,52 @@ Kirigami.ApplicationWindow {
     //TODO check if the theme is Material before "fixing" i18n
     function i18n(t) {return t;}
 
-    function showCallPage() {
-        callpage.visible = true
-
-        if (pageStack.currentItem == callpage)
-            return
-
-        showChat()
-
-        for (var i = 0; i < pageStack.depth; i++) {
-            if (pageStack.get(i) == callpage) {
-                pageStack.currentIndex = i
-                return
-            }
-        }
-        pageStack.push(callpage)
+    /**
+     * There is multiple ways the Kirigami page stack is manipulated in Banji:
+     *
+     * * Adding a new contact
+     *   * hide call when inactive
+     *   * show chat expanded
+     *   * select in the list page
+     * * Clicking on a timeline contact
+     *   * Show the chat on mobile, keep the current state in wide mode
+     * * Click chat action during a call
+     *   * Keep the call page, but show the chat page on the left (not expanded)
+     * * Click chat action without an active call
+     *   * Remove the call page
+     * * Click the call / screen share / video chat without an active call
+     *   * Show and expand the call page (with animation)
+     * * Click on the call / screen share / video chat actions during a call
+     *   * Expand the chat page
+     * * When a call ends
+     *   * No animation
+     * * When a new incoming call arrives
+     *   * Show the call page, not expanded
+     * * When accepting a new call with the chat page visible
+     *   * Expand the call page
+     * * When scrolling on mobile with an active call
+     *    * [list] [chat] [call]
+     * * When scrolling on mobile from the call page without an active call
+     *    * Delete the call page, then [list] [chat]
+     * * Calls ends while the call page is not visible
+     *    * Remove silently without an animation
+     *
+     */
+    BasicView.PageManager {
+        id: pageManager
     }
 
-    function hideCall() {
-        for (var i = 0; i < pageStack.depth; i++) {
-            if (pageStack.get(i) == callpage) {
-                pageStack.pop(callpage)
-                pageStack.currentIndex = 0
-                return
-            }
-        }
-    }
-
-    function showChat() {
-        if (pageStack.currentItem == callpage)
-            return
-
-        for (var i = 0; i < pageStack.depth; i++) {
-            if (pageStack.get(i) == chat) {
-                pageStack.currentIndex = Kirigami.Settings.isMobile ? 1 : 0
-                return
-            }
-        }
-
-        pageStack.push(chat)
-        pageStack.currentIndex = Kirigami.Settings.isMobile ? 1 : 0
+    /*
+     * Contains the business logic to create and configure a RingQtQuick.Call.
+     *
+     * It is tied with the `workflow` and `availabilityTracker` objects defined
+     * in this file to make sure the calls are created correctly. It reduces
+     * the odds of getting runtime errors.
+     */
+    RingQtQuick.CallBuilder {
+        id: mainCallBuilder
+        individual: workflow.currentIndividual
+        contactMethod: workflow.currentContactMethod
     }
 
     /*
@@ -110,19 +116,6 @@ Kirigami.ApplicationWindow {
      */
     RingQtQuick.SharedModelLocker {
         id: workflow
-
-        onCallChanged: {
-            if (!call)
-                hideCall()
-            else
-                showCallPage()
-        }
-
-        onIndividualChanged: {
-            list.currentIndex = RingSession.peersTimelineModel.individualIndex(
-                currentIndividual
-            ).row
-        }
     }
 
     /*
@@ -135,7 +128,7 @@ Kirigami.ApplicationWindow {
      * enabled state depends on the backend state and thus are better
      * implemented in C++.
      */
-    BasicView.ActionCollection {
+    BasicView.BanjiActionCollection {
         id: actionCollection
     }
 
@@ -176,6 +169,49 @@ Kirigami.ApplicationWindow {
     BasicView.CallPage {
         id: callpage
         visible: false
+
+        /*
+         * This filter allows to handle the action differently depending on the
+         * platform or context. The RingqtQuick.UserActionModel doesn't care
+         * about these use case and only tell if the action is available
+         * depending on the current state. It does so regardless of whether or
+         * not it makes sense.
+         */
+        actionFilter: RingQtQuick.UserActionFilter {
+            id: filterModel
+
+            // Record crashes on Android
+            RingQtQuick.UserAction {
+                action: RingQtModels.UserActionModel.RECORD
+                enabled: !Kirigami.Settings.isMobile
+            }
+
+            // Not implemented on Android
+            RingQtQuick.UserAction {
+                action: RingQtModels.UserActionModel.MUTE_VIDEO
+                enabled: !Kirigami.Settings.isMobile
+            }
+
+            // Not implemented on Android
+            RingQtQuick.UserAction {
+                action: RingQtModels.UserActionModel.MUTE_AUDIO
+                enabled: !Kirigami.Settings.isMobile
+            }
+
+            // As of Feb 2019, this is currently broken upstream
+            RingQtQuick.UserAction {
+                action: RingQtModels.UserActionModel.HOLD
+                enabled: false
+            }
+
+            // Unsupported by this client
+            RingQtQuick.UserAction {
+                action: RingQtModels.UserActionModel.SERVER_TRANSFER
+                enabled: false
+            }
+
+            model: RingSession.callModel.userActionModel
+        }
     }
 
     // Each page provide their actions

@@ -49,8 +49,10 @@ KQuickItemViews.HierarchyView {
     property bool displayExtraTime: false
 
     onDisplayExtraTimePrivateChanged: {
-        if (displayExtraTimePrivate)
+        if (displayExtraTimePrivate) {
             displayExtraTime  = true
+            dateTimer.running = false
+        }
         else
             dateTimer.running = true
     }

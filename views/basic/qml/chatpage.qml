@@ -81,6 +81,7 @@ Kirigami.Page {
          */
         JamiChatView.ChatPage {
             id: chatView
+            showScrollbar: pageStack.wideMode
             Layout.fillWidth: true
             Layout.fillHeight: true
             Layout.bottomMargin: 0
@@ -116,10 +117,10 @@ Kirigami.Page {
     }
 
     actions {
-        left : actionCollection.videoCallAction
-        main : actionCollection.audioCallAction
+        left : pageManager.videoCallAction
+        main : pageManager.audioCallAction
         right: Kirigami.Settings.isMobile ?
-            undefined : actionCollection.shareScreenAction
+            undefined : pageManager.shareScreenAction
     }
 
     // Not worth it on mobile

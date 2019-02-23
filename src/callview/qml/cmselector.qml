@@ -27,51 +27,61 @@ import org.kde.kirigami 2.2 as Kirigami
  */
 Dialog {
     id: phoneNumbers
-    property var currentIndividual: null
+    property var individual: null
     property var callback: undefined
 
     parent: applicationWindow().contentItem
     x: applicationWindow().contentItem.width / 2 - width/2
     y: applicationWindow().contentItem.height / 2 - height/2
     width: applicationWindow().contentItem.width * 0.5
-    height: applicationWindow().contentItem.height * 0.5
+    height: content.implicitHeight + 100
 
     standardButtons: Dialog.Cancel | Dialog.Apply
     modal: true
+
+    onAccepted: {
+        if (phoneNumbers.callback)
+            phoneNumbers.callback(numbers.currentItem.cm)
+    }
 
     property string text: i18n("This contact has multiple phone numbers, please select one below.")
 
     clip: true
 
-    Text {
-        id: label
-        wrapMode: Text.WordWrap
-        text: phoneNumbers.text
-        color: Kirigami.Theme.textColor
-    }
+    contentItem: ColumnLayout {
+        id: content
 
-    ListView {
-        id: numbers
-        anchors.fill: parent
-        anchors.margins: 3
-        anchors.topMargin: label.implicitHeight + 10
-        model: currentIndividual
-        currentIndex: currentIndividual.defaultIndex.row
+        Text {
+            id: label
+            wrapMode: Text.WordWrap
+            text: phoneNumbers.text
+            color: Kirigami.Theme.textColor
+            Layout.fillWidth: true
+        }
 
-        delegate: Rectangle {
-            id: delegate
-            radius: 3
-            color: "transparent"
-            border.color: "transparent"
-            border.width: 1
-            height: readOnly.height
-            width: parent.width
-            implicitHeight: readOnly.height
+        ListView {
+            id: numbers
+            Layout.margins: 3
+            Layout.topMargin: Kirigami.Units.spacing
+            model: individual
+            interactive: false
+            currentIndex: individual ? individual.defaultIndex.row : -1
+            Layout.fillWidth: true
+            spacing: Kirigami.Units.spacing
 
-            MouseArea {
-                id: mouseArea
-                anchors.fill: parent
-                hoverEnabled: true
+            Layout.preferredHeight: contentHeight
+
+            highlight: Rectangle {
+                color: Kirigami.Theme.highlightColor
+            }
+
+            delegate: MouseArea {
+                property var cm: object
+                id: delegate
+                height: columns.implicitHeight + 2*Kirigami.Units.largeSpacing
+                width: parent.width
+                implicitHeight: columns.implicitHeight + 2*Kirigami.Units.largeSpacing
+
                 onClicked: {
                     numbers.currentIndex = index
                 }
@@ -81,57 +91,46 @@ Dialog {
                         phoneNumbers.callback(object)
                     phoneNumbers.close()
                 }
-            }
 
-            states: [
-                State {
-                    name: ""
-                    PropertyChanges {
-                        target: delegate
-                        border.color: "transparent"
-                        color: "transparent"
-                    }
-                },
-                State {
-                    name: "selected"
-                    when: numbers.currentItem == delegate
-                    PropertyChanges {
-                        target: delegate
-                        border.color: Kirigami.Theme.highlightedTextColor
-                        color: Kirigami.Theme.highlightColor
-                    }
-                },
-                State {
-                    name: "hover"
-                    when: mouseArea.containsMouse
-                    PropertyChanges {
-                        target: delegate
-                        border.color: Kirigami.Theme.highlightedTextColor
-                    }
-                }
-            ]
-
-            RowLayout {
-                id: readOnly
-                anchors.leftMargin: 10
-                anchors.fill: parent
-                height: columns.implicitHeight + 30 // 30 == 3*spacing
-                implicitHeight: columns.implicitHeight + 30
-                spacing: 10
-
-                ColumnLayout {
+                GridLayout {
                     id: columns
-                    Layout.fillWidth: true
+                    rows: 2
+                    columns: 3
+                    width: parent.width
+
+                    anchors.verticalCenter: parent.verticalCenter
+
+                    Kirigami.Icon {
+                        id: icon
+                        width: Kirigami.Units.iconSizes.smallMedium
+                        height: width
+                        source: "call-start"
+                        Layout.leftMargin: height/3
+                        Layout.alignment: Qt.AlignVCenter
+                        Layout.rowSpan: 2
+                        color:numbers.currentIndex == index ?
+                            Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor
+                    }
+
                     Text {
                         text: display
-                        color: Kirigami.Theme.textColor
+                        color:numbers.currentIndex == index ?
+                            Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor
+                    }
+
+                    Text {
+                        text: account ? (i18n(" (Account: ") + account.alias+ ")") : ""
+                        color: numbers.currentIndex == index ?
+                            Kirigami.Theme.highlightedTextColor : Kirigami.Theme.disabledTextColor
                         Layout.fillWidth: true
                     }
 
                     Text {
+                        Layout.columnSpan: 2
                         text: lastUsed == undefined || lastUsed == "" ? i18n("Never used") :
                             i18n("Used ")+totalCallCount+i18n(" time (Last used on: ") + formattedLastUsed + ")"
-                        color: Kirigami.Theme.textColor
+                        color: numbers.currentIndex == index ?
+                            Kirigami.Theme.highlightedTextColor : "#2980b9"
                         Layout.fillWidth: true
                     }
                 }

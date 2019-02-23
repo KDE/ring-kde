@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/basicview">
-        <file>qml/actioncollection.qml</file>
+        <file>qml/banjiactioncollection.qml</file>
+        <file>qml/pagemanager.qml</file>
         <file>qml/basic.qml</file>
         <file>qml/chatpage.qml</file>
         <file>qml/desktopheader.qml</file>
