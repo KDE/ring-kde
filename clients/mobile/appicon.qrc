@@ -2,7 +2,4 @@
   <qresource prefix="appicon">
     <file>../../data/icons/sc-apps-ring-kde.svgz</file>
   </qresource>
-    <qresource>
-    <file>qtquickcontrols2.conf</file>
-  </qresource>
 </RCC>

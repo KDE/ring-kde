@@ -64,6 +64,11 @@ SET(
 
 QT5_ADD_RESOURCES(ring_kde_SRCS appicon.qrc)
 
+# Configure the Material theme
+IF(DEFINED OS_ANDROID)
+    QT5_ADD_RESOURCES(ring_kde_SRCS android.qrc)
+ENDIF()
+
 # add_subdirectory( test   ) #Enable again some day, it cause compile problems for some users
 
 IF(NOT (${ENABLE_VIDEO} MATCHES false))
