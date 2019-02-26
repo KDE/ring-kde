@@ -130,7 +130,7 @@ QtObject {
         target: workflow
 
         onCallChanged: {
-            if (!call)
+            if (!workflow.call)
                 hideCall()
             else
                 showCallPage()
