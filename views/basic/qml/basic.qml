@@ -23,6 +23,7 @@ import QtQuick.Layouts 1.2
 import org.kde.kirigami 2.6 as Kirigami
 import net.lvindustries.ringqtquick.media 1.0 as RingQtMedia
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
+import net.lvindustries.ringqtquick.models 1.0 as RingQtModels
 import org.kde.ringkde.basicview 1.0 as BasicView
 import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 import org.kde.ringkde.jamiwizard 1.0 as JamiWizard
@@ -207,6 +208,13 @@ Kirigami.ApplicationWindow {
             // Unsupported by this client
             RingQtQuick.UserAction {
                 action: RingQtModels.UserActionModel.SERVER_TRANSFER
+                enabled: false
+            }
+
+            // The callpage doesn't support dialing and DTMFs, so having this
+            // is fully redundant.
+            RingQtQuick.UserAction {
+                action: RingQtModels.UserActionModel.ADD_NEW
                 enabled: false
             }
 
