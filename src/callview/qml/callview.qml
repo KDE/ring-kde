@@ -59,36 +59,32 @@ Item {
         repeat: false
 
         onTriggered: {
-            actionToolbar.visible  = false
+            actionToolbar.display  = false
             videoSource.visible    = false
             controlToolbar.visible = false
         }
     }
 
     function showToolbars() {
-        actionToolbar.visible  = true
+        actionToolbar.display  = true
         videoSource.visible    = true
 
         // This toolbar is only useful when there is video
         if (videoWidget.started)
             controlToolbar.visible = true
 
-        actionToolbar.opacity  = 1
         videoSource.opacity    = 1
         controlToolbar.opacity = 1
         videoPreview.opacity   = 0.8
-        actionToolbar.anchors.bottomMargin = 0
         videoSource.anchors.rightMargin    = 0
         controlToolbar.anchors.topMargin   = 0
     }
 
     function hideToolbars() {
-        actionToolbar.opacity  = 0
         videoSource.opacity    = 0
         controlToolbar.opacity = 0
         videoPreview.opacity   = 1
         videoSource.anchors.rightMargin    = -20
-        actionToolbar.anchors.bottomMargin = -20
         controlToolbar.anchors.topMargin   = -20
         toolbarTimer.running = true
     }
@@ -131,8 +127,15 @@ Item {
     // The has the currently supported call actions such as hang up
     JamiDialView.ActionToolbar {
         id: actionToolbar
+
+        // Display when there is a single or 2 buttons
+        // (happens on new and incoming calls only)
+        property bool display: false
+
         anchors.bottom: parent.bottom
-        visible: false
+        anchors.bottomMargin: visible ? 0 : -20
+        visible: opacity > 0
+        opacity: alwaysShow || display ? 1 : 0
 
         Behavior on opacity {
             NumberAnimation {duration: 100}

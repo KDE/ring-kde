@@ -26,13 +26,16 @@ import org.kde.playground.kquickitemviews 1.0 as KQuickItemViews
 
 Rectangle {
     id: toolbar
+
+    property bool alwaysShow: stateGroup.state != ""
+
     color: "#55000000"
     height: actionGrid.contentHeight
     width: parent.width
     y:parent.height-toolbar.height -10
     z: 100
 
-    property var userActionModel: null
+    property var _userActionModel: null
 
     /*
      * This filter allows to handle the action differently depending on the
@@ -150,7 +153,7 @@ Rectangle {
                     hoverEnabled: true
                     z: 101
                     onClicked: {
-                        userActionModel.execute(action)
+                        filter.model.execute(action)
                     }
                     onContainsMouseChanged: {
                         if (containsMouse) {
@@ -286,13 +289,13 @@ Rectangle {
             currentText.visible = false
     }
 
-    onUserActionModelChanged: {
-        if (!userActionModel) {
-            userActionModel = RingSession.callModel.userActionModel
+    on_UserActionModelChanged: {
+        if (!_userActionModel) {
+            _userActionModel = RingSession.callModel.userActionModel
             return
         }
 
-        toolbar.filter.model = userActionModel ?
-            userActionModel : RingSession.callModel.userActionModel
+        toolbar.filter.model = _userActionModel ?
+            _userActionModel : RingSession.callModel.userActionModel
     }
 }
