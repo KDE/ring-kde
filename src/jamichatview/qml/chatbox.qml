@@ -31,7 +31,11 @@ Item {
     }
 
     function focusEdit() {
-        messageTextArea.forceActiveFocus()
+        // Forcing the focus shows the keyboard and hide the toolbar. This
+        // isn't usable. It would be fine if the controls were usable, but it
+        // isn't the case for for no this is disabled.
+        if (!Kirigami.Settings.isMobile)
+            messageTextArea.forceActiveFocus()
     }
 
     id: chatBox
