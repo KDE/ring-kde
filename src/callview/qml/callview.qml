@@ -133,6 +133,7 @@ Item {
         id: actionToolbar
         anchors.bottom: parent.bottom
         visible: false
+
         Behavior on opacity {
             NumberAnimation {duration: 100}
         }
@@ -213,7 +214,6 @@ Item {
 
     onCallChanged: {
         if (call) {
-            actionToolbar.userActionModel = call.userActionModel
             placeholderMessage.call = call
             videoSource.call        = call
             controlToolbar.call     = call
