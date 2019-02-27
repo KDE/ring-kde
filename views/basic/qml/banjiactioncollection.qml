@@ -19,6 +19,7 @@
  */
 import QtQuick 2.0
 import org.kde.kirigami 2.4 as Kirigami
+import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 
 /**
  * This module contains the actions specific to the Banji application.
@@ -105,6 +106,54 @@ QtObject {
             text: i18n("Video settings")
             iconName: "camera-web"
             onTriggered: events.configureVideo()
+        }
+    }
+
+    /*
+     * This can be done per account, but Banji doesn't support that.
+     */
+    readonly property Kirigami.Action autoanswer: Kirigami.Action {
+        text: i18n("Do not disturb")
+        id: dndChoice
+
+        function setMode(m) {
+            RingSession.accountModel.globalAutoAnswerStatus = m
+            dndDisabled.checked   = RingSession.accountModel.globalAutoAnswerStatus == RingQtQuick.Account.MANUAL
+            dndEnabled.checked    = RingSession.accountModel.globalAutoAnswerStatus == RingQtQuick.Account.DO_NOT_DISTURB
+            dndSilent.checked     = RingSession.accountModel.globalAutoAnswerStatus == RingQtQuick.Account.SILENT
+            dndAutoAnswer.checked = RingSession.accountModel.globalAutoAnswerStatus == RingQtQuick.Account.AUTO_ANSWER
+        }
+
+        Kirigami.Action {
+            id: dndDisabled
+            text: i18n("Disabled")
+            checkable: true
+            checked: RingSession.accountModel.globalAutoAnswerStatus == RingQtQuick.Account.MANUAL
+            onTriggered: dndChoice.setMode(RingQtQuick.Account.MANUAL)
+        }
+
+        Kirigami.Action {
+            id: dndEnabled
+            text: i18n("Enabled")
+            checkable: true
+            checked: RingSession.accountModel.globalAutoAnswerStatus == RingQtQuick.Account.DO_NOT_DISTURB
+            onTriggered: dndChoice.setMode(RingQtQuick.Account.DO_NOT_DISTURB)
+        }
+
+        Kirigami.Action {
+            id: dndSilent
+            text: i18n("Silent")
+            checkable: true
+            checked: RingSession.accountModel.globalAutoAnswerStatus == RingQtQuick.Account.SILENT
+            onTriggered: dndChoice.setMode(RingQtQuick.Account.SILENT)
+        }
+
+        Kirigami.Action {
+            id: dndAutoAnswer
+            text: i18n("Auto answer")
+            checkable: true
+            checked: RingSession.accountModel.globalAutoAnswerStatus == RingQtQuick.Account.AUTO_ANSWER
+            onTriggered: dndChoice.setMode(RingQtQuick.Account.AUTO_ANSWER)
         }
     }
 }
