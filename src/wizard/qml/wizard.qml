@@ -77,8 +77,13 @@ Loader {
             id: footer
             height: 45
             width: wizardWindow.width
-            visible: false
+            visible: opacity > 0
+            opacity: frontPage.busy ? 0 : 1
             anchors.bottom: wizardWindow.bottom
+
+            Behavior on opacity {
+                NumberAnimation {duration: 100; easing.type: Easing.InQuad}
+            }
         }
 
         onWidthChanged: { //HACK

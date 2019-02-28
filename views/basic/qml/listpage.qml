@@ -129,17 +129,40 @@ Kirigami.Page {
             //HACK fix breakage caused by the other hack
             Connections {
                 target: peerListPage
-                onWidthChanged: _searchView.forceGeometry()
+                onWidthChanged:  _searchView.forceGeometry()
+                onXChanged:      _searchView.forceGeometry()
                 onHeightChanged: _searchView.forceGeometry()
             }
 
             z: 9998
         }
+
+        // This happens the very first time the app is used
+        onXChanged: _searchView.forceGeometry()
     }
 
     BasicView.TimelineList {
         id: list
         width: parent.width
         height: parent.height
+    }
+
+    /*
+    * Display the branding when there's no content
+    */
+    Image {
+        property real size: Math.min(400, list.width*0.75)
+        anchors.centerIn: parent
+        verticalAlignment: Image.AlignVCenter
+        opacity: list.empty == true ? 0.3 : 0
+        visible: opacity > 0
+
+        fillMode: Image.PreserveAspectFit
+        sourceSize.width:size;sourceSize.height:size;width:size;height:size
+        source: "image://SymbolicColorizer/qrc:/sharedassets/branding.svg"
+
+        Behavior on opacity {
+            NumberAnimation {duration: 300; easing.type: Easing.InQuad}
+        }
     }
 }

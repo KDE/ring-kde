@@ -41,6 +41,7 @@
         <file>./outline/qrcode.svg</file>
         <file>./outline/web.svg</file>
         <file>./outline/close.svg</file>
+        <file>./branding.svg</file>
     </qresource>
     <qresource prefix="images">
         <file>./icons/conf-small.svg</file>

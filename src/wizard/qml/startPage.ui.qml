@@ -47,7 +47,7 @@ Controls.Page {
         y: 149
         width: Math.min(423, frontPage.width - 114)
         height: 86
-        text: i18n("Welcome to Ring-KDE. Before you can contact your friend, you have to have an account. Don't worry, creating one is easy and doesn't require sharing any personal information. If you are in an office or your phone service provider offers a SIP account, you can also configure Ring-KDE to take your \"real\" phone calls.")
+        text: i18n("Welcome to Banji. Before you can contact your friend, you have to have an account. Don't worry, creating one is easy and doesn't require sharing any personal information. If you are in an office or your phone service provider offers a SIP account, you can also configure Banji to take your \"real\" phone calls.")
         wrapMode: Text.WordWrap
         font.pixelSize: 12
         color: "white"
@@ -57,7 +57,7 @@ Controls.Page {
         id: createRingAccount
         anchors.horizontalCenter: parent.horizontalCenter
         y: 246
-        text: i18n("Create a new GNU Ring account")
+        text: i18n("Create a new GNU Jami account")
     }
 
     Controls.Button {

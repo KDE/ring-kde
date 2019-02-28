@@ -3,7 +3,7 @@
     <application android:hardwareAccelerated="true" android:name="org.qtproject.qt5.android.bindings.QtApplication" android:label="ring-kde">
         <activity android:configChanges="orientation|uiMode|screenLayout|screenSize|smallestScreenSize|layoutDirection|locale|fontScale|keyboard|keyboardHidden|navigation|mcc|mnc|density"
                   android:name="org.kde.ringkde.Ringkde"
-                  android:label="Ring-KDE"
+                  android:label="Banji"
                   android:screenOrientation="unspecified"
                   android:launchMode="singleTop">
             <intent-filter>

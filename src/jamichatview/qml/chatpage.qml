@@ -34,6 +34,7 @@ Rectangle {
     property bool _sendRequestOverride: true
     property var currentContactMethod: null
     property var currentIndividual: null
+    property alias empty: chatView.empty
 
     property bool canSendTexts: currentIndividual ? currentIndividual.canSendTexts : false
 
@@ -228,7 +229,7 @@ Rectangle {
         JamiChatView.ChatBox {
             id: chatBox
             Layout.fillWidth: true
-            visible: canSendTexts
+            visible: canSendTexts && currentIndividual
             RingQtQuick.MessageBuilder {id: builder}
             requireContactRequest: currentContactMethod &&
                 currentContactMethod.confirmationStatus == RingQtQuick.ContactMethod.UNCONFIRMED &&

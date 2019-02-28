@@ -266,7 +266,7 @@ Item {
     Rectangle{
         id: registrationPopup
 
-        width: Math.min(wizardWindow.width*0.8, implicitWidth + 50)
+        width: Math.min(wizardWindow.width*0.8, popupLayout.implicitWidth + 50)
         height: popupLayout.implicitHeight + 10
         anchors.centerIn: createRing
         color: "#0886a0"
@@ -276,6 +276,7 @@ Item {
 
         RowLayout {
             id: popupLayout
+            width: parent.width
             anchors.verticalCenter: parent.verticalCenter
 
             Controls.BusyIndicator {
@@ -291,7 +292,7 @@ Item {
                  verticalAlignment: Text.AlignVCenter
                 Layout.fillHeight: true
                 Layout.fillWidth: true
-                color: "black"
+                color: "white"
             }
         }
     }

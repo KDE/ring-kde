@@ -86,6 +86,25 @@ Kirigami.Page {
             Layout.fillHeight: true
             Layout.bottomMargin: 0
             currentIndividual: workflow.currentIndividual
+
+            /*
+            * Display the branding when there's no content
+            */
+            Image {
+                property real size: Math.min(400, chatPage.width*0.75)
+                anchors.centerIn: parent
+                verticalAlignment: Image.AlignVCenter
+                opacity: chatView.empty == true ? 0.3 : 0
+                visible: opacity > 0
+
+                fillMode: Image.PreserveAspectFit
+                sourceSize.width:size;sourceSize.height:size;width:size;height:size
+                source: "image://SymbolicColorizer/qrc:/sharedassets/branding.svg"
+
+                Behavior on opacity {
+                    NumberAnimation {duration: 300; easing.type: Easing.InQuad}
+                }
+            }
         }
 
         Kirigami.Separator {
@@ -101,6 +120,7 @@ Kirigami.Page {
 
             // 750 is the 600pt maximum width of the chat + width of the sidebar
             active: pageStack.wideMode
+                && workflow.currentIndividual
                 && (!Kirigami.Settings.isMobile)
                 && parent.width > 750
 
