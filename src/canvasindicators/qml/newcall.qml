@@ -44,9 +44,7 @@ ColumnLayout {
                 onContainsMouseChanged: {
                     bg.color = containsMouse ? "#444444" : "#222222"
                 }
-                onClicked: {
-                    callWithAudio()
-                }
+                onClicked: invoke()
             }
 
             Behavior on color {
@@ -57,21 +55,32 @@ ColumnLayout {
 
     Loader {
         width: 300
+        function invoke() {
+            callWithVideo()
+        }
         Layout.fillWidth: true
         property string label: "Start a video call"
         visible: availabilityTracker.canVideoCall
         sourceComponent: button
     }
+
     Loader {
         width: 300
         Layout.fillWidth: true
+        function invoke() {
+            callWithAudio()
+        }
         property string label: "Start an audio call"
         visible: availabilityTracker.canCall
         sourceComponent: button
     }
+
     Loader {
         width: 300
         Layout.fillWidth: true
+        function invoke() {
+            callWithScreen()
+        }
         property string label: "Start screen sharing"
         visible: availabilityTracker.canVideoCall
         sourceComponent: button
