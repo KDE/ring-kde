@@ -84,6 +84,13 @@ void WindowEvent::configureAccounts()
     }
 }
 
+void WindowEvent::viewContactRequests()
+{
+    for (auto o : qAsConst(instances())) {
+        emit o->requestsContactRequests();
+    }
+}
+
 void WindowEvent::configureVideo()
 {
     for (auto o : qAsConst(instances())) {

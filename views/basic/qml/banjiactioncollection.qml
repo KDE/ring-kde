@@ -72,7 +72,14 @@ QtObject {
 
     readonly property Kirigami.Action newContactAction: Kirigami.Action {
         iconName: "contact-new"
-        text: "Create contact"
+        text: i18n("Create contact")
+    }
+
+    readonly property Kirigami.Action contactRequests: Kirigami.Action {
+        iconName: "contact-new"
+        text: i18n("Pending contact requests")
+        enabled: RingSession.accountModel.incomingContactRequestModel.size > 0
+        onTriggered: events.viewContactRequests()
     }
 
     readonly property Kirigami.Action quitAction: Kirigami.Action {

@@ -194,7 +194,10 @@ Item {
                 textFormat: TextEdit.RichText
                 wrapMode: TextEdit.WordWrap
 
-                font.pointSize: Kirigami.Theme.defaultFont.pointSize*1.6
+                // The fonts are already quite large on mobile
+                font.pointSize: Kirigami.Theme.defaultFont.pointSize*(
+                    Kirigami.Settings.isMobile ? 1.2 : 1.6
+                )
 
                 placeholderText: " "+i18n("Write a message and press enter...")
 

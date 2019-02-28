@@ -20,6 +20,7 @@ import QtQuick 2.7
 import QtQuick.Layouts 1.0
 import org.kde.kirigami 2.2 as Kirigami
 import org.kde.ringkde.genericutils 1.0 as GenericUtils
+import org.kde.ringkde.jamikdeintegration 1.0 as JamiKDEIntegration
 
 /**
  * Add a visual queue when the user has to accept / reject / neglect contact
@@ -34,6 +35,10 @@ Rectangle {
     color: Kirigami.Theme.neutralTextColor
     height: content.implicitHeight + 40
     opacity: 0.8
+
+    JamiKDEIntegration.WindowEvent {
+        id: windowEvent
+    }
 
     ColumnLayout {
         id: content
@@ -80,7 +85,7 @@ Rectangle {
             MouseArea {
                 anchors.fill: parent
                 onClicked: {
-                    applicationWindow().showContactRequests()
+                    windowEvent.viewContactRequests()
                 }
             }
         }

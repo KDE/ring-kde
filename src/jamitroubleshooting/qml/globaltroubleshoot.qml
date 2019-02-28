@@ -17,13 +17,14 @@
  **************************************************************************/
 import QtQuick 2.7
 import org.kde.ringkde.jamitroubleshooting 1.0 as JamiTroubleShooting
+import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 import net.lvindustries.ringqtquick.troubleshoot 1.0 as RingQtTroubleshoot
 
 Loader {
     property bool displayNoAccount: RingSession.accountModel.size == 0
     property bool displayDisabled: !RingSession.accountModel.hasEnabledAccounts
     property bool displayNoRegAccounts: !RingSession.accountModel.hasAvailableAccounts
-    //property bool displayContactRequests: RingSession.accountModel.incomingContactRequestModel.size > 0
+    property bool displayContactRequests: RingSession.accountModel.incomingContactRequestModel.size > 0
     property bool displayActionHeader: displayNoAccount || displayNoRegAccounts || displayDisabled
 
     id: accountError
@@ -64,7 +65,7 @@ Loader {
         }
     }
 
-    /*Component {
+    Component {
         id: pendingContactRequests
         JamiContactView.ViewContactRequests {
             Component.onCompleted: {
@@ -72,5 +73,5 @@ Loader {
                 accountError.height = height
             }
         }
-    }*/
+    }
 }

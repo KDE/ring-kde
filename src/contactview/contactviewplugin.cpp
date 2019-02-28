@@ -35,7 +35,6 @@ void JamiContactView::registerTypes(const char *uri)
 
     qmlRegisterType<ContactPhoto>(uri, 1, 0, "ContactPhoto");
 
-    qmlRegisterType(QStringLiteral("qrc:/contactview/qml/pendingrequest.qml")   , uri, 1, 0, "PendingRequest");
     qmlRegisterType(QStringLiteral("qrc:/contactview/qml/contactlist.qml")      , uri, 1, 0, "ContactList");
     qmlRegisterType(QStringLiteral("qrc:/contactview/qml/bookmarklist.qml")     , uri, 1, 0, "BookmarkList");
     qmlRegisterType(QStringLiteral("qrc:/contactview/qml/contactcard.qml")      , uri, 1, 0, "ContactCard");

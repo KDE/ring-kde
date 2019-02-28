@@ -19,6 +19,7 @@ import QtQuick 2.7
 import QtQuick.Layouts 1.0
 
 import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
+import org.kde.kirigami 2.2 as Kirigami
 
 Item {
     width: parent.width
@@ -35,8 +36,8 @@ Item {
             "anchors.right" : parent.right,
             "widget.anchors" : parent.verticalCenter,
             "visible" : true
-
         })
+
         widget.anchors.right = parent.right
         widget.anchors.verticalCenter = parent.verticalCenter
     }

@@ -258,6 +258,7 @@ Kirigami.ApplicationWindow {
         onRequestsConfigureAccounts: showDialog("qrc:/account/qml/accountdialog.qml")
         onRequestsVideo: showDialog("qrc:/jamivideoview/qml/settingpopup.qml")
         onRequestsWizard: wizardLoader.activate()
+        onRequestsContactRequests: showDialog("qrc:/contactview/qml/pendingrequests.qml")
 
         // Window events
         onRequestsHideWindow: hide()

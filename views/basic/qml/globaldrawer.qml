@@ -32,6 +32,7 @@ Kirigami.GlobalDrawer {
     actions: [
         actionCollection.settings,
         actionCollection.autoanswer,
+        actionCollection.contactRequests,
         actionCollection.quitAction,
     ]
 

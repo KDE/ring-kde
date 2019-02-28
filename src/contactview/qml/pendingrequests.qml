@@ -17,18 +17,27 @@
  **************************************************************************/
 import QtQuick 2.7
 
-import QtQuick.Layouts 1.0
-import QtQuick.Controls 2.2
+import QtQuick.Layouts 1.0 as Layouts
+import QtQuick.Controls 2.2 as Controls
 import org.kde.kirigami 2.2 as Kirigami
+import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 
-Dialog {
+Controls.Dialog {
     id: dialog
     parent: applicationWindow().contentItem
     x: applicationWindow().contentItem.width / 2 - width/2
     y: applicationWindow().contentItem.height / 2 - height/2
-    width: applicationWindow().contentItem.width * 0.66
-    height: applicationWindow().contentItem.height * 0.66
+
+    width: applicationWindow().contentItem.width * (
+        Kirigami.Settings.isMobile ? 0.95 : 0.66
+    )
+
+    height: applicationWindow().contentItem.height * (
+        Kirigami.Settings.isMobile ? 0.95 : 0.66
+    )
+
+    modal: true
 
     // As on Qt 5.9.5, QML crashes on a double free when Close is used
     standardButtons: Dialog.NoButton
@@ -41,7 +50,7 @@ Dialog {
 
     Component {
         id: contactRequestDelegate
-        ContactCard {
+        JamiContactView.ContactCard {
             selectionCallback: selectContactRequest
             Component.onCompleted: {
                 if (index == contactRequestList.currentIndex)
@@ -53,7 +62,7 @@ Dialog {
                 Row {
                     z: 2
                     anchors.rightMargin: 15
-                    Button {
+                    Controls.Button {
                         text: i18n("Accept")
                         onClicked: {
                             object.accept()
@@ -61,13 +70,13 @@ Dialog {
                                 dialog.close()
                         }
                     }
-                    Button {
+                    Controls.Button {
                         text: i18n("Decline")
                         onClicked: {
                             object.discard()
                         }
                     }
-                    Button {
+                    Controls.Button {
                         text: i18n("Block")
                         onClicked: {
                             object.block()
@@ -80,14 +89,14 @@ Dialog {
         }
     }
 
-    ColumnLayout {
+    Layouts.ColumnLayout {
         anchors.fill: parent
         ListView {
             id: contactRequestList
-            Layout.minimumHeight: Math.min(contentHeight, 150)
-            Layout.preferredHeight: contentHeight
-            Layout.maximumHeight: 300
-            Layout.fillWidth: true
+            Layouts.Layout.minimumHeight: Math.min(contentHeight, 150)
+            Layouts.Layout.preferredHeight: contentHeight
+            Layouts.Layout.maximumHeight: 300
+            Layouts.Layout.fillWidth: true
             model: RingSession.accountModel.incomingContactRequestModel
             delegate: contactRequestDelegate
             currentIndex: 0
@@ -104,10 +113,10 @@ Dialog {
             }
         }
 
-        ContactInfo {
+        JamiContactView.ContactInfo {
             id: contactInfo
-            Layout.fillWidth: true
-            Layout.fillHeight: true
+            Layouts.Layout.fillWidth: true
+            Layouts.Layout.fillHeight: true
             showStat: false
             showImage: true
             showSave: false
@@ -116,11 +125,11 @@ Dialog {
             defaultName: ""
         }
 
-        RowLayout {
+        Layouts.RowLayout {
             Item {
-                Layout.fillWidth: true
+                Layouts.Layout.fillWidth: true
             }
-            Button {
+            Controls.Button {
                 text: i18n("Close")
                 onClicked: {
                     dialog.close()

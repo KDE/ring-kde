@@ -53,6 +53,7 @@ public Q_SLOTS:
     void configureAccounts();
     void hideWindow();
     void configureVideo();
+    void viewContactRequests();
 
 Q_SIGNALS:
     void requestsWindowRaised();
@@ -60,6 +61,7 @@ Q_SIGNALS:
     void requestsWizard();
     void requestsVideo();
     void requestsConfigureAccounts();
+    void requestsContactRequests();
     void requestsHideWindow();
     void iconifiedChanged();
 
