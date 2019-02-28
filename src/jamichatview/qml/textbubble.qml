@@ -61,7 +61,7 @@ Item {
             defaultColor: Kirigami.Theme.textColor
         }
 
-        Item {
+        MouseArea {
             Layout.fillWidth: true
             Layout.fillHeight: true
 
@@ -72,7 +72,6 @@ Item {
                 anchors.right: direction == 1 ? parent.right : undefined
                 anchors.left : direction == 1 ? undefined : parent.left
                 font.pointSize: Kirigami.Theme.defaultFont.pointSize*1.2
-                font.family: "Noto Color Emoji"
                 dateFont: dateLabel.font
                 z: 1
 
@@ -152,21 +151,10 @@ Item {
                         NumberAnimation {duration: 200}
                     }
                 }
+            }
 
-                MouseArea {
-                    anchors.fill: parent
-
-                    /**
-                     * On mobile, there is already multiple layers of touch
-                     * capable controls and this confuses the input handling
-                     * code too much.
-                     */
-                    enabled: !Kirigami.Settings.isMobile
-
-                    onClicked: {
-                        chatMessage.clicked()
-                    }
-                }
+            onClicked: {
+                chatMessage.clicked()
             }
         }
 

@@ -67,7 +67,6 @@ Item {
             color: Kirigami.Theme.textColor
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
-            font.family: "Noto Color Emoji"
             font.pixelSize : Kirigami.Settings.isMobile ? 24 : 18
         }
 
@@ -195,8 +194,7 @@ Item {
                 textFormat: TextEdit.RichText
                 wrapMode: TextEdit.WordWrap
 
-                font.family: "Noto Color Emoji"
-                font.pixelSize : 18
+                font.pointSize: Kirigami.Theme.defaultFont.pointSize*1.6
 
                 placeholderText: " "+i18n("Write a message and press enter...")
 
