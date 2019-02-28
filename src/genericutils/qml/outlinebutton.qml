@@ -30,6 +30,7 @@ Item {
     property real sideMargin: 10
     property var alignment: Qt.AlignHCenter
     property alias icon: icn.source
+    property real preferredExpandedWidth: label.implicitWidth + button.radius*2
 
     implicitWidth: height
     width: implicitWidth

@@ -20,36 +20,30 @@ import org.kde.kirigami 2.0 as Kirigami
 import org.kde.ringkde.genericutils 1.0 as GenericUtils
 import QtQuick.Layouts 1.0 as Layouts
 
-Layouts.RowLayout {
-    anchors.right: parent.right
-    anchors.top: parent.top
+Item {
+    implicitHeight: close.height
 
-    Behavior on x {
-        NumberAnimation {duration: 350; easing.type: Easing.OutQuad}
-    }
-
-    Item {
-        Layouts.Layout.fillWidth: true
-    }
-
-    GenericUtils.OutlineButton {
+    //TODO
+    /*GenericUtils.OutlineButton {
         label: "  "+i18n("Scan a QR Code")
         visible: false //Not implemented
         height: 24
         alignment: Qt.AlignRight
-        Layouts.Layout.maximumWidth: width
+        Layouts.Layout.maximumWidth: implicitWidth
         icon: "image://SymbolicColorizer/:/sharedassets/outline/qrcode.svg"
-    }
+    }*/
 
     GenericUtils.OutlineButton {
+        id: close
+
         label: "  "+i18n("Close")
         height: 24
         alignment: Qt.AlignRight
         icon: "image://SymbolicColorizer/:/sharedassets/outline/close.svg"
-        onClicked: {
-            hide()
-        }
-    }
 
-    Component.onCompleted: x = 0
+        anchors.right: parent.right
+        anchors.top: parent.top
+
+        onClicked: hide()
+    }
 }

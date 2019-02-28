@@ -26,9 +26,10 @@ Item {
 
     property bool empty: search.text == ""
     property var searchView: null
-    property real xPadding: 2*Kirigami.Units.largeSpacing +2 /*border*/
+    property real xPadding: 2*Kirigami.Units.largeSpacing + 2 /*border*/
     property alias searchFocus: search.focus
     property alias labelWidth: findLabel.implicitWidth
+    property alias animationFinished: search.animationFinished
 
     Kirigami.Theme.colorSet: Kirigami.Theme.View
 
@@ -51,12 +52,16 @@ Item {
     TextField {
         id: search
 
+        property bool animationFinished: x == (-(searchView.width-searchBox.width ) + xPadding)
+
         // Auto complete an auto completion == fail
         inputMethodHints: Qt.ImhNoPredictiveText
 
         width: focus ? searchView.width - xPadding : parent.width
         x: focus ? -(searchView.width-searchBox.width ) + xPadding: 0
-        y: (focus ? searchBox.height : 0) + Kirigami.Units.largeSpacing
+        y: focus ?
+            (searchBox.height + Kirigami.Units.largeSpacing) :
+            ((searchBox.height-search.height) / 2)
         leftPadding: Kirigami.Units.largeSpacing + 1 /*border*/
         topPadding: Kirigami.Units.largeSpacing
 
@@ -77,7 +82,12 @@ Item {
         }
 
         background : Item {
+            // Unlike what the documentation claims, explicit size is required
+            // with the Material style otherwise the size is 0x0 on Qt 5.12
             height: textMetric.height*1.5
+            width: search.width
+            anchors.centerIn: search
+
             Rectangle {
                 height: parent.height - 2 // 1px border
                 width: parent.width

@@ -115,9 +115,11 @@ Item {
     // Header buttons
     Loader {
         height: active ? searchBox.height : 0
-        width: parent.width
-        anchors.right: parent.parent.right
-        y: -searchBox.height
+        width: seachOverlay.width
+        anchors.right: seachOverlay.right
+        anchors.top: seachOverlay.top
+        anchors.rightMargin: Kirigami.Units.largeSpacing
+        anchors.topMargin: Kirigami.Units.largeSpacing
         clip: true
         active: searchState.activeState
         sourceComponent: JamiSearch.ToolBar {}
@@ -156,10 +158,19 @@ Item {
 
         // Display some tips and help to new users
         JamiSearch.SearchTip {
-            active: searchState.displaySearchHelp
+            active: searchState.displaySearchHelp && searchBox.animationFinished
+
+            // This is there is it get hidden as soon as the search results appear
+            visible: active
+            opacity: visible ? 1 : 0
+
             Layouts.Layout.fillWidth: true
             Layouts.Layout.preferredHeight: active ? height : 0
             Layouts.Layout.maximumHeight: active ? height : 0
+
+            Behavior on opacity {
+                NumberAnimation {duration: 100}
+            }
         }
 
         // Display the results for the current query
