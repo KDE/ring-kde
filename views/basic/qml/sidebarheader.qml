@@ -24,10 +24,14 @@ import org.kde.kirigami 2.6 as Kirigami
 import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 import org.kde.ringkde.jamitroubleshooting 1.0 as JamiTroubleshooting
 
+/**
+ * At some point the toolbar and sidebar header shared the same module, but
+ * eventually the number of "if" to separate the 2 modes outgrew the amount
+ * of shared code.
+ */
 MouseArea {
     property var textColor: Kirigami.Theme.textColor
     property real photoSize: Kirigami.Units.largeSpacing
-    property bool verticalMode: false
 
     // The `currentIndividual` is to force it to be reloaded
     property bool fits: workflow.currentIndividual == workflow.currentIndividual &&
@@ -36,26 +40,28 @@ MouseArea {
     implicitHeight: grid.implicitHeight
 
     function defaultDisplay() {
-        if (verticalMode)
-            editContact.active = true
-        else
-            viewContact.active = true
+        editContact.active = true
     }
 
     GridLayout {
         id: grid
-        rows: verticalMode ? 3 : 2
-        columns: verticalMode ? 2 : 4
+        rows: 3
+        columns: 3
         rowSpacing: 0
-        flow: verticalMode ? GridLayout.LeftToRight : GridLayout.TopToBottom
+        flow: GridLayout.LeftToRight
         columnSpacing: Kirigami.Units.smallSpacing
         anchors.fill: parent
 
         JamiContactView.ContactPhoto {
             Layout.preferredWidth: photoSize
             Layout.preferredHeight: photoSize
-            Layout.fillHeight: !verticalMode
+            Layout.maximumWidth: photoSize
+            Layout.maximumHeight: photoSize
+            Layout.minimumWidth: photoSize
+            Layout.minimumHeight: photoSize
+            Layout.fillHeight: true
             Layout.rowSpan: 2
+            Layout.alignment: Qt.AlignVCenter
 
             individual: workflow.currentIndividual
             defaultColor: Kirigami.Theme.textColor
@@ -73,13 +79,14 @@ MouseArea {
                 workflow.currentIndividual.bestName : ""
 
             color: textColor
-            Layout.preferredWidth: implicitWidth
-            Layout.alignment: Qt.AlignVCenter
+
+            Layout.fillWidth: true
             elide: Text.ElideRight
             //show only when at least half of the string has been painted: use
             //opacity as using visible it won't correctly recalculate the width
             opacity: width > implicitWidth/2
-            Layout.columnSpan: 1
+            Layout.columnSpan: 2
+
             MouseArea {
                 onClicked: defaultDisplay()
                 anchors.fill: parent
@@ -93,7 +100,7 @@ MouseArea {
 
             elide: Text.ElideRight
 
-            Layout.maximumHeight: visible ? undefined : 0
+            Layout.preferredHeight: visible ? undefined : 0
 
             opacity: workflow.currentIndividual && (
                 workflow.currentIndividual.isOnline || workflow.currentIndividual.isOffline
@@ -108,64 +115,31 @@ MouseArea {
                     Kirigami.Theme.negativeTextColor
             ) : "transparent"
 
-            Layout.columnSpan: 2
             MouseArea {
                 onClicked: defaultDisplay()
                 anchors.fill: parent
             }
         }
 
-        Kirigami.Icon {
-            id: edit
-            opacity: Kirigami.Settings.isMobile
-            color: textColor
-            source: "document-edit"
-            visible: !verticalMode
-            Layout.preferredWidth: Kirigami.Units.iconSizes.smallMedium
-            Layout.preferredHeight: Kirigami.Units.iconSizes.smallMedium
+        // Display reasons why the media buttons are not present
+        JamiTroubleshooting.MediaAvailability {
+            id: content
 
-            MouseArea {
-                onClicked: editContact.active = true
-                anchors.fill: parent
-            }
-
-            Behavior on opacity {
-                NumberAnimation {duration: 200}
-            }
-
-            Layout.rowSpan: 2
-        }
-
-        Item {
             Layout.fillWidth: true
-            Layout.rowSpan: verticalMode ? 1 :  2
-            Layout.columnSpan: verticalMode ? 2 : 1
-            Layout.fillHeight: true
-            Layout.preferredHeight: verticalMode ?
-                content.implicitHeight + 4*Kirigami.Units.largeSpacing : undefined
 
-            Layout.topMargin: verticalMode ? Kirigami.Units.largeSpacing : 0
-            Layout.bottomMargin: verticalMode ? Kirigami.Units.largeSpacing : 0
-            Layout.rightMargin: verticalMode ? Kirigami.Units.largeSpacing : 0
-            Layout.leftMargin: verticalMode ? Kirigami.Units.largeSpacing : 0
+            Layout.topMargin:   Kirigami.Units.largeSpacing
+            Layout.bottomMargin:Kirigami.Units.largeSpacing
+            Layout.rightMargin: Kirigami.Units.largeSpacing
+            Layout.leftMargin:  Kirigami.Units.largeSpacing
 
-            Layout.minimumHeight: photoSize
-            Layout.maximumWidth: parent.parent.width - 2*Kirigami.Units.largeSpacing
+            Layout.columnSpan: 3
 
-            // Display reasons why the media buttons are not present
-            JamiTroubleshooting.MediaAvailability {
-                id: content
-                width: parent.width
-                persistent: verticalMode
-                defaultSize: parent.height < 48 ? parent.height : 48
-                currentIndividual: workflow.currentIndividual
-                anchors.verticalCenter: parent.verticalCenter
-                background: verticalMode ? Kirigami.Theme.neutralTextColor : undefined
-                foreground: verticalMode ? Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor
-            }
+            persistent: true
+            defaultSize: parent.height < 48 ? parent.height : 48
+            currentIndividual: workflow.currentIndividual
+
+            background: Kirigami.Theme.neutralTextColor
+            foreground: Kirigami.Theme.highlightedTextColor
         }
     }
-
-    hoverEnabled: !Kirigami.Settings.isMobile
-    onContainsMouseChanged: edit.opacity = containsMouse
 }

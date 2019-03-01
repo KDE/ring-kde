@@ -46,6 +46,9 @@ Rectangle {
     visible: availabilityTracker.hasWarning
     opacity: persistent ? 1 : 0.5
 
+    implicitHeight: icon.height + errorMessage.implicitHeight
+        + 3*Kirigami.Units.largeSpacing
+
     Image {
         id: icon
         height: defaultSize
@@ -112,6 +115,11 @@ Rectangle {
                     visible: true
                     text: availabilityTracker.warningMessage
                 }
+                AnchorChanges {
+                    target: icon
+                    anchors.top: undefined
+                    //anchors.left: mediaAvailability.left
+                }
             },
             State {
                 name: "active"
@@ -119,6 +127,11 @@ Rectangle {
                 PropertyChanges {
                     target: errorMessage
                     visible: false
+                }
+                AnchorChanges {
+                    target: icon
+                    anchors.top: undefined
+                    //anchors.left: mediaAvailability.left
                 }
                 PropertyChanges {
                     target: mediaAvailability
@@ -144,6 +157,11 @@ Rectangle {
                         + errorMessage.implicitHeight
                         + 2*Kirigami.Units.largeSpacing
                     width: mediaAvailability.parent.width
+                }
+                AnchorChanges {
+                    target: icon
+                    anchors.top: mediaAvailability.top
+                    //anchors.left: undefined
                 }
                 AnchorChanges {
                     target: errorMessage

@@ -120,7 +120,7 @@ int main(int argc, char **argv)
 
     QQmlApplicationEngine engine;
 
-    KLocalizedString::setApplicationDomain("ring-kde");
+    KLocalizedString::setApplicationDomain("Banji");
 
 #ifdef USE_STATIC_KF5
     qobject_cast<QQmlExtensionPlugin*>(qt_static_plugin_KirigamiPlugin().instance())->registerTypes("org.kde.kirigami");
@@ -168,8 +168,8 @@ int main(int argc, char **argv)
     KDeclarative::KDeclarative d;
     d.setDeclarativeEngine(&engine);
 
-    KAboutData about(QStringLiteral("ring-kde"),
-        i18n("ring-kde"),
+    KAboutData about(QStringLiteral("Banji"),
+        i18n("Banji"),
         /*QStringLiteral(*/version/*)*/,
         i18n("RING, a secured and distributed communication software"),
         KAboutLicense::GPL_V3,

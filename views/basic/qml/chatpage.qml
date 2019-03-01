@@ -45,7 +45,7 @@ Kirigami.Page {
     /*
      * When there is plenty of room, move the header into the toolbar.
      */
-    titleDelegate: BasicView.DesktopHeader {
+    titleDelegate: BasicView.ToolbarHeader {
         id: dheader
         visible: fits
         Layout.fillHeight: true
@@ -66,7 +66,7 @@ Kirigami.Page {
         Layout.preferredHeight: visible ? Kirigami.Units.gridUnit * 5 : 0
         Layout.margins: 0
 
-        BasicView.DesktopHeader {
+        BasicView.ToolbarHeader {
             anchors.fill: parent
         }
     }

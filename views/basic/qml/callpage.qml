@@ -39,7 +39,7 @@ Kirigami.Page {
 
     // Place the contact name. There is only 1 action, so there's usually
     // enough room for at least part of the name.
-    titleDelegate: BasicView.DesktopHeader {
+    titleDelegate: BasicView.ToolbarHeader {
         id: dheader
         Layout.fillWidth: true
     }

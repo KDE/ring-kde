@@ -4,7 +4,8 @@
         <file>qml/pagemanager.qml</file>
         <file>qml/basic.qml</file>
         <file>qml/chatpage.qml</file>
-        <file>qml/desktopheader.qml</file>
+        <file>qml/sidebarheader.qml</file>
+        <file>qml/toolbarheader.qml</file>
         <file>qml/individualdetails.qml</file>
         <file>qml/detail.qml</file>
         <file>qml/individualeditor.qml</file>

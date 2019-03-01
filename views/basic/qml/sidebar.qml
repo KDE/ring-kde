@@ -48,12 +48,11 @@ Controls.Pane {
          * It is the same header as in the toolbar, but with an horizontal
          * layout and brighter error popup.
          */
-        BasicView.DesktopHeader {
+        BasicView.SidebarHeader {
             Layouts.Layout.fillWidth: true
             Layouts.Layout.maximumWidth: sideBar.width
             textColor: Kirigami.Theme.textColor
             photoSize: Kirigami.Units.iconSizes.large*1.5
-            verticalMode: true
         }
 
         Kirigami.Separator {

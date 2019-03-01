@@ -28,7 +28,8 @@ void BasicView::registerTypes(const char *uri)
     qmlRegisterType(QStringLiteral("qrc:/basicview/qml/banjiactioncollection.qml"), uri, 1, 0, "BanjiActionCollection");
     qmlRegisterType(QStringLiteral("qrc:/basicview/qml/chatpage.qml"), uri, 1, 0, "ChatPage");
     qmlRegisterType(QStringLiteral("qrc:/basicview/qml/callpage.qml"), uri, 1, 0, "CallPage");
-    qmlRegisterType(QStringLiteral("qrc:/basicview/qml/desktopheader.qml"), uri, 1, 0, "DesktopHeader");
+    qmlRegisterType(QStringLiteral("qrc:/basicview/qml/sidebarheader.qml"), uri, 1, 0, "SidebarHeader");
+    qmlRegisterType(QStringLiteral("qrc:/basicview/qml/toolbarheader.qml"), uri, 1, 0, "ToolbarHeader");
     qmlRegisterType(QStringLiteral("qrc:/basicview/qml/individualdetails.qml"), uri, 1, 0, "IndividualDetails");
     qmlRegisterType(QStringLiteral("qrc:/basicview/qml/detail.qml"), uri, 1, 0, "Detail");
     qmlRegisterType(QStringLiteral("qrc:/basicview/qml/individualeditor.qml"), uri, 1, 0, "IndividualEditor");
