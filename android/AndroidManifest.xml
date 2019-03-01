@@ -4,6 +4,7 @@
         <activity android:configChanges="orientation|uiMode|screenLayout|screenSize|smallestScreenSize|layoutDirection|locale|fontScale|keyboard|keyboardHidden|navigation|mcc|mnc|density"
                   android:name="org.kde.ringkde.Ringkde"
                   android:label="Banji"
+                  android:icon="@drawable/icon"
                   android:screenOrientation="unspecified"
                   android:launchMode="singleTop">
             <intent-filter>
