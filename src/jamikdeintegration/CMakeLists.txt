@@ -63,6 +63,10 @@ find_package(Qt5 CONFIG REQUIRED
     Core Gui Quick Widgets QuickControls2
 )
 
+if(X11_FOUND)
+    find_package(Qt5 QUIET OPTIONAL_COMPONENTS Qt5::X11Extras)
+endif()
+
 set(GENERIC_LIB_VERSION "1.0.0")
 
 # Pack the icons shared by various components
@@ -80,6 +84,8 @@ set( jamikdeintegration_LIB_SRCS
     src/windowevent.cpp
     src/cmiconengine.cpp
     src/personiconengine.cpp
+    src/qmlaction.cpp
+    src/qactionbinder.cpp
     src/plugin.cpp
 )
 
@@ -127,28 +133,32 @@ set(AUTOMOC_MOC_OPTIONS -Muri=org.kde.ringkde.jamikdeintegration)
 add_library(jamikdeintegration ${jamikdeintegration_LIB_SRCS} )
 
 target_link_libraries( jamikdeintegration
-    # Project
-    ringqt
-    ringqtquick
+    PRIVATE
+        # Project
+        ringqtquick
+        sharedassets
 
-    # Qt
-    Qt5::Core
-    Qt5::Gui
-    Qt5::Quick
-    Qt5::Widgets
-    Qt5::QuickControls2
+    PUBLIC
+        ringqt
 
-    # KF5
-    KF5::I18n
-    KF5::ConfigCore
-    KF5::ConfigGui
-    KF5::ConfigWidgets # KColorScheme
-    KF5::XmlGui # KSortcutdialog # (DESKTOP)
-    KF5::GlobalAccel # (DESKTOP)
+        # Qt
+        Qt5::Core
+        Qt5::Gui
+        Qt5::Quick
+        Qt5::Widgets
+        Qt5::QuickControls2
+
+        # KF5
+        KF5::I18n
+        KF5::ConfigCore
+        KF5::ConfigGui
+        KF5::ConfigWidgets # KColorScheme
+        KF5::XmlGui # KSortcutdialog # (DESKTOP)
+        KF5::GlobalAccel # (DESKTOP)
 )
 
 if(ENABLE_NOTIFICATIONS)
-    target_link_libraries( jamikdeintegration
+    target_link_libraries( jamikdeintegration PUBLIC
         KF5::NotifyConfig # the notification dialog # (DESKTOP)
         KF5::Notifications # the Systray
     )
@@ -168,6 +178,13 @@ set(jamikdeintegration_EXPORT_HDRS
     src/windowevent.h
     src/plugin.h
 )
+
+if(X11_FOUND)
+    target_link_libraries( jamikdeintegration PRIVATE
+        Qt5::X11Extras
+        ${X11_X11_LIB}
+    )
+endif()
 
 # Configure the target config
 set(jamikdeintegration_CONFIG_PATH "${CMAKE_CURRENT_BINARY_DIR}/JamiKDEIntegrationConfig.cmake")

@@ -19,25 +19,52 @@
 
 #include <libcard/event.h>
 
+#include <QtCore/QAbstractProxyModel>
 #include <QtGui/QPainter>
 #include <QtGui/QIcon>
 #include <QtGui/QPixmap>
 
+#include <individualtimelinemodel.h>
+
+#include <cmath>
+
+static const constexpr unsigned MULTI_SIZE  = 32;
+static const constexpr unsigned SINGLE_SIZE = 48;
+
 class MultiCallPrivate
 {
 public:
+    mutable enum class Mode {
+        UNDEFINED     , /*!< Initialization            */
+        SINGLE_MISSED , /*!< Single missing call       */
+        SINGLE_ENTRY  , /*!< Direction and length      */
+        MULTI_ICON    , /*!< Single row of small icons */
+        SUMMARY       , /*!< Too many calls to display */
+    } m_Mode {Mode::UNDEFINED};
+
     QPersistentModelIndex m_Index;
 
     static bool     init;
-    static QPixmap* iconCache[2][2];
+    static QPixmap* multiIconCache [2][2];
+    static QPixmap* singleIconCache[2][2];
 
     MultiCall* q_ptr;
 
     int getHeight() const;
+    void updateMode() const;
+    QPair<const QAbstractItemModel*, const QModelIndex> rootModel() const;
+
+    void paintRow    (QPainter *painter);
+    void paintMissed (QPainter *painter);
+    void paintSingle (QPainter *painter);
+    void paintSummary(QPainter *painter);
 };
 
 bool MultiCallPrivate::init = false;
-QPixmap* MultiCallPrivate::iconCache[2][2] = {
+QPixmap* MultiCallPrivate::multiIconCache[2][2] = {
+    { nullptr, nullptr }, { nullptr, nullptr }
+};
+QPixmap* MultiCallPrivate::singleIconCache[2][2] = {
     { nullptr, nullptr }, { nullptr, nullptr }
 };
 
@@ -49,10 +76,14 @@ MultiCall::MultiCall(QQuickItem* parent) :
 
     if (!d_ptr->init) {
         d_ptr->init = true;
-        d_ptr->iconCache[1][0] = new QPixmap(QIcon(":/sharedassets/phone_dark/missed_incoming.svg").pixmap(28, 28));
-        d_ptr->iconCache[1][1] = new QPixmap(QIcon(":/sharedassets/phone_dark/missed_outgoing.svg").pixmap(28, 28));
-        d_ptr->iconCache[0][0] = new QPixmap(QIcon(":/sharedassets/phone_dark/incoming.svg"       ).pixmap(28, 28));
-        d_ptr->iconCache[0][1] = new QPixmap(QIcon(":/sharedassets/phone_dark/outgoing.svg"       ).pixmap(28, 28));
+        d_ptr->multiIconCache [1][0] = new QPixmap(QIcon(":/sharedassets/phone_dark/missed_incoming.svg").pixmap(28, 28));
+        d_ptr->multiIconCache [1][1] = new QPixmap(QIcon(":/sharedassets/phone_dark/missed_outgoing.svg").pixmap(28, 28));
+        d_ptr->multiIconCache [0][0] = new QPixmap(QIcon(":/sharedassets/phone_dark/incoming.svg"       ).pixmap(28, 28));
+        d_ptr->multiIconCache [0][1] = new QPixmap(QIcon(":/sharedassets/phone_dark/outgoing.svg"       ).pixmap(28, 28));
+        d_ptr->singleIconCache[1][0] = new QPixmap(QIcon(":/sharedassets/phone_dark/missed_incoming.svg").pixmap(44, 44));
+        d_ptr->singleIconCache[1][1] = new QPixmap(QIcon(":/sharedassets/phone_dark/missed_outgoing.svg").pixmap(44, 44));
+        d_ptr->singleIconCache[0][0] = new QPixmap(QIcon(":/sharedassets/phone_dark/incoming.svg"       ).pixmap(44, 44));
+        d_ptr->singleIconCache[0][1] = new QPixmap(QIcon(":/sharedassets/phone_dark/outgoing.svg"       ).pixmap(44, 44));
     }
 
     setHeight(1); //Otherwise it will be treated as dead code
@@ -69,8 +100,7 @@ void MultiCall::setModelIndex(const QPersistentModelIndex& idx)
     d_ptr->m_Index = idx;
 
     //TODO support HiDPI
-    setHeight(d_ptr->getHeight());
-    setImplicitHeight(d_ptr->getHeight());
+    d_ptr->getHeight();
     update();
 }
 
@@ -86,51 +116,176 @@ bool MultiCall::skipChildren() const
 
 int MultiCallPrivate::getHeight() const
 {
-    const int w(q_ptr->width());
-    if ((!m_Index.isValid()) || (!w))
-        return 1;
+    updateMode();
+    switch(m_Mode) {
+        case MultiCallPrivate::Mode::UNDEFINED:
+            break;
+        case MultiCallPrivate::Mode::SINGLE_MISSED:
+            return 96;
+        case MultiCallPrivate::Mode::SINGLE_ENTRY:
+            return 48;
+        case MultiCallPrivate::Mode::MULTI_ICON: {
+            const int w(q_ptr->width());
+            if ((!m_Index.isValid()) || (!w))
+                return 1;
 
-    const int rc = m_Index.model()->rowCount(m_Index);
+            const int rc = m_Index.data(
+                (int)IndividualTimelineModel::Role::CallCount
+            ).toInt();
 
-    return 32*((rc*32)/w + ((rc*32)%w ? 1 : 0));
+
+            const int perRow = std::floor(w/MULTI_SIZE);
+            const int rowCount = MULTI_SIZE*std::ceil(rc/perRow);
+
+            q_ptr->setImplicitWidth(rc*MULTI_SIZE);
+            q_ptr->setImplicitHeight(rowCount);
+
+            return MULTI_SIZE*((rc*MULTI_SIZE)/w + ((rc*MULTI_SIZE)%w ? 1 : 0));
+        }
+        case MultiCallPrivate::Mode::SUMMARY:
+            break;
+    }
+
+    return 0;
 }
 
-void MultiCall::paint(QPainter *painter)
+QPair<const QAbstractItemModel*, const QModelIndex> MultiCallPrivate::rootModel() const
 {
-    const int w(width());
+    const QAbstractProxyModel* pm = qobject_cast<const QAbstractProxyModel*>(m_Index.model());
+    const QModelIndex pidx = pm ? pm->mapToSource(m_Index) : QModelIndex(m_Index);
+    const QAbstractItemModel* m = m ? pm->sourceModel() : m_Index.model();
 
-    if ((!d_ptr->m_Index.isValid()) || (!w))
-        return;
+    return {m, pidx};
+}
 
-    // In case there's a resize
-    const int rc = d_ptr->m_Index.model()->rowCount(d_ptr->m_Index);
-    const int h  = d_ptr->getHeight();
+void MultiCallPrivate::updateMode() const
+{
+    const int count = m_Index.data(
+        (int)IndividualTimelineModel::Role::CallCount
+    ).toInt();
 
-    if (h > height() + 1 || h < height() - 1) {
-//         setHeight(h + 200);
-//         update();
+    if (count == 1) {
+        //TODO C++17
+        const auto m = rootModel();
+
+        const auto cidx = m.first->index(0, 0, m.second);
+        if (const auto event = qvariant_cast<Event*>(cidx.data((int)Ring::Role::Object))) {
+            const bool isMissed   = event->status   () == Event::Status::X_MISSED;
+            const bool isOutgoing = event->direction() == Event::Direction::INCOMING;
+
+            if (isMissed && isOutgoing) {
+                m_Mode = Mode::SINGLE_MISSED;
+                return;
+            }
+
+            m_Mode = Mode::SINGLE_ENTRY;
+            return;
+        }
+    }
+
+    if (count <= 10) {
+        m_Mode = Mode::MULTI_ICON;
         return;
     }
 
-    const int perRow = w/32;
+    m_Mode = Mode::SUMMARY;
+}
+
+void MultiCallPrivate::paintMissed(QPainter *painter)
+{
+    //
+}
+
+void MultiCallPrivate::paintSingle(QPainter *painter)
+{
+    q_ptr->setImplicitWidth(SINGLE_SIZE);
+
+    const auto m = rootModel();
+
+    const QModelIndex cidx = m.first->index(0,0, m.second);
+    const auto event = qvariant_cast<Event*>(cidx.data((int)Ring::Role::Object));
+
+    if (!event)
+        return;
+
+    const bool isMissed   = event->status   () == Event::Status::X_MISSED;
+    const bool isOutgoing = event->direction() == Event::Direction::OUTGOING;
+
+    painter->drawPixmap(
+        QPoint{0, 0},
+        *singleIconCache[isMissed][isOutgoing]
+    );
+}
+
+void MultiCallPrivate::paintSummary(QPainter *painter)
+{
+    q_ptr->setImplicitWidth(SINGLE_SIZE);
+}
+
+void MultiCallPrivate::paintRow(QPainter *painter)
+{
+    const qreal w(q_ptr->width());
+
+    if (w < MULTI_SIZE || q_ptr->height() < MULTI_SIZE)
+        return;
+
+    if ((!m_Index.isValid()) || (!w))
+        return;
+
+    // In case there's a resize
+    const int rc = std::min(
+        m_Index.data((int)IndividualTimelineModel::Role::CallCount).toInt(), 10
+    );
+
+    const int h  = getHeight();
+
+    if (h > q_ptr->height() + 1 || h < q_ptr->height() - 1) {
+        return;
+    }
+
+    const int perRow = std::floor(w/MULTI_SIZE);
+
+    // Handle the case where a QSortFilterProxyModel is being used
+    auto m = rootModel();
 
     for (int i = 0; i < rc; i++) {
-        const auto cidx = d_ptr->m_Index.model()->index(i, 0, d_ptr->m_Index);
+        const auto cidx = m.first->index(i, 0, m.second);
 
         if (const auto event = qvariant_cast<Event*>(cidx.data((int)Ring::Role::Object))) {
-            const int col = (i/perRow) * 32;
-            const int row = (i%perRow) * 32;
+            const int col = (i/perRow) * MULTI_SIZE;
+            const int row = (i%perRow) * MULTI_SIZE;
 
             const bool isMissed   = event->status   () == Event::Status::X_MISSED;
             const bool isOutgoing = event->direction() == Event::Direction::OUTGOING;
 
             painter->drawPixmap(
                 QPoint{row, col},
-                *d_ptr->iconCache[isMissed][isOutgoing]
+                *multiIconCache[isMissed][isOutgoing]
             );
         }
     }
+}
 
+void MultiCall::paint(QPainter *painter)
+{
+    d_ptr->updateMode();
+
+    switch(d_ptr->m_Mode) {
+        case MultiCallPrivate::Mode::UNDEFINED:
+            break;
+        case MultiCallPrivate::Mode::SINGLE_MISSED:
+            d_ptr->paintMissed(painter);
+            break;
+        case MultiCallPrivate::Mode::SINGLE_ENTRY:
+            d_ptr->paintSingle(painter);
+            break;
+        case MultiCallPrivate::Mode::MULTI_ICON:
+            d_ptr->paintRow(painter);
+            break;
+        case MultiCallPrivate::Mode::SUMMARY:
+            d_ptr->paintSummary(painter);
+            break;
+    }
 }
 
 int MultiCall::count() const
@@ -145,6 +300,5 @@ void MultiCall::setCount(int c)
 {
     Q_UNUSED(c)
     setHeight(d_ptr->getHeight());
-    setImplicitHeight(height());
     update();
 }

@@ -42,14 +42,14 @@
 #include <libcard/historyimporter.h>
 
 // Collections
-#include <foldercertificatecollection.h>
-#include <fallbackpersoncollection.h>
-#include <peerprofilecollection2.h>
-#include <localhistorycollection.h>
-#include <localbookmarkcollection.h>
-#include <localrecordingcollection.h>
-#include <localprofilecollection.h>
-#include <localtextrecordingcollection.h>
+#include <collections/foldercertificatecollection.h>
+#include <collections/fallbackpersoncollection.h>
+#include <collections/peerprofilecollection2.h>
+#include <collections/localhistorycollection.h>
+#include <collections/localbookmarkcollection.h>
+#include <collections/localrecordingcollection.h>
+#include <collections/localprofilecollection.h>
+#include <collections/localtextrecordingcollection.h>
 
 // Ring-KDE
 #include "actioncollection.h"
@@ -58,6 +58,8 @@
 #include "pixmapinterface.h"
 #include "serializationinterface.h"
 #include "windowevent.h"
+#include "qmlaction.h"
+#include "qactionbinder.h"
 #include "kcfg_settings.h"
 
 #ifndef DISABLE_NOTIFICATION
@@ -156,10 +158,13 @@ void JamiKDEIntegration::registerTypes(const char *uri)
     GlobalInstances::itemModelStateSerializer()->load();
 
     qmlRegisterType<WindowEvent>(uri, 1, 0, "WindowEvent");
+    qmlRegisterType<QmlAction>(uri, 1, 0, "QmlAction");
+    qmlRegisterType<QActionBinder>(uri, 1, 0, "QActionBinder");
 }
 
 void JamiKDEIntegration::initializeEngine(QQmlEngine *engine, const char *uri)
 {
+    Q_ASSERT(uri == QByteArray("org.kde.ringkde.jamikdeintegration"));
     e = engine;
     ActionCollection::instance()->setupAction();
 

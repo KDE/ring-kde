@@ -19,6 +19,8 @@
 
 #include <QQuickPaintedItem>
 
+class TimelineDotsPrivate;
+
 /**
  * The pure QML version of this widget created too many elements and was too
  * slow.
@@ -27,9 +29,20 @@ class TimelineDots : public QQuickPaintedItem
 {
     Q_OBJECT
 public:
+    Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY changed)
+
+    QColor color() const;
+    void setColor(const QColor& color);
 
     explicit TimelineDots(QQuickItem* parent = nullptr);
     virtual ~TimelineDots();
 
     virtual void paint(QPainter *painter) override;
+
+Q_SIGNALS:
+    void changed();
+
+private:
+    TimelineDotsPrivate* d_ptr;
+    Q_DECLARE_PRIVATE(TimelineDots)
 };

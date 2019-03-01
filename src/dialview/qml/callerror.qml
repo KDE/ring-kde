@@ -16,6 +16,7 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.    *
  *****************************************************************************/
 import QtQuick 2.0
+import org.kde.kirigami 2.2 as Kirigami
 
 
 Column {
@@ -32,7 +33,7 @@ Column {
     }
     Text {
         text: call.lastErrorMessage + " (" + call.lastErrorCode + ")"
-        color: activePalette.text
+        color: Kirigami.Theme.textColor
         wrapMode: Text.WordWrap
         width: parent.width
     }

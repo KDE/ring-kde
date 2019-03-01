@@ -19,8 +19,8 @@ import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
 
+import org.kde.kirigami 2.2 as Kirigami
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
-
 
 GridLayout {
     id: mainInfo
@@ -103,12 +103,13 @@ GridLayout {
     Label {
         id: label
         text: i18n("Formatted name:")
-        color: labelColor ? labelColor : activePalette.text
+        color: labelColor ? labelColor : Kirigami.Theme.textColor
     }
 
     TextField {
         id: formattedName
         readOnly: hasTarget && !mainInfo.editing
+        Layout.fillWidth: true
         onTextChanged: {
             mainInfo.changed()
         }
@@ -116,11 +117,12 @@ GridLayout {
 
     Label {
         text: i18n("Primary name:")
-        color: labelColor ? labelColor : activePalette.text
+        color: labelColor ? labelColor : Kirigami.Theme.textColor
     }
     TextField {
         id: firstName
         readOnly: hasTarget && !mainInfo.editing
+        Layout.fillWidth: true
         onTextChanged: {
             mainInfo.changed()
         }
@@ -128,11 +130,12 @@ GridLayout {
 
     Label {
         text: i18n("Last name:")
-        color: labelColor ? labelColor : activePalette.text
+        color: labelColor ? labelColor : Kirigami.Theme.textColor
     }
     TextField {
         id: lastName
         readOnly: hasTarget && !mainInfo.editing
+        Layout.fillWidth: true
         onTextChanged: {
             mainInfo.changed()
         }
@@ -140,11 +143,12 @@ GridLayout {
 
     Label {
         text: i18n("Email:")
-        color: labelColor ? labelColor : activePalette.text
+        color: labelColor ? labelColor : Kirigami.Theme.textColor
     }
     TextField {
         id: email
         readOnly: hasTarget && !mainInfo.editing
+        Layout.fillWidth: true
         onTextChanged: {
             mainInfo.changed()
         }

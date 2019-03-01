@@ -17,27 +17,33 @@
  **************************************************************************/
 import QtQuick 2.7
 import QtQuick.Layouts 1.0
+import org.kde.kirigami 2.2 as Kirigami
 
 RowLayout {
-    anchors.horizontalCenter: parent.horizontalCenter
+    Layout.alignment: Qt.AlignHCenter
+
     clip: true
     height: implicitHeight
+    opacity: chatView.displayExtraTime ? 1 : 0
+    Behavior on opacity {
+            NumberAnimation {duration: 200}
+    }
 
     property real lineWidth: Math.min(50, (width - label.implicitWidth)/2)
 
     Rectangle {
         height: 1
         Layout.preferredWidth: 50
-        color: inactivePalette.text
+        color: Kirigami.Theme.disabledTextColor
     }
     Text {
         id: label
         text: endAt
-        color: inactivePalette.text
+        color: Kirigami.Theme.disabledTextColor
     }
     Rectangle {
         height: 1
         Layout.preferredWidth: 50
-        color: inactivePalette.text
+        color: Kirigami.Theme.disabledTextColor
     }
 }

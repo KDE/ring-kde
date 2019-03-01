@@ -23,7 +23,7 @@
  #include "akonadibackend.h"
 #endif
 
-#include "collectioninterface.h"
+#include <picocms/collectioninterface.h>
 #include "kcfg_settings.h"
 
 SerializationInterface::~SerializationInterface()

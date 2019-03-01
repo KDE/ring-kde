@@ -23,10 +23,11 @@ import org.kde.ringkde.jamicallview 1.0 as JamiCallView
 import org.kde.ringkde.jamitroubleshooting 1.0 as JamiTroubleshooting
 
 Rectangle {
-    property QtObject call: null;
+    property QtObject call: null
     property string   mode: "PREVIEW"
     property alias toubleshooting: troubleshootDispatcher
     property real bottomMargin: 0
+    property QtObject individual: null
 
     id: placeholderMessage
     color: "black"
@@ -50,7 +51,7 @@ Rectangle {
 
     JamiCanvasIndicator.NewCall {
         id: newCall
-        visible: false
+        visible: (!call) && placeholderMessage.individual
         anchors.centerIn: parent
     }
 

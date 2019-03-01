@@ -21,6 +21,7 @@ import QtQuick.Layouts 1.0 as Layouts
 import org.kde.kirigami 2.2 as Kirigami
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 import org.kde.ringkde.genericutils 1.0 as GenericUtils
+import org.kde.ringkde.jamikdeintegration 1.0 as JamiKDEIntegration
 
 /**
  * Add a very obvious warning and reload button to make the "/!\ No accounts"
@@ -52,7 +53,7 @@ Rectangle {
         Text {
             Layouts.Layout.fillWidth: true
             text: i18n("All accounts are currently unavailable, check your internet connection")
-            color: activePalette.text
+            color: Kirigami.Theme.textColor
             wrapMode: Text.WordWrap
             width: parent.width
         }
@@ -60,7 +61,7 @@ Rectangle {
         Rectangle {
             color: "transparent"
             border.width: 1
-            border.color: activePalette.text
+            border.color: Kirigami.Theme.textColor
             height: buttonText.implicitHeight + 15
             radius: 5
 
@@ -70,7 +71,7 @@ Rectangle {
             Text {
                 id: buttonText
                 anchors.centerIn: parent
-                color: activePalette.text
+                color: Kirigami.Theme.textColor
                 text: i18n("Reload all accounts now")
             }
 

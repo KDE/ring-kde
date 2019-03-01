@@ -29,7 +29,7 @@ Rectangle {
     anchors.margins: 2
     radius: 5
     border.width: 0
-    color: selected ? activePalette.highlight: "transparent"
+    color: selected ? Kirigami.Theme.highlightColor: "transparent"
 
     height: content.implicitHeight + 20 + errorMessage.height
     property bool selected: object == RingSession.callModel.selectedCall
@@ -37,7 +37,7 @@ Rectangle {
     property bool skipSelect: errorMessage.active || missedMessage.active
 
     property var labelColor: callDelegateItem.selected && !skipSelect ?
-        activePalette.highlightedText : activePalette.text
+        Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor
 
     Drag.active: mouseArea.drag.active
     Drag.dragType: Drag.Automatic
@@ -73,8 +73,8 @@ Rectangle {
         alignment: Qt.AlignRight
 
         property string colString: selected && !skipSelect ?
-            activePalette.highlightedText.toString(16) :
-                activePalette.text.toString(16)
+            Kirigami.Theme.highlightedTextColor.toString(16) :
+                Kirigami.Theme.textColor.toString(16)
 
         color: colString
 
@@ -183,9 +183,9 @@ Rectangle {
                     property bool selected: ListView.isCurrentItem
                     height: searchDelegate.height
                     width: callDelegateItem.width - 20
-                    color: selected ? activePalette.highlightedText : "transparent"
+                    color: selected ? Kirigami.Theme.highlightedTextColor : "transparent"
                     border.width: 1
-                    border.color: activePalette.highlightedText
+                    border.color: Kirigami.Theme.highlightedTextColor
                     radius: 5
                     clip: true
                     JamiDialView.CompletionDelegate {

@@ -32,10 +32,6 @@ Item {
         id: background
         anchors.fill: parent
         color: "#0886a0"
-        x: 51
-        y: 40
-        width: 200
-        height: 200
 
         ColumnLayout {
             id: columnLayout
@@ -69,6 +65,7 @@ Item {
                     width: (parent.rowWidth) < parent.minWidth ? parent.minWidth : ( parent.rowWidth > parent.maxWidth ? parent.maxWidth : parent.rowWidth)
 
                     source: "qrc:/wizard/people.svg"
+                    visible: background.width > background.height
                     Layout.fillHeight: true
                     Layout.fillWidth: false
                     Layout.maximumHeight: 300
@@ -96,14 +93,20 @@ Item {
                         source: "image://icon/channel-secure-symbolic"
                         Layout.preferredWidth: 100
                         fillMode: Image.PreserveAspectFit
+                        sourceSize.width: width
+                        sourceSize.height: height
+                        Layout.alignment: Qt.AlignVCenter
                     }
 
                     Controls.Label {
                         wrapMode: Text.WordWrap
                         clip: true
-                        text: i18n("Ring-KDE allows you to communicate privately with your friends. It uses peer to peer technologies popularised by BitTorrent to create a decentralized network of users. There is no central server and all communications are end-to-end encrypted.")
+                        text: i18n("Banji allows you to communicate privately with your friends. It uses peer to peer technologies popularised by BitTorrent to create a decentralized network of users. There is no central server and all communications are end-to-end encrypted.")
                         Layout.fillWidth: true
                         Layout.fillHeight: true
+                        color: "white"
+                        Layout.alignment: Qt.AlignVCenter
+                        verticalAlignment: Text.AlignVCenter
                     }
                 }
 
@@ -113,14 +116,20 @@ Item {
                         source: "image://icon/text-directory"
                         Layout.preferredWidth: 100
                         fillMode: Image.PreserveAspectFit
+                        sourceSize.width: width
+                        sourceSize.height: height
+                        Layout.alignment: Qt.AlignVCenter
                     }
 
                     Controls.Label {
                         wrapMode: Text.WordWrap
                         clip: true
-                        text: i18n("Ring-KDE stores all data locally using standard formats such as JSON, vCard, MIME, PCM/WAV, INI and X-509. No data is ever uploaded to external servers.")
+                        text: i18n("Banji stores all data locally using standard formats such as JSON, vCard, MIME, PCM/WAV, INI and X-509. No data is ever uploaded to external servers.")
                         Layout.fillWidth: true
                         Layout.fillHeight: true
+                        color: "white"
+                        Layout.alignment: Qt.AlignVCenter
+                        verticalAlignment: Text.AlignVCenter
                     }
                 }
 
@@ -130,14 +139,20 @@ Item {
                         source: "image://icon/call-start"
                         Layout.preferredWidth: 100
                         fillMode: Image.PreserveAspectFit
+                        sourceSize.width: width
+                        sourceSize.height: height
+                        Layout.alignment: Qt.AlignVCenter
                     }
 
                     Controls.Label {
                         wrapMode: Text.WordWrap
                         clip: true
-                        text: i18n("Ring-KDE supports your office phone account. Answers, transfer and record your phone calls directly from KDE.")
+                        text: i18n("Banji supports your office phone account. Answers, transfer and record your phone calls directly from KDE.")
                         Layout.fillWidth: true
                         Layout.fillHeight: true
+                        color: "white"
+                        Layout.alignment: Qt.AlignVCenter
+                        verticalAlignment: Text.AlignVCenter
                     }
                 }
 
@@ -147,14 +162,20 @@ Item {
                         source: "image://icon/standard-connector"
                         Layout.preferredWidth: 100
                         fillMode: Image.PreserveAspectFit
+                        sourceSize.width: width
+                        sourceSize.height: height
+                        Layout.alignment: Qt.AlignVCenter
                     }
 
                     Controls.Label {
                         wrapMode: Text.WordWrap
                         clip: true
-                        text: i18n("Ring is based on open standards and it can interoperate with other SIP compliant systems.")
+                        text: i18n("The Jami protocol is based on open standards and it can interoperate with other SIP compliant systems.")
                         Layout.fillWidth: true
                         Layout.fillHeight: true
+                        color: "white"
+                        Layout.alignment: Qt.AlignVCenter
+                        verticalAlignment: Text.AlignVCenter
                     }
                 }
 
@@ -164,14 +185,20 @@ Item {
                         source: "image://icon/text-x-python"
                         Layout.preferredWidth: 100
                         fillMode: Image.PreserveAspectFit
+                        sourceSize.width: width
+                        sourceSize.height: height
+                        Layout.alignment: Qt.AlignVCenter
                     }
 
                     Controls.Label {
                         wrapMode: Text.WordWrap
                         clip: true
-                        text: i18n("Ring offers an user friendly DBus API to automate all aspects of the application.")
+                        text: i18n("Banji offers an user friendly DBus API to automate all aspects of the application.")
                         Layout.fillWidth: true
                         Layout.fillHeight: true
+                        color: "white"
+                        Layout.alignment: Qt.AlignVCenter
+                        verticalAlignment: Text.AlignVCenter
                     }
                 }
 
@@ -181,14 +208,20 @@ Item {
                         source: "image://icon/call-start"
                         Layout.preferredWidth: 100
                         fillMode: Image.PreserveAspectFit
+                        sourceSize.width: width
+                        sourceSize.height: height
+                        Layout.alignment: Qt.AlignVCenter
                     }
 
                     Controls.Label {
                         wrapMode: Text.WordWrap
                         clip: true
-                        text: i18n("Ring-KDE can call real phone numbers. Cheap credits are available from thousand of providers worldwide. Use your favorite search engine to locate a local SIP phone provider.")
+                        text: i18n("Banji can call real phone numbers. Cheap credits are available from thousand of providers worldwide. Use your favorite search engine to locate a local SIP phone provider.")
                         Layout.fillWidth: true
                         Layout.fillHeight: true
+                        color: "white"
+                        Layout.alignment: Qt.AlignVCenter
+                        verticalAlignment: Text.AlignVCenter
                     }
                 }
             }

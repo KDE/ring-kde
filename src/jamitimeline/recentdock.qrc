@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/jamitimeline">
+        <file>qml/peerstimeline.qml</file>
+        <file>qml/contactmethoddelegate.qml</file>
+        <file>qml/peerstimelinecategories.qml</file>
+        <file>icons/bookmarked.svg</file>
+        <file>icons/not_bookmarked.svg</file>
+    </qresource>
+</RCC>

@@ -21,6 +21,7 @@ import QtQuick.Controls 2.0
 
 import org.kde.playground.kquickitemviews 1.0 as KQuickItemViews
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
+import org.kde.kirigami 2.2 as Kirigami
 
 Item {
     id: componentItem
@@ -33,13 +34,13 @@ Item {
     property bool showSeparator: true
 
     property var  textColor: selected ?
-        activePalette.highlight : activePalette.highlightedText
+        Kirigami.Theme.highlightColor : Kirigami.Theme.highlightedTextColor
 
     property var  altTextColor: selected ?
-        activePalette.highlight : activePalette.highlightedText
+        Kirigami.Theme.highlightColor : Kirigami.Theme.highlightedTextColor
 
     property var baseColor: selected ?
-        activePalette.highlightedText : activePalette.highlight
+        Kirigami.Theme.highlightedTextColor : Kirigami.Theme.highlightColor
 
     width: parent.width
 

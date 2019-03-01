@@ -1,0 +1,19 @@
+<RCC>
+    <qresource prefix="/search/">
+        <file>qml/searchdelegate.qml</file>
+        <file>qml/findpeers.qml</file>
+        <file>qml/firstrun.qml</file>
+        <file>qml/searchtip.qml</file>
+        <file>qml/searchbox.qml</file>
+        <file>qml/searchoverlay.qml</file>
+        <file>qml/searchstate.qml</file>
+        <file>qml/matchcategories.qml</file>
+        <file>qml/toolbar.qml</file>
+    </qresource>
+
+    <qresource prefix="/searchassets/">
+        <file alias="history.svg">./icons/history.svg</file>
+        <file alias="contact.svg">./icons/contact.svg</file>
+        <file alias="bookmark.svg">./icons/bookmark.svg</file>
+    </qresource>
+</RCC>

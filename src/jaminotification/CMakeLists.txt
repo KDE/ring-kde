@@ -43,6 +43,10 @@ find_package(Qt5 CONFIG REQUIRED
     Core Gui Quick QuickControls2
 )
 
+if(X11_FOUND)
+    find_package(Qt5 QUIET OPTIONAL_COMPONENTS Qt5::X11Extras)
+endif()
+
 set(GENERIC_LIB_VERSION "1.0.0")
 
 #File to compile
@@ -50,6 +54,10 @@ set( jaminotification_LIB_SRCS
     plugin.cpp
     notification.cpp
     focuslistener.cpp
+)
+
+qt5_add_resources(jaminotification_LIB_SRCS
+    jaminotification.qrc
 )
 
 set(AUTOMOC_MOC_OPTIONS -Muri=org.kde.ringkde.jaminotification)
@@ -73,6 +81,13 @@ target_link_libraries( jaminotification
     KF5::Notifications
     KF5::I18n
 )
+
+if(X11_FOUND)
+    target_link_libraries( jaminotification
+        Qt5::X11Extras
+        ${X11_X11_LIB}
+    )
+endif()
 
 # Configure the target config
 set(jaminotification_CONFIG_PATH "${CMAKE_CURRENT_BINARY_DIR}/JamiNotificationConfig.cmake")

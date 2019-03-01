@@ -22,7 +22,7 @@ import org.kde.kirigami 2.2 as Kirigami
 Item {
     id: button
 
-    property color color: activePalette.text
+    property color color: Kirigami.Theme.textColor
     property string label: ""
     property real expandedHeight: height
     property real radius: Math.min(48, button.height) / 2
@@ -30,6 +30,7 @@ Item {
     property real sideMargin: 10
     property var alignment: Qt.AlignHCenter
     property alias icon: icn.source
+    property real preferredExpandedWidth: label.implicitWidth + button.radius*2
 
     implicitWidth: height
     width: implicitWidth

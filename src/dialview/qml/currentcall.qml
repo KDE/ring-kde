@@ -16,7 +16,7 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.    *
  *****************************************************************************/
 import QtQuick 2.0
-
+import org.kde.kirigami 2.2 as Kirigami
 
 /*
  * This module display a 5 seconds message before the call is removed.
@@ -32,7 +32,7 @@ Column {
 
     Text {
         text: call.length
-        color: selected ? activePalette.highlightedText : activePalette.text
+        color: selected ? Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor
         anchors.horizontalCenter: parent.horizontalCenter
         font.bold: true
     }

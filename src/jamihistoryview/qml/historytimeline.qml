@@ -31,22 +31,12 @@ Kirigami.Page {
     bottomPadding: 0
     rightPadding: 0
 
-    SystemPalette {
-        id: inactivePalette
-        colorGroup: SystemPalette.Disabled
-    }
-
-    SystemPalette {
-        id: activePalette
-        colorGroup: SystemPalette.Active
-    }
-
     FontMetrics {
         id: fontMetrics
     }
 
     Rectangle {
-        color: activePalette.base
+        color: Kirigami.Theme.backgroundColor
         anchors.fill: parent
 
         ListView {
@@ -61,7 +51,7 @@ Kirigami.Page {
             section.property: "formattedLastUsed"
             section.criteria: ViewSection.FullString
             section.delegate: Text {
-                color: inactivePalette.text
+                color: Kirigami.Theme.textColor
                 text: section
             }
 
@@ -79,7 +69,7 @@ Kirigami.Page {
                     anchors.leftMargin: 30
                     anchors.rightMargin: 40
                     radius: 10
-                    color: activePalette.highlight
+                    color: Kirigami.Theme.highlightColor
                 }
             }
 
@@ -89,16 +79,16 @@ Kirigami.Page {
 
                 Rectangle {
                     width: 1
-                    color: inactivePalette.text
+                    color: Kirigami.Theme.textColor
                     height: parent.height
                     x: 10
                 }
 
                 Rectangle {
                     radius: 99
-                    color: activePalette.base
+                    color: Kirigami.Theme.backgroundColor
                     border.width: 1
-                    border.color: inactivePalette.text
+                    border.color: Kirigami.Theme.textColor
                     width: 16
                     height: 16
                     y: 10
@@ -107,7 +97,7 @@ Kirigami.Page {
                     Rectangle {
                         id: demandsAttention
                         radius: 99
-                        color: inactivePalette.text
+                        color: Kirigami.Theme.textColor
                         anchors.centerIn: parent
                         height: 8
                         width: 8
@@ -115,7 +105,7 @@ Kirigami.Page {
                 }
 
                 Rectangle {
-                    border.color: inactivePalette.text
+                    border.color: Kirigami.Theme.textColor
                     border.width: 1
                     anchors.fill: parent
 
@@ -144,7 +134,7 @@ Kirigami.Page {
                                     anchors.fill: parent
                                     event: object
                                     defaultColor: ListView.isCurrentItem ?
-                                        activePalette.highlightedText : activePalette.text
+                                        Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor
                                     drawEmptyOutline: false
                                 }
                             }
@@ -156,12 +146,12 @@ Kirigami.Page {
                                 Layout.fillWidth: true
                                 anchors.verticalCenter: parent.verticalCenter
                                 color: ListView.isCurrentItem ?
-                                    activePalette.highlightedText : activePalette.text
+                                    Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor
                             }
                         }
 
                         Rectangle {
-                            color: inactivePalette.text
+                            color: Kirigami.Theme.textColor
                             height:1
                             Layout.fillWidth: true
                         }
@@ -175,7 +165,7 @@ Kirigami.Page {
 
                             verticalAlignment: Text.AlignVCenter
                             color: ListView.isCurrentItem ?
-                                activePalette.highlightedText : inactivePalette.text
+                                Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor
                         }
 
                         Item {

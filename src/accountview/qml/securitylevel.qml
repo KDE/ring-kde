@@ -55,7 +55,7 @@ Item {
 
             color: "transparent"
             border.width: 1
-            border.color: inactivePalette.text
+            border.color: Kirigami.Theme.textColor
             radius: displayIssues ? 5 : 99
             clip: true
 
@@ -109,12 +109,12 @@ Item {
                                 verticalAlignment: Text.AlignVCenter
                                 text: model.text
                                 font.bold: true
-                                color: activePalette.text
+                                color: Kirigami.Theme.textColor
                             }
                             Rectangle {
                                 Layout.fillHeight: true
                                 width: 1
-                                color: inactivePalette.text
+                                color: Kirigami.Theme.textColor
                             }
                         }
                     }

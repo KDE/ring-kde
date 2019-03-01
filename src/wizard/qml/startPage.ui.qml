@@ -21,6 +21,9 @@ import org.kde.ringkde.jamiwizard 1.0 as JamiWizard
 
 Controls.Page {
     id: frontPage
+
+    property real bottomMargin: 0
+
     Rectangle {
         anchors.fill: parent
         x: -1
@@ -44,7 +47,7 @@ Controls.Page {
         y: 149
         width: Math.min(423, frontPage.width - 114)
         height: 86
-        text: i18n("Welcome to Ring-KDE. Before you can contact your friend, you have to have an account. Don't worry, creating one is easy and doesn't require sharing any personal information. If you are in an office or your phone service provider offers a SIP account, you can also configure Ring-KDE to take your \"real\" phone calls.")
+        text: i18n("Welcome to Banji. Before you can contact your friend, you have to have an account. Don't worry, creating one is easy and doesn't require sharing any personal information. If you are in an office or your phone service provider offers a SIP account, you can also configure Banji to take your \"real\" phone calls.")
         wrapMode: Text.WordWrap
         font.pixelSize: 12
         color: "white"
@@ -54,7 +57,7 @@ Controls.Page {
         id: createRingAccount
         anchors.horizontalCenter: parent.horizontalCenter
         y: 246
-        text: i18n("Create a new GNU Ring account")
+        text: i18n("Create a new GNU Jami account")
     }
 
     Controls.Button {
@@ -95,13 +98,16 @@ Controls.Page {
         width: 100
         height: 100
         source: "qrc:/wizard/ring-kde.svg"
+        sourceSize.width: 100
+        sourceSize.height: 100
     }
 
     JamiWizard.CreateRing {
         id: createRing
-        x: frontPage.width/2 - width/2 - 20
-        y: frontPage.height/2 - height/2
-        anchors.centerIn: frontPage
+        anchors.top: parent.top
+        anchors.topMargin: 120 //the logo height is 100
+        anchors.bottomMargin: frontPage.bottomMargin + 10
+        anchors.horizontalCenter: parent.horizontalCenter
         opacity: 0
         visible: false
     }
@@ -119,9 +125,9 @@ Controls.Page {
         id: profilePage
         visible: false
         y: text1.height + 8
-        height: parent.height - text1.height - 8 -45/*footer.height*/
+        height: parent.height - text1.height - 8 - frontPage.bottomMargin
         width: parent.width
-        anchors.bottomMargin: 45/*footer.height*/
+        anchors.bottomMargin: frontPage.bottomMargin
         anchors.topMargin: 12
     }
 }

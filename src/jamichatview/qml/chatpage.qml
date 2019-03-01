@@ -18,15 +18,38 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
+import org.kde.kirigami 2.2 as Kirigami
 import QtGraphicalEffects 1.0
 import org.kde.ringkde.jamitimeline 1.0 as JamiTimeline
 import org.kde.ringkde.jamitimelinebase 1.0 as JamiTimelineBase
 import org.kde.ringkde.jamichatview 1.0 as JamiChatView
+import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
+import org.kde.playground.kquickitemviews 1.0 as KQuickItemViews
 
 Rectangle {
     id: timelinePage
+    signal disableContactRequests()
     property bool showScrollbar: true
+    property bool _sendRequestOverride: true
+    property var currentContactMethod: null
+    property var currentIndividual: null
+    property alias empty: chatView.empty
+
+    property bool canSendTexts: currentIndividual ? currentIndividual.canSendTexts : false
+
+    property bool sendRequest: _sendRequestOverride && (
+        sendRequestLoader.active && sendRequestLoader.item && sendRequestLoader.item.sendRequests
+    )
+
+    onDisableContactRequests: {
+        if (timelinePage.setContactMethod())
+            currentContactMethod.confirmationEnabled = false
+
+        timelinePage._sendRequestOverride = send
+    }
+
+    Kirigami.Theme.colorSet: Kirigami.Theme.View
 
     function focusEdit() {
         chatBox.focusEdit()
@@ -36,9 +59,15 @@ Rectangle {
         chatView.moveTo(Qt.BottomEdge)
     }
 
+    function jumpTo(idx) {
+        chatView.jumpTo(idx)
+    }
+
     function setContactMethod() {
         if (currentIndividual && !currentContactMethod) {
-            currentContactMethod = currentIndividual.preferredContactMethod(RingQtQuick.Media.TEXT)
+            currentContactMethod = currentIndividual.preferredContactMethod(
+                RingQtQuick.Media.TEXT
+            )
 
             if (!currentContactMethod)
                 console.log("Cannot find a valid ContactMethod for", currentIndividual)
@@ -52,28 +81,31 @@ Rectangle {
         setContactMethod()
     }
 
-    SystemPalette {
-        id: activePalette
-        colorGroup: SystemPalette.Active
-    }
+    color: Kirigami.Theme.backgroundColor
 
-    color: activePalette.base
+    // Scroll to the search, unread messages, bookmark, etc
+    RingQtQuick.TimelineIterator {
+        id: iterator
+        currentIndividual: timelinePage.currentIndividual
+        firstVisibleIndex: chatView.topLeft
+        lastVisibleIndex: chatView.bottomLeft
+        onContentAdded: {
+            lastVisibleIndex = chatView.indexAt(Qt.BottomEdge)
+            timelinePage.showNewContent()
+        }
 
-    property var currentContactMethod: null
-    property var currentIndividual: null
-    property var timelineModel: null
-
-    property bool canSendTexts: currentIndividual ? currentIndividual.canSendTexts : false
-
-    onTimelineModelChanged: {
-        if (!fixmeTimer.running)
-            chatView.model = timelineModel
+        onProposeIndex: {
+            if (poposedIndex == newestIndex)
+                timelinePage.showNewContent()
+            else
+                chatView.contentY = chatView.itemRect(newestIndex).y
+        }
     }
 
     // Add a blurry background
     ShaderEffectSource {
         id: effectSource
-        visible: false
+        visible: chatView.displayExtraTime
 
         sourceItem: chatView
         anchors.right: timelinePage.right
@@ -82,21 +114,35 @@ Rectangle {
         height: chatView.height
 
         sourceRect: Qt.rect(
-            burryOverlay.x,
-            burryOverlay.y,
-            burryOverlay.width,
-            burryOverlay.height
+            blurryOverlay.x,
+            blurryOverlay.y,
+            blurryOverlay.width,
+            blurryOverlay.height
         )
     }
 
     ColumnLayout {
         anchors.fill: parent
         clip: true
+        spacing: 0
+
+        Loader {
+            id: sendRequestLoader
+            height: active && item ? item.implicitHeight : 0
+            Layout.fillWidth: true
+            active: chatBox.requireContactRequest
+            Layout.minimumHeight: active && item ? item.implicitHeight : 0
+            Layout.maximumHeight: active && item ? item.implicitHeight : 0
+            sourceComponent: JamiContactView.SendRequest {
+                width: sendRequestLoader.width
+            }
+        }
 
         RowLayout {
             id: chatScrollView
             Layout.fillHeight: true
             Layout.fillWidth: true
+            Layout.bottomMargin: 0
 
             property bool lock: false
 
@@ -104,37 +150,42 @@ Rectangle {
                 Layout.fillHeight: true
                 Layout.fillWidth: true
 
+                // Buttons to navigate to relevant content
+                JamiChatView.Navigation {
+                    timelineIterator: iterator
+                    anchors.rightMargin: timelinePage.showScrollbar && scrollbar.hasContent ?
+                        blurryOverlay.width : 0
+                    anchors.right: parent.right
+                    anchors.bottom: parent.bottom
+                    Behavior on anchors.rightMargin {
+                        NumberAnimation {duration: 100; easing.type: Easing.InQuad}
+                    }
+                }
+
                 JamiChatView.ChatView {
                     id: chatView
-                    anchors.fill: parent
-                    model: null//FIXME timelinePage.timelineModel
-
-                    // Due to a race condition, wait a bit, it should be fixed elsewhere,
-                    //FIXME but it would take much longer.
-                    Timer {
-                        id: fixmeTimer
-                        repeat: false
-                        running: true
-                        interval: 33
-                        onTriggered: {
-                            chatView.model = timelinePage.timelineModel
-                        }
-                    }
+                    individual: timelinePage.currentIndividual
+                    width: Math.min(600, timelinePage.width - 50)
+                    height: parent.height
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    forceTime: scrollbar.overlayVisible
                 }
 
                 // It needs to be here due to z-index conflicts between
                 // chatScrollView and timelinePage
                 Item {
-                    id: burryOverlay
+                    id: blurryOverlay
                     z: 2
-                    visible: false
-                    opacity: 0
+                    opacity: chatView.displayExtraTime &&
+                        timelinePage.showScrollbar && scrollbar.hasContent ? 1 : 0
                     anchors.right: parent.right
                     anchors.top: parent.top
                     anchors.rightMargin: - 15
-                    width: scrollbar.fullWidth + 15
-                    height: chatView.height
+                    height: chatScrollView.height
                     clip: true
+                    width: chatView.displayExtraTime ?
+                        scrollbar.fullWidth + 15 : 0
+                    visible: opacity > 0
 
                     Behavior on opacity {
                         NumberAnimation {duration: 300; easing.type: Easing.InQuad}
@@ -152,7 +203,7 @@ Rectangle {
 
                     Rectangle {
                         anchors.fill: parent
-                        color: activePalette.base
+                        color: Kirigami.Theme.backgroundColor
                         opacity: 0.75
                     }
                 }
@@ -164,41 +215,25 @@ Rectangle {
                 bottomUp: true
                 Layout.fillHeight: true
                 Layout.preferredWidth: 10
-                display: chatView.moving || timelinePage.showScrollbar
-                model: timelinePage.timelineModel
+                display: chatView.moving && timelinePage.showScrollbar
+                model: chatView.model
                 view: chatView
-
-                onWidthChanged: {
-                    burryOverlay.width = scrollbar.fullWidth + 15
-                }
-
-                onOverlayVisibleChanged: {
-                    burryOverlay.visible = overlayVisible
-                    burryOverlay.opacity = overlayVisible ? 1 : 0
-                    effectSource.visible = overlayVisible
-                }
+                forceOverlay: timelinePage.showScrollbar && chatView.displayExtraTime
             }
+        }
+
+        Kirigami.Separator {
+            Layout.fillWidth: true
         }
 
         JamiChatView.ChatBox {
             id: chatBox
             Layout.fillWidth: true
-            height: 90
-            visible: canSendTexts
+            visible: canSendTexts && currentIndividual
             RingQtQuick.MessageBuilder {id: builder}
             requireContactRequest: currentContactMethod &&
                 currentContactMethod.confirmationStatus == RingQtQuick.ContactMethod.UNCONFIRMED &&
                 currentContactMethod.confirmationStatus != RingQtQuick.ContactMethod.DISABLED
-
-            textColor: activePalette.text
-            backgroundColor: activePalette.window
-            emojiColor: activePalette.highlight
-
-            onDisableContactRequests: {
-                if (timelinePage.setContactMethod()) {
-                    currentContactMethod.confirmationEnabled = false
-                }
-            }
         }
     }
 

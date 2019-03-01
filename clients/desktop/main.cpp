@@ -127,7 +127,7 @@ int main(int argc, char **argv)
         /*QStringLiteral(*/version/*)*/,
         i18n("RING, a secured and distributed communication software"),
         KAboutLicense::GPL_V3,
-        i18n("(C) 2004-2015 Savoir-faire Linux\n2016-2017 Emmanuel Lepage Vallee"),
+        i18n("(C) 2004-2015 Savoir-faire Linux\n2016-2017 Emmanuel Lepage Vallee\n2017-2019 Blue Systems"),
         QString(),
         QStringLiteral("http://www.ring.cx"),
         QStringLiteral("ring@gnu.org")

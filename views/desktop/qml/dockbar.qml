@@ -120,7 +120,7 @@ Item {
                                 defaultColor: "#f2f2f2ff" //same as the SVG
                             }
                             onClicked: {
-                                var component = Qt.createComponent("PresenceSelector.qml")
+                                var component = Qt.createComponent("qrc:/account/qml/presenceselector.qml")
                                 if (component.status == Component.Ready) {
                                     var window = component.createObject(applicationWindow().contentItem)
                                     window.individual = object

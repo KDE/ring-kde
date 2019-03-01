@@ -42,6 +42,6 @@ void JamiCanvasIndicator::initializeEngine(QQmlEngine *engine, const char *uri)
 {
     Q_ASSERT(uri == QByteArray("org.kde.ringkde.jamicanvasindicator"));
 
-    static RingingImageProvider im;
-    engine->addImageProvider( QStringLiteral("RingingImageProvider"), &im );
+    auto im = new RingingImageProvider();
+    engine->addImageProvider( QStringLiteral("RingingImageProvider"), im );
 }

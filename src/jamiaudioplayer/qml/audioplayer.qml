@@ -18,6 +18,7 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.0 as Controls2
 import QtQuick.Layouts 1.0
+import org.kde.kirigami 2.2 as Kirigami
 
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 
@@ -79,13 +80,13 @@ Item {
 
     Rectangle {
         id: selectOverlay
-        color: inactivePalette.base
+        color: Kirigami.Theme.disabledTextColor
         opacity: 0.5
         anchors.fill: parent
         Text {
             anchors.centerIn: parent
             text: i18n("Click to play")
-            color: inactivePalette.text
+            color: Kirigami.Theme.textColor
         }
         MouseArea {
             anchors.fill: parent

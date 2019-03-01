@@ -38,6 +38,7 @@ void JamiVideoView::registerTypes(const char *uri)
     qmlRegisterType(QStringLiteral("qrc:/jamivideoview/qml/videowidget.qml"), uri, 1, 0, "VideoWidget");
     qmlRegisterType(QStringLiteral("qrc:/jamivideoview/qml/videocontroltoolbar.qml"), uri, 1, 0, "VideoControlToolbar");
     qmlRegisterType(QStringLiteral("qrc:/jamivideoview/qml/devicesetting.qml"), uri, 1, 0, "DeviceSetting");
+    qmlRegisterType(QStringLiteral("qrc:/jamivideoview/qml/settingpopup.qml"), uri, 1, 0, "SettingPopup");
     qmlRegisterType(QStringLiteral("qrc:/jamivideoview/qml/videosource.qml"), uri, 1, 0, "VideoSource");
     qmlRegisterType(QStringLiteral("qrc:/jamivideoview/qml/canvaspopup.qml"), uri, 1, 0, "CanvasPopup");
     qmlRegisterType(QStringLiteral("qrc:/jamivideoview/qml/screensharing.qml"), uri, 1, 0, "ScreenSharing");
@@ -49,6 +50,6 @@ void JamiVideoView::initializeEngine(QQmlEngine *engine, const char *uri)
     Q_UNUSED(engine)
     Q_UNUSED(uri)
 
-    static ImageProvider p;
-    engine->addImageProvider( QStringLiteral("VideoFrame"), &p );
+    auto p = new ImageProvider();
+    engine->addImageProvider( QStringLiteral("VideoFrame"), p );
 }

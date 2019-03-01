@@ -5,6 +5,7 @@
         <file>qml/screensharing.qml</file>
         <file>qml/canvaspopup.qml</file>
         <file>qml/videosource.qml</file>
+        <file>qml/settingpopup.qml</file>
         <file>qml/streaming.qml</file>
         <file>qml/devicesetting.qml</file>
     </qresource>

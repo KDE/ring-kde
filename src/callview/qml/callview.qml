@@ -30,9 +30,6 @@ Item {
     signal callWithAudio ()
     signal callWithScreen()
 
-    height: 480
-    width: 640
-
     // C++ bindings
     property alias    rendererName   : videoWidget.rendererName
     property bool     displayPreview : false
@@ -41,6 +38,8 @@ Item {
     property alias    peerRunning    : videoWidget.started
     property QtObject call           : null
     property QtObject renderer       : call ? call.renderer : null
+    property alias actionFilter      : actionToolbar.filter
+    property alias individual: placeholderMessage.individual
 
     property bool previewVisible: mode != "PREVIEW" &&
         call && RingSession.previewManager.previewing
@@ -60,40 +59,37 @@ Item {
         repeat: false
 
         onTriggered: {
-            actionToolbar.visible  = false
+            actionToolbar.display  = false
             videoSource.visible    = false
             controlToolbar.visible = false
         }
     }
 
     function showToolbars() {
-        actionToolbar.visible  = true
+        actionToolbar.display  = true
         videoSource.visible    = true
 
         // This toolbar is only useful when there is video
         if (videoWidget.started)
             controlToolbar.visible = true
 
-        actionToolbar.opacity  = 1
         videoSource.opacity    = 1
         controlToolbar.opacity = 1
         videoPreview.opacity   = 0.8
-        actionToolbar.anchors.bottomMargin = 0
         videoSource.anchors.rightMargin    = 0
         controlToolbar.anchors.topMargin   = 0
     }
 
     function hideToolbars() {
-        actionToolbar.opacity  = 0
         videoSource.opacity    = 0
         controlToolbar.opacity = 0
         videoPreview.opacity   = 1
         videoSource.anchors.rightMargin    = -20
-        actionToolbar.anchors.bottomMargin = -20
         controlToolbar.anchors.topMargin   = -20
         toolbarTimer.running = true
     }
 
+    // The main video widget
     JamiVideoView.VideoWidget {
         id: videoWidget
         anchors.fill: parent
@@ -103,6 +99,7 @@ Item {
         call: videoDock.call
     }
 
+    // The preview
     JamiVideoView.VideoWidget {
         id: videoPreview
         z: -95
@@ -114,6 +111,7 @@ Item {
         height: 108
     }
 
+    // This toolbar allows to rotate video, take screenshots, etc
     JamiVideoView.VideoControlToolbar {
         id: controlToolbar
         anchors.top: parent.top
@@ -126,10 +124,19 @@ Item {
         }
     }
 
+    // The has the currently supported call actions such as hang up
     JamiDialView.ActionToolbar {
         id: actionToolbar
+
+        // Display when there is a single or 2 buttons
+        // (happens on new and incoming calls only)
+        property bool display: false
+
         anchors.bottom: parent.bottom
-        visible: false
+        anchors.bottomMargin: visible ? 0 : -20
+        visible: opacity > 0
+        opacity: alwaysShow || display ? 1 : 0
+
         Behavior on opacity {
             NumberAnimation {duration: 100}
         }
@@ -138,24 +145,14 @@ Item {
         }
     }
 
+    // Make it obvious when the call is being recording (locally, if the other
+    // side choose to record, there is no way to really know.
     JamiCallView.RecordingIcon {
         anchors.right: videoDock.right
         anchors.top: controlToolbar.bottom
     }
 
-    JamiVideoView.DeviceSetting {
-        id: deviceSettings
-        visible: mode == "PREVIEW"
-        width: parent.width
-        z: 100
-        Rectangle {
-            anchors.fill: parent
-            color: "black"
-            opacity: 0.5
-            z: -1
-        }
-    }
-
+    // This allows to switch to different camera or enable screen sharing
     JamiVideoView.VideoSource {
         id: videoSource
         z: 101
@@ -193,12 +190,8 @@ Item {
         }
 
         function trackActivity() {
-            if (mode == "PREVIEW") {
-                deviceSettings.visible = true
-            }
-            else if (call) {
+            if (call && mode != "PREVIEW")
                 showToolbars()
-            }
 
             activityTimer.restart()
         }
@@ -224,7 +217,6 @@ Item {
 
     onCallChanged: {
         if (call) {
-            actionToolbar.userActionModel = call.userActionModel
             placeholderMessage.call = call
             videoSource.call        = call
             controlToolbar.call     = call

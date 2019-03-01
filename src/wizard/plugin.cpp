@@ -28,12 +28,14 @@
 
 // Ring-KDE
 #include "welcome.h"
+#include "policies.h"
 
 void JamiWizard::registerTypes(const char *uri)
 {
     Q_ASSERT(uri == QByteArray("org.kde.ringkde.jamiwizard"));
 
     qmlRegisterType<WelcomeDialog>(uri, 1, 0, "WelcomeDialog");
+    qmlRegisterType<WizardPolicies>(uri, 1, 0, "Policies");
     qmlRegisterType(QStringLiteral("qrc:/wizard/qml/buttonBar.qml"), uri, 1, 0, "ButtonBar");
     qmlRegisterType(QStringLiteral("qrc:/wizard/qml/createRing.qml"), uri, 1, 0, "CreateRing");
     qmlRegisterType(QStringLiteral("qrc:/wizard/qml/importRing.qml"), uri, 1, 0, "ImportRing");

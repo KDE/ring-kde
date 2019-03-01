@@ -112,6 +112,9 @@ void ContactPhoto::paint(QPainter *painter)
 
     painter->setPen(pen);
 
+    // Center the image
+    if (w > s)
+        painter->translate((w-s)/2, 0);
 
     if (p && hasPhoto()) {
         painter->drawEllipse(QRectF {1.5, 1.5, s-1.5, s-1.5});

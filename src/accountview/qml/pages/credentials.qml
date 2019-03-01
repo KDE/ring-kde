@@ -26,17 +26,6 @@ Page {
     property var account: object
     property var details: credentialDetails
 
-    SystemPalette {
-        id: activePalette
-        colorGroup: SystemPalette.Active
-    }
-
-
-    SystemPalette {
-        id: inactivePalette
-        colorGroup: SystemPalette.Inactive
-    }
-
     ColumnLayout {
         anchors.fill: parent
         Label {
@@ -74,7 +63,7 @@ Page {
                             }
                             RowLayout {
                                 Text {
-                                    color: inactivePalette.text
+                                    color: Kirigami.Theme.textColor
                                     text: "Realm: <i>"+realm+"</i>"
                                 }
                                 Item {

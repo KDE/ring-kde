@@ -18,14 +18,17 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.0 as Controls
 import QtQuick.Layouts 1.3
+import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 
 Item {
     id: buttonBar
 
     property alias backButton: backButton
     property alias nextButton: nextButton
-    property alias skipButton: skipButton
+    property bool  displaySkip: RingSession.accountModel.size > 0
     property bool  displayBusy: false
+
+    signal skip()
 
     Rectangle {
         id: rectangle
@@ -35,11 +38,6 @@ Item {
         // Left buttons
         RowLayout {
             anchors.fill: parent
-
-            // The kirigami handle
-            Item {
-                width: 40
-            }
 
             // Align left
             Controls.Button {
@@ -65,7 +63,8 @@ Item {
                 id: missingFields
                 text: i18n("Please fill the required fields")
                 verticalAlignment: Text.AlignVCenter
-                color: "red"
+                color: "#ff1111"
+                font.bold: true
                 visible: true
                 Layout.fillHeight: true
             }
@@ -81,6 +80,10 @@ Item {
                 id: skipButton
                 Layout.fillHeight: true
                 text: i18n("Skip")
+                visible: displaySkip
+                onClicked: {
+                    skip()
+                }
             }
         }
     }
@@ -91,7 +94,6 @@ Item {
             PropertyChanges {
                 target: buttonBar
                 visible: true
-                y: buttonBar.parent.height - buttonBar.height
                 state: "nextAvailable"
             }
         },

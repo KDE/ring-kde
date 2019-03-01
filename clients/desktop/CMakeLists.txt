@@ -63,11 +63,6 @@ QT5_ADD_RESOURCES(ring_kde_SRCS appicon.qrc)
 IF(NOT (${ENABLE_VIDEO} MATCHES false))
    SET(ENABLE_VIDEO 1 CACHE BOOLEAN "Enable video")
    ADD_DEFINITIONS( -DENABLE_VIDEO=true )
-   SET (
-      config_ui_files
-      ${config_ui_files}
-      conf/dlgvideobase.ui
-   )
 ENDIF(NOT (${ENABLE_VIDEO} MATCHES false))
 
 IF(${DISABLE_UNIQUE_APPLICATION} MATCHES true)
@@ -75,8 +70,6 @@ IF(${DISABLE_UNIQUE_APPLICATION} MATCHES true)
    SET(DISABLE_UNIQUE_APPLICATION 1 CACHE BOOLEAN "Disable KUniqueApplication")
    ADD_DEFINITIONS( -DDISABLE_UNIQUE_APPLICATION=true )
 ENDIF(${DISABLE_UNIQUE_APPLICATION} MATCHES true)
-
-ki18n_wrap_ui(ring_kde_SRCS ${config_ui_files} )
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
   ADD_EXECUTABLE(ring-kde MACOSX_BUNDLE ${ring_kde_SRCS})

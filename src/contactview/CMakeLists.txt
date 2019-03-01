@@ -43,12 +43,15 @@ find_package(Qt5 CONFIG REQUIRED
     Core Gui Quick QuickControls2
 )
 
+if(X11_FOUND)
+    find_package(Qt5 QUIET OPTIONAL_COMPONENTS Qt5::X11Extras)
+endif()
+
 set(GENERIC_LIB_VERSION "1.0.0")
 
 #File to compile
 set( jamicontactview_LIB_SRCS
    contactviewplugin.cpp
-   mainpage.cpp
    contactphoto.cpp
 )
 
@@ -76,6 +79,13 @@ target_link_libraries( jamicontactview
     # KF5
     KF5::ConfigWidgets # KColorScheme
 )
+
+if(X11_FOUND)
+    target_link_libraries( jamicontactview
+        Qt5::X11Extras
+        ${X11_X11_LIB}
+    )
+endif()
 
 # Configure the target config
 set(jamicontactview_CONFIG_PATH "${CMAKE_CURRENT_BINARY_DIR}/JamiContactViewConfig.cmake")

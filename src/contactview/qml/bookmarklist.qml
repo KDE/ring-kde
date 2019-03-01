@@ -32,22 +32,12 @@ Kirigami.Page {
     bottomPadding: 0
     rightPadding: 0
 
-    SystemPalette {
-        id: inactivePalette
-        colorGroup: SystemPalette.Disabled
-    }
-
-    SystemPalette {
-        id: activePalette
-        colorGroup: SystemPalette.Active
-    }
-
     FontMetrics {
         id: fontMetrics
     }
 
     Rectangle {
-        color: activePalette.base
+        color: Kirigami.Theme.backgroundColor
         anchors.fill: parent
 
         KQuickItemViews.TreeView {
@@ -72,13 +62,13 @@ Kirigami.Page {
                                 anchors.topMargin: 3
                                 id: catName
                                 text: display
-                                color: inactivePalette.text
+                                color: Kirigami.Theme.textColor
                             }
 
                             Rectangle {
                                 height: 1
                                 width: parent.width
-                                color: inactivePalette.text
+                                color: Kirigami.Theme.textColor
                                 anchors.top: parent.top
                             }
                         }
@@ -106,7 +96,7 @@ Kirigami.Page {
                     anchors.leftMargin: 10
                     anchors.rightMargin: 10
                     radius: 5
-                    color: activePalette.highlight
+                    color: Kirigami.Theme.highlightColor
                 }
             }
         }
@@ -141,7 +131,7 @@ Kirigami.Page {
 //
 //             Rectangle {
 //                 anchors.fill: parent
-//                 color: activePalette.base
+//                 color: Kirigami.Theme.backgroundColor
 //                 opacity: 0.75
 //             }
 //         }

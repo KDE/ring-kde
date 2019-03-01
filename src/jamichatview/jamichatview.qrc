@@ -9,6 +9,7 @@
         <file>qml/groupheader.qml</file>
         <file>qml/groupfooter.qml</file>
         <file>qml/chatpage.qml</file>
+        <file>qml/navigation.qml</file>
         <file>qml/snapshots.qml</file>
         <file>qml/slideshow.qml</file>
         <file>qml/thumbnail.qml</file>

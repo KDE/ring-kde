@@ -17,69 +17,30 @@
  **************************************************************************/
 import QtQuick 2.7
 import QtQuick.Controls 2.0
+import org.kde.kirigami 2.2 as Kirigami
 import QtQuick.Layouts 1.0
 
-import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
-
-Rectangle {
-    property QtObject call: null
-
-    property alias textColor: messageTextArea.color
-    property alias backgroundColor: chatBox.color
-    property var emojiColor: undefined
+Item {
     property bool requireContactRequest: false
-    property bool sendRequest: _sendRequestOverride && (
-        sendRequestLoader.active && sendRequestLoader.item && sendRequestLoader.item.sendRequests
-    )
 
-    property bool _sendRequestOverride: true
+    height: Math.max(messageTextArea.implicitHeight, emojis.optimalHeight)
+    implicitHeight: height
+
+    Behavior on height {
+        NumberAnimation {duration: 200;  easing.type: Easing.OutQuad}
+    }
 
     function focusEdit() {
-        messageTextArea.forceActiveFocus()
+        // Forcing the focus shows the keyboard and hide the toolbar. This
+        // isn't usable. It would be fine if the controls were usable, but it
+        // isn't the case for for no this is disabled.
+        if (!Kirigami.Settings.isMobile)
+            messageTextArea.forceActiveFocus()
     }
 
     id: chatBox
 
     signal sendMessage(string message, string richMessage)
-    signal disableContactRequests()
-
-    color: "blue"
-
-    SystemPalette {
-        id: inactivePalette
-        colorGroup: SystemPalette.Disabled
-    }
-
-    ListModel {
-        id: emoji
-        ListElement { symbol: "😀" } ListElement { symbol: "😁" } ListElement { symbol: "😂" }
-        ListElement { symbol: "😃" } ListElement { symbol: "😄" } ListElement { symbol: "😅" }
-        ListElement { symbol: "😆" } ListElement { symbol: "😇" } ListElement { symbol: "😈" }
-        ListElement { symbol: "😉" } ListElement { symbol: "😊" } ListElement { symbol: "😋" }
-        ListElement { symbol: "😌" } ListElement { symbol: "😍" } ListElement { symbol: "😎" }
-        ListElement { symbol: "😏" } ListElement { symbol: "😐" } ListElement { symbol: "😑" }
-        ListElement { symbol: "😒" } ListElement { symbol: "😓" } ListElement { symbol: "😔" }
-        ListElement { symbol: "😕" } ListElement { symbol: "😖" } ListElement { symbol: "😗" }
-        ListElement { symbol: "😘" } ListElement { symbol: "😙" } ListElement { symbol: "😚" }
-        ListElement { symbol: "😛" } ListElement { symbol: "😜" } ListElement { symbol: "😝" }
-        ListElement { symbol: "😞" } ListElement { symbol: "😟" } ListElement { symbol: "😠" }
-        ListElement { symbol: "😡" } ListElement { symbol: "😢" } ListElement { symbol: "😣" }
-        ListElement { symbol: "😤" } ListElement { symbol: "😥" } ListElement { symbol: "😦" }
-        ListElement { symbol: "😧" } ListElement { symbol: "😨" } ListElement { symbol: "😩" }
-        ListElement { symbol: "😪" } ListElement { symbol: "😫" } ListElement { symbol: "😬" }
-        ListElement { symbol: "😭" } ListElement { symbol: "😮" } ListElement { symbol: "😯" }
-        ListElement { symbol: "😰" } ListElement { symbol: "😱" } ListElement { symbol: "😲" }
-        ListElement { symbol: "😳" } ListElement { symbol: "😴" } ListElement { symbol: "😵" }
-        ListElement { symbol: "😶" } ListElement { symbol: "😷" } ListElement { symbol: "😸" }
-        ListElement { symbol: "😹" } ListElement { symbol: "😺" } ListElement { symbol: "😻" }
-        ListElement { symbol: "😼" } ListElement { symbol: "😽" } ListElement { symbol: "😾" }
-        ListElement { symbol: "😿" } ListElement { symbol: "🙀" } ListElement { symbol: "🙁" }
-        ListElement { symbol: "🙂" } ListElement { symbol: "🙃" } ListElement { symbol: "🙄" }
-        ListElement { symbol: "🙅" } ListElement { symbol: "🙆" } ListElement { symbol: "🙇" }
-        ListElement { symbol: "🙈" } ListElement { symbol: "🙉" } ListElement { symbol: "🙊" }
-        ListElement { symbol: "🙋" } ListElement { symbol: "🙌" } ListElement { symbol: "🙍" }
-        ListElement { symbol: "🙎" } ListElement { symbol: "🙏" }
-    }
 
     Rectangle {
         id: emojiButton
@@ -88,22 +49,25 @@ Rectangle {
 
         opacity: 0
         radius: 999
-        width: 30
-        height: 30
+        width:  Kirigami.Settings.isMobile ? 50 : 30
+        height: Kirigami.Settings.isMobile ? 50 : 30
+        visible: opacity > 0
 
         anchors.bottomMargin: -15
         anchors.bottom: parent.top
         anchors.horizontalCenter: parent.horizontalCenter
 
-        color: "transparent"
+        color: Kirigami.Theme.backgroundColor
         border.width: 2
-        border.color: inactivePalette.text
+        border.color: Kirigami.Theme.disabledTextColor
 
         Text {
-            anchors.centerIn: parent
+            anchors.fill: parent
             text: "😀"
-            font.family: "Noto Color Emoji"
-            font.pixelSize : 18
+            color: Kirigami.Theme.textColor
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            font.pixelSize : Kirigami.Settings.isMobile ? 24 : 18
         }
 
         MouseArea {
@@ -127,7 +91,7 @@ Rectangle {
                 when: emojiButton.checked
                 PropertyChanges {
                     target: emojiButton
-                    color:  "#00AA00"
+                    color: Kirigami.Theme.highlightColor
                 }
             }
         ]
@@ -137,33 +101,75 @@ Rectangle {
         id: emojis
         visible: false
         anchors.fill: parent
-        active: visible
+        property real optimalHeight: item && visible ? item.implicitHeight : 0
+
+        /**
+         * Only load once, then keep alive because otherwise it takes like 2
+         * seconds each time on mobile.
+         */
+        active: (Kirigami.Settings.isMobile && active) || visible
+
         sourceComponent: Grid {
-            anchors.fill: parent
-            spacing: 2
-            rows: 2
+            id: grid
+            height: parent.height
+            anchors.centerIn: emojis
+            spacing: 0
+            width: Math.ceil(emoji.count/rows) * maxWidth*1.2
+            rows: Math.ceil((emoji.count*maxWidth*1.2)/width)
+
+            property real maxWidth: 0
 
             Repeater {
-                model: emoji
-                Rectangle {
-                    width:  30
-                    height: 30
-                    color:  emojiColor
-                    radius: 2
+                model: ListModel {
+                    id: emoji
+                    ListElement { symbol: "😀" } ListElement { symbol: "😁" } ListElement { symbol: "😂" }
+                    ListElement { symbol: "😃" } ListElement { symbol: "😄" } ListElement { symbol: "😅" }
+                    ListElement { symbol: "😆" } ListElement { symbol: "😇" } ListElement { symbol: "😈" }
+                    ListElement { symbol: "😉" } ListElement { symbol: "😊" } ListElement { symbol: "😋" }
+                    ListElement { symbol: "😌" } ListElement { symbol: "😍" } ListElement { symbol: "😎" }
+                    ListElement { symbol: "😏" } ListElement { symbol: "😐" } ListElement { symbol: "😑" }
+                    ListElement { symbol: "😒" } ListElement { symbol: "😓" } ListElement { symbol: "😔" }
+                    ListElement { symbol: "😕" } ListElement { symbol: "😖" } ListElement { symbol: "😗" }
+                    ListElement { symbol: "😘" } ListElement { symbol: "😙" } ListElement { symbol: "😚" }
+                    ListElement { symbol: "😛" } ListElement { symbol: "😜" } ListElement { symbol: "😝" }
+                    ListElement { symbol: "😞" } ListElement { symbol: "😟" } ListElement { symbol: "😠" }
+                    ListElement { symbol: "😡" } ListElement { symbol: "😢" } ListElement { symbol: "😣" }
+                    ListElement { symbol: "😤" } ListElement { symbol: "😥" } ListElement { symbol: "😦" }
+                    ListElement { symbol: "😧" } ListElement { symbol: "😨" } ListElement { symbol: "😩" }
+                    ListElement { symbol: "😪" } ListElement { symbol: "😫" } ListElement { symbol: "😬" }
+                    ListElement { symbol: "😭" } ListElement { symbol: "😮" } ListElement { symbol: "😯" }
+                    ListElement { symbol: "😰" } ListElement { symbol: "😱" } ListElement { symbol: "😲" }
+                    ListElement { symbol: "😳" } ListElement { symbol: "😴" } ListElement { symbol: "😵" }
+                    ListElement { symbol: "😶" } ListElement { symbol: "😷" } ListElement { symbol: "😸" }
+                    ListElement { symbol: "😹" } ListElement { symbol: "😺" } ListElement { symbol: "😻" }
+                    ListElement { symbol: "😼" } ListElement { symbol: "😽" } ListElement { symbol: "😾" }
+                    ListElement { symbol: "😿" } ListElement { symbol: "🙀" } ListElement { symbol: "🙁" }
+                    ListElement { symbol: "🙂" } ListElement { symbol: "🙃" } ListElement { symbol: "🙄" }
+                    ListElement { symbol: "🙅" } ListElement { symbol: "🙆" } ListElement { symbol: "🙇" }
+                    ListElement { symbol: "🙈" } ListElement { symbol: "🙉" } ListElement { symbol: "🙊" }
+                    ListElement { symbol: "🙋" } ListElement { symbol: "🙌" } ListElement { symbol: "🙍" }
+                    ListElement { symbol: "🙎" } ListElement { symbol: "🙏" }
+                }
+
+                MouseArea {
+                    width:  1.3*maxWidth
+                    height: 2*emojiTxt.contentHeight
 
                     Text {
-                        anchors.centerIn: parent
+                        id: emojiTxt
+                        anchors.fill: parent
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
                         font.family: "Noto Color Emoji"
-                        font.pixelSize : 18
+                        color: Kirigami.Theme.textColor
+                        font.pixelSize : Kirigami.Settings.isMobile ? 24 : 18
                         text: symbol
+                        Component.onCompleted: maxWidth = Math.max(maxWidth, emojiTxt.contentWidth)
                     }
 
-                    MouseArea {
-                        anchors.fill: parent
-                        onClicked: {
-                            messageTextArea.insert(messageTextArea.length, symbol)
-                            emojiButton.checked = false
-                        }
+                    onClicked: {
+                        messageTextArea.insert(messageTextArea.length, symbol)
+                        emojiButton.checked = false
                     }
                 }
             }
@@ -178,6 +184,7 @@ Rectangle {
 
             Layout.fillHeight: true
             Layout.fillWidth : true
+            spacing: 0
 
             TextArea {
                 id: messageTextArea
@@ -185,17 +192,30 @@ Rectangle {
                 Layout.fillHeight: true
                 Layout.fillWidth:  true
                 textFormat: TextEdit.RichText
+                wrapMode: TextEdit.WordWrap
 
-                font.family: "Noto Color Emoji"
-                font.pixelSize : 18
+                // The fonts are already quite large on mobile
+                font.pointSize: Kirigami.Theme.defaultFont.pointSize*(
+                    Kirigami.Settings.isMobile ? 1.2 : 1.6
+                )
 
-                placeholderText: i18n("Write a message and press enter...")
+                placeholderText: " "+i18n("Write a message and press enter...")
 
                 Keys.onReturnPressed: {
                     var rawText  = getText(0, length)
                     var richText = getFormattedText(0, length)
 
                     sendMessage(rawText, richText)
+                }
+
+                Keys.onEscapePressed: {
+                    console.log("escape")
+                    focus = false
+                }
+
+                background: Rectangle {
+                    color: Kirigami.Theme.backgroundColor
+                    anchors.fill: parent
                 }
 
                 persistentSelection: true
@@ -214,6 +234,9 @@ Rectangle {
                     }
                 ]
             }
+            Kirigami.Separator {
+                Layout.fillHeight: true
+            }
             Button {
                 text: i18n("Send")
                 Layout.fillHeight: true
@@ -223,21 +246,9 @@ Rectangle {
 
                     sendMessage(rawText, richText)
                 }
-            }
-        }
-
-        Loader {
-            id: sendRequestLoader
-            height: active && item ? item.implicitHeight : 0
-            Layout.fillWidth: true
-            active: chatBox.requireContactRequest
-            Layout.minimumHeight: active && item ? item.implicitHeight : 0
-            Layout.maximumHeight: active && item ? item.implicitHeight : 0
-            sourceComponent: JamiContactView.SendRequest {
-                width: sendRequestLoader.width
-                onDisableContactRequests: {
-                    chatBox.disableContactRequests()
-                    chatBox._sendRequestOverride = send
+                background: Rectangle {
+                    color: Kirigami.Theme.buttonBackgroundColor
+                    anchors.fill: parent
                 }
             }
         }

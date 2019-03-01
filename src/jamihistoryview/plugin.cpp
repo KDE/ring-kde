@@ -29,9 +29,9 @@ void JamiHistoryView::registerTypes(const char *uri)
 {
     Q_ASSERT(uri == QByteArray("org.kde.ringkde.jamihistoryview"));
 
-    qmlRegisterType(QStringLiteral("qrc:/jamihistoryview/qml/callhistory.qml")               , uri, 1, 0, "CallHistory");
-    qmlRegisterType(QStringLiteral("qrc:/jamihistoryview/qml/historytimeline.qml")           , uri, 1, 0, "HistoryTimeline");
-    qmlRegisterType(QStringLiteral("qrc:/jamihistoryview/qml/recordinghistory.qml")          , uri, 1, 0, "RecordingHistory");
+    qmlRegisterType(QStringLiteral("qrc:/jamihistoryview/qml/callhistory.qml")     , uri, 1, 0, "CallHistory");
+    qmlRegisterType(QStringLiteral("qrc:/jamihistoryview/qml/historytimeline.qml") , uri, 1, 0, "HistoryTimeline");
+    qmlRegisterType(QStringLiteral("qrc:/jamihistoryview/qml/recordinghistory.qml"), uri, 1, 0, "RecordingHistory");
 }
 
 void JamiHistoryView::initializeEngine(QQmlEngine *engine, const char *uri)

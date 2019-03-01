@@ -27,17 +27,14 @@
 #include <qrc_contactview.cpp>
 
 // CallView
-#include "mainpage.h"
 #include "contactphoto.h"
 
 void JamiContactView::registerTypes(const char *uri)
 {
     Q_ASSERT(uri == QByteArray("org.kde.ringkde.jamicontactview"));
 
-    qmlRegisterType<MainPage>(uri, 1, 0, "MainPage");
     qmlRegisterType<ContactPhoto>(uri, 1, 0, "ContactPhoto");
 
-    qmlRegisterType(QStringLiteral("qrc:/contactview/qml/pendingrequest.qml")   , uri, 1, 0, "PendingRequest");
     qmlRegisterType(QStringLiteral("qrc:/contactview/qml/contactlist.qml")      , uri, 1, 0, "ContactList");
     qmlRegisterType(QStringLiteral("qrc:/contactview/qml/bookmarklist.qml")     , uri, 1, 0, "BookmarkList");
     qmlRegisterType(QStringLiteral("qrc:/contactview/qml/contactcard.qml")      , uri, 1, 0, "ContactCard");
@@ -52,6 +49,7 @@ void JamiContactView::registerTypes(const char *uri)
     qmlRegisterType(QStringLiteral("qrc:/contactview/qml/viewcontactrequests.qml")       , uri, 1, 0, "ViewContactRequests");
     qmlRegisterType(QStringLiteral("qrc:/contactview/qml/addresses.qml")                 , uri, 1, 0, "Addresses");
     qmlRegisterType(QStringLiteral("qrc:/contactview/qml/contactdialog.qml")             , uri, 1, 0, "ContactDialog");
+    qmlRegisterType(QStringLiteral("qrc:/contactview/qml/commonactions.qml")             , uri, 1, 0, "CommonActions");
 }
 
 void JamiContactView::initializeEngine(QQmlEngine *engine, const char *uri)

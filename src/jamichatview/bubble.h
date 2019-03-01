@@ -30,7 +30,9 @@ public:
     Q_PROPERTY(QColor color READ color WRITE setColor)
     Q_PROPERTY(QString text READ text WRITE setText)
     Q_PROPERTY(QFont font READ font WRITE setFont NOTIFY fontChanged)
+    Q_PROPERTY(QFont dateFont READ dateFont WRITE setDateFont NOTIFY fontChanged)
     Q_PROPERTY(qreal maximumWidth READ maximumWidth WRITE setMaximumWidth)
+    Q_PROPERTY(qreal sideMargins READ sideMargins WRITE setSideMargins NOTIFY changed)
 
     explicit Bubble(QQuickItem* parent = nullptr);
     virtual ~Bubble();
@@ -52,6 +54,12 @@ public:
     QFont& font() const;
     void setFont(const QFont& f);
 
+    QFont dateFont() const;
+    void setDateFont(const QFont& f);
+
+    qreal sideMargins() const;
+    void setSideMargins(qreal m);
+
 private:
     BubblePrivate* d_ptr;
     Q_DECLARE_PRIVATE(Bubble)
@@ -61,4 +69,5 @@ private Q_SLOTS:
 
 Q_SIGNALS:
     void fontChanged(const QFont& font);
+    void changed();
 };

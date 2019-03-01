@@ -18,22 +18,12 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
+import org.kde.kirigami 2.2 as Kirigami
 
 
 Item {
     id: phoneNumbers
     property alias model : numbers.model
-
-    SystemPalette {
-        id: activePalette
-        colorGroup: SystemPalette.Active
-    }
-
-    SystemPalette {
-        id: inactivePalette
-        colorGroup: SystemPalette.Disabled
-    }
-
 
     ColumnLayout {
         anchors.fill: parent
@@ -53,33 +43,33 @@ Item {
                         Layout.fillHeight: true
                         Text {
                             text: type
-                            color: inactivePalette.text
+                            color: Kirigami.Theme.textColor
                         }
                         Text {
                             Layout.fillWidth: true
                             Layout.fillHeight: true
                             text: addressLine
-                            color: activePalette.text
+                            color: Kirigami.Theme.textColor
                         }
                     }
                     RowLayout {
                         Layout.fillWidth: true
                         Text {
                             text: zipCode
-                            color: activePalette.text
+                            color: Kirigami.Theme.textColor
                         }
                         Text {
                             text: city
                             Layout.fillWidth: true
-                            color: activePalette.text
+                            color: Kirigami.Theme.textColor
                         }
                         Text {
                             text: state
-                            color: activePalette.text
+                            color: Kirigami.Theme.textColor
                         }
                         Text {
                             text: country
-                            color: activePalette.text
+                            color: Kirigami.Theme.textColor
                         }
                         Item {
                             Layout.preferredWidth: 5

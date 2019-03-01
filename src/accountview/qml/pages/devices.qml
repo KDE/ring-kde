@@ -18,20 +18,11 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
+import org.kde.kirigami 2.2 as Kirigami
 
 Page {
     id: deviceList
     property var account: object
-
-    SystemPalette {
-        id: activePalette
-        colorGroup: SystemPalette.Active
-    }
-
-    SystemPalette {
-        id: inactivePalette
-        colorGroup: SystemPalette.Inactive
-    }
 
     Component {
         id: deviceDelegate
@@ -55,14 +46,14 @@ Page {
 
                     Label {
                         text: name
-                        color: activePalette.text
+                        color: Kirigami.Theme.textColor
                         font.bold: true
                         Layout.fillWidth: true
                     }
 
                     Label {
                         text: id
-                        color: activePalette.text
+                        color: Kirigami.Theme.textColor
                         Layout.fillHeight: true
                         Layout.fillWidth: true
                     }
@@ -117,7 +108,7 @@ Page {
 
                     Label {
                         id: confirmLabel
-                        color: activePalette.text
+                        color: Kirigami.Theme.textColor
                         text: i18n("Enter your account password to confirm:")
                         Layout.fillWidth: true
                     }
@@ -226,7 +217,7 @@ Page {
 
                 Label {
                     text: i18n("Revokation in progress")
-                    color: activePalette.text
+                    color: Kirigami.Theme.textColor
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                 }
@@ -240,7 +231,7 @@ Page {
                 height: 1
                 opacity: 0.2
                 width: parent.width
-                color: inactivePalette.text
+                color: Kirigami.Theme.textColor
                 anchors.bottom: parent.bottom
             }
 

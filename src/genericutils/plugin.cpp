@@ -37,6 +37,7 @@ void GenericUtils::registerTypes(const char *uri)
     qmlRegisterType<FileLoader>(uri, 1, 0, "FileLoader");
     qmlRegisterType(QStringLiteral("qrc:/qml/outlinebutton.qml"), uri, 1, 0, "OutlineButton");
     qmlRegisterType(QStringLiteral("qrc:/qml/outlinebuttons.qml"), uri, 1, 0, "OutlineButtons");
+    qmlRegisterType(QStringLiteral("qrc:/qml/actionswitch.qml"), uri, 1, 0, "ActionSwitch");
 }
 
 void GenericUtils::initializeEngine(QQmlEngine *engine, const char *uri)
@@ -44,6 +45,9 @@ void GenericUtils::initializeEngine(QQmlEngine *engine, const char *uri)
     Q_UNUSED(engine)
     Q_UNUSED(uri)
 
-    static SymbolicColorizer p;
-    engine->addImageProvider( QStringLiteral("SymbolicColorizer"), &p);
+    // It cannot be static because the ownership is transferred to QtQuick
+    // and it gets GC-ed when quitting.
+    auto p = new SymbolicColorizer;
+
+    engine->addImageProvider( QStringLiteral("SymbolicColorizer"), p);
 }

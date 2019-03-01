@@ -44,7 +44,8 @@ void JamiChatView::registerTypes(const char *uri)
     qmlRegisterType(QStringLiteral("qrc:/jamichatview/qml/snapshots.qml")       , uri, 1, 0, "Snapshots");
     qmlRegisterType(QStringLiteral("qrc:/jamichatview/qml/slideshow.qml")       , uri, 1, 0, "Slideshow");
     qmlRegisterType(QStringLiteral("qrc:/jamichatview/qml/thumbnail.qml")       , uri, 1, 0, "Thumbnail");
-    qmlRegisterType(QStringLiteral("qrc:/jamichatview/qml/chatpage.qml")       , uri, 1, 0, "ChatPage");
+    qmlRegisterType(QStringLiteral("qrc:/jamichatview/qml/chatpage.qml")        , uri, 1, 0, "ChatPage");
+    qmlRegisterType(QStringLiteral("qrc:/jamichatview/qml/navigation.qml")      , uri, 1, 0, "Navigation");
 }
 
 void JamiChatView::initializeEngine(QQmlEngine *engine, const char *uri)

@@ -26,28 +26,31 @@ import org.kde.ringkde.jamitimeline 1.0 as JamiTimeline
 import org.kde.ringkde.jamitimelinebase 1.0 as JamiTimelineBase
 import org.kde.ringkde.jamiaudioplayer 1.0 as JamiAudioPlayer
 import org.kde.ringkde.genericutils 1.0 as GenericUtils
+import org.kde.kirigami 2.2 as Kirigami
 
 KQuickItemViews.TreeView {
-    id: chatView
+    id: recordingHistory
+
+    property QtObject individual: null
+
+    signal selectIndex(var idx)
+
+    model: RingQtQuick.TimelineFilter {
+        id: filterModel
+        individual: recordingHistory.individual
+        showMessages: false
+        showCalls: false
+        showEmptyGroups: true
+    }
+
     clip: true
-
-    property var treeHelper: _treeHelper
-
-    SystemPalette {
-        id: activePalette
-        colorGroup: SystemPalette.Active
-    }
-
-    GenericUtils.TreeHelper {
-        id: _treeHelper
-    }
 
     // Display something when the chat is empty
     Text {
-        color: activePalette.text
+        color: Kirigami.Theme.textColor
         text: i18n("There is nothing yet, enter a message below or place a call using the buttons\nfound in the header")
         anchors.centerIn: parent
-        visible: chatView.empty
+        visible: recordingHistory.empty
         horizontalAlignment: Text.AlignHCenter
     }
 
@@ -55,6 +58,13 @@ KQuickItemViews.TreeView {
         id: messageDelegate
         Loader {
             id: chatLoader
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    selectIndex(model.mapToSource(rootIndex))
+                }
+            }
 
             property bool showDetailed: false
 
@@ -67,25 +77,26 @@ KQuickItemViews.TreeView {
 
                     Rectangle {
                         width: 1
-                        color: inactivePalette.text
+                        color: Kirigami.Theme.textColor
                         height: parent.height
-                        x: 10
+                        anchors.rightMargin: 10
+                        anchors.right: parent.right
                     }
 
                     Rectangle {
                         radius: 99
-                        color: activePalette.base
+                        color: Kirigami.Theme.backgroundColor
                         border.width: 1
-                        border.color: inactivePalette.text
+                        border.color: Kirigami.Theme.textColor
                         width: 16
                         height: 16
-                        y: 10
-                        x: 3 // (16 - 10) / 2
+                        anchors.right: parent.right
+                        anchors.rightMargin: 3
 
                         Rectangle {
                             id: demandsAttention
                             radius: 99
-                            color: inactivePalette.text
+                            color: Kirigami.Theme.textColor
                             anchors.centerIn: parent
                             height: 8
                             width: 8
@@ -93,14 +104,14 @@ KQuickItemViews.TreeView {
                     }
 
                     Rectangle {
-                        border.color: inactivePalette.text
+                        border.color: Kirigami.Theme.textColor
                         border.width: 1
                         anchors.fill: parent
 
                         anchors.topMargin: 5
                         anchors.bottomMargin: 5
-                        anchors.leftMargin: 30
-                        anchors.rightMargin: 40
+                        anchors.leftMargin: 5
+                        anchors.rightMargin: 30
 
                         color: "transparent"
                         radius: 10
@@ -110,13 +121,13 @@ KQuickItemViews.TreeView {
                             anchors.fill: parent
 
                             Row {
-                                Layout.preferredHeight: 2*fontMetrics.height
-                                Image {
+                                Layout.preferredHeight: 2*Kirigami.Units.fontMetrics.height
+                                Kirigami.Icon {
                                     height: parent.height
                                     width: parent.height
-                                    asynchronous: true
                                     anchors.margins: 6
-                                    source: "image://icon/dialog-messages"
+                                    source: "dialog-messages"
+                                    color: Kirigami.Theme.textColor
                                 }
                                 Text {
                                     height: parent.height
@@ -125,14 +136,12 @@ KQuickItemViews.TreeView {
                                     leftPadding: 10
 
                                     verticalAlignment: Text.AlignVCenter
-                                    color: ListView.isCurrentItem ?
-                                        activePalette.highlightedText : activePalette.text
+                                    color: Kirigami.Theme.textColor
                                 }
                             }
 
                             Rectangle {
-                                color: inactivePalette.text
-                                height:1
+                                color: Kirigami.Theme.textColor
                                 Layout.preferredHeight: 1
                                 Layout.fillWidth: true
                             }
@@ -141,36 +150,27 @@ KQuickItemViews.TreeView {
                                 Layout.fillWidth: true
                                 text: incomingEntryCount + i18n(" incoming messages")
 
-                                Layout.preferredHeight: 2*fontMetrics.height
+                                Layout.preferredHeight: 2*Kirigami.Units.fontMetrics.height
                                 leftPadding: 10
 
                                 verticalAlignment: Text.AlignVCenter
-                                color: ListView.isCurrentItem ?
-                                    activePalette.highlightedText : activePalette.text
+                                color: Kirigami.Theme.textColor
                             }
 
                             Text {
                                 Layout.fillWidth: true
                                 text: outgoingEntryCount + i18n(" outgoing messages")
 
-                                Layout.preferredHeight: 2*fontMetrics.height
+                                Layout.preferredHeight: 2*Kirigami.Units.fontMetrics.height
                                 leftPadding: 10
 
                                 verticalAlignment: Text.AlignVCenter
-                                color: ListView.isCurrentItem ?
-                                    activePalette.highlightedText : activePalette.text
+                                color: Kirigami.Theme.textColor
                             }
 
                             Item {
                                 Layout.fillHeight: true
                             }
-                        }
-                    }
-
-                    MouseArea {
-                        anchors.fill: parent
-                        onClicked: {
-                            treeView.currentIndex = index
                         }
                     }
                 }
@@ -179,7 +179,7 @@ KQuickItemViews.TreeView {
             Component {
                 id: callDelegate
                 Item {
-                    height: content.implicitHeight + 10
+                    height: content5555.implicitHeight + 10
                     width: parent.width
 
                     Behavior on height {
@@ -188,25 +188,27 @@ KQuickItemViews.TreeView {
 
                     Rectangle {
                         width: 1
-                        color: inactivePalette.text
+                        color: Kirigami.Theme.textColor
                         height: parent.height
-                        x: 10
+                        anchors.rightMargin: 10
+                        anchors.right: parent.right
                     }
 
                     Rectangle {
                         radius: 99
-                        color: activePalette.base
+                        color: Kirigami.Theme.backgroundColor
                         border.width: 1
-                        border.color: inactivePalette.text
+                        border.color: Kirigami.Theme.textColor
                         width: 16
                         height: 16
                         y: 10
-                        x: 3 // (16 - 10) / 2
+                        anchors.right: parent.right
+                        anchors.rightMargin: 3
 
                         Rectangle {
                             id: demandsAttention
                             radius: 99
-                            color: inactivePalette.text
+                            color: Kirigami.Theme.textColor
                             anchors.centerIn: parent
                             height: 8
                             width: 8
@@ -214,62 +216,55 @@ KQuickItemViews.TreeView {
                     }
 
                     Rectangle {
-                        border.color: inactivePalette.text
+                        border.color: Kirigami.Theme.textColor
                         border.width: 1
                         anchors.fill: parent
 
                         anchors.topMargin: 5
                         anchors.bottomMargin: 5
-                        anchors.leftMargin: 30
-                        anchors.rightMargin: 40
+                        anchors.leftMargin: 5
+                        anchors.rightMargin: 30
 
                         color: "transparent"
                         radius: 10
 
                         ColumnLayout {
-                            id: content
+                            id: content5555
                             anchors.fill: parent
 
                             Row {
-                                Layout.preferredHeight: 2*fontMetrics.height
-                                Image {
+                                Layout.preferredHeight: 2*Kirigami.Units.fontMetrics.height
+                                Kirigami.Icon {
                                     height: parent.height
                                     width: parent.height
-                                    asynchronous: true
                                     anchors.margins: 6
-                                    source: "image://icon/call-start"
+                                    source: "call-start"
+                                    color: Kirigami.Theme.textColor
                                 }
                                 Text {
                                     height: parent.height
                                     text: formattedDate
+                                    color: Kirigami.Theme.textColor
 
                                     leftPadding: 10
 
                                     verticalAlignment: Text.AlignVCenter
-                                    color: ListView.isCurrentItem ?
-                                        activePalette.highlightedText : activePalette.text
                                 }
                             }
 
                             Rectangle {
-                                color: inactivePalette.text
+                                color: Kirigami.Theme.textColor
                                 height:1
                                 Layout.preferredHeight: 1
                                 Layout.fillWidth: true
                             }
 
                             JamiTimelineBase.MultiCall {
-                                width: chatView.width - 90
+                                Layout.fillWidth: true
+                                Layout.preferredHeight: 32
                                 modelIndex: rootIndex
                                 count: callCount
-
-                                MouseArea {
-                                    anchors.fill: parent
-                                    onClicked: {
-                                        chatLoader.showDetailed = true
-                                        chatView.reloadChildren(rootIndex)
-                                    }
-                                }
+                                clip: true
                             }
                         }
                     }
@@ -282,32 +277,11 @@ KQuickItemViews.TreeView {
                     height: rect.height
                     JamiTimeline.PeersTimelineCategories {
                         id: rect
-                        property var section: display
-                        property var recentDate: formattedDate
-                    }
-                }
-            }
-
-            Component {
-                id: singleCallDelegate
-
-                RowLayout {
-                    width: parent.width
-
-                    Text {
-                        text: formattedDate
-                        color: activePalette.text
-                        Layout.fillWidth: true
-                    }
-
-                    Item {
-                        height: 1
-                        Layout.fillWidth: true
-                    }
-
-                    Text {
-                        text: length
-                        color: inactivePalette.text
+                        compact: true
+                        section: display
+                        recentDate: formattedDate
+                        align: Qt.RightEdge
+                        anchors.right: parent.right
                     }
                 }
             }
@@ -315,30 +289,31 @@ KQuickItemViews.TreeView {
             Component {
                 id: recordingDelegate
                 Item {
-                    height: content.implicitHeight + 10
-                    width: parent.width
+                    height: content4444.implicitHeight + 10
+                    width: recordingHistory.width
 
                     Rectangle {
                         width: 1
-                        color: inactivePalette.text
+                        color: Kirigami.Theme.textColor
                         height: parent.height
-                        x: 10
+                        anchors.rightMargin: 10
+                        anchors.right: parent.right
                     }
 
                     Rectangle {
                         radius: 99
-                        color: activePalette.base
+                        color: Kirigami.Theme.backgroundColor
                         border.width: 1
-                        border.color: inactivePalette.text
+                        border.color: Kirigami.Theme.textColor
                         width: 16
                         height: 16
-                        y: 10
-                        x: 3 // (16 - 10) / 2
+                        anchors.right: parent.right
+                        anchors.rightMargin: 3
 
                         Rectangle {
                             id: demandsAttention
                             radius: 99
-                            color: inactivePalette.text
+                            color: Kirigami.Theme.textColor
                             anchors.centerIn: parent
                             height: 8
                             width: 8
@@ -347,45 +322,44 @@ KQuickItemViews.TreeView {
 
                     Rectangle {
                         id: box
-                        border.color: inactivePalette.text
+                        border.color: Kirigami.Theme.textColor
                         border.width: 1
                         anchors.fill: parent
 
                         anchors.topMargin: 5
                         anchors.bottomMargin: 5
-                        anchors.leftMargin: 30
-                        anchors.rightMargin: 40
+                        anchors.leftMargin: 5
+                        anchors.rightMargin: 30
 
                         color: "transparent"
                         radius: 10
 
                         ColumnLayout {
-                            id: content
+                            id: content4444
                             anchors.fill: parent
 
                             Row {
-                                Layout.preferredHeight: 2*fontMetrics.height
-                                Image {
+                                Layout.minimumHeight: 2*Kirigami.Units.fontMetrics.height
+                                Kirigami.Icon {
                                     height: parent.height
                                     width: parent.height
-                                    asynchronous: true
                                     anchors.margins: 6
-                                    source: "image://icon/media-record"
+                                    source: "media-record"
+                                    color: Kirigami.Theme.textColor
                                 }
                                 Text {
                                     height: parent.height
                                     text: formattedDate
+                                    color: Kirigami.Theme.textColor
 
                                     leftPadding: 10
 
                                     verticalAlignment: Text.AlignVCenter
-                                    color: ListView.isCurrentItem ?
-                                        activePalette.highlightedText : activePalette.text
                                 }
                             }
 
                             Rectangle {
-                                color: inactivePalette.text
+                                color: Kirigami.Theme.textColor
                                 height:1
                                 Layout.preferredHeight: 1
                                 Layout.fillWidth: true
@@ -410,21 +384,16 @@ KQuickItemViews.TreeView {
                 if (nodeType == RingQtModels.IndividualTimelineModel.TIME_CATEGORY)
                     return categoryDelegate
 
-                if (nodeType == RingQtModels.IndividualTimelineModel.SECTION_DELIMITER)
+                if (nodeType == RingQtModels.IndividualTimelineModel.SECTION_DELIMITER) {
                     return sectionDelegate
+                }
 
-                if (nodeType == RingQtModels.IndividualTimelineModel.CALL_GROUP)
+                if (nodeType == RingQtModels.IndividualTimelineModel.CALL_GROUP) {
                     return callDelegate
+                }
 
                 if (nodeType == RingQtModels.IndividualTimelineModel.RECORDINGS)
                     return recordingDelegate
-
-                if (nodeType == RingQtModels.IndividualTimelineModel.CALL_GROUP)
-                    return callDelegate
-
-                if (nodeType == RingQtModels.IndividualTimelineModel.CALL
-                  && chatView.parentTreeItem(rootIndex).showDetailed)
-                    return singleCallDelegate
             }
 
             sourceComponent: selectDelegate()

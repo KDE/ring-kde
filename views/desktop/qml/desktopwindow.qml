@@ -35,7 +35,12 @@ Kirigami.ApplicationWindow {
 
     property bool wizardVisible: false
 
-    DesktopView.TipModel {
+    SystemPalette {
+        id: activePalette
+        colorGroup: SystemPalette.Active
+    }
+
+    JamiKDEIntegration.TipModel {
         id: displayTips
     }
 
@@ -87,16 +92,6 @@ Kirigami.ApplicationWindow {
         }
         else
             console.log("ERROR", component.status, component.errorString())
-    }
-
-    SystemPalette {
-        id: activePalette
-        colorGroup: SystemPalette.Active
-    }
-
-    SystemPalette {
-        id: inactivePalette
-        colorGroup: SystemPalette.Disabled
     }
 
     property var _regularActions: undefined
@@ -173,7 +168,7 @@ Kirigami.ApplicationWindow {
         property alias container: mobileHolderContent
         width: 0
         height: parent.height
-        color: activePalette.base
+        color: Kirigami.Theme.backgroundColor
         z: 10000
         visible: false
         state: ""
@@ -193,7 +188,7 @@ Kirigami.ApplicationWindow {
 
                 Text {
                     text: i18n("Hide")
-                    color: activePalette.text
+                    color: Kirigami.Theme.textColor
                     anchors.centerIn: parent
                 }
 
@@ -369,13 +364,6 @@ Kirigami.ApplicationWindow {
         actionCollection: ActionCollection.kactionCollection
     }
 
-    Item {
-        id: desktopOverlay //TODO Qt5.10, use QQC2.Overlay
-        anchors.fill: parent
-        visible: false
-        z: 1
-    }
-
     RowLayout {
         anchors.fill: parent
         spacing: 0
@@ -408,7 +396,7 @@ Kirigami.ApplicationWindow {
                 id: contactHeader
                 backgroundColor: activePalette.alternateBase
                 isMobile: stateGroup.state == "mobile"
-                textColor: activePalette.text
+                textColor: Kirigami.Theme.textColor
                 Layout.maximumHeight: height
                 Layout.minimumHeight: height
 
@@ -427,7 +415,7 @@ Kirigami.ApplicationWindow {
                 }
             }
 
-            JamiContactView.MainPage {
+            DesktopView.MainPage {
                 id: mainPage
                 header: contactHeader
                 Layout.fillHeight: true

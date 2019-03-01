@@ -34,6 +34,7 @@ void JamiTroubleshooting::registerTypes(const char *uri)
     qmlRegisterType(QStringLiteral("qrc:/jamitroubleshooting/qml/accounterror.qml")   , uri, 1, 0, "AccountError");
     qmlRegisterType(QStringLiteral("qrc:/jamitroubleshooting/qml/accountdisabled.qml"), uri, 1, 0, "AccountDisabled");
     qmlRegisterType(QStringLiteral("qrc:/jamitroubleshooting/qml/mediaavailability.qml"), uri, 1, 0, "MediaAvailability");
+    qmlRegisterType(QStringLiteral("qrc:/jamitroubleshooting/qml/globaltroubleshoot.qml"), uri, 1, 0, "GlobalTroubleshoot");
 }
 
 void JamiTroubleshooting::initializeEngine(QQmlEngine *engine, const char *uri)

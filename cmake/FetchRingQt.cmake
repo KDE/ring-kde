@@ -81,9 +81,9 @@ if (NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/libringqt)
         git clone https://github.com/Elv13/libringqt.git --branch master ${CMAKE_CURRENT_BINARY_DIR}/libringqt
     )
 else()
-    execute_process(COMMAND
-        /bin/sh -c "cd ${CMAKE_CURRENT_BINARY_DIR}/libringqt && git fetch origin && git reset --hard origin/master"
-    )
+#    execute_process(COMMAND
+#        /bin/sh -c "cd ${CMAKE_CURRENT_BINARY_DIR}/libringqt && git fetch origin && git reset --hard origin/master"
+#    )
 endif()
 
 if (NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/libkquickitemviews)

@@ -51,7 +51,7 @@ Rectangle {
         Rectangle {
             color: "transparent"
             border.width: 1
-            border.color: activePalette.text
+            border.color: Kirigami.Theme.textColor
             height: buttonText.implicitHeight + 15
             width: buttonText.implicitWidth + 20
             radius: 5
@@ -61,7 +61,7 @@ Rectangle {
             Text {
                 id: buttonText
                 anchors.centerIn: parent
-                color: activePalette.text
+                color: Kirigami.Theme.textColor
                 text: i18n("Dismiss")
             }
 

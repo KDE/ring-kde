@@ -187,7 +187,11 @@ QImage ImageProvider::requestImage(const QString &id, QSize *size, const QSize &
         if (size)
             *size = res;
 
+#ifdef Q_OS_ANDROID
+        return QImage((uchar*)fb->m_pFrameCopy, res.width(), res.height(), QImage::Format_RGBA8888 );
+#else
         return QImage((uchar*)fb->m_pFrameCopy, res.width(), res.height(), QImage::Format_ARGB32 );
+#endif
     }
 
     if (size)

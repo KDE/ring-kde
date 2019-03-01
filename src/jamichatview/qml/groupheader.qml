@@ -17,9 +17,17 @@
  **************************************************************************/
 import QtQuick 2.7
 import QtQuick.Layouts 1.0
+import org.kde.kirigami 2.2 as Kirigami
 
 RowLayout {
     property string type: "text"
+
+    // This information has no value 99% of the time, so fade it away
+    opacity: chatView.displayExtraTime ? 1 : 0.1
+
+    Behavior on opacity {
+        NumberAnimation {duration: 500}
+    }
 
     Item {
         Layout.preferredWidth: 5
@@ -27,23 +35,23 @@ RowLayout {
 
     function getIcon() {
         if (type == "text")
-            return "image://icon/dialog-messages"
+            return "dialog-messages"
         else
-            return "image://icon/call-start"
+            return "call-start"
     }
 
     Rectangle {
         height: 30
         width: 30
         radius: 99
-        border.width: 3
-        border.color: activePalette.text
+        border.width: 1
+        border.color: Kirigami.Theme.disabledTextColor
         color: "transparent"
 
-        Image {
-            asynchronous: true
+        Kirigami.Icon {
             anchors.margins: 6
             anchors.fill: parent
+            color: Kirigami.Theme.disabledTextColor
             source: getIcon()
         }
     }
@@ -54,6 +62,6 @@ RowLayout {
 
     Text {
         text: display
-        color: activePalette.text
+        color: Kirigami.Theme.textColor
     }
 }

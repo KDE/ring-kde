@@ -17,6 +17,7 @@
  *****************************************************************************/
 import QtQuick 2.0
 import org.kde.ringkde.jamicanvasindicator 1.0 as JamiCanvasIndicator
+import org.kde.kirigami 2.2 as Kirigami
 
 Column {
     id: outgoingCall
@@ -26,7 +27,7 @@ Column {
 
     Text {
         text: call.toHumanStateName
-        color: selected ? activePalette.highlightedText : activePalette.text
+        color: selected ? Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor
         wrapMode: Text.WordWrap
         font.bold: true
         anchors.horizontalCenter: parent.horizontalCenter
@@ -36,9 +37,9 @@ Column {
         call: outgoingCall.call
         displayLabels: false
         width: parent.width*0.66
-        outlineColor: selected ? activePalette.highlightedText : activePalette.text
+        outlineColor: selected ? Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor
         anchors.horizontalCenter: parent.horizontalCenter
-        backgroundColor: selected ? activePalette.highlight : activePalette.base
+        backgroundColor: selected ? Kirigami.Theme.highlightColor : Kirigami.Theme.backgroundColor
     }
 
     Item {

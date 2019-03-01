@@ -24,33 +24,32 @@
 
 #include <cmath>
 
-TimelineDots::TimelineDots(QQuickItem* parent) : QQuickPaintedItem(parent)
+class TimelineDotsPrivate
+{
+public:
+    std::atomic_flag init_flag = ATOMIC_FLAG_INIT;
+    QColor m_Color;
+    QPen   m_Pen;
+    QBrush m_Brush;
+};
+
+TimelineDots::TimelineDots(QQuickItem* parent) : QQuickPaintedItem(parent),
+    d_ptr(new TimelineDotsPrivate())
 {}
 
 TimelineDots::~TimelineDots()
-{}
+{
+    delete d_ptr;
+}
 
 void TimelineDots::paint(QPainter *painter)
 {
-    static bool init = false;
-    static QPen   pen;
-    static QBrush brush;
-
-    if (!init) {
-        auto pal = QGuiApplication::palette();
-
-        pen = QPen(pal.brush(QPalette::ColorGroup::Active, QPalette::ColorRole::Text).color(), 1.5);
-
-        auto bg = pen.color();
-        bg.setAlphaF(0.1);
-        brush = QBrush( bg, Qt::SolidPattern);
-
-        init = true;
-    }
+    // Init
+    color();
 
     painter->setRenderHint(QPainter::Antialiasing, true);
-    painter->setPen  (pen);
-    painter->setBrush(brush);
+    painter->setPen  (d_ptr->m_Pen);
+    painter->setBrush(d_ptr->m_Brush);
 
     // Draw the spine
     painter->drawLine(
@@ -84,4 +83,31 @@ void TimelineDots::paint(QPainter *painter)
         painter->setCompositionMode(QPainter::CompositionMode_Source);
         painter->drawEllipse(rect);
     }
+}
+
+QColor TimelineDots::color() const
+{
+    if (!d_ptr->init_flag.test_and_set())
+        const_cast<TimelineDots*>(this)->setColor({});
+
+    return d_ptr->m_Color;
+}
+
+void TimelineDots::setColor(const QColor& color)
+{
+    d_ptr->init_flag.test_and_set();
+
+    auto pal = QGuiApplication::palette();
+
+    d_ptr->m_Color = color.isValid() ? color : pal.brush(
+        QPalette::ColorGroup::Active, QPalette::ColorRole::Text
+    ).color();
+
+    d_ptr->m_Pen = QPen(d_ptr->m_Color, 1.5);
+
+    auto bg = d_ptr->m_Pen.color();
+    bg.setAlphaF(0.1);
+    d_ptr->m_Brush = QBrush( bg, Qt::SolidPattern);
+
+    update();
 }

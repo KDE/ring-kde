@@ -19,6 +19,16 @@
 
 #include <QtCore/QList>
 #include <QtCore/QCoreApplication>
+#include <QQmlEngine>
+#include <QQmlContext>
+
+class WindowEventPrivate
+{
+public:
+    bool m_StartIconified;
+};
+
+WindowEventPrivate* WindowEvent::d_ptr = new WindowEventPrivate;
 
 static QList<WindowEvent*>& instances()
 {
@@ -39,9 +49,11 @@ WindowEvent::~WindowEvent()
 
 WindowEvent* WindowEvent::instance()
 {
-    static WindowEvent e(QCoreApplication::instance());
+    // Since it has a parent, it cannot directly be a static object
+    static WindowEvent* e = nullptr;
+    e = e ? e : new WindowEvent(QCoreApplication::instance());
 
-    return &e;
+    return e;
 }
 
 void WindowEvent::raiseWindow()
@@ -72,9 +84,37 @@ void WindowEvent::configureAccounts()
     }
 }
 
+void WindowEvent::viewContactRequests()
+{
+    for (auto o : qAsConst(instances())) {
+        emit o->requestsContactRequests();
+    }
+}
+
+void WindowEvent::configureVideo()
+{
+    for (auto o : qAsConst(instances())) {
+        emit o->requestsVideo();
+    }
+}
+
 void WindowEvent::hideWindow()
 {
     for (auto o : qAsConst(instances())) {
         emit o->requestsHideWindow();
+    }
+}
+
+bool WindowEvent::startIconified() const
+{
+    return d_ptr->m_StartIconified;
+}
+
+void WindowEvent::setStartIconified(bool ic)
+{
+    d_ptr->m_StartIconified = ic;
+
+    for (auto o : qAsConst(instances())) {
+        emit o->iconifiedChanged();
     }
 }

@@ -54,6 +54,7 @@ JamiWizard.StartPageUI {
     createRingAccount.onClicked: {
         // This will move the current buttons out and the fields in
         removeAnchors()
+        createRing.createAccount()
         createAccountTimer.running = true
     }
 

@@ -4,31 +4,31 @@
   <id>org.kde.ring-kde.desktop</id>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-3.0+</project_license>
-  <name>Ring-KDE</name>
-  <name xml:lang="ca">Ring-KDE</name>
-  <name xml:lang="ca-valencia">Ring-KDE</name>
-  <name xml:lang="cs">Ring-KDE</name>
-  <name xml:lang="da">Ring-KDE</name>
-  <name xml:lang="de">Ring-KDE</name>
-  <name xml:lang="en-GB">Ring-KDE</name>
-  <name xml:lang="es">Ring-KDE</name>
+  <name>Banji</name>
+  <name xml:lang="ca">Banji</name>
+  <name xml:lang="ca-valencia">Banji</name>
+  <name xml:lang="cs">Banji</name>
+  <name xml:lang="da">Banji</name>
+  <name xml:lang="de">Banji</name>
+  <name xml:lang="en-GB">Banji</name>
+  <name xml:lang="es">Banji</name>
   <name xml:lang="fi">Ring-kde</name>
-  <name xml:lang="fr">Ring-KDE</name>
-  <name xml:lang="gl">Ring-KDE</name>
-  <name xml:lang="id">Ring-KDE</name>
-  <name xml:lang="it">Ring-KDE</name>
-  <name xml:lang="nl">Ring-KDE</name>
-  <name xml:lang="pl">Ring-KDE</name>
-  <name xml:lang="pt">Ring-KDE</name>
-  <name xml:lang="pt-BR">Ring-KDE</name>
-  <name xml:lang="ru">Ring-KDE</name>
-  <name xml:lang="sk">Ring-KDE</name>
-  <name xml:lang="sv">Ring-KDE</name>
-  <name xml:lang="tr">Ring-KDE</name>
-  <name xml:lang="uk">Ring-KDE</name>
-  <name xml:lang="x-test">xxRing-KDExx</name>
-  <name xml:lang="zh-CN">Ring-KDE</name>
-  <name xml:lang="zh-TW">Ring-KDE</name>
+  <name xml:lang="fr">Banji</name>
+  <name xml:lang="gl">Banji</name>
+  <name xml:lang="id">Banji</name>
+  <name xml:lang="it">Banji</name>
+  <name xml:lang="nl">Banji</name>
+  <name xml:lang="pl">Banji</name>
+  <name xml:lang="pt">Banji</name>
+  <name xml:lang="pt-BR">Banji</name>
+  <name xml:lang="ru">Banji</name>
+  <name xml:lang="sk">Banji</name>
+  <name xml:lang="sv">Banji</name>
+  <name xml:lang="tr">Banji</name>
+  <name xml:lang="uk">Banji</name>
+  <name xml:lang="x-test">xxBanjixx</name>
+  <name xml:lang="zh-CN">Banji</name>
+  <name xml:lang="zh-TW">Banji</name>
   <summary>Call and receive calls with SIP or RING protocols</summary>
   <summary xml:lang="ca">Truca i rep trucades amb els protocols SIP o RING.</summary>
   <summary xml:lang="ca-valencia">Truca i rep trucades amb els protocols SIP o RING.</summary>
@@ -53,29 +53,29 @@
   <summary xml:lang="zh-TW">使用 SIP 或是 RING 協定打電話或是接電話</summary>
   <description>
     <p>
-      Ring-KDE is a graphical client for the Ring (www.ring.cx) communication
+      Banji is a graphical client for the Ring (www.jami.net) communication
       platform. It can either be used as a general purpose communication
       application with other Ring users or as a VoiP softphone compatible with
       the SIP industry standard used by most office phones.
     </p>
-    <p xml:lang="ca">El Ring-KDE és un client gràfic per a la plataforma de comunicació Ring (www.ring.cx). Es pot emprar com una aplicació de comunicació de propòsit general amb altres usuaris del Ring o com un telèfon per programari de VoIP amb l'estàndard SIP de la indústria, emprat per la majoria dels telèfons d'oficina.</p>
-    <p xml:lang="ca-valencia">El Ring-KDE és un client gràfic per a la plataforma de comunicació Ring (www.ring.cx). Es pot emprar com una aplicació de comunicació de propòsit general amb altres usuaris del Ring o com un telèfon per programari de VoIP amb l'estàndard SIP de la indústria, emprat per la majoria dels telèfons d'oficina.</p>
-    <p xml:lang="en-GB">Ring-KDE is a graphical client for the Ring (www.ring.cx) communication platform. It can either be used as a general purpose communication application with other Ring users or as a VoiP softphone compatible with the SIP industry standard used by most office phones.</p>
-    <p xml:lang="es">Ring-KDE es un cliente gráfico para la plataforma de comunicaciones Ring (www.ring.cx). Se puede usar como una aplicación general de comunicaciones con otros usuarios de Ring o como un teléfono por software VoIP compatible con el estándar del sector SIP usado por la mayoría de los teléfonos de oficina.</p>
-    <p xml:lang="fi">Ring-KDE on graafinen käyttöliittymä Ringi-viestintäalustalle (www.ring.cx). Sitä voi käyttää joko yleisviestintäsovelluksena muiden Ring-käyttäjien kanssa tai useimpien toimistopuhelinten käyttämän SIP-teollisuusstandardin kanssa yhteensopivana VoIP-ohjelmistopuhelimena.</p>
-    <p xml:lang="fr">Ring-KDE est un client graphique pour la plate-forme de communication Ring (www.ring.cx). Vous pouvez l'utiliser comme application de communication généraliste avec les autres utilisateurs Ring ou pour sa compatibilité VoiP avec SIP, le standard de l'industrie utilisé par la majorité des téléphones de bureau.</p>
-    <p xml:lang="gl">Ring-KDE é un cliente gráfico para a plataforma de comunicación Ring (www.ring.cx). Pode usarse ou ben como un aplicativo xeral de comunicación con outros usuarios de Ring ou ben como un teléfono de software VoIP compatíbel co estándar da industria SIP que usan a meirande parte das oficinas.</p>
-    <p xml:lang="id">Ring-KDE adalah sebuah klien grafis untuk platform komunikasi Ring (www.ring.cx). Ini bisa antara digunakan sebagai aplikasi komunikasi pada umumnya dengan para pengguna Ring lain atau sebagai softphone VoiP yang kompatibel dengan standar industri SIP yang digunakan oleh sebagian besar telepon kantor.</p>
-    <p xml:lang="it">Ring-KDE è un client grafico per la piattaforma di comunicazione Ring (www.ring.cx). Può essere utilizzato sia come un'applicazione di comunicazione generica con altri utenti di Ring o come softphone VoIP compatibile con lo standard SIP utilizzato dalla maggior parte dei telefoni da ufficio.</p>
-    <p xml:lang="nl">Ring-KDE is een grafische client voor het Ring (www.ring.cx) communicatieplatform. Het kan ofwel gebruikt worden als een communicatietoepassing met andere RING-gebruikers voor algemeen gebruik worden gebruikt of als een VoiP software telefoon compatibel met de SIP industriestandaard gebruikt door de meeste kantoortelefoons.</p>
-    <p xml:lang="pl">Ring-KDE jest graficznym klientem dla platformy komunikacyjnej Ring (www.ring.cx). Można go używać albo jako ogólnej aplikacji do porozumiewania się z innymi użytkownikami Ringa lub jako telefonu VoiP zgodnego ze standardem rynkowym SIP używanym przez większość telefonów biurowych.</p>
-    <p xml:lang="pt">O Ring-KDE é um cliente gráfico para a plataforma de comunicações Ring (www.ring.cx). Tanto pode ser usado como uma aplicação de comunicações de uso geral com outros utilizadores do Ring ou como um telefone VoIP por 'software' compatível com a norma de indústria SIP, usada pela maioria dos telefones de escritório.</p>
-    <p xml:lang="pt-BR">Ring-KDE é um cliente gráfico para a plataforma de comunicação Ring (www.ring.cx). Ele pode ser usado como um aplicativo de comunicação para uso geral com outros usuários do Ring ou como um telefone VoIP por software compatível com o padrão industrial SIP, usado pela maioria dos telefones de escritório.</p>
-    <p xml:lang="sv">Ring-KDE är en grafisk klient för kommunikationsplattformen Ring (www.ring.cx). Den kan antingen användas som ett generellt kommunikationsprogram med andra användare av Ring, eller som en internettelefon kompatibel med industristandarden SIP som används av de flesta kontorstelefoner.</p>
-    <p xml:lang="tr">Ring-KDE, Ring (www.ring.cx) iletişim platformu için grafiksel bir istemcidir. Diğer Ring kullanıcılarıyla genel amaçlı bir iletişim uygulaması olarak veya çoğu ofis telefonunda kullanılan SIP endüstri standardıyla uyumlu bir VoiP telfonu olarak kullanılabilir.</p>
-    <p xml:lang="uk">Ring-KDE — графічний клієнт платформи спілкування Ring (www.ring.cx). Програмою можна користуватися як стандартною програмою для спілкування із користувачами Ring або як програмним телефоном VoiP, сумісним із галузевим стандартом SIP, який використовується у більшості офісних телефонів.</p>
-    <p xml:lang="x-test">xxRing-KDE is a graphical client for the Ring (www.ring.cx) communication platform. It can either be used as a general purpose communication application with other Ring users or as a VoiP softphone compatible with the SIP industry standard used by most office phones.xx</p>
-    <p xml:lang="zh-TW">Ring-KDE 是一個 Ring (www.ring.cx) 通訊平臺的圖形化介面。它可以與其他 Ring 的使用者一起當作一般用途的通訊應用程式使用，也可以用作 VoIP 應用程式來與其他相容於 SIP 工業標準的電話通話。</p>
+    <p xml:lang="ca">El Banji és un client gràfic per a la plataforma de comunicació Ring (www.ring.cx). Es pot emprar com una aplicació de comunicació de propòsit general amb altres usuaris del Ring o com un telèfon per programari de VoIP amb l'estàndard SIP de la indústria, emprat per la majoria dels telèfons d'oficina.</p>
+    <p xml:lang="ca-valencia">El Banji és un client gràfic per a la plataforma de comunicació Ring (www.ring.cx). Es pot emprar com una aplicació de comunicació de propòsit general amb altres usuaris del Ring o com un telèfon per programari de VoIP amb l'estàndard SIP de la indústria, emprat per la majoria dels telèfons d'oficina.</p>
+    <p xml:lang="en-GB">Banji is a graphical client for the Ring (www.ring.cx) communication platform. It can either be used as a general purpose communication application with other Ring users or as a VoiP softphone compatible with the SIP industry standard used by most office phones.</p>
+    <p xml:lang="es">Banji es un cliente gráfico para la plataforma de comunicaciones Ring (www.ring.cx). Se puede usar como una aplicación general de comunicaciones con otros usuarios de Ring o como un teléfono por software VoIP compatible con el estándar del sector SIP usado por la mayoría de los teléfonos de oficina.</p>
+    <p xml:lang="fi">Banji on graafinen käyttöliittymä Ringi-viestintäalustalle (www.ring.cx). Sitä voi käyttää joko yleisviestintäsovelluksena muiden Ring-käyttäjien kanssa tai useimpien toimistopuhelinten käyttämän SIP-teollisuusstandardin kanssa yhteensopivana VoIP-ohjelmistopuhelimena.</p>
+    <p xml:lang="fr">Banji est un client graphique pour la plate-forme de communication Ring (www.ring.cx). Vous pouvez l'utiliser comme application de communication généraliste avec les autres utilisateurs Ring ou pour sa compatibilité VoiP avec SIP, le standard de l'industrie utilisé par la majorité des téléphones de bureau.</p>
+    <p xml:lang="gl">Banji é un cliente gráfico para a plataforma de comunicación Ring (www.ring.cx). Pode usarse ou ben como un aplicativo xeral de comunicación con outros usuarios de Ring ou ben como un teléfono de software VoIP compatíbel co estándar da industria SIP que usan a meirande parte das oficinas.</p>
+    <p xml:lang="id">Banji adalah sebuah klien grafis untuk platform komunikasi Ring (www.ring.cx). Ini bisa antara digunakan sebagai aplikasi komunikasi pada umumnya dengan para pengguna Ring lain atau sebagai softphone VoiP yang kompatibel dengan standar industri SIP yang digunakan oleh sebagian besar telepon kantor.</p>
+    <p xml:lang="it">Banji è un client grafico per la piattaforma di comunicazione Ring (www.ring.cx). Può essere utilizzato sia come un'applicazione di comunicazione generica con altri utenti di Ring o come softphone VoIP compatibile con lo standard SIP utilizzato dalla maggior parte dei telefoni da ufficio.</p>
+    <p xml:lang="nl">Banji is een grafische client voor het Ring (www.ring.cx) communicatieplatform. Het kan ofwel gebruikt worden als een communicatietoepassing met andere RING-gebruikers voor algemeen gebruik worden gebruikt of als een VoiP software telefoon compatibel met de SIP industriestandaard gebruikt door de meeste kantoortelefoons.</p>
+    <p xml:lang="pl">Banji jest graficznym klientem dla platformy komunikacyjnej Ring (www.ring.cx). Można go używać albo jako ogólnej aplikacji do porozumiewania się z innymi użytkownikami Ringa lub jako telefonu VoiP zgodnego ze standardem rynkowym SIP używanym przez większość telefonów biurowych.</p>
+    <p xml:lang="pt">O Banji é um cliente gráfico para a plataforma de comunicações Ring (www.ring.cx). Tanto pode ser usado como uma aplicação de comunicações de uso geral com outros utilizadores do Ring ou como um telefone VoIP por 'software' compatível com a norma de indústria SIP, usada pela maioria dos telefones de escritório.</p>
+    <p xml:lang="pt-BR">Banji é um cliente gráfico para a plataforma de comunicação Ring (www.ring.cx). Ele pode ser usado como um aplicativo de comunicação para uso geral com outros usuários do Ring ou como um telefone VoIP por software compatível com o padrão industrial SIP, usado pela maioria dos telefones de escritório.</p>
+    <p xml:lang="sv">Banji är en grafisk klient för kommunikationsplattformen Ring (www.ring.cx). Den kan antingen användas som ett generellt kommunikationsprogram med andra användare av Ring, eller som en internettelefon kompatibel med industristandarden SIP som används av de flesta kontorstelefoner.</p>
+    <p xml:lang="tr">Banji, Ring (www.ring.cx) iletişim platformu için grafiksel bir istemcidir. Diğer Ring kullanıcılarıyla genel amaçlı bir iletişim uygulaması olarak veya çoğu ofis telefonunda kullanılan SIP endüstri standardıyla uyumlu bir VoiP telfonu olarak kullanılabilir.</p>
+    <p xml:lang="uk">Banji — графічний клієнт платформи спілкування Ring (www.ring.cx). Програмою можна користуватися як стандартною програмою для спілкування із користувачами Ring або як програмним телефоном VoiP, сумісним із галузевим стандартом SIP, який використовується у більшості офісних телефонів.</p>
+    <p xml:lang="x-test">xxBanji is a graphical client for the Ring (www.ring.cx) communication platform. It can either be used as a general purpose communication application with other Ring users or as a VoiP softphone compatible with the SIP industry standard used by most office phones.xx</p>
+    <p xml:lang="zh-TW">Banji 是一個 Ring (www.ring.cx) 通訊平臺的圖形化介面。它可以與其他 Ring 的使用者一起當作一般用途的通訊應用程式使用，也可以用作 VoIP 應用程式來與其他相容於 SIP 工業標準的電話通話。</p>
     <p>Features:</p>
     <p xml:lang="ca">Característiques:</p>
     <p xml:lang="ca-valencia">Característiques:</p>
@@ -514,7 +514,7 @@
       <li xml:lang="zh-TW">智慧型手機號碼自動完成</li>
     </ul>
   </description>
-  <url type="homepage">https://www.ring.cx</url>
+  <url type="homepage">https://www.kde.org</url>
   <url type="bugtracker">https://bugs.kde.org/enter_bug.cgi?format=guided&amp;product=ring-kde</url>
   <project_group>KDE</project_group>
   <provides>

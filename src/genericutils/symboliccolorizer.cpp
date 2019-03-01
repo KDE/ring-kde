@@ -85,16 +85,16 @@ QPixmap SymbolicColorizerPrivate::paintSvg(const QString &id, QSize *size, const
     px.fill(Qt::transparent);
 
     QPainter painter(&px);
+    painter.setRenderHint(QPainter::Antialiasing, true);
 
     if (!painter.isActive()) {
-        qWarning() << "Failed to create painter" << id;
+        qWarning() << "Failed to create painter" << id << requestedSize << *size;
         return {};
     }
 
     painter.setCompositionMode(QPainter::CompositionMode_Clear);
     painter.fillRect(rect, QBrush(Qt::white));
     painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
-
     r->render(&painter, rect);
 
     painter.setCompositionMode(QPainter::CompositionMode_SourceIn);
@@ -131,6 +131,8 @@ QPixmap SymbolicColorizer::requestPixmap(const QString &id, QSize *size, const Q
         realId = s[1];
         color = QColor(s[0].mid(7, s[0].size()-7));
     }
+
+    realId = realId.replace("qrc:/", ":");
 
     if (realId.left(8) != QLatin1String("image://"))
         return d_ptr->paintSvg(realId, size, requestedSize, color);

@@ -18,6 +18,7 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
+import org.kde.kirigami 2.2 as Kirigami
 import org.kde.ringkde.genericutils 1.0 as GenericUtils
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 import net.lvindustries.ringqtquick.media 1.0 as RingQtMedia
@@ -250,7 +251,7 @@ Grid {
                 anchors.margins: 5
                 height: parent.height
                 verticalAlignment: Text.AlignVCenter
-                color: activePalette.text
+                color: Kirigami.Theme.textColor
                 text: "   " + i18n("Call")
             }
         }
@@ -311,7 +312,7 @@ Grid {
                 anchors.margins: 5
                 height: parent.height
                 verticalAlignment: Text.AlignVCenter
-                color: activePalette.text
+                color: Kirigami.Theme.textColor
                 text: "   " + i18n("Video")
             }
         }
@@ -368,7 +369,7 @@ Grid {
             Text {
                 id: textLabel3
                 anchors.margins: 5
-                color: activePalette.text
+                color: Kirigami.Theme.textColor
                 height: parent.height
                 verticalAlignment: Text.AlignVCenter
                 text: "   " + i18n("Screen sharing")
@@ -406,7 +407,7 @@ Grid {
                 anchors.margins: 5
                 height: parent.height
                 verticalAlignment: Text.AlignVCenter
-                color: activePalette.text
+                color: Kirigami.Theme.textColor
                 text: "   " + i18n("Chat")
             }
         }

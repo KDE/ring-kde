@@ -31,6 +31,10 @@ Item {
     property var cm: contactMethod
     signal clicked()
 
+    Behavior on background {
+        ColorAnimation {duration: 300; easing.type: Easing.InQuad}
+    }
+
     height: bubble.height + 10
 
     function getFactor() {
@@ -54,19 +58,21 @@ Item {
             contactMethod: chatMessage.cm
             Layout.alignment: Qt.AlignBottom
             Layout.bottomMargin: 20
+            defaultColor: Kirigami.Theme.textColor
         }
 
-        Item {
+        MouseArea {
             Layout.fillWidth: true
             Layout.fillHeight: true
 
             JamiChatView.Bubble {
                 id: bubble
                 anchors.margins: 5
+                sideMargins: 30
                 anchors.right: direction == 1 ? parent.right : undefined
                 anchors.left : direction == 1 ? undefined : parent.left
                 font.pointSize: Kirigami.Theme.defaultFont.pointSize*1.2
-                font.family: "Noto Color Emoji"
+                dateFont: dateLabel.font
                 z: 1
 
                 alignment: direction == 1 ? Text.AlignRight : Text.AlignLeft
@@ -77,16 +83,56 @@ Item {
 
                 Text {
                     id: label
-                    anchors.fill: parent
-                    anchors.leftMargin: 30
-                    anchors.rightMargin: 30
+                    width: parent.width
+                    anchors.leftMargin: bubble.sideMargins
+                    anchors.rightMargin: bubble.sideMargins
                     anchors.topMargin: 5
                     anchors.bottomMargin: 5
+                    anchors.verticalCenter: bubble.verticalCenter
+                    anchors.left: direction == 1 ? undefined : bubble.left
+                    anchors.right: direction == 1 ? bubble.right : undefined
                     horizontalAlignment: direction == 1 ? Text.AlignRight : Text.AlignLeft
                     font: bubble.font
                     text: display != undefined ? display : "N/A"
                     color: foreground
                     wrapMode: Text.WordWrap
+
+                    transitions: Transition {
+                        AnchorAnimation {duration: 200;  easing.type: Easing.OutQuad }
+                    }
+
+                    states: [
+                        State {
+                            name: ""
+                            when: !chatView.displayExtraTime
+                            AnchorChanges {
+                                target: label
+                                anchors.verticalCenter: bubble.verticalCenter
+                                anchors.top: undefined
+                            }
+
+                            PropertyChanges {
+                                target: label
+                                anchors.topMargin: 5
+                                anchors.bottomMargin: 5
+                            }
+                        },
+                        State {
+                            name: "showtime"
+                            when: chatView.displayExtraTime
+                            AnchorChanges {
+                                target: label
+                                anchors.verticalCenter: undefined
+                                anchors.top: bubble.top
+                            }
+
+                            PropertyChanges {
+                                target: label
+                                anchors.topMargin: 0
+                                anchors.bottomMargin: 0
+                            }
+                        }
+                    ]
                 }
 
                 Text {
@@ -98,15 +144,17 @@ Item {
                     anchors.leftMargin: direction == 1 ? 4 : undefined
                     anchors.rightMargin: direction == 0 ? 4 : undefined
                     text: formattedDate != undefined ? formattedDate : "N/A"
-                    color: "gray"
-                }
+                    color: Kirigami.Theme.highlightedTextColor
+                    opacity: chatView.displayExtraTime ? 0.75 : 0
 
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: {
-                        chatMessage.clicked()
+                    Behavior on opacity {
+                        NumberAnimation {duration: 200}
                     }
                 }
+            }
+
+            onClicked: {
+                chatMessage.clicked()
             }
         }
 
@@ -119,6 +167,7 @@ Item {
             contactMethod: chatMessage.cm
             Layout.alignment: Qt.AlignBottom
             Layout.bottomMargin: 20
+            defaultColor: Kirigami.Theme.textColor
         }
     }
 }

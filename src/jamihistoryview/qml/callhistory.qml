@@ -21,6 +21,8 @@ import QtQuick.Layouts 1.0
 import QtGraphicalEffects 1.0
 import org.kde.ringkde.jamitimelinebase 1.0 as JamiTimelineBase
 import org.kde.ringkde.jamihistoryview 1.0 as JamiHistoryView
+import net.lvindustries.ringqtquick 1.0 as RingQtQuick
+import org.kde.kirigami 2.2 as Kirigami
 
 Rectangle {
     id: timelinePage
@@ -32,7 +34,7 @@ Rectangle {
 
     function setContactMethod() {
         if (currentIndividual && !currentContactMethod) {
-            currentContactMethod = currentIndividual.preferredContactMethod(Media.TEXT)
+            currentContactMethod = currentIndividual.preferredContactMethod(RingQtQuick.Media.TEXT)
 
             if (!currentContactMethod)
                 console.log("Cannot find a valid ContactMethod for", currentIndividual)
@@ -46,12 +48,7 @@ Rectangle {
         setContactMethod()
     }
 
-    SystemPalette {
-        id: activePalette
-        colorGroup: SystemPalette.Active
-    }
-
-    color: activePalette.base
+    color: Kirigami.Theme.backgroundColor
 
     property var currentContactMethod: null
     property var currentIndividual: null
@@ -148,7 +145,7 @@ Rectangle {
 
                     Rectangle {
                         anchors.fill: parent
-                        color: activePalette.base
+                        color: Kirigami.Theme.backgroundColor
                         opacity: 0.75
                     }
                 }

@@ -52,7 +52,7 @@ Rectangle {
         Text {
             Layouts.Layout.fillWidth: true
             text: i18n("All accounts are currently disabled. Please click on an account below to enable it:")
-            color: activePalette.text
+            color: Kirigami.Theme.textColor
             wrapMode: Text.WordWrap
             width: parent.width
         }
@@ -67,7 +67,7 @@ Rectangle {
             delegate: Rectangle {
                 color: "transparent"
                 border.width: 1
-                border.color: activePalette.text
+                border.color: Kirigami.Theme.textColor
                 height: buttonText.implicitHeight + 15
                 width: content.width
                 radius: 5
@@ -78,7 +78,7 @@ Rectangle {
                 Text {
                     id: buttonText
                     anchors.centerIn: parent
-                    color: activePalette.text
+                    color: Kirigami.Theme.textColor
                     text: object.alias
                 }
 

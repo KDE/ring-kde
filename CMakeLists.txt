@@ -27,6 +27,7 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "Android")
     SET(OS_ANDROID 1)
 ENDIF()
 
+OPTION(USE_STATIC_QT "Favor using Qt static plugins instead of shared libraries" OFF)
 OPTION(ENABLE_SINGLE_INSTANCE  "Reuse instances of Ring-KDE when possible" ON)
 OPTION(ENABLE_NOTIFICATIONS "Enable the notifications on supported platgorms" ON)
 
@@ -136,6 +137,12 @@ FIND_PACKAGE(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED
     Quick
 )
 
+IF (USE_STATIC_QT)
+    FIND_PACKAGE(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED
+        X11Extras
+    )
+ENDIF()
+
 #FIND_PACKAGE(Qt5TextToSpeech ${QT_MIN_VERSION} QUIET)
 
 #SET_PACKAGE_PROPERTIES(Qt5TextToSpeech PROPERTIES
@@ -159,6 +166,14 @@ FIND_PACKAGE(KF5 "${KF5_DEP_VERSION}" REQUIRED COMPONENTS
     Declarative
     Kirigami2
 )
+
+#FIXME remove this hack
+IF (USE_STATIC_QT)
+    FIND_PACKAGE(KF5 "${KF5_DEP_VERSION}" REQUIRED COMPONENTS
+        Archive
+        ItemViews
+    )
+ENDIF()
 
 # Notifications are not supported on all platforms
 IF(ENABLE_NOTIFICATIONS)

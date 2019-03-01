@@ -19,6 +19,7 @@ import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
 
+import org.kde.kirigami 2.2 as Kirigami
 import org.kde.playground.kquickitemviews 1.0 as KQuickItemViews
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 import net.lvindustries.ringqtquick.models 1.0 as RingQtModels
@@ -28,48 +29,66 @@ import org.kde.ringkde.genericutils 1.0 as GenericUtils
 KQuickItemViews.HierarchyView {
     id: chatView
     clip: true
+    property alias individual: filterModel.individual
 
-    property var treeHelper: _treeHelper
-
-    SystemPalette {
-        id: activePalette
-        colorGroup: SystemPalette.Active
+    function jumpTo(idx) {
+        var ridx = filterModel.mapFromSource(idx)
+        var pos = chatView.itemRect(ridx)
+        chatView.contentY = pos.y
     }
 
-    GenericUtils.TreeHelper {
-        id: _treeHelper
-    }
+    property var treeHelper: GenericUtils.TreeHelper {}
 
+    property bool forceTime: false
     property var bubbleBackground: blendColor()
     property var bubbleForeground: ""
     property var unreadBackground: ""
     property var unreadForeground: ""
     property alias slideshow: slideshow
+    property bool displayExtraTimePrivate: moving || dragging || forceTime
+    property bool displayExtraTime: false
+
+    onDisplayExtraTimePrivateChanged: {
+        if (displayExtraTimePrivate) {
+            displayExtraTime  = true
+            dateTimer.running = false
+        }
+        else
+            dateTimer.running = true
+    }
+
+    Timer {
+        id: dateTimer
+        interval: 1500
+        repeat: false
+        onTriggered: displayExtraTime = false
+    }
+
+    model: RingQtQuick.TimelineFilter {
+        id: filterModel
+        showCalls: false
+        showEmptyGroups: true
+        showMessages: true
+        initDelay: 33
+    }
 
     function blendColor() {
-        var base2 = activePalette.highlight
-        base2 = Qt.rgba(base2.r, base2.g, base2.b, 0.3)
-        var base1 = Qt.tint(activePalette.base, base2)
+        chatView.bubbleBackground = Qt.tint(
+            Kirigami.Theme.backgroundColor,
+            Kirigami.Theme.highlightColor //base1
+        )
+        chatView.unreadBackground = Qt.tint(
+            Kirigami.Theme.backgroundColor, "#99BB0000"
+        )
 
-        chatView.bubbleBackground = base1
-        chatView.unreadBackground = Qt.tint(activePalette.base, "#33BB0000")
-        chatView.bubbleForeground = activePalette.text
-        chatView.unreadForeground = activePalette.text
+        chatView.bubbleForeground = Kirigami.Theme.highlightedTextColor
+        chatView.unreadForeground = Kirigami.Theme.highlightedTextColor
 
-        return base1
+        return chatView.bubbleBackground
     }
 
     JamiChatView.Slideshow {
         id: slideshow
-    }
-
-    // Display something when the chat is empty
-    Text {
-        color: activePalette.text
-        text: i18n("There is nothing yet, enter a message below or place a call using the buttons\nfound in the header")
-        anchors.centerIn: parent
-        visible: chatView.empty
-        horizontalAlignment: Text.AlignHCenter
     }
 
     Component {

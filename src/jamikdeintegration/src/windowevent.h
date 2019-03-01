@@ -19,6 +19,8 @@
 
 #include <QtCore/QObject>
 
+class WindowEventPrivate;
+
 /**
  * This class offers a proxy between the code unaware of how windows are
  * handled and the code unaware of the events it needs to handle.
@@ -34,10 +36,15 @@ class Q_DECL_EXPORT WindowEvent : public QObject
 {
     Q_OBJECT
 public:
+    Q_PROPERTY(bool startIconified READ startIconified WRITE setStartIconified NOTIFY iconifiedChanged)
+
     Q_INVOKABLE WindowEvent(QObject* parent = nullptr);
     virtual ~WindowEvent();
 
     static WindowEvent* instance();
+
+    bool startIconified() const;
+    void setStartIconified(bool ic);
 
 public Q_SLOTS:
     void raiseWindow();
@@ -45,11 +52,20 @@ public Q_SLOTS:
     void showWizard();
     void configureAccounts();
     void hideWindow();
+    void configureVideo();
+    void viewContactRequests();
 
 Q_SIGNALS:
     void requestsWindowRaised();
     void requestsQuit();
     void requestsWizard();
+    void requestsVideo();
     void requestsConfigureAccounts();
+    void requestsContactRequests();
     void requestsHideWindow();
+    void iconifiedChanged();
+
+private:
+    static WindowEventPrivate* d_ptr;
+    Q_DECLARE_PRIVATE(WindowEvent)
 };

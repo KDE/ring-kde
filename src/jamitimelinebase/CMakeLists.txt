@@ -73,6 +73,13 @@ target_link_libraries( jamitimelinebase
     Qt5::QuickControls2
 )
 
+if(X11_FOUND)
+    target_link_libraries( jamitimelinebase
+        Qt5::X11Extras
+        ${X11_X11_LIB}
+    )
+endif()
+
 # Configure the target config
 set(jamitimelinebase_CONFIG_PATH "${CMAKE_CURRENT_BINARY_DIR}/JamiTimelineBaseConfig.cmake")
 

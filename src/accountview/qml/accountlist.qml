@@ -21,6 +21,7 @@ import QtQuick.Layouts 1.0
 import QtQuick.Controls 2.2 as Controls
 import org.kde.ringkde.genericutils 1.0 as GenericUtils
 import org.kde.ringkde.jamicontactview 1.0 as JamiContactView
+import org.kde.ringkde.jamiaccountview 1.0 as JamiAccountView
 import org.kde.kirigami 2.2 as Kirigami
 import org.kde.playground.kquickitemviews 1.0 as KQuickItemViews
 import net.lvindustries.ringqtquick 1.0 as RingQtQuick
@@ -57,7 +58,7 @@ ListView {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 text: error
-                color: activePalette.text
+                color: Kirigami.Theme.textColor
                 wrapMode: Text.WordWrap
                 width: parent.width
             }
@@ -175,38 +176,8 @@ ListView {
         }
     }
 
-    Loader {
+    JamiAccountView.Deleter {
         id: accountDeleter
-        property string name: ""
-        property var account: ""
-        active: false
-        sourceComponent: Controls.Dialog {
-            height: 150
-            parent: applicationWindow().contentItem
-            x: applicationWindow().contentItem.width / 2 - width/2
-            y: applicationWindow().contentItem.height / 2 - height/2
-            standardButtons: Controls.Dialog.Ok | Controls.Dialog.Cancel
-            closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
-            modal: true
-            title: i18n("Delete an account")
-
-            Controls.Label {
-                text: i18n("<center>Are you sure you want to delete the account called ")
-                    + name + i18n(". <br><br> This cannot be undone and you will lose the account <b>permanently</b></center>")
-            }
-
-            onAccepted: {
-                accountDeleter.active = false
-                RingSession.accountModel.remove(account)
-                RingSession.accountModel.save()
-                accountDeleter.account = null
-            }
-
-            onRejected: {
-                accountDeleter.active = false
-                accountDeleter.account = null
-            }
-        }
     }
 
     delegate: Kirigami.SwipeListItem {
@@ -234,11 +205,7 @@ ListView {
                 iconName: "edit-delete"
                 text: i18n("Delete")
                 onTriggered: {
-                    accountDeleter.name = alias
-                    accountDeleter.account = object
-                    accountDeleter.active = true
-                    accountDeleter.item.open()
-                    //applicationWindow().globalDrawer.drawerOpen = false //FIXME
+                    accountDeleter.deleteAccount(object)
                 }
             },
             Kirigami.Action {

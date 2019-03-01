@@ -51,11 +51,14 @@
 #include <interfaces/pixmapmanipulatori.h>
 #include <interfaces/actionextenderi.h>
 
+// Jami KDE Integration
+#include "qmlaction.h"
+
 #ifdef HAVE_SPEECH
  #include "accessibility.h"
 #endif
 
-#define INIT_ACTION(name, icon, text) name = new QAction(icon, text, this);name->setObjectName(QStringLiteral(#name));
+#define INIT_ACTION(name, icon, text) name = new QmlAction(icon, text, this);name->setObjectName(QStringLiteral(#name));
 
 ActionCollection* ActionCollection::instance()
 {
@@ -152,21 +155,23 @@ void ActionCollection::setupAction()
    auto col = mw->actionCollection();
 
    // Import standard actions
-   action_quit = KStandardAction::quit       ( WindowEvent::instance(), SLOT(quit())   , this);
+   action_quit = new QmlAction(
+      KStandardAction::quit( WindowEvent::instance(), SLOT(quit()), this)
+   );
 
    action_quit ->setObjectName( QStringLiteral("action_quit" ) );
    action_close->setObjectName( QStringLiteral("action_close") );
 
    action_quit->setText(i18n("Quit"));
 
-   INIT_ACTION(action_displayDialpad        , {}                               , i18n("Display dialpad"         ));
-   INIT_ACTION(action_displayVolumeControls , {}                               , i18n("Display volume controls" ));
-   INIT_ACTION(action_displayAccountCbb     , {}                               , i18n("Display account selector"));
-   INIT_ACTION(action_raise_client          , {}                               , i18n("Raise Ring-KDE window"   ));
-   INIT_ACTION(action_focus_history         , {}                               , i18n("Search history"          ));
-   INIT_ACTION(action_focus_call            , {}                               , i18n("Search call"             ));
-   INIT_ACTION(action_focus_contact         , {}                               , i18n("Search contact"          ));
-   INIT_ACTION(action_focus_bookmark        , {}                               , i18n("Search bookmark"         ));
+   INIT_ACTION(action_displayDialpad        , {}, i18n("Display dialpad"         ));
+   INIT_ACTION(action_displayVolumeControls , {}, i18n("Display volume controls" ));
+   INIT_ACTION(action_displayAccountCbb     , {}, i18n("Display account selector"));
+   INIT_ACTION(action_raise_client          , {}, i18n("Raise Ring-KDE window"   ));
+   INIT_ACTION(action_focus_history         , {}, i18n("Search history"          ));
+   INIT_ACTION(action_focus_call            , {}, i18n("Search call"             ));
+   INIT_ACTION(action_focus_contact         , {}, i18n("Search contact"          ));
+   INIT_ACTION(action_focus_bookmark        , {}, i18n("Search bookmark"         ));
 
    INIT_ACTION(action_show_wizard           , QIcon::fromTheme(QStringLiteral("tools-wizard"                    )), i18n("New account wizard"      ));
    INIT_ACTION(action_show_menu             , QIcon::fromTheme(QStringLiteral("application-menu"                )), i18n("Show the menu"           ));
@@ -182,7 +187,7 @@ void ActionCollection::setupAction()
    INIT_ACTION(action_configureNotifications, QIcon::fromTheme(QStringLiteral("preferences-desktop-notification")), i18n("Configure Notifications" ));
    INIT_ACTION(action_configureAccount      , QIcon::fromTheme(QStringLiteral("configure"                       )), i18n("Configure Accounts"      ));
 
-#define COL(a,b) col->setDefaultShortcut(a,b)
+#define COL(a,b) col->setDefaultShortcut(a->action(),b)
    // Assign default shortcuts
    COL(action_accept      , Qt::CTRL + Qt::Key_A );
    COL(action_new_call    , Qt::CTRL + Qt::Key_N );
@@ -195,7 +200,7 @@ void ActionCollection::setupAction()
 
 
    // Declare checkable actions
-   for (QAction* a : {
+   for (QmlAction* a : {
       action_video_preview        , action_video_scale          , action_video_fullscreen  ,
       action_video_mute           , action_displayDialpad       , action_displayAccountCbb ,
       action_mute_playback        , action_displayVolumeControls, action_showContactDock   ,
@@ -218,7 +223,7 @@ void ActionCollection::setupAction()
    action_showDialDock          ->setChecked( ConfigurationSkeleton::displayDialDock     () );
    action_show_menu             ->setChecked( ConfigurationSkeleton::displayMenu         () );
 
-#define BIND_KCFG(action, setter) connect(action, &QAction::triggered,[](bool v) {\
+#define BIND_KCFG(action, setter) connect(action, &QmlAction::triggered,[](bool v) {\
    ConfigurationSkeleton:: setter(v);\
 });
 
@@ -232,7 +237,7 @@ void ActionCollection::setupAction()
 
    //Bind actions to the useractionmodel
    UserActionModel* uam = Session::instance()->callModel()->userActionModel();
-   QHash<int, QAction*> actionHash;
+   QHash<int, QmlAction*> actionHash;
    actionHash[ (int)UserActionModel::Action::ACCEPT              ] = action_accept             ;
    actionHash[ (int)UserActionModel::Action::ADD_NEW             ] = action_new_call           ;
    actionHash[ (int)UserActionModel::Action::HOLD                ] = action_hold               ;
@@ -255,10 +260,10 @@ void ActionCollection::setupAction()
    actionHash[ (int)UserActionModel::Action::EDIT_CONTACT        ] = action_edit_contact       ;
    actionHash[ (int)UserActionModel::Action::REMOVE_HISTORY      ] = action_remove_history     ;
 
-   for (QHash<int,QAction*>::const_iterator i = actionHash.constBegin(); i != actionHash.constEnd(); ++i) {
-      QAction* ea = i.value();
+   for (QHash<int,QmlAction*>::const_iterator i = actionHash.constBegin(); i != actionHash.constEnd(); ++i) {
+      QmlAction* ea = i.value();
       UserActionModel::Action a = static_cast<UserActionModel::Action>(i.key());
-      connect(ea, &QAction::triggered, this, [uam,a](bool) {uam << a;});
+      connect(ea, &QmlAction::triggered, this, [uam,a](bool) {uam << a;});
    }
 
    // Refresh the action state and text
@@ -267,7 +272,7 @@ void ActionCollection::setupAction()
       for(int i = first; i <= last;i++) {
          const auto idx = uam->index(i,0);
          const UserActionModel::Action action = qvariant_cast<UserActionModel::Action>(idx.data(UserActionModel::Role::ACTION));
-         QAction* a = actionHash[(int)action];
+         QmlAction* a = actionHash[(int)action];
          if (a) {
             a->setText   ( idx.data(Qt::DisplayRole).toString()                 );
 
@@ -287,25 +292,25 @@ void ActionCollection::setupAction()
    const auto as = &Audio::Settings::instance();
 
    // Connect actions
-   connect(action_mute_capture           , &QAction::toggled   , as                 , &Audio::Settings::muteCapture             );
-   connect(action_mute_playback          , &QAction::toggled   , as                 , &Audio::Settings::mutePlayback            );
-   connect(action_show_wizard            , &QAction::triggered , WindowEvent::instance(), &WindowEvent::showWizard      );
-   connect(action_configureAccount       , &QAction::triggered , WindowEvent::instance(), &WindowEvent::configureAccounts);
-   connect(action_show_menu              , &QAction::toggled   , this               , &ActionCollection::slotShowMenubar        );
-   connect(action_close                  , &QAction::triggered , this               , &ActionCollection::slotClose              );
-   connect(action_new_contact            , &QAction::triggered , this               , &ActionCollection::slotNewContact         );
-   connect(action_configureShortcut      , &QAction::triggered , this               , &ActionCollection::showShortCutEditor     );
-   connect(action_configureNotifications , &QAction::triggered , this               , &ActionCollection::showNotificationEditor );
-   connect(action_addPerson              , &QAction::triggered , this               , &ActionCollection::slotAddPerson          );
-   connect(action_raise_client           , &QAction::triggered , this               , &ActionCollection::slotRaiseClient        );
+   connect(action_mute_capture           , &QmlAction::toggled   , as                 , &Audio::Settings::muteCapture             );
+   connect(action_mute_playback          , &QmlAction::toggled   , as                 , &Audio::Settings::mutePlayback            );
+   connect(action_show_wizard            , &QmlAction::triggered , WindowEvent::instance(), &WindowEvent::showWizard      );
+   connect(action_configureAccount       , &QmlAction::triggered , WindowEvent::instance(), &WindowEvent::configureAccounts);
+   connect(action_show_menu              , &QmlAction::toggled   , this               , &ActionCollection::slotShowMenubar        );
+   connect(action_close                  , &QmlAction::triggered , this               , &ActionCollection::slotClose              );
+   connect(action_new_contact            , &QmlAction::triggered , this               , &ActionCollection::slotNewContact         );
+   connect(action_configureShortcut      , &QmlAction::triggered , this               , &ActionCollection::showShortCutEditor     );
+   connect(action_configureNotifications , &QmlAction::triggered , this               , &ActionCollection::showNotificationEditor );
+   connect(action_addPerson              , &QmlAction::triggered , this               , &ActionCollection::slotAddPerson          );
+   connect(action_raise_client           , &QmlAction::triggered , this               , &ActionCollection::slotRaiseClient        );
 
    connect(as, &Audio::Settings::captureVolumeChanged  , this                , &ActionCollection::updateRecordButton );
    connect(as, &Audio::Settings::playbackVolumeChanged , this                , &ActionCollection::updateVolumeButton );
-   connect(as, &Audio::Settings::captureMuted          , action_mute_capture , &QAction::setChecked                  );
-   connect(as, &Audio::Settings::playbackMuted         , action_mute_playback, &QAction::setChecked                  );
+   connect(as, &Audio::Settings::captureMuted          , action_mute_capture , &QmlAction::setChecked                );
+   connect(as, &Audio::Settings::playbackMuted         , action_mute_playback, &QmlAction::setChecked                );
 
    // Add the actions to the collection
-   for (QAction* a : {
+   for (QmlAction* a : {
       action_accept            , action_new_call          , action_hold              ,
       action_transfer          , action_record            , action_new_contact       ,
       action_quit              , action_displayDialpad    , action_showDialDock      ,
@@ -327,21 +332,21 @@ void ActionCollection::setupAction()
    }
 
    // Enable global shortcuts for relevant "current call" actions
-   for (QAction* a : {
+   for (QmlAction* a : {
       action_accept       , action_new_call    , action_hold         ,
       action_mute_capture , action_transfer    , action_record       ,
       action_hangup       , action_raise_client, action_focus_history,
       action_focus_contact, action_focus_call  , action_focus_bookmark
    }) {
-      KGlobalAccel::self()->setGlobalShortcut(a, QList<QKeySequence>{});
+      KGlobalAccel::self()->setGlobalShortcut(a->action(), QList<QKeySequence>{});
    }
 
    GlobalInstances::setInterface<ShortcutInterface>();
 
 #ifdef HAVE_SPEECH
-   QList<QAction *> acList = *Accessibility::instance();
+   QList<QmlAction *> acList = *Accessibility::instance();
 
-   foreach(QAction * ac,acList) {
+   foreach(QmlAction * ac,acList) {
       col->addAction(ac->objectName() , ac);
    }
 #endif
@@ -388,7 +393,7 @@ void ActionCollection::updateRecordButton()
    };
 
    const int idx = (recVol/26 < 0 || recVol/26 >= 4)?0:recVol/26;
-   ActionCollection::instance()->muteCaptureAction()->setIcon(icons[idx]);
+   ActionCollection::instance()->muteCaptureAction()->action()->setIcon(icons[idx]);
 }
 
 ///Update the colunm button icon
@@ -403,7 +408,7 @@ void ActionCollection::updateVolumeButton()
    };
 
    const int idx = (sndVol/26 < 0 || sndVol/26 >= 4)?0:sndVol/26;
-   ActionCollection::instance()->mutePlaybackAction()->setIcon(icons[idx]);
+   ActionCollection::instance()->mutePlaybackAction()->action()->setIcon(icons[idx]);
 }
 
 void ActionCollection::slotNewContact()
@@ -452,7 +457,7 @@ void ActionCollection::slotRaiseClient(bool focus)
    }
 }
 
-#define GETTER(name, action) QAction* ActionCollection::name(){return action;}
+#define GETTER(name, action) QmlAction* ActionCollection::name(){return action;}
 
 GETTER(holdAction                   , action_hold                  )
 GETTER(recordAction                 , action_record                )

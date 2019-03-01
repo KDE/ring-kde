@@ -27,12 +27,14 @@ import net.lvindustries.ringqtquick 1.0 as RingQtQuick
 ListView {
     id: numbers
 
-    property color buttonColor: inactivePalette.text
-    property alias model: numbers.model
+    property color buttonColor: Kirigami.Theme.textColor
+    property QtObject individual: null
     property QtObject person: null
     property alias interactive: numbers.interactive
     property bool editing: (model && model.editRow) || !person
     property bool showAdd: true
+    property var backgroundColor: undefined
+    property color textColor: undefined
     property real preferredHeight: numbers.contentHeight + (addButton && addButton.visible ? 0 : -addButton.height)
     signal personCreated(QtObject newPerson)
 
@@ -42,16 +44,7 @@ ListView {
     anchors.margins: 3
     height: preferredHeight
     clip: true
-
-    SystemPalette {
-        id: activePalette
-        colorGroup: SystemPalette.Active
-    }
-
-    SystemPalette {
-        id: inactivePalette
-        colorGroup: SystemPalette.Disabled
-    }
+    model: individual
 
     Component {
         id: editComponent
@@ -105,7 +98,7 @@ ListView {
                     var p = numbers.person ? numbers.person : numbers.model.person
 
                     var cm = contactBuilder.updatePhoneNumber(obj,
-                        contactViewPage.individual,
+                        individual,
                         p, newPhoneNumber.text, numbertype.index, accIdx
                     )
 
@@ -144,8 +137,8 @@ ListView {
 
     footer: GenericUtils.OutlineButton {
         id: btn
-        height: fontMetrics.height * 3.5
-        expandedHeight: fontMetrics.height * 3.5
+        height: Kirigami.Units.fontMetrics.height * 3.5
+        expandedHeight: Kirigami.Units.fontMetrics.height * 3.5
         sideMargin: 2
         width: parent.width
         color: numbers.buttonColor
@@ -171,6 +164,8 @@ ListView {
     delegate: Kirigami.SwipeListItem {
         height: readOnly.height
         implicitHeight: readOnly.height
+        backgroundColor: numbers.backgroundColor
+        textColor: numbers.textColor
 
         states: [
             State {
@@ -274,7 +269,7 @@ ListView {
                         Layout.fillWidth: true
                         Text {
                             text: display
-                            color: activePalette.text
+                            color: Kirigami.Theme.textColor
                         }
                         Text {
                             visible: object.registeredName == display
@@ -284,14 +279,14 @@ ListView {
                         }
                         Text {
                             text: "  ("+categoryName+")"
-                            color: inactivePalette.text
+                            color: Kirigami.Theme.textColor
                         }
                     }
 
                     Text {
                         text: lastUsed == undefined || lastUsed == "" ? i18n("Never used") :
                             i18n("Used ")+totalCallCount+i18n(" time (Last used on: ") + formattedLastUsed + ")"
-                        color: inactivePalette.text
+                        color: Kirigami.Theme.textColor
                     }
                 }
 

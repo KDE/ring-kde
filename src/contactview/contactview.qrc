@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/contactview/">
-        <file>qml/pendingrequest.qml</file>
         <file>qml/contactlist.qml</file>
         <file>qml/bookmarklist.qml</file>
         <file>qml/contactcard.qml</file>
@@ -15,6 +14,7 @@
         <file>qml/phonenumbers.qml</file>
         <file>qml/contactdialog.qml</file>
         <file>qml/addresses.qml</file>
+        <file>qml/commonactions.qml</file>
     </qresource>
     <qresource prefix="/">
         <file>assets/welcome.html</file>

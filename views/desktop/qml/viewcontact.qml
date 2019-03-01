@@ -178,14 +178,14 @@ Item {
             Layout.fillWidth: true
 
             background: Rectangle {
-                color: activePalette.base
+                color: Kirigami.Theme.backgroundColor
             }
 
             currentIndex: tabBar.currentIndex
 
             Page {
                 id: chatPage
-                background: Rectangle { color: activePalette.base }
+                background: Rectangle { color: Kirigami.Theme.backgroundColor }
                 Loader {
                     anchors.fill: parent
                     asynchronous: true
@@ -205,7 +205,7 @@ Item {
 
             Page {
                 id: avPage
-                background: Rectangle { color: activePalette.base }
+                background: Rectangle { color: Kirigami.Theme.backgroundColor }
                 Loader {
                     id: avView
                     asynchronous: true
@@ -264,7 +264,7 @@ Item {
 
             Page {
                 id: historyPage
-                background: Rectangle { color: activePalette.base }
+                background: Rectangle { color: Kirigami.Theme.backgroundColor }
                 Loader {
                     anchors.fill: parent
                     id: callHistory
@@ -282,7 +282,7 @@ Item {
 
             Page {
                 id: contactInfoPage
-                background: Rectangle { color: activePalette.base }
+                background: Rectangle { color: Kirigami.Theme.backgroundColor }
                 JamiContactView.ContactInfo {
                     id: contactInfo
                     individual: viewContact.currentIndividual
@@ -304,33 +304,33 @@ Item {
         id: stackView
         visible: false
         background: Rectangle {
-            color: activePalette.base
+            color: Kirigami.Theme.backgroundColor
         }
         anchors.fill: parent
 
         Page {
             id: page2
             background: Rectangle {
-                color: activePalette.base
+                color: Kirigami.Theme.backgroundColor
             }
         }
         Page {
             id: page3
             background: Rectangle {
-                color: activePalette.base
+                color: Kirigami.Theme.backgroundColor
             }
         }
         Page {
             id: page4
             background: Rectangle {
-                color: activePalette.base
+                color: Kirigami.Theme.backgroundColor
             }
         }
         Page {
             id: page1
             anchors.margins: 0
             background: Rectangle {
-            color: activePalette.base
+            color: Kirigami.Theme.backgroundColor
             }
         }
 
