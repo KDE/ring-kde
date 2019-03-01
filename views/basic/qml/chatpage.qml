@@ -79,31 +79,45 @@ Kirigami.Page {
          * This is the main chat widget with the chatbox, messages, emojis
          * and timeline scrollbar.
          */
-        JamiChatView.ChatPage {
-            id: chatView
-            showScrollbar: pageStack.wideMode
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            Layout.bottomMargin: 0
-            currentIndividual: workflow.currentIndividual
+        Loader {
 
-            /*
-            * Display the branding when there's no content
-            */
-            Image {
-                property real size: Math.min(400, chatPage.width*0.75)
-                anchors.centerIn: parent
-                verticalAlignment: Image.AlignVCenter
-                opacity: chatView.empty == true ? 0.3 : 0
-                visible: opacity > 0
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                Layout.bottomMargin: 0
 
-                fillMode: Image.PreserveAspectFit
-                sourceSize.width:size;sourceSize.height:size;width:size;height:size
-                source: "image://SymbolicColorizer/qrc:/sharedassets/branding.svg"
+            Timer {
+                id: hackTimer
+                interval: 1000
+                repeat: false
+                running: true
+            }
 
-                Behavior on opacity {
-                    NumberAnimation {duration: 300; easing.type: Easing.InQuad}
+            active: !hackTimer.running
+
+                /*
+                * Display the branding when there's no content
+                */
+                Image {
+                    property real size: Math.min(400, chatPage.width*0.75)
+                    anchors.centerIn: parent
+                    verticalAlignment: Image.AlignVCenter
+                    opacity: chatView.empty == true ? 0.3 : 0
+                    visible: opacity > 0
+
+                    fillMode: Image.PreserveAspectFit
+                    sourceSize.width:size;sourceSize.height:size;width:size;height:size
+                    source: "image://SymbolicColorizer/qrc:/sharedassets/branding.svg"
+
+                    Behavior on opacity {
+                        NumberAnimation {duration: 300; easing.type: Easing.InQuad}
+                    }
                 }
+
+            sourceComponent: JamiChatView.ChatPage {
+                id: chatView
+                showScrollbar: pageStack.wideMode
+                anchors.fill: parent
+                currentIndividual: workflow.currentIndividual
             }
         }
 
