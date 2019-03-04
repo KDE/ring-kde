@@ -5,6 +5,7 @@ Terminal=false
 
 Name=Banji VoIP KDE client
 Name[ca]=Banji client de VoIP del KDE
+Name[es]=Cliente VoIP Banji para KDE
 Name[gl]=Cliente de KDE para VoIP mediante Banji
 Name[nl]=Banji VoIP KDE-client
 Name[sv]=Banji KDE-klient för IP-telefoni
@@ -12,6 +13,7 @@ Name[uk]=Клієнт інтернет-телефонії Banji для KDE
 Name[x-test]=xxBanji VoIP KDE clientxx
 GenericName=Banji
 GenericName[ca]=Banji
+GenericName[es]=Banji
 GenericName[gl]=Banji
 GenericName[nl]=Banji
 GenericName[sv]=Banji
