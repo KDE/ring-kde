@@ -12,6 +12,7 @@
   <name xml:lang="fr">Banji</name>
   <name xml:lang="gl">Banji</name>
   <name xml:lang="nl">Banji</name>
+  <name xml:lang="pt">Banji</name>
   <name xml:lang="pt-BR">Banji</name>
   <name xml:lang="sv">Banji</name>
   <name xml:lang="uk">Banji</name>
@@ -52,6 +53,7 @@
     <p xml:lang="fr">Banji est un client graphique pour la plate-forme de communication Ring (www.jami.net). Vous pouvez l'utiliser comme application de communication généraliste avec les autres utilisateurs Ring ou pour sa compatibilité VoiP avec SIP, le standard de l'industrie utilisé par la majorité des téléphones de bureau.</p>
     <p xml:lang="gl">Banji é un cliente gráfico para a plataforma de comunicación Ring (www.jami.net). Pode usarse ou ben como un aplicativo xeral de comunicación con outros usuarios de Ring ou ben como un teléfono de software VoIP compatíbel co estándar da industria SIP que usan a meirande parte das oficinas.</p>
     <p xml:lang="nl">Banji is een grafische client voor het Ring (www.jami.net) communicatieplatform. Het kan ofwel gebruikt worden als een communicatietoepassing met andere RING-gebruikers voor algemeen gebruik worden gebruikt of als een VoiP software telefoon compatibel met de SIP industriestandaard gebruikt door de meeste kantoortelefoons.</p>
+    <p xml:lang="pt">O Banji é um cliente gráfico para a plataforma de comunicações Ring (www.jami.net). Tanto pode ser usado como uma aplicação de comunicações de uso geral com outros utilizadores do Ring ou como um telefone VoIP por 'software' compatível com a norma de indústria SIP, usada pela maioria dos telefones de escritório.</p>
     <p xml:lang="pt-BR">Banji é um cliente gráfico para a plataforma de comunicação Ring (www.jami.net). Ele pode ser usado como um aplicativo de comunicação para uso geral com outros usuários do Ring ou como um telefone VoIP por software compatível com o padrão industrial SIP, usado pela maioria dos telefones de escritório.</p>
     <p xml:lang="sv">Banji är en grafisk klient för kommunikationsplattformen Ring (www.jami.net). Den kan antingen användas som ett generellt kommunikationsprogram med andra användare av Ring, eller som en internettelefon kompatibel med industristandarden SIP som används av de flesta kontorstelefoner.</p>
     <p xml:lang="uk">Banji — графічний клієнт платформи спілкування Ring (www.jami.net). Програмою можна користуватися як стандартною програмою для спілкування із користувачами Ring або як програмним телефоном VoiP, сумісним із галузевим стандартом SIP, який використовується у більшості офісних телефонів.</p>
