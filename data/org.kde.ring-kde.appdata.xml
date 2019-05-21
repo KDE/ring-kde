@@ -11,6 +11,7 @@
   <name xml:lang="es">Banji</name>
   <name xml:lang="fr">Banji</name>
   <name xml:lang="gl">Banji</name>
+  <name xml:lang="it">Banji</name>
   <name xml:lang="nl">Banji</name>
   <name xml:lang="pt">Banji</name>
   <name xml:lang="pt-BR">Banji</name>
@@ -52,6 +53,7 @@
     <p xml:lang="es">Banji es un cliente gráfico para la plataforma de comunicaciones Ring (www.jami.net). Se puede usar como una aplicación general de comunicaciones con otros usuarios de Ring o como un teléfono por software VoIP compatible con el estándar del sector SIP usado por la mayoría de los teléfonos de oficina.</p>
     <p xml:lang="fr">Banji est un client graphique pour la plate-forme de communication Ring (www.jami.net). Vous pouvez l'utiliser comme application de communication généraliste avec les autres utilisateurs Ring ou pour sa compatibilité VoiP avec SIP, le standard de l'industrie utilisé par la majorité des téléphones de bureau.</p>
     <p xml:lang="gl">Banji é un cliente gráfico para a plataforma de comunicación Ring (www.jami.net). Pode usarse ou ben como un aplicativo xeral de comunicación con outros usuarios de Ring ou ben como un teléfono de software VoIP compatíbel co estándar da industria SIP que usan a meirande parte das oficinas.</p>
+    <p xml:lang="it">Banji è un client grafico per la piattaforma di comunicazione Ring (www.jami.net). Può essere utilizzato sia come un'applicazione di comunicazione generica con altri utenti di Ring, sia come softphone VoIP compatibile con lo standard SIP, che viene utilizzato dalla maggior parte dei telefoni da ufficio.</p>
     <p xml:lang="nl">Banji is een grafische client voor het Ring (www.jami.net) communicatieplatform. Het kan ofwel gebruikt worden als een communicatietoepassing met andere RING-gebruikers voor algemeen gebruik worden gebruikt of als een VoiP software telefoon compatibel met de SIP industriestandaard gebruikt door de meeste kantoortelefoons.</p>
     <p xml:lang="pt">O Banji é um cliente gráfico para a plataforma de comunicações Ring (www.jami.net). Tanto pode ser usado como uma aplicação de comunicações de uso geral com outros utilizadores do Ring ou como um telefone VoIP por 'software' compatível com a norma de indústria SIP, usada pela maioria dos telefones de escritório.</p>
     <p xml:lang="pt-BR">Banji é um cliente gráfico para a plataforma de comunicação Ring (www.jami.net). Ele pode ser usado como um aplicativo de comunicação para uso geral com outros usuários do Ring ou como um telefone VoIP por software compatível com o padrão industrial SIP, usado pela maioria dos telefones de escritório.</p>
@@ -93,7 +95,7 @@
       <li xml:lang="fr">Appel de numéros de téléphone réels à l'aide de fournisseurs de services SIP</li>
       <li xml:lang="gl">Chamar a teléfonos reais con contas de fornecedores de servizo SIP habituais.</li>
       <li xml:lang="id">Memanggil telepon dengan akun dari penyedia layanan SIP pada umumnya</li>
-      <li xml:lang="it">Chiamare un vero telefono con account da fornitori di servizi SIP comuni</li>
+      <li xml:lang="it">Chiama un vero telefono con account da fornitori di servizi SIP comuni</li>
       <li xml:lang="nl">Opbellen naar echte telefoons met accounts van algemene SIP-serviceproviders</li>
       <li xml:lang="pl">Dzwonienie na rzeczywiste telefony z kont powszechnych dostawców usług SIP</li>
       <li xml:lang="pt">Contactar telefones reais com contas de fornecedores de serviços SIP comuns</li>
@@ -349,7 +351,7 @@
       <li xml:lang="fr">Plusieurs sonneries par compte</li>
       <li xml:lang="gl">Sons de chamada distintos para cada conta.</li>
       <li xml:lang="id">Nadadering yang berbeda tiap akun</li>
-      <li xml:lang="it">Suonerie differenziate per account</li>
+      <li xml:lang="it">Suonerie differenziate in base all'account</li>
       <li xml:lang="nl">Verschillende ring-tonen per account</li>
       <li xml:lang="pl">Różne dzwonki w zależności od konta</li>
       <li xml:lang="pt">Diferentes toques de chamada por conta</li>
@@ -427,7 +429,7 @@
       <li xml:lang="fr">Réponse automatique (par compte)</li>
       <li xml:lang="gl">Resposta automática (para cada conta)</li>
       <li xml:lang="id">Auto jawab (tiap akun)</li>
-      <li xml:lang="it">Risposta automatica (per account)</li>
+      <li xml:lang="it">Risposta automatica (in base all'account)</li>
       <li xml:lang="nl">Automatisch antwoord (per account)</li>
       <li xml:lang="pl">Auto-odpowiedzi (w zależności od konta)</li>
       <li xml:lang="pt">Resposta automática (por conta)</li>
@@ -447,7 +449,7 @@
       <li xml:lang="fr">Intégration audio pulseaudio, portaudio, core audio, ALSA et windows</li>
       <li xml:lang="gl">Integración con PulseAudio, PortAudio, Core Audio, ALSA e Windows Audio.</li>
       <li xml:lang="id">Integrasi audio windows, pulseaudio, portaudio, core audio, dan ALSA</li>
-      <li xml:lang="it">Integrazione pulseaudio, portaudio, core audio, ALSA e windows audio</li>
+      <li xml:lang="it">Integrazione con pulseaudio, portaudio, core audio, ALSA e windows audio</li>
       <li xml:lang="nl">Integratie met geluid van pulseaudio, portaudio, core audio, ALSA en windows</li>
       <li xml:lang="pl">Pulseaudio, portaudio, core audio, ALSA oraz integracja dźwiękowa z windowsem</li>
       <li xml:lang="pt">Integração do áudio com o Pulseaudio, Portaudio, Core Audio, ALSA e windows</li>
