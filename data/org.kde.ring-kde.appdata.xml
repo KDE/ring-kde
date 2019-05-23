@@ -505,4 +505,9 @@
   <provides>
     <binary>ring-kde</binary>
   </provides>
+  <screenshots>
+    <screenshot type="default">
+      <image>https://cdn.kde.org/screenshots/ring-kde/ring-kde.png</image>
+    </screenshot>
+  </screenshots>
 </component>
