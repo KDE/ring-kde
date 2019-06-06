@@ -12,6 +12,7 @@
   <name xml:lang="fr">Banji</name>
   <name xml:lang="gl">Banji</name>
   <name xml:lang="it">Banji</name>
+  <name xml:lang="ko">반지</name>
   <name xml:lang="nl">Banji</name>
   <name xml:lang="pt">Banji</name>
   <name xml:lang="pt-BR">Banji</name>
@@ -30,6 +31,7 @@
   <summary xml:lang="gl">Chamar e recibir chamadas mediante os protocolos SIP e RING</summary>
   <summary xml:lang="id">Panggilan dan terima panggilan dengan protokol SIP atau RING</summary>
   <summary xml:lang="it">Chiama e ricevi telefonate con i protocolli SIP o RING</summary>
+  <summary xml:lang="ko">SIP나 RING 프로토콜로 전화 걸고 받기</summary>
   <summary xml:lang="nl">Maak of ontvang oproepen met SIP of RING-protocollen</summary>
   <summary xml:lang="pl">Dzwoń i odbieraj rozmowy przy użyciu protokołów SIP lub RING</summary>
   <summary xml:lang="pt">Fazer e receber chamadas com os protocolos SIP ou RING</summary>
@@ -54,6 +56,7 @@
     <p xml:lang="fr">Banji est un client graphique pour la plate-forme de communication Ring (www.jami.net). Vous pouvez l'utiliser comme application de communication généraliste avec les autres utilisateurs Ring ou pour sa compatibilité VoiP avec SIP, le standard de l'industrie utilisé par la majorité des téléphones de bureau.</p>
     <p xml:lang="gl">Banji é un cliente gráfico para a plataforma de comunicación Ring (www.jami.net). Pode usarse ou ben como un aplicativo xeral de comunicación con outros usuarios de Ring ou ben como un teléfono de software VoIP compatíbel co estándar da industria SIP que usan a meirande parte das oficinas.</p>
     <p xml:lang="it">Banji è un client grafico per la piattaforma di comunicazione Ring (www.jami.net). Può essere utilizzato sia come un'applicazione di comunicazione generica con altri utenti di Ring, sia come softphone VoIP compatibile con lo standard SIP, che viene utilizzato dalla maggior parte dei telefoni da ufficio.</p>
+    <p xml:lang="ko">반지는 Ring(www.jami.net) 통신 플랫폼용 그래픽 클라이언트입니다. 다른 Ring 사용자와 대화하거나 SIP 표준을 지원하는 VoIP 소프트폰으로 사용할 수 있습니다.</p>
     <p xml:lang="nl">Banji is een grafische client voor het Ring (www.jami.net) communicatieplatform. Het kan ofwel gebruikt worden als een communicatietoepassing met andere RING-gebruikers voor algemeen gebruik worden gebruikt of als een VoiP software telefoon compatibel met de SIP industriestandaard gebruikt door de meeste kantoortelefoons.</p>
     <p xml:lang="pt">O Banji é um cliente gráfico para a plataforma de comunicações Ring (www.jami.net). Tanto pode ser usado como uma aplicação de comunicações de uso geral com outros utilizadores do Ring ou como um telefone VoIP por 'software' compatível com a norma de indústria SIP, usada pela maioria dos telefones de escritório.</p>
     <p xml:lang="pt-BR">Banji é um cliente gráfico para a plataforma de comunicação Ring (www.jami.net). Ele pode ser usado como um aplicativo de comunicação para uso geral com outros usuários do Ring ou como um telefone VoIP por software compatível com o padrão industrial SIP, usado pela maioria dos telefones de escritório.</p>
@@ -73,6 +76,7 @@
     <p xml:lang="gl">Funcionalidades:</p>
     <p xml:lang="id">Fitur:</p>
     <p xml:lang="it">Funzionalità:</p>
+    <p xml:lang="ko">기능:</p>
     <p xml:lang="nl">Mogelijkheden:</p>
     <p xml:lang="pl">Możliwości:</p>
     <p xml:lang="pt">Funcionalidades:</p>
@@ -96,6 +100,7 @@
       <li xml:lang="gl">Chamar a teléfonos reais con contas de fornecedores de servizo SIP habituais.</li>
       <li xml:lang="id">Memanggil telepon dengan akun dari penyedia layanan SIP pada umumnya</li>
       <li xml:lang="it">Chiama un vero telefono con account da fornitori di servizi SIP comuni</li>
+      <li xml:lang="ko">SIP 인터넷 전화 서비스 사업자 계정을 사용하여 일반 전화로 걸기</li>
       <li xml:lang="nl">Opbellen naar echte telefoons met accounts van algemene SIP-serviceproviders</li>
       <li xml:lang="pl">Dzwonienie na rzeczywiste telefony z kont powszechnych dostawców usług SIP</li>
       <li xml:lang="pt">Contactar telefones reais com contas de fornecedores de serviços SIP comuns</li>
@@ -115,6 +120,7 @@
       <li xml:lang="gl">Compatibilidade con SIP, SIPS e o protocolo de comunicación distribuída RING.</li>
       <li xml:lang="id">Dukungan protokol komunikasi SIP, SIPS, dan RING yang didistribusikan</li>
       <li xml:lang="it">Supporta SIP, SIPS e il protocollo di comunicazione distribuita RING</li>
+      <li xml:lang="ko">SIP, SIPS 및 RING 분산 통신 프로토콜 지원</li>
       <li xml:lang="nl">Ondersteunt SIP, SIPS en het RING gedistribueerde communicatieprotocol</li>
       <li xml:lang="pl">Obsługa protokołów komunikacyjnych SIP, SIPS oraz RING</li>
       <li xml:lang="pt">Suporta os protocolos de comunicação SIP, SIPS e o protocolo distribuído do RING</li>
@@ -134,6 +140,7 @@
       <li xml:lang="gl">Mensaxes de son, vídeo e texto enriquecido.</li>
       <li xml:lang="id">Perpesanan teks, Video, dan Audio</li>
       <li xml:lang="it">Audio, video e messaggi di testo formattato</li>
+      <li xml:lang="ko">오디오, 비디오, 리치 텍스트 메시지</li>
       <li xml:lang="nl">Audio-, video- en opgemaakte tekstberichten</li>
       <li xml:lang="pl">Wiadomości głosowe, wideo i tekstowe</li>
       <li xml:lang="pt">Mensagens de áudio, vídeo e texto formatado</li>
@@ -156,6 +163,7 @@
       <li xml:lang="gl">Compatibilidade con varios estándares da industria, como:</li>
       <li xml:lang="id">Sesuai dengan berbagai standar industri sepertihalnya:</li>
       <li xml:lang="it">Compatibile con vari standard industriali come:</li>
+      <li xml:lang="ko">다양한 산업 표준 지원:</li>
       <li xml:lang="nl">Voldoet aan verschillende industriestandaarden zoals:</li>
       <li xml:lang="pl">Zgodny z różnymi standardami rynkowymi takimi jak:</li>
       <li xml:lang="pt">Compatível com diversas normas da indústria, como por exemplo:</li>
@@ -177,6 +185,7 @@
       <li xml:lang="gl">Compatibilidade con moitos códecs de son e vídeo populares.</li>
       <li xml:lang="id">Dukungan multipel codec audio dan video yang populer</li>
       <li xml:lang="it">Supporta diversi codificatori audio e video popolari</li>
+      <li xml:lang="ko">다양한 오디오 및 비디오 코덱 지원</li>
       <li xml:lang="nl">Meerdere populaire audio- en video-codecs worden ondersteund</li>
       <li xml:lang="pl">Obsługa różnych kodeków dźwięku i obrazu</li>
       <li xml:lang="pt">Suporte diversos codificadores de áudio e vídeo conhecidos</li>
@@ -196,6 +205,7 @@
       <li xml:lang="gl">Transferencia de chamadas SIP (directa ou asistida)</li>
       <li xml:lang="id">Transfer panggilan SIP (hadir dan saling terhubung langsung)</li>
       <li xml:lang="it">Trasferimento di chiamata SIP (sia diretto che assistito)</li>
+      <li xml:lang="ko">SIP 통화 전달(직접 및 참가하는 통화)</li>
       <li xml:lang="nl">SIP oproepoverdracht (zowel direct als bewaakt)</li>
       <li xml:lang="pl">Przeniesienie rozmowy SIP (zarówno bezpośrednie jak i nadzorowane)</li>
       <li xml:lang="pt">Transferência de chamadas SIP (tanto directas como assistidas)</li>
@@ -216,6 +226,7 @@
       <li xml:lang="gl">Conferencias de son e vídeo.</li>
       <li xml:lang="id">Percakapan audio dan video</li>
       <li xml:lang="it">Conferenze audio e video</li>
+      <li xml:lang="ko">오디오 및 비디오 회의 통화</li>
       <li xml:lang="nl">Audio- en video-conferenties</li>
       <li xml:lang="pl">Konferencje głosowe i wideo</li>
       <li xml:lang="pt">Conferências de áudio e vídeo</li>
@@ -235,6 +246,7 @@
       <li xml:lang="gl">Varias chamadas simultáneas, con función de espera.</li>
       <li xml:lang="id">Panggilan multi bersamaan dengan fitur "on hold"</li>
       <li xml:lang="it">Più chiamate simultanee con la funzionalità «in attesa»</li>
+      <li xml:lang="ko">여러 통화 동시 진행 및 "통화 중 대기" 기능</li>
       <li xml:lang="nl">Meerdere gelijktijdige oproepen met "on hold" mogelijkheid</li>
       <li xml:lang="pl">Wiele równorzędnych rozmów przy użyciu funkcji "wstrzymaj"</li>
       <li xml:lang="pt">Diversas chamadas concorrentes com a funcionalidade de "em espera"</li>
@@ -255,6 +267,7 @@
       <li xml:lang="gl">Varias contas.</li>
       <li xml:lang="id">Multi akun</li>
       <li xml:lang="it">Account multipli</li>
+      <li xml:lang="ko">다중 계정</li>
       <li xml:lang="nl">Meerdere accounts</li>
       <li xml:lang="pl">Wiele kont</li>
       <li xml:lang="pt">Múltiplas contas</li>
@@ -275,6 +288,7 @@
       <li xml:lang="gl">Varios perfís de usuario.</li>
       <li xml:lang="id">Multi profil pengguna</li>
       <li xml:lang="it">Profili utente multipli</li>
+      <li xml:lang="ko">다중 사용자 프로필</li>
       <li xml:lang="nl">Meerdere gebruikersprofielen</li>
       <li xml:lang="pl">Wiele profili użytkownika</li>
       <li xml:lang="pt">Múltiplos perfis de utilizadores</li>
@@ -294,6 +308,7 @@
       <li xml:lang="gl">Integración cos contactos do sistema.</li>
       <li xml:lang="id">Integrasi kontak sistem</li>
       <li xml:lang="it">Integrazione con i contatti di sistema</li>
+      <li xml:lang="ko">시스템 연락처 통합</li>
       <li xml:lang="nl">Integratie met contactpersonen in het systeem</li>
       <li xml:lang="pl">Integracja kontaktów systemowych</li>
       <li xml:lang="pt">Integração com os contactos do sistema</li>
@@ -313,6 +328,7 @@
       <li xml:lang="gl">Notificacións do sistema interactivas e configurábeis.</li>
       <li xml:lang="id">Notifikasi sistem interaktif yang dapat dikonfigurasi</li>
       <li xml:lang="it">Notifica di sistema interattiva configurabile</li>
+      <li xml:lang="ko">설정할 수 있는 시스템 알림</li>
       <li xml:lang="nl">Instelbare interactieve systeemmeldingen</li>
       <li xml:lang="pl">Ustawialne, interaktywne powiadomienia systemowe</li>
       <li xml:lang="pt">Notificações de sistema interactivas e configuráveis</li>
@@ -332,6 +348,7 @@
       <li xml:lang="gl">Atallos de teclado locais e globais configurábeis.</li>
       <li xml:lang="id">Pintasan keyboard global dan lokal yang dapat dikonfigurasi</li>
       <li xml:lang="it">Scorciatoie da tastiera locali e globali configurabili</li>
+      <li xml:lang="ko">설정할 수 있는 로컬 및 전역 키보드 단축키</li>
       <li xml:lang="nl">Instelbare lokale en globale sneltoetsen</li>
       <li xml:lang="pl">Ustawialne lokalne i globalne skróty klawiszowe</li>
       <li xml:lang="pt">Combinações de teclas locais e globais configuráveis</li>
@@ -352,6 +369,7 @@
       <li xml:lang="gl">Sons de chamada distintos para cada conta.</li>
       <li xml:lang="id">Nadadering yang berbeda tiap akun</li>
       <li xml:lang="it">Suonerie differenziate in base all'account</li>
+      <li xml:lang="ko">계정별 벨소리 설정</li>
       <li xml:lang="nl">Verschillende ring-tonen per account</li>
       <li xml:lang="pl">Różne dzwonki w zależności od konta</li>
       <li xml:lang="pt">Diferentes toques de chamada por conta</li>
@@ -371,6 +389,7 @@
       <li xml:lang="gl">O menú de chamadas permite automatización mediante macros.</li>
       <li xml:lang="id">Otomatisasi dukungan menu panggilan menggunakan macro</li>
       <li xml:lang="it">Il menu di chiamata supporta l'automazione con macro</li>
+      <li xml:lang="ko">매크로를 사용한 메뉴 지원 자동화</li>
       <li xml:lang="nl">Ondersteuning menu voor automatisering van oproepen met macro</li>
       <li xml:lang="pl">Automatyzacja menu rozmów przy użyciu makr</li>
       <li xml:lang="pt">Automatização do suporte do menu de chamadas com macros</li>
@@ -390,6 +409,7 @@
       <li xml:lang="gl">Gravación de chamadas de son.</li>
       <li xml:lang="id">Perekaman audio panggilan</li>
       <li xml:lang="it">Registrazione delle chiamate audio</li>
+      <li xml:lang="ko">통화 녹음</li>
       <li xml:lang="nl">Geluidsopname van oproepen</li>
       <li xml:lang="pl">Nagrywanie rozmów głosowych</li>
       <li xml:lang="pt">Gravações de áudio das chamadas</li>
@@ -410,6 +430,7 @@
       <li xml:lang="gl">Historial de chamadas e marcadores.</li>
       <li xml:lang="id">Markah dan histori panggilan</li>
       <li xml:lang="it">Cronologia delle chiamate e segnalibri</li>
+      <li xml:lang="ko">통화 기록 및 책갈피</li>
       <li xml:lang="nl">Geschiedenis van oproepen en bladwijzers</li>
       <li xml:lang="pl">Zakładki i historia rozmów</li>
       <li xml:lang="pt">Históricos e favoritos de chamadas</li>
@@ -430,6 +451,7 @@
       <li xml:lang="gl">Resposta automática (para cada conta)</li>
       <li xml:lang="id">Auto jawab (tiap akun)</li>
       <li xml:lang="it">Risposta automatica (in base all'account)</li>
+      <li xml:lang="ko">자동 응답(계정별)</li>
       <li xml:lang="nl">Automatisch antwoord (per account)</li>
       <li xml:lang="pl">Auto-odpowiedzi (w zależności od konta)</li>
       <li xml:lang="pt">Resposta automática (por conta)</li>
@@ -450,6 +472,7 @@
       <li xml:lang="gl">Integración con PulseAudio, PortAudio, Core Audio, ALSA e Windows Audio.</li>
       <li xml:lang="id">Integrasi audio windows, pulseaudio, portaudio, core audio, dan ALSA</li>
       <li xml:lang="it">Integrazione con pulseaudio, portaudio, core audio, ALSA e windows audio</li>
+      <li xml:lang="ko">Pulseaudio, Portaudio, CoreAudio, ALSA 및 Windows 오디오 통합</li>
       <li xml:lang="nl">Integratie met geluid van pulseaudio, portaudio, core audio, ALSA en windows</li>
       <li xml:lang="pl">Pulseaudio, portaudio, core audio, ALSA oraz integracja dźwiękowa z windowsem</li>
       <li xml:lang="pt">Integração do áudio com o Pulseaudio, Portaudio, Core Audio, ALSA e windows</li>
@@ -469,6 +492,7 @@
       <li xml:lang="gl">Dispositivos de son distintos para chamar e falar.</li>
       <li xml:lang="id">Perangkat audio yang berbeda untuk dering dan bicara</li>
       <li xml:lang="it">Dispositivi audio diversi per squillo e conversazione</li>
+      <li xml:lang="ko">서로 다른 장치로 벨소리 및 통화 지원</li>
       <li xml:lang="nl">Verschillend geluidsapparaat voor beltoon en spraak</li>
       <li xml:lang="pl">Różne urządzenia dźwiękowe do dzwonienia i rozmów</li>
       <li xml:lang="pt">Diferentes dispositivos de áudio para toques e conversas</li>
@@ -488,6 +512,7 @@
       <li xml:lang="gl">Completamento automático intelixente de números de teléfono.</li>
       <li xml:lang="id">Penyelesaian auto nomor smart phone</li>
       <li xml:lang="it">Completamento automatico intelligente dei numeri di telefono</li>
+      <li xml:lang="ko">똑똑한 전화 번호 자동 완성</li>
       <li xml:lang="nl">Automatische aanvulling van nummer van smartphone</li>
       <li xml:lang="pl">Samo-uzupełnianie numerów telefonów</li>
       <li xml:lang="pt">Completação automática dos números de telemóvel</li>
