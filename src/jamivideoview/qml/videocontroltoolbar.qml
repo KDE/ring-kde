@@ -34,49 +34,49 @@ Rectangle {
         ListElement {
             action: "action_video_rotate_left"
             icon: "image://icon/object-rotate-left"
-            label: qsTr( "Rotate left"       )
+            label: i18n( "Rotate left"       )
         }
 
         ListElement {
             action: "action_video_rotate_right"
             icon: "image://icon/object-rotate-right"
-            label: qsTr( "Rotate right"      )
+            label: i18n( "Rotate right"      )
         }
 
         ListElement {
             action: "action_video_flip_horizontal"
             icon: "image://icon/object-flip-horizontal"
-            label: qsTr( "Flip"              )
+            label: i18n( "Flip"              )
         }
 
         ListElement {
             action: "action_video_flip_vertical"
             icon: "image://icon/object-flip-vertical"
-            label: qsTr( "Flip"              )
+            label: i18n( "Flip"              )
         }
 
         ListElement {
             action: "action_video_mute"
             icon: "image://icon/camera-web"
-            label: qsTr( "Mute"              )
+            label: i18n( "Mute"              )
         }
 
         ListElement {
             action: "action_video_preview"
             icon: "image://icon/view-preview"
-            label: qsTr( "Preview"           )
+            label: i18n( "Preview"           )
         }
 
         ListElement {
             action: "action_video_scale"
             icon: "image://icon/transform-scale"
-            label: qsTr( "Keep aspect ratio" )
+            label: i18n( "Keep aspect ratio" )
         }
 
         ListElement {
             action: "action_video_fullscreen"
             icon: "image://icon/view-fullscreen"
-            label: qsTr( "Fullscreen"        )
+            label: i18n( "Fullscreen"        )
         }
     }
 
