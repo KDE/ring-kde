@@ -59,7 +59,7 @@ ColumnLayout {
             callWithVideo()
         }
         Layout.fillWidth: true
-        property string label: "Start a video call"
+        property string label: i18n("Start a video call")
         visible: availabilityTracker.canVideoCall
         sourceComponent: button
     }
@@ -70,7 +70,7 @@ ColumnLayout {
         function invoke() {
             callWithAudio()
         }
-        property string label: "Start an audio call"
+        property string label: i18n("Start an audio call")
         visible: availabilityTracker.canCall
         sourceComponent: button
     }
@@ -81,7 +81,7 @@ ColumnLayout {
         function invoke() {
             callWithScreen()
         }
-        property string label: "Start screen sharing"
+        property string label: i18n("Start screen sharing")
         visible: availabilityTracker.canVideoCall
         sourceComponent: button
     }
