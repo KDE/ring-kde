@@ -48,7 +48,7 @@ Item {
                     anchors.fill: parent
                     label: display
                     onClicked: {
-                        if (actions.lenght >= index) {
+                        if (actions.length >= index) {
                             actions[index]()
                         }
                         action(index)

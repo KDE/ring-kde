@@ -126,7 +126,7 @@ public:
 
 private:
 
-   //Selection dependant
+   //Selection dependent
    QmlAction* action_accept             {nullptr};
    QmlAction* action_new_call           {nullptr};
    QmlAction* action_hold               {nullptr};
