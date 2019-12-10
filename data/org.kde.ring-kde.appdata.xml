@@ -107,6 +107,7 @@
       <li xml:lang="ca-valencia">Trucades reals de telèfon amb els comptes dels proveïdors de serveis SIP comuns</li>
       <li xml:lang="en-GB">Calling real phone with accounts from common SIP service providers</li>
       <li xml:lang="es">Llamada a teléfonos reales con cuentas de los proveedores de servicio SIP comunes</li>
+      <li xml:lang="et">Helistamine reaalsetele telefonidele levinud SIP teenuse pakkujate kontodelt</li>
       <li xml:lang="fi">Soitot tavallisiin puhelimiin yleisten SIP-palveluntarjoajien tileillä</li>
       <li xml:lang="fr">Appel de numéros de téléphone réels à l'aide de fournisseurs de services SIP</li>
       <li xml:lang="gl">Chamar a teléfonos reais con contas de fornecedores de servizo SIP habituais.</li>
@@ -217,6 +218,7 @@
       <li xml:lang="ca-valencia">Transferència de trucades SIP (tant directes com assistides)</li>
       <li xml:lang="en-GB">SIP call transfer (both direct and attended)</li>
       <li xml:lang="es">Transferencia de llamadas SIP (directas y atendidas)</li>
+      <li xml:lang="et">SIP kõne edasisuunamine</li>
       <li xml:lang="fi">SIP-soitonsiirto (sekä suora että valvottu)</li>
       <li xml:lang="fr">Transfert d'appels SIP (direct et assisté)</li>
       <li xml:lang="gl">Transferencia de chamadas SIP (directa ou asistida)</li>
@@ -259,6 +261,7 @@
       <li xml:lang="ca-valencia">Múltiples trucades simultànies amb la característica «en espera»</li>
       <li xml:lang="en-GB">Multiple concurrent calls with "on hold" feature</li>
       <li xml:lang="es">Múltiples llamadas simultáneas con la función «en espera»</li>
+      <li xml:lang="et">Mitu üheaegset kõnet ja "ootel" võimalus</li>
       <li xml:lang="fi">Useammat yhtäaikaiset puhelut pito-ominaisuudella</li>
       <li xml:lang="fr">Appels simultanés multiples avec fonction « mise en attente »</li>
       <li xml:lang="gl">Varias chamadas simultáneas, con función de espera.</li>
@@ -408,6 +411,7 @@
       <li xml:lang="ca-valencia">Implementa un menú de trucades automàtic amb macros</li>
       <li xml:lang="en-GB">Call menu support automation with macro</li>
       <li xml:lang="es">El menú de llamada permite automatismos con macros</li>
+      <li xml:lang="et">Kõnemenüü toetuse automatiseerimine makroga</li>
       <li xml:lang="fi">Puheluvalikko tukee automatisointia makroin</li>
       <li xml:lang="fr">Prise en charge de l'automatisation du menu d'appel à l'aide de macros</li>
       <li xml:lang="gl">O menú de chamadas permite automatización mediante macros.</li>
@@ -494,6 +498,7 @@
       <li xml:lang="de">Integration von PulseAudio, PortAudio, Core Audio, ALSA und Windows Audio</li>
       <li xml:lang="en-GB">Pulseaudio, portaudio, core audio, ALSA and windows audio integration</li>
       <li xml:lang="es">Integración con Pulseaudio, portaudio, core audio, ALSA y el sonido de Windows</li>
+      <li xml:lang="et">Pulseaudio, portaudio, core audio, ALSA ja windows audio lõimimine</li>
       <li xml:lang="fi">Pulseaudio-, portaudio-, core audio-, ALSA- ja Windows audio -integrointi</li>
       <li xml:lang="fr">Intégration audio pulseaudio, portaudio, core audio, ALSA et windows</li>
       <li xml:lang="gl">Integración con PulseAudio, PortAudio, Core Audio, ALSA e Windows Audio.</li>
