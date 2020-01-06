@@ -49,7 +49,7 @@ Comment[tr]=KDE Ring VoIP istemcisi
 Comment[uk]=Клієнт інтернет-телефонії Ring для KDE
 Comment[x-test]=xxKDE Ring VoIP clientxx
 Comment[zh_CN]=KDE Ring VoIP 客户端
-Comment[zh_TW]=KDE Ring VoIP 客戶端
+Comment[zh_TW]=KDE Ring VoIP 用戶端
 
 [Context/contact]
 Name=Contact
